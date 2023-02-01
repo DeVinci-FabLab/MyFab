@@ -32,6 +32,7 @@ async function clickOnLogoPaintPost(data) {
                                 WHERE i_id = ?
                                 AND dt_rickrolled IS NULL;`;
   const resUpdateRickRoll = await data.app.executeQuery(data.app.db, queryUpdateRickRoll, [userIdAgent]);
+  /* c8 ignore start */
   if (resUpdateRickRoll[0]) {
     console.log(resUpdateRickRoll[0]);
     return {
@@ -39,6 +40,7 @@ async function clickOnLogoPaintPost(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "code",
@@ -46,6 +48,7 @@ async function clickOnLogoPaintPost(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.post("/api/clickonlogopaint/", async function (req, res) {
@@ -60,3 +63,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */
