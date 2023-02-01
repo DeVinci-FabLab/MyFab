@@ -1,0 +1,41 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next build && next export",
+    "analyze": "cross-env ANALYZE=true next build",
+    "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.4.1",
+    "@heroicons/react": "^1.0.5",
+    "@next/bundle-analyzer": "^12.0.7",
+    "axios": "^0.24.0",
+    "canvas": "^2.8.0",
+    "cookie": "^0.4.1",
+    "cookies-next": "^2.0.3",
+    "cross-env": "^7.0.3",
+    "escape-string-regexp": "^5.0.0",
+    "moment": "^2.29.1",
+    "next": "latest",
+    "nprogress": "^0.2.0",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2",
+    "react-moment": "^1.1.1",
+    "react-toastify": "^8.1.0",
+    "socket.io-client": "^4.5.3",
+    "stl-viewer": "^0.12.0",
+    "styled-components": "^5.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.4.0",
+    "@tailwindcss/typography": "^0.5.0",
+    "autoprefixer": "10.4.5",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.13"
+  }
+}

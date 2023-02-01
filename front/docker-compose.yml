@@ -1,0 +1,73 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb
+    container_name: Myfab_db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: "MyFabUser"
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_DATABASE: "myFabUltimate"
+    volumes:
+      - ../MyFabUltimate_Back/data/mariaDb:/var/lib/mysql
+    networks:
+      - MyFab
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    container_name: Myfab_PhpMyAdmin
+    depends_on:
+      - "mariadb"
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+    networks:
+      - MyFab
+
+  back:
+    build:
+      context: ../MyFabUltimate_Back/
+      dockerfile: Dockerfile
+    restart: always
+    container_name: Myfab_Back
+    depends_on:
+      - "mariadb"
+    volumes:
+      - ../MyFabUltimate_Back/data/:/home/node/MyFabUltimate_Back/data/
+      - ../MyFabUltimate_Back/logs/:/home/node/MyFabUltimate_Back/logs/
+    ports:
+      - 5000:5000
+    networks:
+      - MyFab
+
+  front:
+    build: .
+    restart: always
+    container_name: Myfab_Front
+    depends_on:
+      - "back"
+    #      - "ghost"
+    ports:
+      - 3000:3000
+    networks:
+      - MyFab
+
+#  ghost:
+#    image: ghost:alpine
+#    restart: always
+#    container_name: Myfab_Ghost
+#    volumes:
+#      - ../MyFabUltimate_Back/data/ghost:/var/lib/ghost/content/
+#    ports:
+#      - 2368:2368
+#    networks:
+#      - MyFab
+
+networks:
+  MyFab:

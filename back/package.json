@@ -1,0 +1,49 @@
+{
+  "name": "myfabultimate_back",
+  "description": "",
+  "version": "0.8.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon",
+    "test": "set NODE_OPTIONS=--no-experimental-fetch && jest -i",
+    "prepareDb": "node importSqlTables.js",
+    "prepareFolders": "node createIgnoredFolders.js",
+    "startOnServer": "node importSqlTables.js && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathieuSchl/MyFabUltimate_Back.git"
+  },
+  "author": "DeVinci FabLab (Cody)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MathieuSchl/MyFabUltimate_Back/issues"
+  },
+  "homepage": "https://github.com/MathieuSchl/MyFabUltimate_Back#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "body-parser": "^1.19.1",
+    "cron": "^1.8.2",
+    "discord-oauth2": "^2.9.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "express-header": "^1.1.1",
+    "express-session": "^1.17.3",
+    "fs": "^0.0.1-security",
+    "jwt-decode": "^3.1.2",
+    "jwt-encode": "^1.0.1",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.7.2",
+    "passport": "^0.6.0",
+    "passport-saml": "^3.2.4",
+    "sha256": "^0.2.0",
+    "socket.io": "^4.5.3"
+  },
+  "devDependencies": {
+    "@alex_neo/jest-expect-message": "^1.0.5",
+    "jest": "^27.5.1",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0"
+  }
+}

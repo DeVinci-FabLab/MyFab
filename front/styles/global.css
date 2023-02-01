@@ -1,0 +1,39 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+.placeholder{
+    width: 45%;
+    background-image: linear-gradient(to left, rgba(251,251,251, .05), rgba(251,251,251, .3), rgba(251,251,251, .6), rgba(251,251,251, .3), rgba(251,251,251, .05));
+    background-image: -moz-linear-gradient(to left, rgba(251,251,251, .05), rgba(251,251,251, .3), rgba(251,251,251, .6), rgba(251,251,251, .3), rgba(251,251,251, .05));
+    background-image: -webkit-linear-gradient(to left, rgba(251,251,251, .05), rgba(251,251,251, .3), rgba(251,251,251, .6), rgba(251,251,251, .3), rgba(251,251,251, .05));
+}
+
+/* Parts are from twitter.com */
+
+.HeartAnimation {
+    padding-top: 2em;
+    background-image: url('/photo/web_heart_animation.png');
+      background-repeat: no-repeat;
+      background-size: 2900%;
+    background-position: left;
+      height: 100px;
+      width: 100px;
+    cursor: pointer;
+  }
+  
+  .animate {
+    animation: heart-burst .8s steps(28) forwards;
+  }
+  
+  @keyframes heart-burst {
+      0% {
+          background-position: left
+      }
+      100% {
+          background-position: right
+      }
+  }
