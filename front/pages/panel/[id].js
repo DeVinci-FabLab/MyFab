@@ -2,7 +2,6 @@ import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import LayoutPanel from "../../components/layoutPanel";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
-import Error from "../404";
 import { CubeIcon, UserCircleIcon, CogIcon, ExclamationIcon } from "@heroicons/react/outline";
 import { useEffect, Fragment, useState } from "react";
 import Moment from "react-moment";

@@ -1,6 +1,7 @@
 /* c8 ignore start */
 const sha256 = require("sha256");
-const config = require("../config.json");
+require("dotenv").config();
+const jwtSecret = process.env.SPECIALTOKEN;
 
 const authReducer = (previousValue, currentValue) => {
   const keys = Object.keys(currentValue);
@@ -56,19 +57,15 @@ module.exports.validateUserAuth = async (app, userId, authName) => {
 };
 
 module.exports.checkSpecialCode = async (codeToTest) => {
-  if (!config.specialTocken || !codeToTest) {
+  if (!jwtSecret || !codeToTest) {
     return false;
   }
   const nowDate = new Date();
-  const tockenNow = sha256(
-    config.specialTocken + (nowDate.getMonth() + 1) + Math.trunc(nowDate.getSeconds() / 10) + nowDate.getFullYear() + nowDate.getMinutes() + nowDate.getHours()
-  );
+  const tockenNow = sha256(jwtSecret + (nowDate.getMonth() + 1) + Math.trunc(nowDate.getSeconds() / 10) + nowDate.getFullYear() + nowDate.getMinutes() + nowDate.getHours());
   if (tockenNow === codeToTest) return true;
 
   nowDate.setSeconds(nowDate.getSeconds() - 10);
-  const tockenPrev = sha256(
-    config.specialTocken + (nowDate.getMonth() + 1) + Math.trunc(nowDate.getSeconds() / 10) + nowDate.getFullYear() + nowDate.getMinutes() + nowDate.getHours()
-  );
+  const tockenPrev = sha256(jwtSecret + (nowDate.getMonth() + 1) + Math.trunc(nowDate.getSeconds() / 10) + nowDate.getFullYear() + nowDate.getMinutes() + nowDate.getHours());
   if (tockenPrev === codeToTest) return true;
   return false;
 };

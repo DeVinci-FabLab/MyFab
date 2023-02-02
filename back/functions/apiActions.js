@@ -2,8 +2,9 @@
 
 const fs = require("fs");
 const sign = require("jwt-encode");
-const activeLogs = require("../config.json").activeLogs;
-const jwtSecret = require("../config.json").specialTocken;
+require("dotenv").config();
+const activeLogs = process.env.activeLogs === "true";
+const jwtSecret = process.env.SPECIALTOKEN;
 
 async function runFolder(path, app) {
   return await new Promise(async (resolve) => {

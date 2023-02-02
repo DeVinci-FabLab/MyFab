@@ -187,7 +187,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                       if (item.show == true) {
                         return (
                           <Link href={item.href}>
-                            <a
+                            <p
                               key={item.name}
                               className={classNames(
                                 item.current ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
@@ -200,7 +200,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                                 aria-hidden="true"
                               />
                               {item.name}
-                            </a>
+                            </p>
                           </Link>
                         );
                       }
@@ -297,7 +297,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                   if (item.show == true) {
                     return (
                       <Link href={item.href}>
-                        <a
+                        <p
                           key={`1-${item.name}`}
                           className={classNames(
                             item.current ? "bg-gray-200 text-gray-900" : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
@@ -310,7 +310,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             aria-hidden="true"
                           />
                           {item.name}
-                        </a>
+                        </p>
                       </Link>
                     );
                   }

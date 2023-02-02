@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import router from "next/router";
 
 const Home = ({}) => {
-  useEffect(async function () {
+  useEffect(() => {
     router.push(`/auth/`);
   }, []);
 
-  return <head></head>;
+  return <div></div>;
 };
 
 export async function getServerSideProps() {

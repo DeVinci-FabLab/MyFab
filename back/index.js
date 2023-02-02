@@ -5,7 +5,7 @@ const expressHeader = require("express-header");
 const session = require("express-session");
 const fs = require("fs");
 const app = express();
-const config = require(__dirname + "/config.json");
+require("dotenv").config();
 const server = require("http").Server(app);
 const io = require("socket.io")(server, { transports: ["websocket", "polling"] });
 app.io = io;
@@ -18,7 +18,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(
   session({
-    secret: config.specialTocken,
+    secret: process.env.SPECIALTOKEN,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true, maxAge: 1000 * 60 * 60 },
@@ -50,7 +50,7 @@ app.use(
   ])
 );
 
-if (config.showSwagger) {
+if (process.env.SHOWSWAGGER === "true") {
   const swaggerUI = require("swagger-ui-express");
   const swaggerJsDoc = require("swagger-jsdoc");
   const options = {
@@ -65,7 +65,7 @@ if (config.showSwagger) {
       },
       servers: [
         {
-          url: config.url + config.port + "/api/",
+          url: process.env.URL + ":5000/api/",
         },
       ],
     },
@@ -101,11 +101,11 @@ async function start() {
   app.db = await require("./functions/dataBase/createConnection").open();
   app.executeQuery = require("./functions/dataBase/executeQuery").run;
 
-  const port = config.port;
+  const port = 5000;
   server.listen(port);
   console.log();
   console.log("Server is now listening port " + port);
-  if (config.showSwagger) console.log("Swagger documentation available here : " + config.url + config.port + "/api-docs");
+  if (process.env.SHOWSWAGGER) console.log("Swagger documentation available here : " + process.env.URL + ":5000/api-docs");
 
   fs.readdirSync(__dirname + "/functions/cron/").forEach(async (file) => {
     const cron = require(__dirname + "/functions/cron/" + file);

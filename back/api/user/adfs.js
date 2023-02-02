@@ -2,7 +2,7 @@ const passport = require("passport");
 const saml = require("passport-saml");
 const fs = require("fs");
 const sha256 = require("sha256");
-const config = require("../../config.json");
+require("dotenv").config();
 const pendingUsers = {};
 module.exports.pendingUsers = pendingUsers;
 
@@ -32,8 +32,8 @@ var samlStrategy = new saml.Strategy(
     // URL that goes from the Identity Provider -> Service Provider
     callbackUrl: "/api/user/login/adfs/callback",
     // URL that goes from the Service Provider -> Identity Provider
-    entryPoint: config.adsf.entryPoint,
-    issuer: config.adsf.issuer,
+    entryPoint: process.env.ADSF_ENTRYPOINT,
+    issuer: process.env.ADSF_ISSUER,
     cert: fs.readFileSync(__dirname + "/../../data/cert", "utf8"), // cert must be provided
   },
   function (profile, done) {
@@ -205,7 +205,7 @@ async function startApi(app) {
   app.use(passport.initialize());
 
   app.get("/api/user/login/adfs/", passport.authenticate("saml", { failureRedirect: "/login/fail" }), function (req, res) {
-    res.redirect(`${config.siteRoot}/auth/adfs/`);
+    res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/`);
   });
 
   app.post("/api/user/login/adfs/", async (req, res) => {
@@ -225,7 +225,7 @@ async function startApi(app) {
     const id = makeid(20);
     pendingUsers[id] = req.session.passport;
     pendingUsers[id].timestamp = Date.now();
-    res.redirect(`${config.siteRoot}/auth/adfs/${id}`);
+    res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/${id}`);
   });
 }
 /* c8 ignore stop */

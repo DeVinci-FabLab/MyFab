@@ -1,15 +1,14 @@
 const mysql = require("mysql");
-const config = require("../../config.json");
+require("dotenv").config();
 
 /* c8 ignore start */
 function getDb() {
   const options = {
-    host: config.db.host,
-    user: config.db.user,
-    password: config.db.password,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     connectTimeout: 10000,
   };
-  if (config.db.port) options.port = config.db.port;
   const db = mysql.createConnection(options);
   return db;
 }
@@ -26,14 +25,14 @@ module.exports.open = async (callback, dontNeedToUse) => {
         console.log("Can not reach the database");
         process.exit(1);
       }
-      db.query("USE ??", [config.db.database], function (error, results, fields) {
+      db.query("USE ??", [process.env.DB_DATABASE], function (error, results, fields) {
         if (error) {
           if (dontNeedToUse) {
             if (callback) callback(db);
             resolve(db);
             return;
           } else {
-            console.log("Can not use database : '" + config.db.database + "'");
+            console.log("Can not use database : '" + process.env.DB_DATABASE + "'");
             process.exit(1);
           }
         }
