@@ -46,6 +46,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
 
   // Si l'id du ticket est invalid (un string par exemple) la page 404 va être affiché
   useEffect(function () {
+    console.log(ticket);
     if (ticket.error) {
       if (isNaN(id)) {
         router.push("/404");
@@ -371,7 +372,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           <dt className="text-sm font-medium text-gray-500">Utilisateur</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>
-                              {ticket.userFirstName + " " + ticket.userLastName.toString().toUpperCase()}
+                              {ticket.userFirstName + " " + (ticket.userLastName ? ticket.userLastName : "undefined").toString().toUpperCase()}
                               <p className="mt-1 max-w-2xl text-sm text-gray-500">{user.title || "Ancien compte"}</p>
                             </div>
                             {authorizations.myFabAgent ? (
