@@ -26,21 +26,24 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-var samlStrategy = new saml.Strategy(
-  {
-    //entityID: "http://app.example.com",
-    // URL that goes from the Identity Provider -> Service Provider
-    callbackUrl: "/api/user/login/adfs/callback",
-    // URL that goes from the Service Provider -> Identity Provider
-    entryPoint: process.env.ADSF_ENTRYPOINT,
-    issuer: process.env.ADSF_ISSUER,
-    cert: fs.existsSync(__dirname + "/../../data/cert") ? fs.readFileSync(__dirname + "/../../data/cert", "utf8") : "", // cert must be provided
-  },
-  function (profile, done) {
-    return done(null, profile);
-  }
-);
-passport.use(samlStrategy);
+const certIsPresent = fs.existsSync(__dirname + "/../../data/cert");
+const samlStrategy = !certIsPresent
+  ? null
+  : new saml.Strategy(
+      {
+        //entityID: "http://app.example.com",
+        // URL that goes from the Identity Provider -> Service Provider
+        callbackUrl: "/api/user/login/adfs/callback",
+        // URL that goes from the Service Provider -> Identity Provider
+        entryPoint: process.env.ADSF_ENTRYPOINT,
+        issuer: process.env.ADSF_ISSUER,
+        cert: fs.readFileSync(__dirname + "/../../data/cert", "utf8"), // cert must be provided
+      },
+      function (profile, done) {
+        return done(null, profile);
+      }
+    );
+if (certIsPresent) passport.use(samlStrategy);
 /* c8 ignore stop */
 
 /**
