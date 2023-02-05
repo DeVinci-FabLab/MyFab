@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb
+    container_name: Myfab_db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+    volumes:
+      - mariaDb:/var/lib/mysql
+    networks:
+      - MyFab
+
+  back:
+    build:
+      context: .
+      dockerfile: Dockerfile.back
+    restart: always
+    container_name: Myfab_Back
+    depends_on:
+      - "mariadb"
+    volumes:
+      - ./back/data/:/home/node/MyFabUltimate_Back/data/
+      - ./back/logs/:/home/node/MyFabUltimate_Back/logs/
+    ports:
+      - 5000:5000
+    networks:
+      - MyFab
+
+  front:
+    build:
+      context: .
+      dockerfile: Dockerfile.front
+    restart: always
+    container_name: Myfab_Front
+    depends_on:
+      - "back"
+    ports:
+      - 3000:3000
+    networks:
+      - MyFab
+
+volumes:
+  mariaDb:
+
+networks:
+  MyFab:
