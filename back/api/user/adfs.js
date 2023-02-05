@@ -34,7 +34,7 @@ var samlStrategy = new saml.Strategy(
     // URL that goes from the Service Provider -> Identity Provider
     entryPoint: process.env.ADSF_ENTRYPOINT,
     issuer: process.env.ADSF_ISSUER,
-    cert: fs.readFileSync(__dirname + "/../../data/cert", "utf8"), // cert must be provided
+    cert: fs.existsSync(__dirname + "/../../data/cert") ? fs.readFileSync(__dirname + "/../../data/cert", "utf8") : "", // cert must be provided
   },
   function (profile, done) {
     return done(null, profile);
