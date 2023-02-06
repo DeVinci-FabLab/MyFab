@@ -500,6 +500,41 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     expect(resCount[1][0].count).toBe(0);
   });
 
+  test("401_noUser", async () => {
+    //Prepare
+    const userTarget = "rolePostAddNewRole401NoUserTarget";
+    const userDataTarget = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
+    expect(userDataTarget, "User '" + userTarget + "' already exist").not.toBe(0);
+    const data = {
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          if (authName === "changeUserProtectedRole") {
+            return false;
+          }
+          return true;
+        },
+      },
+      app: {
+        db: db,
+        executeQuery: executeQuery,
+        io,
+      },
+      params: {
+        idUser: userDataTarget,
+        idRole: idRoleTest,
+      },
+    };
+
+    //Execute
+    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+
+    //Tests
+    expect(response.code).toBe(401);
+    expect(response.type).toBe("code");
+    const resCount = await executeQuery(db, "SELECT COUNT(*) AS 'count' FROM `rolescorrelation` WHERE i_idUser = ?", [userDataTarget]);
+    expect(resCount[1][0].count).toBe(0);
+  });
+
   test("401_noRoleviewUsers", async () => {
     //Prepare
     const user = "rolePostAddNewRole401noRoleviewUsers";
