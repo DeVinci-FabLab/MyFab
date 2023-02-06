@@ -109,7 +109,6 @@ export default function Admin({ user, role, authorizations }) {
               </h3>
             </div>
           </div>
-          <div></div>
           <OverviewAdmin
             tickets={ticketResult}
             maxPage={maxPage}

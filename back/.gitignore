@@ -1,5 +1,6 @@
 node_modules
 coverage
+.env
 config.json
 config_copy.json
 data

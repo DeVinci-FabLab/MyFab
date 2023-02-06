@@ -249,7 +249,7 @@ export default function Auth() {
 
                   <div className="text-sm">
                     <Link href="/auth/forget">
-                      <a className="font-medium text-blue-700 hover:text-blue-600">Mot de passe oublié ?</a>
+                      <p className="font-medium text-blue-700 hover:text-blue-600">Mot de passe oublié ?</p>
                     </Link>
                   </div>
                 </div>
@@ -266,10 +266,11 @@ export default function Auth() {
                   <p className="text-sm text-center text-gray-500 p-1">La connexion par adresse e-mail est réservée aux anciens comptes MyFab.</p>
                   {/*<Link href="/auth/register">
                     <p className="text-sm text-center text-gray-500 p-1 hover:cursor-pointer">S'inscrire</p>
-  </Link>*/}
-                  <Link href="/">
-                    <p className="text-sm text-center font-medium text-blue-700 hover:text-blue-600 mt-5 hover:cursor-pointer">Retourner sur MyFab</p>
                   </Link>
+                  <Link href="/">
+                    <p className="text-sm text-center font-medium text-blue-700 hover:text-blue-600 mt-5 hover:cursor-pointer">Retourner sur la page du DeVinci FabLab</p>
+                  </Link>
+                  */}
                 </div>
               </div>
             </div>

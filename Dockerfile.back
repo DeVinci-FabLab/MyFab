@@ -1,8 +1,9 @@
-FROM node
+FROM node:16.19.0
 
-COPY ./package*.json /home/node/MyFabUltimate_Back/
+COPY ./back/package*.json /home/node/MyFabUltimate_Back/
 WORKDIR /home/node/MyFabUltimate_Back/
 RUN npm install
-COPY . .
+COPY ./back/ .
+COPY .env .
 RUN npm run prepareFolders
 CMD ["npm", "run", "startOnServer"]

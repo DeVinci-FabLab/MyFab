@@ -3,7 +3,7 @@ const fs = require("fs");
 let db;
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open();
+  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
   await fs.copyFileSync("defaultFiles/logo.png", "data/files/image/test.png");
 });
 

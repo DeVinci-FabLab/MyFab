@@ -9,7 +9,7 @@ function emptyFunction() {
 const io = { emit: emptyFunction, to: emptyFunction };
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open();
+  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
   await executeQuery(db, "INSERT INTO gd_roles (v_name, v_description, v_discordPrefix, v_color) VALUES ('testRole', '', '', '')", []);
   idRoleTest = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
   const res = await executeQuery(db, "INSERT INTO gd_roles (v_name, v_description, v_discordPrefix, v_color, b_isProtected) VALUES ('testRoleProtected', '', '', '', '1')", []);

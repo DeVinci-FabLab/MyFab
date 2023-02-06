@@ -1,5 +1,4 @@
 const sha256 = require("sha256");
-const config = require("../../config.json");
 
 function makeid(length) {
   var result = "";
@@ -280,15 +279,6 @@ async function postForgottenPassword(data) {
       type: "code",
       code: 500,
     };
-  }
-
-  //Send validation email to the user
-  if (sendMail) {
-    data.sendMailFunction.sendMail(
-      email,
-      "[MyFab] Réinitialisation du mot de passe",
-      "Bonjour,\nPour changer de mot de mot de passe, merci de cliquer sur ce lien\n" + config.siteRoot + "auth/password/" + tocken
-    );
   }
 
   return {
