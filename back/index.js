@@ -105,7 +105,7 @@ async function start() {
   server.listen(port);
   console.log();
   console.log("Server is now listening port " + port);
-  if (process.env.SHOWSWAGGER) console.log("Swagger documentation available here : " + process.env.API + "/api-docs");
+  if (process.env.SHOWSWAGGER === "true") console.log("Swagger documentation available here : " + process.env.API + "/api-docs");
 
   fs.readdirSync(__dirname + "/functions/cron/").forEach(async (file) => {
     const cron = require(__dirname + "/functions/cron/" + file);
