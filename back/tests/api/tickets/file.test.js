@@ -8,7 +8,7 @@ function emptyFunction() {
 const io = { emit: emptyFunction, to: emptyFunction };
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open();
+  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
   await fs.copyFileSync(__dirname + "/../../Forme-Boîte.stl", __dirname + "/../../../data/files/stl/token-test.STL");
 });
 

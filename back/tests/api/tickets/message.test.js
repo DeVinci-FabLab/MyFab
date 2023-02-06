@@ -8,7 +8,7 @@ function emptyFunction() {
 const io = { emit: emptyFunction, to: emptyFunction };
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open();
+  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
   await executeQuery(db, "INSERT INTO `gd_ticketpriority` (`v_name`, `v_color`) VALUES ('testTicket', '000000')", []);
   idProjectType = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
   await executeQuery(db, "INSERT INTO `gd_ticketpriority` (`v_name`, `v_color`) VALUES ('newTestTicket', '000000')", []);

@@ -7,7 +7,7 @@ function emptyFunction() {
 const io = { emit: emptyFunction, to: emptyFunction };
 
 beforeAll(async () => {
-  db = await require("../../functions/dataBase/createConnection").open();
+  db = await require("../../functions/dataBase/createConnection").open({ isTest: true });
 });
 
 afterAll(() => {

@@ -4,7 +4,7 @@ let idRoleTest;
 let idRoleProtectedTest;
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open();
+  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
 });
 
 afterAll(() => {

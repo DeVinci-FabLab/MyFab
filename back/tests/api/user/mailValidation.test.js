@@ -2,7 +2,7 @@ const executeQuery = require("../../../functions/dataBase/executeQuery").run;
 let db;
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open();
+  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
 });
 
 afterAll(() => {
