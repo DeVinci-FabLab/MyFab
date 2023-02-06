@@ -12,5 +12,5 @@ jobs:
           cd back/ && npm i
       - name: Run test
         run: |
-          npm test
+          cd back/ && npm test
       - run: echo "🍏 This job's status is ${{ job.status }}."
