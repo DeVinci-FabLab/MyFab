@@ -27,6 +27,7 @@ jobs:
           echo 'DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
           echo 'DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
           echo 'DB_DATABASE=myfabtest' >> back/.env
+          ls -lA back/.env
       - name: Run test
         run: |
           cd back/ && npm test
