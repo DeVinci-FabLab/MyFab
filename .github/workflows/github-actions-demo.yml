@@ -1,8 +1,8 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Test Back-end
+run-name: ${{ github.actor }} push "${{ github.event.head_commit.message }}" 🚀
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Test-Back:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -10,6 +10,19 @@ jobs:
       - name: Install dependencies
         run: |
           cd back/ && npm i
+      - name: Create .env file
+        run: |
+          echo 'DB_HOST=localhost' >> back/.env
+          echo 'DB_USER=userTest' >> back/.env
+          echo 'DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
+          echo 'DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
+          echo 'DB_DATABASE=myfabtest' >> back/.env
+      - uses: getong/mariadb-action@v1.1
+        with:
+          mysql database: "myfabtest" # Optional, default value is "test". The specified database which will be create
+          mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: "developer" # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
       - name: Run test
         run: |
           cd back/ && npm test
