@@ -17,7 +17,7 @@ function getDb() {
 
 module.exports.getDb = getDb;
 
-module.exports.open = async ({ callback, dontNeedToUse, isTest }) => {
+module.exports.open = async ({ callback, dontNeedToUse, isTest } = {}) => {
   const db = getDb();
 
   return await new Promise((resolve, reject) => {
