@@ -22,7 +22,7 @@ jobs:
           cd back/ && npm i
       - name: Create .env file
         run: |
-          echo 'DB_HOST=localhost' >> back/.env
+          echo 'DB_HOST=127.0.0.1' >> back/.env
           echo 'DB_USER=userTest' >> back/.env
           echo 'DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
           echo 'DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
