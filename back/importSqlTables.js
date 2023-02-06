@@ -3,9 +3,9 @@ const sha256 = require("sha256");
 require("dotenv").config();
 
 async function importSqlTables(file) {
-  const db = await require("./functions/dataBase/createConnection").open(null, true);
+  const db = await require("./functions/dataBase/createConnection").open({ dontNeedToUse: true });
   const executeQuery = require("./functions/dataBase/executeQuery").run;
-  const dbName = process.env.DATABASE;
+  const dbName = process.env.DB_DATABASE;
   await executeQuery(db, "CREATE DATABASE IF NOT EXISTS ??", [dbName]);
   await executeQuery(db, "USE ??", [dbName]);
   await new Promise((resolve) => {
@@ -29,9 +29,9 @@ async function importSqlTables(file) {
 }
 
 async function addRootUser() {
-  const db = await require("./functions/dataBase/createConnection").open();
+  const db = await require("./functions/dataBase/createConnection").open({});
   const executeQuery = require("./functions/dataBase/executeQuery").run;
-  const dbName = process.env.DATABASE;
+  const dbName = process.env.DB_DATABASE;
   await executeQuery(db, "CREATE DATABASE IF NOT EXISTS ??", [dbName]);
   await executeQuery(db, "USE ??", [dbName]);
 

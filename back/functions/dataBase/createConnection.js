@@ -1,5 +1,7 @@
 const mysql = require("mysql");
 require("dotenv").config();
+let isTest = false;
+module.exports.isTest = isTest;
 
 /* c8 ignore start */
 function getDb() {
@@ -15,7 +17,7 @@ function getDb() {
 
 module.exports.getDb = getDb;
 
-module.exports.open = async (callback, dontNeedToUse) => {
+module.exports.open = async ({ callback, dontNeedToUse, isTest }) => {
   const db = getDb();
 
   return await new Promise((resolve, reject) => {
@@ -25,7 +27,7 @@ module.exports.open = async (callback, dontNeedToUse) => {
         console.log("Can not reach the database");
         process.exit(1);
       }
-      db.query("USE ??", [process.env.DB_DATABASE], function (error, results, fields) {
+      db.query("USE ??", [isTest ? process.env.DB_DATABASE + "test" : process.env.DB_DATABASE], function (error, results, fields) {
         if (error) {
           if (dontNeedToUse) {
             if (callback) callback(db);

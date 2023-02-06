@@ -7,9 +7,7 @@ CREATE TABLE IF NOT EXISTS `users` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_fir
 
 CREATE TABLE IF NOT EXISTS `gd_roles` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(25) NOT NULL , `v_description` VARCHAR(255) NOT NULL , `v_idDiscordRole` VARCHAR(18) NULL , `v_discordPrefix` VARCHAR(10) NOT NULL DEFAULT '' , `v_color` VARCHAR(6) NOT NULL , `b_isProtected` BOOLEAN NOT NULL DEFAULT FALSE , `b_viewUsers` BOOLEAN NOT NULL DEFAULT FALSE , `b_manageUser` BOOLEAN NOT NULL DEFAULT FALSE , `b_changeUserRole` BOOLEAN NOT NULL DEFAULT FALSE , `b_changeUserProtectedRole` BOOLEAN NOT NULL DEFAULT FALSE , `b_myFabAgent` BOOLEAN NOT NULL DEFAULT FALSE , `b_blogAuthor` BOOLEAN NOT NULL DEFAULT FALSE , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `gd_status` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(25) NOT NULL , `b_isOpen` BOOLEAN NOT NULL , `v_color` VARCHAR(6) NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
-ALTER TABLE `gd_status` ADD IF NOT EXISTS `b_isCancel` BOOLEAN NOT NULL DEFAULT FALSE AFTER `b_isOpen`;
-ALTER TABLE `gd_status` ADD IF NOT EXISTS `b_printCompleted` BOOLEAN NOT NULL DEFAULT FALSE AFTER `b_isOpen`;
+CREATE TABLE IF NOT EXISTS `gd_status` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(25) NOT NULL , `b_isCancel` BOOLEAN NOT NULL DEFAULT FALSE , `b_isOpen` BOOLEAN NOT NULL , `b_printCompleted` BOOLEAN NOT NULL DEFAULT FALSE , `v_color` VARCHAR(6) NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `gd_ticketpriority` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(50) NOT NULL , `v_color` VARCHAR(6) NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
