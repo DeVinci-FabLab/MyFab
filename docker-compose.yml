@@ -28,7 +28,7 @@ services:
       - ./back/data/:/home/node/MyFabUltimate_Back/data/
       - ./back/logs/:/home/node/MyFabUltimate_Back/logs/
     ports:
-      - 5000:5000
+      - ${PORT_BACK}:5000
     networks:
       - MyFab
 
@@ -41,7 +41,7 @@ services:
     depends_on:
       - "back"
     ports:
-      - 3000:3000
+      - ${PORT_FRONT}:3000
     networks:
       - MyFab
 
