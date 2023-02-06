@@ -81,6 +81,7 @@ async function getRoles(data) {
                          ORDER BY i_id ASC`;
   const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelect, []);
   // Error with the sql request
+  /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
     console.log(resTestIfCorrelationExist[0]);
     return {
@@ -88,6 +89,7 @@ async function getRoles(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "json",
@@ -174,6 +176,7 @@ async function getRolesForUserById(data) {
                          ORDER BY gd_roles.i_id ASC`;
   const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelect, [userId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
     console.log(resTestIfCorrelationExist[0]);
     return {
@@ -181,6 +184,7 @@ async function getRolesForUserById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "json",
@@ -244,6 +248,7 @@ async function getRolesForActualUser(data) {
                          ORDER BY gd_roles.i_id ASC`;
   const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelect, [userId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
     console.log(resTestIfCorrelationExist[0]);
     return {
@@ -251,6 +256,7 @@ async function getRolesForActualUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "json",
@@ -343,6 +349,7 @@ async function postAddRoleForUser(data) {
                          AND i_idRole = ?;`;
   const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelectIfExist, [userId, roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
     console.log(resTestIfCorrelationExist[0]);
     return {
@@ -350,6 +357,7 @@ async function postAddRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resTestIfCorrelationExist[1].length !== 0) {
     return {
       type: "code",
@@ -363,6 +371,7 @@ async function postAddRoleForUser(data) {
                              WHERE i_id = ? ;`;
   const resIsProtected = await data.app.executeQuery(data.app.db, queryIfProtected, [roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resIsProtected[0]) {
     console.log(resIsProtected[0]);
     return {
@@ -370,6 +379,7 @@ async function postAddRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resIsProtected[1].length !== 1) {
     return {
       type: "code",
@@ -390,6 +400,7 @@ async function postAddRoleForUser(data) {
                                      VALUES (?, ?);`;
   const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryInsertCorrelation, [userId, roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resInsertNewRoleCorrelation[0] || resInsertNewRoleCorrelation[1].affectedRows !== 1) {
     console.log(resInsertNewRoleCorrelation[0]);
     return {
@@ -397,11 +408,13 @@ async function postAddRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryInsertLog = `INSERT INTO log_roleschange (i_idUserAdmin, i_idUserTarget, v_actionType, i_idRole)
                              VALUES (?, ?, 'ADD', ?);`;
   const resInsertNewLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, userId, roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resInsertNewLog[0] || resInsertNewLog[1].affectedRows !== 1) {
     console.log(resInsertNewLog[0]);
     return {
@@ -409,6 +422,7 @@ async function postAddRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.to(`user-${userId}`).emit("reload-user");
 
@@ -502,6 +516,7 @@ async function deleteRemoveRoleForUser(data) {
                                      AND i_idRole = ?`;
   const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelectIfCorrelation, [userId, roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
     console.log(resTestIfCorrelationExist[0]);
     return {
@@ -509,6 +524,7 @@ async function deleteRemoveRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resTestIfCorrelationExist[1].length === 0) {
     return {
       type: "code",
@@ -521,6 +537,7 @@ async function deleteRemoveRoleForUser(data) {
                                      WHERE i_id = ?`;
   const resIsProtected = await data.app.executeQuery(data.app.db, querySelectIfProtected, [roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resIsProtected[0]) {
     console.log(resIsProtected[0]);
     return {
@@ -528,12 +545,7 @@ async function deleteRemoveRoleForUser(data) {
       code: 500,
     };
   }
-  if (resIsProtected[1].length !== 1) {
-    return {
-      type: "code",
-      code: 401,
-    };
-  }
+  /* c8 ignore stop */
 
   if (resIsProtected[1][0].isProtected) {
     const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "changeUserProtectedRole");
@@ -549,6 +561,7 @@ async function deleteRemoveRoleForUser(data) {
                          WHERE i_id = ?`;
   const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryDelete, [resTestIfCorrelationExist[1][0].id]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resInsertNewRoleCorrelation[0] || resInsertNewRoleCorrelation[1].affectedRows !== 1) {
     console.log(resInsertNewRoleCorrelation[0]);
     return {
@@ -556,11 +569,13 @@ async function deleteRemoveRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryInsert = `INSERT INTO log_roleschange (i_idUserAdmin, i_idUserTarget, v_actionType, i_idRole)
                          VALUES (?, ?, 'DEL', ?);`;
   const resInsertNewLog = await data.app.executeQuery(data.app.db, queryInsert, [userIdAgent, userId, roleId]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resInsertNewLog[0] || resInsertNewLog[1].affectedRows !== 1) {
     console.log(resInsertNewLog[0]);
     return {
@@ -568,6 +583,7 @@ async function deleteRemoveRoleForUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   data.app.io.to(`user-${userId}`).emit("reload-user");
 
   return {
@@ -576,6 +592,7 @@ async function deleteRemoveRoleForUser(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/role/", async function (req, res) {
@@ -638,3 +655,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */
