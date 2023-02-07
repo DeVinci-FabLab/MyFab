@@ -207,9 +207,15 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.use(passport.initialize());
 
-  app.get("/api/user/login/adfs/", passport.authenticate("saml", { failureRedirect: "/login/fail" }), function (req, res) {
-    res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/`);
-  });
+  if (certIsPresent) {
+    app.get("/api/user/login/adfs/", passport.authenticate("saml", { failureRedirect: "/login/fail" }), function (req, res) {
+      res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/`);
+    });
+  } else {
+    app.get("/api/user/login/adfs/", function (req, res) {
+      res.redirect(`${process.env.ADFS_FRONT_URL}/auth/?error=true`);
+    });
+  }
 
   app.post("/api/user/login/adfs/", async (req, res) => {
     try {
