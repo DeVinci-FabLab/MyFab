@@ -1,8 +1,7 @@
 module.exports.sql = sql;
 async function sql(data) {
   const resCheckCode = await data.userAuthorization.checkSpecialCode(data.specialcode);
-  const userIdAgent = data.userId;
-  if (!resCheckCode || !userIdAgent || !data.body || !data.body.querry) {
+  if (!resCheckCode || !data.body || !data.body.querry) {
     return {
       type: "code",
       code: 404,
@@ -18,6 +17,7 @@ async function sql(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.post("/api/sql/", async function (req, res) {
@@ -32,3 +32,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */
