@@ -1,0 +1,20 @@
+Retirer la dépendance à la bdd :
+
+- GetGlobalData
+- cookie
+- user/adfs
+- user/authorisation
+- user/login
+- user/logout
+- user/mailTocken
+- user/mailValidation
+- user/password
+- user/register
+- user/role
+- user/rules
+- tickets/file
+- tickets/message
+- tickets/ticket
+- other/sql
+- other/image
+- other/clickonlogopaint
