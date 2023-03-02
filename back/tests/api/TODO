@@ -1,7 +1,5 @@
 Retirer la dépendance à la bdd :
 
-- GetGlobalData
-- cookie
 - user/adfs
 - user/authorisation
 - user/login

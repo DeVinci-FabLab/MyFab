@@ -1,20 +1,10 @@
-const executeQuery = require("../../functions/dataBase/executeQuery").run;
-let db;
-
-beforeAll(async () => {
-  db = await require("../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("GET /api/status/", () => {
   test("200", async () => {
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1, name: "Ouvert", color: "2ca1bb" }]];
+        },
       },
     };
     const response = await require("../../api/getGlobaldata").getStatus(data);
@@ -31,8 +21,9 @@ describe("GET /api/projectType/", () => {
   test("200", async () => {
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1, name: "PIX" }]];
+        },
       },
     };
     const response = await require("../../api/getGlobaldata").getProjectType(data);
@@ -48,8 +39,9 @@ describe("GET /api/printer/", () => {
   test("200", async () => {
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 4, name: "Cody" }]];
+        },
       },
     };
     const response = await require("../../api/getGlobaldata").getPrinter(data);
