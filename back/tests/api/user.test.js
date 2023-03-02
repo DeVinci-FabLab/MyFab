@@ -1,18 +1,7 @@
-const executeQuery = require("../../functions/dataBase/executeQuery").run;
-let db;
-
 function emptyFunction() {
   return io;
 }
 const io = { emit: emptyFunction, to: emptyFunction };
-
-beforeAll(async () => {
-  db = await require("../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
 
 describe("GET /api/user/", () => {
   test("200", async () => {
@@ -26,7 +15,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -100,7 +88,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -153,7 +140,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -205,7 +191,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -257,7 +242,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -309,7 +293,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -361,7 +344,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -413,7 +395,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -465,7 +446,6 @@ describe("GET /api/user/", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -520,7 +500,6 @@ describe("GET /api/user/me", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -574,7 +553,6 @@ describe("GET /api/user/me", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -614,7 +592,6 @@ describe("GET /api/user/:id", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -668,9 +645,7 @@ describe("GET /api/user/:id", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-      },
+      app: {},
       params: { id: "Nan" },
     };
     const response = await require("../../api/user").userGetById(data);
@@ -686,9 +661,7 @@ describe("GET /api/user/:id", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-      },
+      app: {},
       params: { id: 2 },
     };
     const response = await require("../../api/user").userGetById(data);
@@ -706,9 +679,7 @@ describe("GET /api/user/:id", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-      },
+      app: {},
       params: { id: 2 },
     };
     const response = await require("../../api/user").userGetById(data);
@@ -727,7 +698,6 @@ describe("GET /api/user/:id", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -848,15 +818,6 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("400-userTryToDeleteHimself", async () => {
-    const user = "userGetByIdUserTryToDeleteHimself";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(
-      db,
-      'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))',
-      [userData]
-    );
-
     const data = {
       userId: 1,
       params: {
@@ -888,7 +849,6 @@ describe("DELETE /api/user/:id", () => {
         },
       },
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
