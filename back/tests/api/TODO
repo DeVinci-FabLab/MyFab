@@ -15,4 +15,3 @@ Retirer la dépendance à la bdd :
 - tickets/file
 - tickets/message
 - tickets/ticket
-- other/sql
