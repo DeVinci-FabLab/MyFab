@@ -1,26 +1,20 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
-
-beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("GET /api/user/authorization/", () => {
   test("200", async () => {
-    const user = "authGet200";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
-      app: {
-        db: db,
-        executeQuery: executeQuery,
+      userId: 1,
+      userAuthorization: {
+        getUserAuth: async (app, idUser) => {
+          return {
+            viewUsers: 0,
+            manageUser: 0,
+            changeUserRole: 0,
+            changeUserProtectedRole: 0,
+            myFabAgent: 0,
+            blogAuthor: 0,
+          };
+        },
       },
+      app: {},
     };
     const response = await require("../../../api/user/authorisation").getAuth(data);
 
@@ -31,10 +25,7 @@ describe("GET /api/user/authorization/", () => {
     }
   });
 
-  test("401", async () => {
-    const user = "authGet401";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
+  test("401userUnauthenticated", async () => {
     const data = {};
 
     const response = await require("../../../api/user/authorisation").getAuth(data);
