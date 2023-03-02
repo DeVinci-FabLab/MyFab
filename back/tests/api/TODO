@@ -1,6 +1,5 @@
 Retirer la dépendance à la bdd :
 
-- user/adfs
 - user/authorisation
 - user/login
 - user/logout
