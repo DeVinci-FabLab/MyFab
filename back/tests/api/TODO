@@ -1,6 +1,5 @@
 Retirer la dépendance à la bdd :
 
-- user/logout
 - user/mailTocken
 - user/mailValidation
 - user/password
