@@ -149,7 +149,10 @@ async function getTicketAllFromUser(data) {
     };
   }
   const calcTicketByMaxTicket = dbResCount[1][0].count / maxTicket;
-  const maxPage = Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket ? calcTicketByMaxTicket : Math.trunc(calcTicketByMaxTicket) + 1;
+  const maxPage =
+    Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket
+      ? calcTicketByMaxTicket
+      : Math.trunc(calcTicketByMaxTicket) + 1;
 
   return {
     type: "json",
@@ -293,7 +296,16 @@ async function getTicketAll(data) {
                 OR tp.v_name LIKE CONCAT("%", ?, "%")
                 );`;
 
-  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [inputText, inputText, inputText, inputText, inputText, inputText, inputText, inputText]);
+  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+  ]);
   if (dbResCount[0]) {
     console.log(dbResCount[0]);
     return {
@@ -302,7 +314,10 @@ async function getTicketAll(data) {
     };
   }
   const calcTicketByMaxTicket = dbResCount[1][0].count / maxTicket;
-  const maxPage = Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket ? calcTicketByMaxTicket : Math.trunc(calcTicketByMaxTicket) + 1;
+  const maxPage =
+    Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket
+      ? calcTicketByMaxTicket
+      : Math.trunc(calcTicketByMaxTicket) + 1;
 
   return {
     type: "json",
@@ -427,7 +442,13 @@ async function getTicketById(data) {
             AND gd_status.b_printCompleted = 1
             AND (dt_creationdate BETWEEN CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) < 9)), "/09/01")
             AND CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) + (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) > 9)), "/08/31"));`;
-  const dbResSelectCounterUser = await data.app.executeQuery(data.app.db, querySelectCountUser, [result.idUser, result.id, result.id, result.id, result.id]);
+  const dbResSelectCounterUser = await data.app.executeQuery(data.app.db, querySelectCountUser, [
+    result.idUser,
+    result.id,
+    result.id,
+    result.id,
+    result.id,
+  ]);
   if (dbResSelectCounterUser[0]) {
     console.log(dbResSelectCounterUser[0]);
     return {
@@ -473,7 +494,9 @@ async function getTicketById(data) {
             INNER JOIN gd_ticketprojecttype AS gdtpt ON ltc.v_newValue = gdtpt.i_id
             WHERE i_idTicket = ? AND v_action = 'upd_projType'
             ORDER BY ltc.dt_timeStamp ASC`;
-  const dbResSelectLogUpdProjectType = await data.app.executeQuery(data.app.db, querySelectLogUpdProjectType, [data.params.id]);
+  const dbResSelectLogUpdProjectType = await data.app.executeQuery(data.app.db, querySelectLogUpdProjectType, [
+    data.params.id,
+  ]);
   if (dbResSelectLogUpdProjectType[0]) {
     console.log(dbResSelectLogUpdProjectType[0]);
     return {
@@ -593,7 +616,13 @@ async function getTicketById(data) {
 module.exports.postTicket = postTicket;
 async function postTicket(data) {
   // The body does not have all the necessary field
-  if (!data.body || !data.body.projectType || isNaN(data.body.projectType) || isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) || !data.body.comment) {
+  if (
+    !data.body ||
+    !data.body.projectType ||
+    isNaN(data.body.projectType) ||
+    isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) ||
+    !data.body.comment
+  ) {
     return {
       type: "code",
       code: 400,
@@ -607,7 +636,9 @@ async function postTicket(data) {
     };
   }
   const querySelectProjectType = `SELECT 1 FROM gd_ticketprojecttype WHERE i_id = ?`;
-  const resSelectProjectType = await data.app.executeQuery(data.app.db, querySelectProjectType, [data.body.projectType]);
+  const resSelectProjectType = await data.app.executeQuery(data.app.db, querySelectProjectType, [
+    data.body.projectType,
+  ]);
   if (resSelectProjectType[0]) {
     console.log(resSelectProjectType[0]);
     return {
@@ -623,7 +654,11 @@ async function postTicket(data) {
 
   const queryCreateTicket = `INSERT INTO printstickets (i_idUser, i_projecttype, i_groupNumber, i_priority, i_status)
                             VALUES (?, ?, ?, (SELECT i_id FROM gd_ticketpriority WHERE v_name = 'Normal'), (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert'));`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [userId, data.body.projectType, data.body.groupNumber]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [
+    userId,
+    data.body.projectType,
+    data.body.groupNumber,
+  ]);
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -657,7 +692,12 @@ async function postTicket(data) {
           if (err) throw err;
           const queryInsertFile = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
                                             VALUES (?, ?, ?, ?);`;
-          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsertFile, [userId, lastIdentityRes[1][0].id, file.name, newFileName]);
+          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsertFile, [
+            userId,
+            lastIdentityRes[1][0].id,
+            file.name,
+            newFileName,
+          ]);
           if (resInsertFile[0]) {
             console.log(resInsertFile[0]);
             return {
@@ -674,7 +714,11 @@ async function postTicket(data) {
 
   const queryInsert = `INSERT INTO ticketmessages (i_idUser, i_idTicket, v_content)
                         VALUES (?, ?, ?)`;
-  const resCommentInsert = await data.app.executeQuery(data.app.db, queryInsert, [userId, lastIdentityRes[1][0].id, data.body.comment]);
+  const resCommentInsert = await data.app.executeQuery(data.app.db, queryInsert, [
+    userId,
+    lastIdentityRes[1][0].id,
+    data.body.comment,
+  ]);
   if (resCommentInsert[0]) {
     console.log(resCommentInsert[0]);
     return {
@@ -835,7 +879,14 @@ async function deleteTicketWithId(data) {
 module.exports.putTicketNewProjectType = putTicketNewProjectType;
 async function putTicketNewProjectType(data) {
   // parameters or body not valid
-  if (!data.params || !data.params.id || isNaN(data.params.id) || !data.query || !data.query.projecttype || isNaN(data.query.projecttype)) {
+  if (
+    !data.params ||
+    !data.params.id ||
+    isNaN(data.params.id) ||
+    !data.query ||
+    !data.query.projecttype ||
+    isNaN(data.query.projecttype)
+  ) {
     return {
       type: "code",
       code: 400,
@@ -891,7 +942,11 @@ async function putTicketNewProjectType(data) {
   const queryInsertLog = `INSERT INTO log_ticketschange
             (i_idUser, i_idTicket, v_action, v_newValue)
             VALUES (?, ?, 'upd_projType', ?)`;
-  const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, data.params.id, data.query.projecttype]);
+  const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [
+    userIdAgent,
+    data.params.id,
+    data.query.projecttype,
+  ]);
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -951,7 +1006,14 @@ async function putTicketNewProjectType(data) {
 module.exports.putTicketNewStatus = putTicketNewStatus;
 async function putTicketNewStatus(data) {
   // parameters or body not valid
-  if (!data.params || !data.params.id || isNaN(data.params.id) || !data.query || !data.query.idStatus || isNaN(data.query.idStatus)) {
+  if (
+    !data.params ||
+    !data.params.id ||
+    isNaN(data.params.id) ||
+    !data.query ||
+    !data.query.idStatus ||
+    isNaN(data.query.idStatus)
+  ) {
     return {
       type: "code",
       code: 400,
