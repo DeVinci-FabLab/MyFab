@@ -16,10 +16,28 @@ afterAll(() => {
 
 describe("POST /user/register/", () => {
   test("200", async () => {
+    //Execute
+    let requestNumber = 0;
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, []];
+            case 2:
+              return [null, { affectedRows: 1 }];
+            case 3:
+              return [null, [{ id: 1 }]];
+            case 4:
+              return [null, []];
+            case 5:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       body: {
@@ -38,10 +56,9 @@ describe("POST /user/register/", () => {
   });
 
   test("400noBody", async () => {
+    //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       sendMailFunction: {
@@ -54,10 +71,9 @@ describe("POST /user/register/", () => {
   });
 
   test("400noFirstName", async () => {
+    //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {
@@ -75,10 +91,9 @@ describe("POST /user/register/", () => {
   });
 
   test("400noLastName", async () => {
+    //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {
@@ -96,10 +111,9 @@ describe("POST /user/register/", () => {
   });
 
   test("400noEmail", async () => {
+    //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {
@@ -117,10 +131,9 @@ describe("POST /user/register/", () => {
   });
 
   test("400noPassword", async () => {
+    //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {
@@ -138,10 +151,9 @@ describe("POST /user/register/", () => {
   });
 
   test("400invalidEmail", async () => {
+    //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {
@@ -160,6 +172,7 @@ describe("POST /user/register/", () => {
   });
 
   test("400", async () => {
+    //Execute
     const data = {
       app: {
         db: db,
