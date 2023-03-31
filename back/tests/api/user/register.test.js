@@ -1,18 +1,7 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
-
 function emptyFunction() {
   return io;
 }
 const io = { emit: emptyFunction, to: emptyFunction };
-
-beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
 
 describe("POST /user/register/", () => {
   test("200", async () => {
@@ -171,12 +160,13 @@ describe("POST /user/register/", () => {
     expect(response.type).toBe("code");
   });
 
-  test("400", async () => {
+  test("401", async () => {
     //Execute
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ 1: 1 }]];
+        },
         io,
       },
       body: {

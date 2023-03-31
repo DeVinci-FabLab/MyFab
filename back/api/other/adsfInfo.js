@@ -10,7 +10,9 @@ async function changeOpenMyFab(data) {
       code: 404,
     };
   }
-  const res = fs.existsSync(__dirname + "/../../data/samlResult.json") ? JSON.parse(fs.readFileSync(__dirname + "/../../data/samlResult.json")) : { file: "doesn't exist" };
+  const res = fs.existsSync(__dirname + "/../../data/samlResult.json")
+    ? JSON.parse(fs.readFileSync(__dirname + "/../../data/samlResult.json"))
+    : { file: "doesn't exist" };
 
   return {
     type: "json",

@@ -1,14 +1,3 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
-
-beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("PUT /user/mailValidation/:tocken", () => {
   test("200", async () => {
     //Execute
@@ -16,7 +5,6 @@ describe("PUT /user/mailValidation/:tocken", () => {
     const data = {
       userId: 1,
       app: {
-        db: db,
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
@@ -75,8 +63,9 @@ describe("PUT /user/mailValidation/:tocken", () => {
     const data = {
       userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
       },
       params: {
         tocken: "token",

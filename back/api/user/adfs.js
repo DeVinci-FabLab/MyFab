@@ -123,7 +123,11 @@ async function postLoginADFS(data) {
   }
   /* c8 ignore stop */
 
-  const dbRes = await data.app.executeQuery(data.app.db, "SELECT `i_id` AS 'id', `v_title` AS 'title' FROM `users` WHERE `v_email` = ?;", [email]);
+  const dbRes = await data.app.executeQuery(
+    data.app.db,
+    "SELECT `i_id` AS 'id', `v_title` AS 'title' FROM `users` WHERE `v_email` = ?;",
+    [email]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -208,9 +212,13 @@ async function startApi(app) {
   app.use(passport.initialize());
 
   if (certIsPresent) {
-    app.get("/api/user/login/adfs/", passport.authenticate("saml", { failureRedirect: "/login/fail" }), function (req, res) {
-      res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/`);
-    });
+    app.get(
+      "/api/user/login/adfs/",
+      passport.authenticate("saml", { failureRedirect: "/login/fail" }),
+      function (req, res) {
+        res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/`);
+      }
+    );
   } else {
     app.get("/api/user/login/adfs/", function (req, res) {
       res.redirect(`${process.env.ADFS_FRONT_URL}/auth/?error=true`);
@@ -230,11 +238,15 @@ async function startApi(app) {
     }
   });
 
-  app.post("/api/user/login/adfs/callback", passport.authenticate("saml", { failureRedirect: "/login/fail" }), function (req, res) {
-    const id = makeid(20);
-    pendingUsers[id] = req.session.passport;
-    pendingUsers[id].timestamp = Date.now();
-    res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/${id}`);
-  });
+  app.post(
+    "/api/user/login/adfs/callback",
+    passport.authenticate("saml", { failureRedirect: "/login/fail" }),
+    function (req, res) {
+      const id = makeid(20);
+      pendingUsers[id] = req.session.passport;
+      pendingUsers[id].timestamp = Date.now();
+      res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/${id}`);
+    }
+  );
 }
 /* c8 ignore stop */
