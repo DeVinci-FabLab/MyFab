@@ -10,6 +10,10 @@ jobs:
       - name: Install dependencies
         run: |
           cd back/ && npm i
+      - name: Create .env file
+        run: |
+          echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> back/.env
+          ls -lA back/.env
       - name: Run test
         run: |
           cd back/ && npm test
