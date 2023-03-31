@@ -1,0 +1,33 @@
+name: Test Back-end
+run-name: ${{ github.actor }} push "${{ github.event.head_commit.message }}" 🚀
+on: [push]
+jobs:
+  Test-Back:
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_DATABASE: myfabtest
+          MYSQL_ROOT_PASSWORD: ${{ secrets.RootPassword }}
+          MYSQL_USER: userTest
+          MYSQL_PASSWORD: ${{ secrets.DB_USER_PASSWORD }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          cd back/ && npm i
+      - name: Create .env file
+        run: |
+          echo 'DB_HOST=127.0.0.1' >> back/.env
+          echo 'DB_USER=userTest' >> back/.env
+          echo 'DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
+          echo 'DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}' >> back/.env
+          echo 'DB_DATABASE=myfabtest' >> back/.env
+          ls -lA back/.env
+      - name: Run test
+        run: |
+          cd back/ && npm test
