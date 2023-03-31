@@ -532,8 +532,8 @@ describe("POST /api/ticket/", () => {
   test("200_1file", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-file.stl"));
+      .createReadStream(__dirname + "/../../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-file.stl"));
 
     //wait end copy of file
     await new Promise((resolve) => {
@@ -594,11 +594,11 @@ describe("POST /api/ticket/", () => {
   test("200_multiplesFiles", async () => {
     //Prepare
     const file1Stream = await fs
-      .createReadStream(__dirname + "../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "../../../../tmp/test1-file.stl"));
+      .createReadStream(__dirname + "/../../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test1-file.stl"));
     const file2Stream = await fs
-      .createReadStream(__dirname + "../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "../../../../tmp/test2-file.stl"));
+      .createReadStream(__dirname + "/../../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test2-file.stl"));
 
     await new Promise((resolve) => {
       let nbStreamFinished = 0;
