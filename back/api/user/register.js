@@ -2,7 +2,9 @@ const sha256 = require("sha256");
 const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
-    .match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 };
 
 function makeid(length) {
@@ -51,7 +53,14 @@ function makeid(length) {
 module.exports.postRegister = postRegister;
 async function postRegister(data) {
   // The body does not have all the necessary field
-  if (!data.body || !data.body.firstName || !data.body.lastName || !data.body.email || !data.body.password || validateEmail(data.body.email) === null) {
+  if (
+    !data.body ||
+    !data.body.firstName ||
+    !data.body.lastName ||
+    !data.body.email ||
+    !data.body.password ||
+    validateEmail(data.body.email) === null
+  ) {
     return {
       type: "code",
       code: 400,
@@ -125,7 +134,11 @@ async function postRegister(data) {
 
   const queryInsertTocken = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
                             VALUES (?, ?, ?);`;
-  const resInsertTocken = await data.app.executeQuery(data.app.db, queryInsertTocken, [idNewUser, tocken, sendMail ? "1" : "0"]);
+  const resInsertTocken = await data.app.executeQuery(data.app.db, queryInsertTocken, [
+    idNewUser,
+    tocken,
+    sendMail ? "1" : "0",
+  ]);
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
     return {

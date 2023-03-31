@@ -70,7 +70,11 @@ async function putPasswordMe(data) {
                         SET v_password = ?
                         WHERE i_id = ?
                         AND v_password = ?;`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [sha256(data.body.newPassword), userTarget, sha256(data.body.actualPassword)]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+    sha256(data.body.newPassword),
+    userTarget,
+    sha256(data.body.actualPassword),
+  ]);
   // Error with the sql request
   if (dbRes[0]) {
     console.log(dbRes[0]);
@@ -272,7 +276,11 @@ async function postForgottenPassword(data) {
   const sendMail = data.body.sendMail == null ? true : data.body.sendMail;
   const queryInsert = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
                         VALUES (?, ?, ?);`;
-  const resInsertTocken = await data.app.executeQuery(data.app.db, queryInsert, [idNewUser, tocken, sendMail ? "1" : "0"]);
+  const resInsertTocken = await data.app.executeQuery(data.app.db, queryInsert, [
+    idNewUser,
+    tocken,
+    sendMail ? "1" : "0",
+  ]);
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
     return {

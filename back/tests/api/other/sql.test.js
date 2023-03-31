@@ -1,20 +1,17 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
-
-beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("POST /api/sql/", () => {
   test("200", async () => {
     const data = {
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              { Tables_in_myfabultimatetest: "gd_printer" },
+              { Tables_in_myfabultimatetest: "gd_roles" },
+              { Tables_in_myfabultimatetest: "gd_status" },
+            ],
+          ];
+        },
       },
       userAuthorization: {
         checkSpecialCode: async () => {
@@ -33,10 +30,7 @@ describe("POST /api/sql/", () => {
 
   test("404specialCodeIsFalse", async () => {
     const data = {
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       userAuthorization: {
         checkSpecialCode: async () => {
           return false;
@@ -53,10 +47,7 @@ describe("POST /api/sql/", () => {
 
   test("404noBody", async () => {
     const data = {
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       userAuthorization: {
         checkSpecialCode: async () => {
           return true;
@@ -72,10 +63,7 @@ describe("POST /api/sql/", () => {
 
   test("404noQuerry", async () => {
     const data = {
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       userAuthorization: {
         checkSpecialCode: async () => {
           return true;

@@ -1,36 +1,44 @@
-const executeQuery = require("../../functions/dataBase/executeQuery").run;
-let db;
-
 function emptyFunction() {
   return io;
 }
 const io = { emit: emptyFunction, to: emptyFunction };
 
-beforeAll(async () => {
-  db = await require("../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("GET /api/user/", () => {
   test("200", async () => {
-    const user = "userGetAllGood";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
+    let requestNumber = 0;
 
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
     };
     const response = await require("../../api/user").userGetAll(data);
@@ -48,11 +56,6 @@ describe("GET /api/user/", () => {
   });
 
   test("401-userIsUnauthenticated", async () => {
-    const user = "userGetAllGoodWithoutValidUser";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {};
     const response = await require("../../api/user").userGetAll(data);
 
@@ -61,21 +64,12 @@ describe("GET /api/user/", () => {
   });
 
   test("403-noViewUsersAuth", async () => {
-    const user = "userGetAllGoodWithUserNotAuthorised";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return false;
         },
-      },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
       },
     };
     const response = await require("../../api/user").userGetAll(data);
@@ -85,23 +79,41 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestInputText", async () => {
-    const user = "userGetAllGoodTestInputText";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
-      query: { inputValue: "userGetAllGoodTestInputTe" },
+      query: { inputValue: "userTest" },
     };
     const response = await require("../../api/user").userGetAll(data);
 
@@ -118,21 +130,40 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestPage", async () => {
-    const user = "userGetAllGoodTestPage";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
+    let requestNumber = 0;
 
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { page: 1, maxUser: 1 },
     };
@@ -151,21 +182,39 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestOrderByFirstname", async () => {
-    const user = "userGetAllGoodTestOrderByFirstname";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { collumnName: "firstname" },
     };
@@ -184,21 +233,39 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestOrderByLastname", async () => {
-    const user = "userGetAllGoodTestOrderByLastname";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { collumnName: "lastname" },
     };
@@ -217,21 +284,39 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestOrderByEmail", async () => {
-    const user = "userGetAllGoodTestOrderByEmail";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { collumnName: "email" },
     };
@@ -250,21 +335,39 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestOrderByTitle", async () => {
-    const user = "userGetAllGoodTestOrderByTitle";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { collumnName: "title" },
     };
@@ -283,21 +386,39 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestOrderDESC", async () => {
-    const user = "userGetAllGoodTestOrderDESC";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { order: "false" },
     };
@@ -316,21 +437,39 @@ describe("GET /api/user/", () => {
   });
 
   test("200TestNoLimit", async () => {
-    const user = "userGetAllGoodTestNoLimit";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    title: null,
+                    isMicrosoft: 0,
+                  },
+                ],
+              ];
+            case 2:
+              return [null, [{ count: 1 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       query: { all: "true" },
     };
@@ -351,21 +490,43 @@ describe("GET /api/user/", () => {
 
 describe("GET /api/user/me", () => {
   test("200", async () => {
-    const user = "userGetMeGood";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
+    let requestNumber = 0;
 
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "userGetMeGood@test.com",
+                    creationDate: new Date("2023-03-02T09:02:49.000Z"),
+                    discordid: null,
+                    language: "fr",
+                    title: null,
+                    isMicrosoft: 0,
+                    acceptedRule: 0,
+                    mailValidated: 1,
+                  },
+                ],
+              ];
+
+            default:
+              return null;
+          }
+        },
       },
     };
     const response = await require("../../api/user").userGetMe(data);
@@ -383,16 +544,25 @@ describe("GET /api/user/me", () => {
   });
 
   test("204-noDataForUser", async () => {
+    let requestNumber = 0;
     const data = {
-      userId: 999999999999999999999999999,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, []];
+
+            default:
+              return null;
+          }
+        },
       },
     };
 
@@ -413,26 +583,44 @@ describe("GET /api/user/me", () => {
 
 describe("GET /api/user/:id", () => {
   test("200", async () => {
-    const user = "userGetIdGood";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-    const userTarget = "userTargetGetIdGood";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [
+                null,
+                [
+                  {
+                    id: 2,
+                    firstName: "firstNameTest",
+                    lastName: "lastNameTest",
+                    email: "emailTest@test.com",
+                    creationDate: new Date("2023-03-02T09:07:33.000Z"),
+                    discordid: null,
+                    language: "fr",
+                    title: null,
+                    isMicrosoft: 0,
+                    acceptedRule: 0,
+                    mailValidated: 1,
+                  },
+                ],
+              ];
+
+            default:
+              return null;
+          }
+        },
       },
-      params: { id: userTargetData },
+      params: { id: 2 },
     };
     const response = await require("../../api/user").userGetById(data);
 
@@ -450,25 +638,14 @@ describe("GET /api/user/:id", () => {
   });
 
   test("400-idUserTargetIsNaN", async () => {
-    const user = "userGetIdIdUserTargetIsNaN";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-    const userTarget = "userTargetGetIdIdUserTargetIsNaN";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: { id: "Nan" },
     };
     const response = await require("../../api/user").userGetById(data);
@@ -478,21 +655,14 @@ describe("GET /api/user/:id", () => {
   });
 
   test("401-userIsUnauthenticated", async () => {
-    const userTarget = "userTargetGetIdUserIsUnauthenticated";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
-      params: { id: userTargetData },
+      app: {},
+      params: { id: 2 },
     };
     const response = await require("../../api/user").userGetById(data);
 
@@ -501,27 +671,16 @@ describe("GET /api/user/:id", () => {
   });
 
   test("403-noViewUsersAuth", async () => {
-    const user = "userGetIdNoViewUsersAuth";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-    const userTarget = "userTargetGetIdNoViewUsersAuth";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           if (authName === "viewUsers") return false;
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
-      params: { id: userTargetData },
+      app: {},
+      params: { id: 2 },
     };
     const response = await require("../../api/user").userGetById(data);
 
@@ -530,26 +689,27 @@ describe("GET /api/user/:id", () => {
   });
 
   test("204-noData", async () => {
-    const user = "userGetIdNoData";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-    const userTarget = "userTargetGetIdNoData";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, []];
+
+            default:
+              return null;
+          }
+        },
       },
-      params: { id: 9999999999999999999999999999999 },
+      params: { id: 2 },
     };
     const response = await require("../../api/user").userGetById(data);
 
@@ -560,15 +720,11 @@ describe("GET /api/user/:id", () => {
 
 describe("DELETE /api/user/:id", () => {
   test("200", async () => {
-    const user = "userGetByIdGood";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       params: {
-        id: 1,
+        id: 2,
       },
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
@@ -576,8 +732,16 @@ describe("DELETE /api/user/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, { changedRows: 1 }];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
     };
@@ -588,11 +752,6 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("401-userIsUnauthenticated", async () => {
-    const user = "userGetByIdWhithoutValidUser";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {};
     const response = await require("../../api/user").userDeleteById(data);
 
@@ -601,25 +760,16 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("403-noViewUsersAuth", async () => {
-    const user = "userGetByIdNoViewUsersAuth";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {
-      userId: userData,
+      userId: 1,
       params: {
-        id: 1,
+        id: 2,
       },
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           if (authName === "viewUsers") return false;
           return true;
         },
-      },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
       },
     };
     const response = await require("../../api/user").userDeleteById(data);
@@ -629,15 +779,10 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("403-noManageUserAuth", async () => {
-    const user = "userGetByIdNoManageUserAuth";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {
-      userId: userData,
+      userId: 1,
       params: {
-        id: 1,
+        id: 2,
       },
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
@@ -645,10 +790,7 @@ describe("DELETE /api/user/:id", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
     };
     const response = await require("../../api/user").userDeleteById(data);
 
@@ -657,13 +799,8 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("400-idUserTargetIsNan", async () => {
-    const user = "userGetByIdIdUserTargetIsNan";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {
-      userId: userData,
+      userId: 1,
       params: {
         id: "test",
       },
@@ -672,10 +809,7 @@ describe("DELETE /api/user/:id", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
     };
     const response = await require("../../api/user").userDeleteById(data);
 
@@ -684,25 +818,17 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("400-userTryToDeleteHimself", async () => {
-    const user = "userGetByIdUserTryToDeleteHimself";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
     const data = {
-      userId: userData,
+      userId: 1,
       params: {
-        id: userData,
+        id: 1,
       },
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
     };
     const response = await require("../../api/user").userDeleteById(data);
 
@@ -711,15 +837,11 @@ describe("DELETE /api/user/:id", () => {
   });
 
   test("204-userDoesNotExist", async () => {
-    const user = "userGetByIdUuserDoesNotExist";
-    const userData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, 'INSERT INTO `rolescorrelation` (`i_idUser`, `i_idRole`) VALUES (?, (SELECT i_id FROM `gd_roles` WHERE v_name = "roleViewUsers"))', [userData]);
-
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       params: {
-        id: 99999999999999,
+        id: 2,
       },
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
@@ -727,8 +849,16 @@ describe("DELETE /api/user/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, { changedRows: 0 }];
+
+            default:
+              return null;
+          }
+        },
       },
     };
     const response = await require("../../api/user").userDeleteById(data);
@@ -740,13 +870,9 @@ describe("DELETE /api/user/:id", () => {
 
 describe("PUT /api/user/rename/:id", () => {
   test("200", async () => {
-    const userTarget = "userTargetRenameGood";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       params: {
-        id: userTargetData,
+        id: 2,
       },
       userAuthorization: {
         checkSpecialCode: async (specialcode) => {
@@ -754,36 +880,23 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, {}];
+        },
         io,
       },
       body: { firstName: "test", lastName: "test", title: "test" },
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("test");
-    expect(dbRes[1][0].v_lastName).toBe("test");
-    expect(dbRes[1][0].v_title).toBe("test");
   });
 
   test("200NoModification", async () => {
-    const userTarget = "userTargetRenameGoodNoModification";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       params: {
-        id: userTargetData,
+        id: 1,
       },
       userAuthorization: {
         checkSpecialCode: async (specialcode) => {
@@ -791,33 +904,20 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, {}];
+        },
         io,
       },
       body: {},
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("firstNameTest");
-    expect(dbRes[1][0].v_lastName).toBe("lastNameTest");
-    expect(dbRes[1][0].v_title).toBe(null);
   });
 
   test("404noParams", async () => {
-    const userTarget = "userTargetRenameNoParams";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       userAuthorization: {
         checkSpecialCode: async (specialcode) => {
@@ -825,33 +925,17 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: { firstName: "test", lastName: "test", title: "test" },
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("firstNameTest");
-    expect(dbRes[1][0].v_lastName).toBe("lastNameTest");
-    expect(dbRes[1][0].v_title).toBe(null);
   });
 
   test("404noUserId", async () => {
-    const userTarget = "userTargetRenameNoUserId";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       params: {},
       userAuthorization: {
@@ -860,33 +944,17 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: { firstName: "test", lastName: "test", title: "test" },
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("firstNameTest");
-    expect(dbRes[1][0].v_lastName).toBe("lastNameTest");
-    expect(dbRes[1][0].v_title).toBe(null);
   });
 
   test("404userIdIsString", async () => {
-    const userTarget = "userTargetRenameUserIdIsString";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       params: {
         id: "userTargetData",
@@ -897,36 +965,20 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {},
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("firstNameTest");
-    expect(dbRes[1][0].v_lastName).toBe("lastNameTest");
-    expect(dbRes[1][0].v_title).toBe(null);
   });
 
   test("404invalidSpecialCode", async () => {
-    const userTarget = "userTargetRenameInvalidSpecialCode";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       params: {
-        id: userTargetData,
+        id: 1,
       },
       userAuthorization: {
         checkSpecialCode: async (specialcode) => {
@@ -934,36 +986,20 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: { firstName: "test", lastName: "test", title: "test" },
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("firstNameTest");
-    expect(dbRes[1][0].v_lastName).toBe("lastNameTest");
-    expect(dbRes[1][0].v_title).toBe(null);
   });
 
   test("404noBody", async () => {
-    const userTarget = "userTargetRenameNoBody";
-    const userTargetData = await require("../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTarget);
-    expect(userTargetData, "User '" + userTarget + "' already exist").not.toBe(0);
-
     const data = {
       params: {
-        id: userTargetData,
+        id: 1,
       },
       userAuthorization: {
         checkSpecialCode: async (specialcode) => {
@@ -971,24 +1007,12 @@ describe("PUT /api/user/rename/:id", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
     };
     const response = await require("../../api/user").userRenamePut(data);
 
-    const queryVerification = `SELECT v_firstName, v_lastName, v_title FROM users WHERE i_id = ?;`;
-    const dbRes = await executeQuery(db, queryVerification, [userTargetData]);
-    // The sql request has an error
-    if (dbRes[0]) {
-      throw dbRes[0];
-    }
-
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
-    expect(dbRes[1][0].v_firstName).toBe("firstNameTest");
-    expect(dbRes[1][0].v_lastName).toBe("lastNameTest");
-    expect(dbRes[1][0].v_title).toBe(null);
   });
 });

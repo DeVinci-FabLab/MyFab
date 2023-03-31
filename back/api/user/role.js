@@ -305,7 +305,13 @@ async function getRolesForActualUser(data) {
 module.exports.postAddRoleForUser = postAddRoleForUser;
 async function postAddRoleForUser(data) {
   // The body does not have all the necessary field
-  if (!data.params || !data.params.idUser || !data.params.idRole || isNaN(data.params.idUser) || isNaN(data.params.idRole)) {
+  if (
+    !data.params ||
+    !data.params.idUser ||
+    !data.params.idRole ||
+    isNaN(data.params.idUser) ||
+    isNaN(data.params.idRole)
+  ) {
     return {
       type: "code",
       code: 400,
@@ -387,7 +393,11 @@ async function postAddRoleForUser(data) {
     };
   }
   if (resIsProtected[1][0].isProtected) {
-    const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "changeUserProtectedRole");
+    const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "changeUserProtectedRole"
+    );
     if (!authChangeProtectedRoleResult) {
       return {
         type: "code",
@@ -398,7 +408,10 @@ async function postAddRoleForUser(data) {
 
   const queryInsertCorrelation = `INSERT INTO rolescorrelation (i_idUser, i_idRole)
                                      VALUES (?, ?);`;
-  const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryInsertCorrelation, [userId, roleId]);
+  const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryInsertCorrelation, [
+    userId,
+    roleId,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (resInsertNewRoleCorrelation[0] || resInsertNewRoleCorrelation[1].affectedRows !== 1) {
@@ -472,7 +485,13 @@ async function postAddRoleForUser(data) {
 module.exports.deleteRemoveRoleForUser = deleteRemoveRoleForUser;
 async function deleteRemoveRoleForUser(data) {
   // The body does not have all the necessary field
-  if (!data.params || !data.params.idUser || !data.params.idRole || isNaN(data.params.idUser) || isNaN(data.params.idRole)) {
+  if (
+    !data.params ||
+    !data.params.idUser ||
+    !data.params.idRole ||
+    isNaN(data.params.idUser) ||
+    isNaN(data.params.idRole)
+  ) {
     return {
       type: "code",
       code: 400,
@@ -514,7 +533,10 @@ async function deleteRemoveRoleForUser(data) {
                                      FROM rolescorrelation
                                      WHERE i_idUser = ?
                                      AND i_idRole = ?`;
-  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelectIfCorrelation, [userId, roleId]);
+  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelectIfCorrelation, [
+    userId,
+    roleId,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
@@ -548,7 +570,11 @@ async function deleteRemoveRoleForUser(data) {
   /* c8 ignore stop */
 
   if (resIsProtected[1][0].isProtected) {
-    const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "changeUserProtectedRole");
+    const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "changeUserProtectedRole"
+    );
     if (!authChangeProtectedRoleResult) {
       return {
         type: "code",
@@ -559,7 +585,9 @@ async function deleteRemoveRoleForUser(data) {
 
   const queryDelete = `DELETE FROM rolescorrelation
                          WHERE i_id = ?`;
-  const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryDelete, [resTestIfCorrelationExist[1][0].id]);
+  const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryDelete, [
+    resTestIfCorrelationExist[1][0].id,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (resInsertNewRoleCorrelation[0] || resInsertNewRoleCorrelation[1].affectedRows !== 1) {

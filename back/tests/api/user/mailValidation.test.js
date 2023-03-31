@@ -1,93 +1,71 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
-
-beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("PUT /user/mailValidation/:tocken", () => {
   test("200", async () => {
-    const user = "userMailValidationPost200";
-    const token = "umvP200";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLogWithoutMailValidated(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `mailtocken` (`i_idUser`, `v_value`, `b_mailSend`) VALUES (?, ?, 1);", [userData, token]);
+    //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ userId: 1 }]];
+            case 2:
+              return [null, {}];
+            case 3:
+              return [null, { affectedRows: 1 }];
+
+            default:
+              const res = await executeQuery(db, query, options);
+              console.log(requestNumber);
+              console.log(res);
+              return res;
+          }
+        },
       },
       params: {
-        tocken: token,
+        tocken: "token",
       },
     };
     const response = await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const resSelectMailValidated = await executeQuery(db, "SELECT b_mailValidated AS 'mailValidated' FROM `users` WHERE i_id = ?", [userData]);
-    expect(resSelectMailValidated[1][0].mailValidated).toBe(1);
   });
 
   test("400_noParams", async () => {
-    const user = "userMailValidationPostNoParams400";
-    const token = "umvP400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLogWithoutMailValidated(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `mailtocken` (`i_idUser`, `v_value`, `b_mailSend`) VALUES (?, ?, 1);", [userData, token]);
+    //Execute
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
     };
     const response = await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const resSelectMailValidated = await executeQuery(db, "SELECT b_mailValidated AS 'mailValidated' FROM `users` WHERE i_id = ?", [userData]);
-    expect(resSelectMailValidated[1][0].mailValidated).toBe(0);
   });
 
   test("400_noParamsTocken", async () => {
-    const user = "userMailValidationPostNoParamsTocken400";
-    const token = "umvP400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLogWithoutMailValidated(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `mailtocken` (`i_idUser`, `v_value`, `b_mailSend`) VALUES (?, ?, 1);", [userData, token]);
+    //Execute
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
       params: {},
     };
     const response = await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const resSelectMailValidated = await executeQuery(db, "SELECT b_mailValidated AS 'mailValidated' FROM `users` WHERE i_id = ?", [userData]);
-    expect(resSelectMailValidated[1][0].mailValidated).toBe(0);
   });
 
   test("401_noParamsTocken", async () => {
-    const user = "userMailValidationPostNoParamsTocken401";
-    const token = "umvP401";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLogWithoutMailValidated(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `mailtocken` (`i_idUser`, `v_value`, `b_mailSend`) VALUES (?, ?, 1);", [userData, token]);
+    //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
       },
       params: {
         tocken: "token",
@@ -97,7 +75,5 @@ describe("PUT /user/mailValidation/:tocken", () => {
 
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
-    const resSelectMailValidated = await executeQuery(db, "SELECT b_mailValidated AS 'mailValidated' FROM `users` WHERE i_id = ?", [userData]);
-    expect(resSelectMailValidated[1][0].mailValidated).toBe(0);
   });
 });

@@ -169,7 +169,15 @@ async function userGetAll(data) {
                     )
                 ORDER BY ${orderCollumn} ${order}
                 ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [inputText, inputText, inputText, inputText, inputText, maxUser, maxUser * page]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    maxUser,
+    maxUser * page,
+  ]);
   /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
@@ -191,7 +199,15 @@ async function userGetAll(data) {
                     OR v_email LIKE CONCAT("%", ?, "%")
                     );`;
 
-  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [inputText, inputText, inputText, inputText, inputText, maxUser, maxUser * page]);
+  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    maxUser,
+    maxUser * page,
+  ]);
   /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
@@ -202,7 +218,8 @@ async function userGetAll(data) {
   }
   /* c8 ignore stop */
   const calcUserByMaxUser = dbResCount[1][0].count / maxUser;
-  const maxPage = Math.trunc(calcUserByMaxUser) === calcUserByMaxUser ? calcUserByMaxUser : Math.trunc(calcUserByMaxUser) + 1;
+  const maxPage =
+    Math.trunc(calcUserByMaxUser) === calcUserByMaxUser ? calcUserByMaxUser : Math.trunc(calcUserByMaxUser) + 1;
 
   return {
     type: "json",

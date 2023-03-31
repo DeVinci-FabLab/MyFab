@@ -231,7 +231,10 @@ async function ticketFileGetOneFile(data) {
       type: "download",
       code: 200,
       path: __dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName,
-      fileName: idTicketUser == userIdAgent ? resGetUserTicket[1][0].fileName : resGetUserTicket[1][0].projectTypeName + "-" + idFile + "_" + resGetUserTicket[1][0].fileName,
+      fileName:
+        idTicketUser == userIdAgent
+          ? resGetUserTicket[1][0].fileName
+          : resGetUserTicket[1][0].projectTypeName + "-" + idFile + "_" + resGetUserTicket[1][0].fileName,
     };
   } else {
     return {
@@ -371,7 +374,12 @@ async function ticketFilePost(data) {
           /* c8 ignore stop */
           const queryInsert = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
                                         VALUES (?, ?, ?, ?);`;
-          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsert, [userIdAgent, idTicket, file.name, newFileName]);
+          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsert, [
+            userIdAgent,
+            idTicket,
+            file.name,
+            newFileName,
+          ]);
           /* c8 ignore start */
           if (resInsertFile[0]) {
             console.log(resInsertFile[0]);
@@ -499,7 +507,10 @@ async function ticketFilePut(data) {
                         SET v_comment = ?
                         ${data.body.idprinter !== undefined ? ", `i_idprinter` = ?" : ""}
                         WHERE i_id = ?`;
-  const options = data.body.idprinter !== undefined ? [data.body.comment, data.body.idprinter, idTicket] : [data.body.comment, idTicket];
+  const options =
+    data.body.idprinter !== undefined
+      ? [data.body.comment, data.body.idprinter, idTicket]
+      : [data.body.comment, idTicket];
   const resUpdateFile = await data.app.executeQuery(data.app.db, queryUpdate, options);
   /* c8 ignore start */
   if (resUpdateFile[0]) {
