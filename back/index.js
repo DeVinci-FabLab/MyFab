@@ -81,21 +81,7 @@ require("./functions/apiActions").startApi(app);
 require("./functions/socket-io").connection(app);
 
 //prepare folders
-if (!fs.existsSync(__dirname + "/tmp")) fs.mkdirSync(__dirname + "/tmp");
-fs.readdir(__dirname + "/tmp", (err, files) => {
-  if (err) throw err;
-  for (const file of files) {
-    fs.unlinkSync(__dirname + "/tmp/" + file);
-  }
-});
-
-//Create files/folders if not exist
-if (!fs.existsSync(__dirname + "/data")) fs.mkdirSync(__dirname + "/data");
-if (!fs.existsSync(__dirname + "/data/files")) fs.mkdirSync(__dirname + "/data/files");
-if (!fs.existsSync(__dirname + "/data/files/image")) fs.mkdirSync(__dirname + "/data/files/image");
-if (!fs.existsSync(__dirname + "/data/files/stl")) fs.mkdirSync(__dirname + "/data/files/stl");
-if (!fs.existsSync(__dirname + "/data/serviceData.json")) fs.writeFileSync(__dirname + "/data/serviceData.json", JSON.stringify({ myFabOpen: true }));
-if (fs.existsSync(__dirname + "/data/samlResult.json")) fs.unlinkSync(__dirname + "/data/samlResult.json"); //DELETE THIS
+require("./functions/prepareFolders").prepareFolders();
 
 async function start() {
   app.db = await require("./functions/dataBase/createConnection").open();
@@ -105,7 +91,8 @@ async function start() {
   server.listen(port);
   console.log();
   console.log("Server is now listening port " + port);
-  if (process.env.SHOWSWAGGER === "true") console.log("Swagger documentation available here : " + process.env.API + "/api-docs");
+  if (process.env.SHOWSWAGGER === "true")
+    console.log("Swagger documentation available here : " + process.env.API + "/api-docs");
 
   fs.readdirSync(__dirname + "/functions/cron/").forEach(async (file) => {
     const cron = require(__dirname + "/functions/cron/" + file);
