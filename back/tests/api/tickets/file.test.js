@@ -519,8 +519,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("200_1file", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-200_1file"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-200_1file"));
 
     //wait end copy of file
     await new Promise((resolve) => {
@@ -576,8 +576,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("200_multiplesFiles", async () => {
     //Prepare
     const file1Stream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test1-200_multiplesFiles"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test1-200_multiplesFiles"));
     //wait end copy of file
     await new Promise((resolve) => {
       file1Stream.on("finish", () => {
@@ -585,8 +585,8 @@ describe("POST /api/ticket/:id/file/", () => {
       });
     });
     const file2Stream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test2-200_multiplesFiles"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test2-200_multiplesFiles"));
     //wait end copy of file
     await new Promise((resolve) => {
       file2Stream.on("finish", () => {
@@ -649,8 +649,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("200_myFabAgent", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-200_myFabAgent"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-200_myFabAgent"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
@@ -705,8 +705,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("400noParams", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-400noParams"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400noParams"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
@@ -745,8 +745,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("400noId", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-400noId"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400noId"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
@@ -786,8 +786,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("400idIsNan", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-400idIsNan"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400idIsNan"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
@@ -829,8 +829,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("401unauthenticatedUser", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-401unauthenticatedUser"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-401unauthenticatedUser"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
@@ -871,8 +871,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("400unknownTicket", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-400unknownTicket"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400unknownTicket"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
@@ -917,8 +917,8 @@ describe("POST /api/ticket/:id/file/", () => {
   test("403unauthorizedUser", async () => {
     //Prepare
     const fileStream = await fs
-      .createReadStream(__dirname + "/../../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../../tmp/test-403unauthorizedUser"));
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-403unauthorizedUser"));
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
