@@ -20,7 +20,19 @@ const colors = {
 };
 const fabColor = ["D51D65", "F5841D", "2CA0BB", "CDCDCD"];
 
-const GestionTicket = ({ params, user, role, ticket, file, message, authorizations, id, status, projectType, printers }) => {
+const GestionTicket = ({
+  params,
+  user,
+  role,
+  ticket,
+  file,
+  message,
+  authorizations,
+  id,
+  status,
+  projectType,
+  printers,
+}) => {
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
@@ -66,22 +78,31 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
 
     await axios({
       method: "PUT",
-      url: process.env.API + "/api/ticket/" + params.id + "/" + (paramType === "status" ? "setStatus" : "setProjecttype") + "/",
+      url:
+        process.env.API +
+        "/api/ticket/" +
+        params.id +
+        "/" +
+        (paramType === "status" ? "setStatus" : "setProjecttype") +
+        "/",
       params: data,
       headers: {
         dvflCookie: cookie,
       },
     })
       .then(() => {
-        toast.success(paramType === "status" ? "Le status du ticket a été mis à jour" : "Le type de projet à été modifié", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success(
+          paramType === "status" ? "Le status du ticket a été mis à jour" : "Le type de projet à été modifié",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
         realodPage();
       })
       .catch((e) => {
@@ -268,7 +289,10 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                                       <span className="ml-2 flex-1 w-0 truncate">{r.filename}</span>
                                     </div>
                                     <div className="ml-4 flex-shrink-0">
-                                      <button onClick={() => download(r.id, r.filename)} className="font-medium text-indigo-600 hover:text-indigo-500">
+                                      <button
+                                        onClick={() => download(r.id, r.filename)}
+                                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                                      >
                                         Télécharger
                                       </button>
                                     </div>
@@ -298,7 +322,8 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                                   {authorizations.myFabAgent ? (
                                     <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm">
                                       <p className="text-ellipsis overflow-hidden">
-                                        <span className="font-medium">Impression lancé sur</span>: {r.printerName ? r.printerName : "Non lancé"}
+                                        <span className="font-medium">Impression lancé sur</span>:{" "}
+                                        {r.printerName ? r.printerName : "Non lancé"}
                                       </p>
                                     </div>
                                   ) : (
@@ -351,7 +376,9 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                               >
                                 Envoyer mon commentaire
                               </button>
-                              <p className="mt-2 text-sm text-gray-500">Vous pouvez communiquer avec les membres du FabLab via ce formulaire.</p>
+                              <p className="mt-2 text-sm text-gray-500">
+                                Vous pouvez communiquer avec les membres du FabLab via ce formulaire.
+                              </p>
                             </div>
                           </ul>
                         </dd>
@@ -363,7 +390,9 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
                   <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                     <div className="px-4 py-5 sm:px-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">Détails de la demande d'impression</h3>
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Détails de la demande d'impression
+                      </h3>
                       <p className="mt-1 max-w-2xl text-sm text-gray-500">Ticket n° {ticket.id}</p>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
@@ -372,7 +401,9 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           <dt className="text-sm font-medium text-gray-500">Utilisateur</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>
-                              {ticket.userFirstName + " " + (ticket.userLastName ? ticket.userLastName : "undefined").toString().toUpperCase()}
+                              {ticket.userFirstName +
+                                " " +
+                                (ticket.userLastName ? ticket.userLastName : "undefined").toString().toUpperCase()}
                               <p className="mt-1 max-w-2xl text-sm text-gray-500">{user.title || "Ancien compte"}</p>
                             </div>
                             {authorizations.myFabAgent ? (
@@ -392,7 +423,8 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           {authorizations.myFabAgent ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
-                                Cet utilisateur a {ticket.ticketCountUser} ticket{ticket.ticketCountUser > 1 ? "s" : ""} réalisé{ticket.ticketCountUser > 1 ? "s" : ""} cette année
+                                Cet utilisateur a {ticket.ticketCountUser} ticket{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
+                                réalisé{ticket.ticketCountUser > 1 ? "s" : ""} cette année
                               </div>
                             </dd>
                           ) : (
@@ -401,12 +433,15 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500">Numéro de groupe</dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">{ticket.groupNumber}</dd>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                            {ticket.groupNumber}
+                          </dd>
 
                           {authorizations.myFabAgent ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
-                                Ce groupe a {ticket.ticketCountGroup} ticket{ticket.ticketCountGroup > 1 ? "s" : ""} réalisé{ticket.ticketCountGroup > 1 ? "s" : ""} cette année
+                                Ce groupe a {ticket.ticketCountGroup} ticket{ticket.ticketCountGroup > 1 ? "s" : ""}{" "}
+                                réalisé{ticket.ticketCountGroup > 1 ? "s" : ""} cette année
                               </div>
                             </dd>
                           ) : (
@@ -468,7 +503,13 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">Priorité</dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full ${colors[ticket.priorityColor]}`}>{ticket.priorityName}</div>
+                              <div
+                                className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full ${
+                                  colors[ticket.priorityColor]
+                                }`}
+                              >
+                                {ticket.priorityName}
+                              </div>
                             </dd>
                           </div>
                         ) : (
@@ -647,14 +688,18 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                   <dl className="sm:divide-y sm:divide-gray-200">
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Nom et prénom</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.firstName + " " + user.lastName.toString().toUpperCase()}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        {user.firstName + " " + user.lastName.toString().toUpperCase()}
+                      </dd>
                       <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Ecole et année</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{ticket.title || "Ancien compte"}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        {ticket.title || "Ancien compte"}
+                      </dd>
                     </div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Adresse e-mail</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{ticket.email}</dd>
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Type de preojet</dt>
+                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Type de projet</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{ticket.projectType}</dd>
                     </div>
                   </dl>
@@ -709,7 +754,11 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                      {paramType === "cancel" ? <p>Annulation de la demande</p> : <p>Changer le {paramType === "status" ? "status" : "type"} du ticket</p>}
+                      {paramType === "cancel" ? (
+                        <p>Annulation de la demande</p>
+                      ) : (
+                        <p>Changer le {paramType === "status" ? "status" : "type"} du ticket</p>
+                      )}
                     </Dialog.Title>
                     {paramType === "cancel" ? (
                       <div>
