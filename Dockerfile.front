@@ -1,12 +1,23 @@
-FROM node:16.19.0
+FROM node:lts as dependencies
 WORKDIR /my-project
-COPY ./front/package*.json ./
-RUN npm i -g next
-RUN npm install
+COPY ./front/package.json ./
+RUN npm install --force
+
+FROM node:lts as builder
+WORKDIR /my-project
 COPY ./front/ .
-COPY .env .env.local
-RUN next build
-ENV NODE_ENV=production
+COPY --from=dependencies /my-project/node_modules ./node_modules
+RUN npm run build
+
+FROM node:lts as runner
+WORKDIR /my-project
+ENV NODE_ENV production
+COPY --from=builder /my-project/next.config.js ./
+COPY --from=builder /my-project/.env ./
+COPY --from=builder /my-project/public ./public
+COPY --from=builder /my-project/.next ./.next
+COPY --from=builder /my-project/node_modules ./node_modules
+COPY --from=builder /my-project/package.json ./package.json
 
 EXPOSE 3000
 CMD ["npm", "run", "start"]
