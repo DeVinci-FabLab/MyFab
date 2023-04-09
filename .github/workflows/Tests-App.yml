@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          cd back/ && npm i
+          cd back/ && npm install
       - name: Create .env file
         run: |
           echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> back/.env
@@ -17,3 +17,15 @@ jobs:
       - name: Run test
         run: |
           cd back/ && export NODE_OPTIONS=--no-experimental-fetch && npm test
+
+  Test-Front:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          cd front/ && npm install
+      - name: Run build
+        run: |
+          cd front/ && npm run build
