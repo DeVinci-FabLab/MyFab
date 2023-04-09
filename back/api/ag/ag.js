@@ -55,6 +55,8 @@ async function getAg(data) {
 
 module.exports.startApi = startApi;
 async function startApi(app) {
+  //Feature not available yet
+  return;
   app.get("/api/ag/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(app, req, res);
