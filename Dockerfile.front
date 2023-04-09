@@ -6,6 +6,7 @@ RUN npm install --force
 FROM node:lts as builder
 WORKDIR /my-project
 COPY ./front/ .
+COPY .env .env
 COPY --from=dependencies /my-project/node_modules ./node_modules
 RUN npm run build
 
