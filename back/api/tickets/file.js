@@ -237,11 +237,18 @@ async function ticketFileGetToken(data) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     const token = "t" + result;
-    tokenDownload[token] = { fileId: idFile, expire: new Date(new Date().setSeconds(new Date().getSeconds() + 10)) };
-
-    setTimeout(() => {
+    /* c8 ignore start */
+    // 15s is to long to test this
+    const timoutId = setTimeout(() => {
       delete tokenDownload[token];
     }, 15000);
+    /* c8 ignore stop */
+
+    tokenDownload[token] = {
+      fileId: idFile,
+      timoutId,
+      expire: new Date(new Date().setSeconds(new Date().getSeconds() + 10)),
+    };
 
     return {
       type: "json",

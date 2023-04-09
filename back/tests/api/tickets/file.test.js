@@ -263,6 +263,267 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const tokenDownload = await require("../../../api/tickets/file").tokenDownload;
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("json");
+    expect(response.json != null).toBe(true);
+    expect(tokenDownload[response.json] != null).toBe(true);
+    expect(tokenDownload[response.json].fileId != null).toBe(true);
+    expect(tokenDownload[response.json].timoutId != null).toBe(true);
+    expect(tokenDownload[response.json].expire != null).toBe(true);
+    clearTimeout(tokenDownload[response.json].timoutId);
+    delete tokenDownload[response.json];
+  });
+
+  test("200userOwner", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return false;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 1,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserOwner.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const tokenDownload = await require("../../../api/tickets/file").tokenDownload;
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("json");
+    expect(response.json != null).toBe(true);
+    expect(tokenDownload[response.json] != null).toBe(true);
+    expect(tokenDownload[response.json].fileId != null).toBe(true);
+    expect(tokenDownload[response.json].timoutId != null).toBe(true);
+    expect(tokenDownload[response.json].expire != null).toBe(true);
+    clearTimeout(tokenDownload[response.json].timoutId);
+    delete tokenDownload[response.json];
+  });
+
+  test("400noParams", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400noId", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+      params: {},
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400fileDataNotExist", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400idIsNan", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+      params: {
+        id: "idTicket",
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("401noUser", async () => {
+    //Execute
+    const data = {
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+      params: {
+        id: 1,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(401);
+    expect(response.type).toBe("code");
+  });
+
+  test("403unauthorized", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return false;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest403unauthorized.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(403);
+    expect(response.type).toBe("code");
+  });
+
+  test("204noSavedFile", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "noFile.STL",
+                fileName: "oneFileTest204noSavedFile.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+
+    //Tests
+    expect(response.code).toBe(204);
+    expect(response.type).toBe("code");
+  });
+});
+
+describe("GET /api/file/:id/", () => {
+  test("200myFabAgent", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
     const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
@@ -479,6 +740,127 @@ describe("GET /api/file/:id/", () => {
 
     //Tests
     expect(response.code).toBe(204);
+    expect(response.type).toBe("code");
+  });
+
+  test("200token", async () => {
+    token = "testToken200";
+    require("../../../api/tickets/file").tokenDownload[token] = {
+      fileId: 1,
+      expire: new Date(new Date().setSeconds(new Date().getSeconds() + 100)),
+    };
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: token,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("download");
+    expect(response.path != null).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(true);
+  });
+
+  test("400unknownToken", async () => {
+    token = "testToken400unknownToken";
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: token,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400tokenExpired", async () => {
+    token = "400tokenExpired";
+    require("../../../api/tickets/file").tokenDownload[token] = {
+      fileId: 1,
+      expire: new Date(),
+    };
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: token,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
 });
