@@ -29,3 +29,15 @@ jobs:
       - name: Run build
         run: |
           cd front/ && npm run build
+
+  Test-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Build back
+        run: |
+          docker-compose build back
+      - name: Build front
+        run: |
+          docker-compose build front
