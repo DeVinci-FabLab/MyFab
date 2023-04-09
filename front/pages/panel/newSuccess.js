@@ -6,7 +6,7 @@ import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { setZero, isUserConnected } from "../../lib/function";
 import Seo from "../../components/seo";
 import { Dialog, Transition } from "@headlessui/react";
-import STLViewer from "stl-viewer";
+import { StlViewer } from "react-stl-viewer";
 import { CubeIcon } from "@heroicons/react/outline";
 import { getCookie } from "cookies-next";
 import axios from "axios";
@@ -64,14 +64,12 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
     const cookie = getCookie("jwt");
     await axios({
       method: "GET",
-      responseType: "blob",
-      url: process.env.API + "/api/file/" + id,
+      url: process.env.API + "/api/file/" + id + "/getToken",
       headers: {
         dvflCookie: cookie,
       },
     }).then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      setUrlStl(url);
+      setUrlStl(process.env.API + "/api/file/" + response.data);
     });
   }
 
@@ -87,13 +85,18 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
               <div className="flex flex-wrap -mx-4">
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4">
                   <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">La demande {"#" + setZero(ticket.id)} à été créé</h3>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      La demande {"#" + setZero(ticket.id)} à été créé
+                    </h3>
                   </div>
                   <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                    <p className="p-5">Les membres du DeVinci FabLab traiteons la demande le dès que possible. Vous pouvez suivre l'avancée de la demande sur cette plateforme.</p>
                     <p className="p-5">
-                      Vous pouvez rajouter des notes sur les fichiers stl pour par exemple demander plusieurs impression pour un même fichier, une couleur d'impression spécifique,
-                      ...
+                      Les membres du DeVinci FabLab traiteons la demande le dès que possible. Vous pouvez suivre
+                      l'avancée de la demande sur cette plateforme.
+                    </p>
+                    <p className="p-5">
+                      Vous pouvez rajouter des notes sur les fichiers stl pour par exemple demander plusieurs impression
+                      pour un même fichier, une couleur d'impression spécifique, ...
                     </p>
                     {/*
                     <div className="flex justify-center">
@@ -178,7 +181,9 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
                   <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                     <div className="px-4 py-5 sm:px-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">Détails de la demande d'impression</h3>
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Détails de la demande d'impression
+                      </h3>
                       <p className="mt-1 max-w-2xl text-sm text-gray-500">Ticket n° {ticket.id}</p>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
@@ -194,7 +199,9 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500">Numéro de groupe</dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">{ticket.groupNumber}</dd>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                            {ticket.groupNumber}
+                          </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500">Type</dt>
@@ -212,7 +219,9 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">Priorité</dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full`}>{ticket.priorityName}</div>
+                              <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full`}>
+                                {ticket.priorityName}
+                              </div>
                             </dd>
                           </div>
                         ) : (
@@ -272,16 +281,16 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                   <p className="text-center font-medium">Aperçu du fichier STL:</p>
                   <p className="text-sm text-center text-gray-500">{ticketFile.filename}</p>
                   <center>
-                    <STLViewer
-                      width={typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300}
-                      height={typeof window !== "undefined" ? window.innerHeight / 2.2 : 200}
-                      modelColor={STLColor}
-                      backgroundColor="#FFFFFF"
-                      rotate={true}
+                    <StlViewer
+                      style={{
+                        top: 0,
+                        left: 0,
+                        width: typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300,
+                        height: typeof window !== "undefined" ? window.innerHeight / 2.2 : 200,
+                      }}
+                      modelProps={{ color: STLColor }}
                       orbitControls={true}
-                      model={urlStl}
-                      lightColor="#ffffff"
-                      lights={[1, 1, 1]}
+                      url={urlStl}
                     />
 
                     <div>

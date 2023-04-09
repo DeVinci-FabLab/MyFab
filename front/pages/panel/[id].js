@@ -5,7 +5,7 @@ import WebSocket from "../../components/webSocket";
 import { CubeIcon, UserCircleIcon, CogIcon, ExclamationIcon } from "@heroicons/react/outline";
 import { useEffect, Fragment, useState } from "react";
 import Moment from "react-moment";
-import STLViewer from "stl-viewer";
+import { StlViewer } from "react-stl-viewer";
 import { Dialog, Transition, Menu } from "@headlessui/react";
 import { getCookie } from "cookies-next";
 import axios from "axios";
@@ -20,7 +20,19 @@ const colors = {
 };
 const fabColor = ["D51D65", "F5841D", "2CA0BB", "CDCDCD"];
 
-const GestionTicket = ({ params, user, role, ticket, file, message, authorizations, id, status, projectType, printers }) => {
+const GestionTicket = ({
+  params,
+  user,
+  role,
+  ticket,
+  file,
+  message,
+  authorizations,
+  id,
+  status,
+  projectType,
+  printers,
+}) => {
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
@@ -46,7 +58,6 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
 
   // Si l'id du ticket est invalid (un string par exemple) la page 404 va être affiché
   useEffect(function () {
-    console.log(ticket);
     if (ticket.error) {
       if (isNaN(id)) {
         router.push("/404");
@@ -66,22 +77,31 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
 
     await axios({
       method: "PUT",
-      url: process.env.API + "/api/ticket/" + params.id + "/" + (paramType === "status" ? "setStatus" : "setProjecttype") + "/",
+      url:
+        process.env.API +
+        "/api/ticket/" +
+        params.id +
+        "/" +
+        (paramType === "status" ? "setStatus" : "setProjecttype") +
+        "/",
       params: data,
       headers: {
         dvflCookie: cookie,
       },
     })
       .then(() => {
-        toast.success(paramType === "status" ? "Le status du ticket a été mis à jour" : "Le type de projet à été modifié", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success(
+          paramType === "status" ? "Le status du ticket a été mis à jour" : "Le type de projet à été modifié",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
         realodPage();
       })
       .catch((e) => {
@@ -193,14 +213,12 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
     const cookie = getCookie("jwt");
     await axios({
       method: "GET",
-      responseType: "blob",
-      url: process.env.API + "/api/file/" + id,
+      url: process.env.API + "/api/file/" + id + "/getToken",
       headers: {
         dvflCookie: cookie,
       },
     }).then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      setUrlStl(url);
+      setUrlStl(process.env.API + "/api/file/" + response.data);
     });
   }
 
@@ -268,14 +286,16 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                                       <span className="ml-2 flex-1 w-0 truncate">{r.filename}</span>
                                     </div>
                                     <div className="ml-4 flex-shrink-0">
-                                      <button onClick={() => download(r.id, r.filename)} className="font-medium text-indigo-600 hover:text-indigo-500">
+                                      <button
+                                        onClick={() => download(r.id, r.filename)}
+                                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                                      >
                                         Télécharger
                                       </button>
                                     </div>
                                     <div className="ml-4 flex-shrink-0">
                                       <button
                                         onClick={() => {
-                                          console.log(r);
                                           changeSTLColor();
                                           setTicketFile(r);
                                           getUrlSTL(r.id);
@@ -298,7 +318,8 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                                   {authorizations.myFabAgent ? (
                                     <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm">
                                       <p className="text-ellipsis overflow-hidden">
-                                        <span className="font-medium">Impression lancé sur</span>: {r.printerName ? r.printerName : "Non lancé"}
+                                        <span className="font-medium">Impression lancé sur</span>:{" "}
+                                        {r.printerName ? r.printerName : "Non lancé"}
                                       </p>
                                     </div>
                                   ) : (
@@ -351,7 +372,9 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                               >
                                 Envoyer mon commentaire
                               </button>
-                              <p className="mt-2 text-sm text-gray-500">Vous pouvez communiquer avec les membres du FabLab via ce formulaire.</p>
+                              <p className="mt-2 text-sm text-gray-500">
+                                Vous pouvez communiquer avec les membres du FabLab via ce formulaire.
+                              </p>
                             </div>
                           </ul>
                         </dd>
@@ -363,7 +386,9 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
                   <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                     <div className="px-4 py-5 sm:px-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">Détails de la demande d'impression</h3>
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Détails de la demande d'impression
+                      </h3>
                       <p className="mt-1 max-w-2xl text-sm text-gray-500">Ticket n° {ticket.id}</p>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
@@ -372,12 +397,14 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           <dt className="text-sm font-medium text-gray-500">Utilisateur</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>
-                              {ticket.userFirstName + " " + (ticket.userLastName ? ticket.userLastName : "undefined").toString().toUpperCase()}
+                              {ticket.userFirstName +
+                                " " +
+                                (ticket.userLastName ? ticket.userLastName : "undefined").toString().toUpperCase()}
                               <p className="mt-1 max-w-2xl text-sm text-gray-500">{user.title || "Ancien compte"}</p>
                             </div>
                             {authorizations.myFabAgent ? (
                               <button
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setOpenUser(true);
                                 }}
@@ -392,7 +419,8 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           {authorizations.myFabAgent ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
-                                Cet utilisateur a {ticket.ticketCountUser} ticket{ticket.ticketCountUser > 1 ? "s" : ""} réalisé{ticket.ticketCountUser > 1 ? "s" : ""} cette année
+                                Cet utilisateur a {ticket.ticketCountUser} ticket{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
+                                réalisé{ticket.ticketCountUser > 1 ? "s" : ""} cette année
                               </div>
                             </dd>
                           ) : (
@@ -401,12 +429,15 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500">Numéro de groupe</dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">{ticket.groupNumber}</dd>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                            {ticket.groupNumber}
+                          </dd>
 
                           {authorizations.myFabAgent ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
-                                Ce groupe a {ticket.ticketCountGroup} ticket{ticket.ticketCountGroup > 1 ? "s" : ""} réalisé{ticket.ticketCountGroup > 1 ? "s" : ""} cette année
+                                Ce groupe a {ticket.ticketCountGroup} ticket{ticket.ticketCountGroup > 1 ? "s" : ""}{" "}
+                                réalisé{ticket.ticketCountGroup > 1 ? "s" : ""} cette année
                               </div>
                             </dd>
                           ) : (
@@ -419,7 +450,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                             <div>{ticket.projectType}</div>
                             {authorizations.myFabAgent ? (
                               <button
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setparamType("projectType");
                                   setOpenStatus(true);
@@ -438,7 +469,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                             <div>{ticket.statusName}</div>
                             {authorizations.myFabAgent && !ticket.isCancel ? (
                               <button
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setparamType("status");
                                   setOpenStatus(true);
@@ -452,7 +483,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           </dd>
                           {ticket.userCanCancel && !ticket.isCancel ? (
                             <button
-                              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-3 rounded"
+                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-3 rounded"
                               onClick={() => {
                                 setparamType("cancel");
                                 setOpenStatus(true);
@@ -468,7 +499,13 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">Priorité</dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full ${colors[ticket.priorityColor]}`}>{ticket.priorityName}</div>
+                              <div
+                                className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full ${
+                                  colors[ticket.priorityColor]
+                                }`}
+                              >
+                                {ticket.priorityName}
+                              </div>
                             </dd>
                           </div>
                         ) : (
@@ -517,16 +554,16 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                   <p className="text-center font-medium">Aperçu du fichier STL:</p>
                   <p className="text-sm text-center text-gray-500">{ticketFile.filename}</p>
                   <center>
-                    <STLViewer
-                      width={typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300}
-                      height={typeof window !== "undefined" ? window.innerHeight / 2.2 : 200}
-                      modelColor={STLColor}
-                      backgroundColor="#FFFFFF"
-                      rotate={true}
+                    <StlViewer
+                      style={{
+                        top: 0,
+                        left: 0,
+                        width: typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300,
+                        height: typeof window !== "undefined" ? window.innerHeight / 2.2 : 200,
+                      }}
+                      modelProps={{ color: STLColor }}
                       orbitControls={true}
-                      model={urlStl}
-                      lightColor="#ffffff"
-                      lights={[1, 1, 1]}
+                      url={urlStl}
                     />
 
                     {authorizations.myFabAgent ? (
@@ -537,7 +574,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                             <textarea
                               id="comment"
                               name="comment"
-                              maxlength="256"
+                              maxLength="256"
                               rows={ticketFile.comment && ticketFile.comment.length < 150 ? 3 : 5}
                               onChange={(e) => {
                                 if (ticketFile.comment !== e.target.value) {
@@ -563,13 +600,13 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                               name="type"
                               className="mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                             >
-                              <option value={0} selected={ticketFile.idprinter === 0 ? "'selected'" : ""}>
+                              <option value={0} defaultValue={ticketFile.idprinter === 0 ? "'selected'" : ""}>
                                 (Sélectionnez une imprimante)
                               </option>
                               {printers.map((item) => {
                                 const elementSelected = ticketFile.idprinter === item.id;
                                 return (
-                                  <option selected={elementSelected ? "'selected'" : ""} value={item.id}>
+                                  <option defaultValue={elementSelected ? "'selected'" : ""} value={item.id}>
                                     {item.name}
                                   </option>
                                 );
@@ -647,9 +684,13 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                   <dl className="sm:divide-y sm:divide-gray-200">
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Nom et prénom</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.firstName + " " + user.lastName.toString().toUpperCase()}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        {user.firstName + " " + user.lastName.toString().toUpperCase()}
+                      </dd>
                       <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Ecole et année</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{ticket.title || "Ancien compte"}</dd>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        {ticket.title || "Ancien compte"}
+                      </dd>
                     </div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Adresse e-mail</dt>
@@ -709,7 +750,11 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                      {paramType === "cancel" ? <p>Annulation de la demande</p> : <p>Changer le {paramType === "status" ? "status" : "type"} du ticket</p>}
+                      {paramType === "cancel" ? (
+                        <p>Annulation de la demande</p>
+                      ) : (
+                        <p>Changer le {paramType === "status" ? "status" : "type"} du ticket</p>
+                      )}
                     </Dialog.Title>
                     {paramType === "cancel" ? (
                       <div>
@@ -729,7 +774,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                           {(paramType === "status" ? status : projectType).map((item) => {
                             const elementSelected = paramType === "status" ? ticket.statusName : ticket.projectType;
                             return (
-                              <option selected={item.name === elementSelected ? "'selected'" : ""} value={item.id}>
+                              <option defaultValue={item.name === elementSelected ? "'selected'" : ""} value={item.id}>
                                 {item.name}
                               </option>
                             );
@@ -744,7 +789,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                   <div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
                       <button
-                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
                         onClick={() => {
                           setOpenStatus(false);
                           cancelTicket();
@@ -753,7 +798,7 @@ const GestionTicket = ({ params, user, role, ticket, file, message, authorizatio
                         Annuler la demande
                       </button>
                       <button
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
                         onClick={() => setOpenStatus(false)}
                       >
                         Retour
