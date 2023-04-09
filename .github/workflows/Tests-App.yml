@@ -37,22 +37,22 @@ jobs:
         uses: actions/checkout@v3
       - name: Create .env file
         run: |
-          echo PORT_FRONT=3000 >> back/.env
-          echo PORT_BACK=5000 >> back/.env
-          echo API=http://localhost:5000 >> back/.env
-          echo BASE_PATH=/test >> back/.env
-          echo DB_HOST=localhost >> back/.env
-          echo DB_USER=test >> back/.env
-          echo DB_ROOT_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> back/.env
-          echo DB_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> back/.env
-          echo DB_DATABASE=myFab >> back/.env
-          echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> back/.env
-          echo SHOWSWAGGER=false >> back/.env
-          echo ACTIVELOGS=false >> back/.env
-          echo ADSF_ENTRYPOINT=http://localhost:8080/simplesaml/saml2/idp/SSOService.php >> back/.env
-          echo ADSF_ISSUER=http://app.example.com >> back/.env
-          echo ADFS_FRONT_URL=http://localhost:3000/test/ >> back/.env
-          ls -lA back/.env
+          echo PORT_FRONT=3000 > .env
+          echo PORT_BACK=5000 >> .env
+          echo API=http://localhost:5000 >> .env
+          echo BASE_PATH=/test >> .env
+          echo DB_HOST=localhost >> .env
+          echo DB_USER=test >> .env
+          echo DB_ROOT_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> .env
+          echo DB_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> .env
+          echo DB_DATABASE=myFab >> .env
+          echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> .env
+          echo SHOWSWAGGER=false >> .env
+          echo ACTIVELOGS=false >> .env
+          echo ADSF_ENTRYPOINT=http://localhost:8080/simplesaml/saml2/idp/SSOService.php >> .env
+          echo ADSF_ISSUER=http://app.example.com >> .env
+          echo ADFS_FRONT_URL=http://localhost:3000/test/ >> .env
+          ls -lA .env
       - name: Build back
         run: |
           docker-compose build back
