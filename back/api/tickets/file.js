@@ -143,9 +143,9 @@ async function ticketFileGetListOfFile(data) {
 
 /**
  * @swagger
- * /file/{id}:
+ * /file/{id}/getToken:
  *   get:
- *     summary: Download a file from a ticket
+ *     summary: Get token to download a file
  *     tags: [Ticket]
  *     parameters:
  *     - name: dvflCookie
@@ -161,7 +161,7 @@ async function ticketFileGetListOfFile(data) {
  *       format: "int64"
  *     responses:
  *       200:
- *         description: "Get a file from a ticket"
+ *         description: "Get token to download a file"
  *       400:
  *        description: "The body does not have all the necessary field"
  *       401:
@@ -172,8 +172,11 @@ async function ticketFileGetListOfFile(data) {
  *        description: "Internal error with the request"
  */
 
-module.exports.ticketFileGetOneFile = ticketFileGetOneFile;
-async function ticketFileGetOneFile(data) {
+const tokenDownload = {};
+module.exports.tokenDownload = tokenDownload;
+
+module.exports.ticketFileGetToken = ticketFileGetToken;
+async function ticketFileGetToken(data) {
   // The body does not have all the necessary field
   if (!data.params || !data.params.id || isNaN(data.params.id)) {
     return {
@@ -227,11 +230,138 @@ async function ticketFileGetOneFile(data) {
     }
   }
   if (fs.existsSync(__dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName)) {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    for (var i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    const token = "t" + result;
+    tokenDownload[token] = { fileId: idFile, expire: new Date(new Date().setSeconds(new Date().getSeconds() + 10)) };
+
+    setTimeout(() => {
+      delete tokenDownload[token];
+    }, 15000);
+
+    return {
+      type: "json",
+      code: 200,
+      json: token,
+    };
+  } else {
+    return {
+      type: "code",
+      code: 204,
+    };
+  }
+}
+
+/**
+ * @swagger
+ * /file/{id}:
+ *   get:
+ *     summary: Download a file from a ticket
+ *     tags: [Ticket]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       description: Cookie of the user making the request. The user need to be the ticket owner or an agent.
+ *       required: true
+ *       type: string
+ *     - name: "id"
+ *       in: "path"
+ *       description: "Id of the ticket"
+ *       required: true
+ *       type: "integer"
+ *       format: "int64"
+ *     responses:
+ *       200:
+ *         description: "Get a file from a ticket"
+ *       400:
+ *        description: "The body does not have all the necessary field"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.ticketFileGetOneFile = ticketFileGetOneFile;
+async function ticketFileGetOneFile(data) {
+  // The body does not have all the necessary field
+  if (!data.params || !data.params.id) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+  //Test if Id is a token
+  else if (
+    !(
+      (isNaN(data.params.id) && tokenDownload[data.params.id] && new Date() < tokenDownload[data.params.id].expire) ||
+      !isNaN(data.params.id)
+    )
+  ) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+  const idFile = isNaN(data.params.id) ? tokenDownload[data.params.id].fileId : data.params.id;
+
+  // if the user is not allowed
+  const userIdAgent = data.userId;
+  if (!isNaN(data.params.id) && !userIdAgent) {
+    return {
+      type: "code",
+      code: 401,
+    };
+  }
+
+  const query = `SELECT pt.i_idUser AS 'id',
+                tf.v_fileServerName AS 'fileServerName',
+                tf.v_fileName AS 'fileName',
+                gdpt.v_name AS 'projectTypeName'
+                FROM ticketfiles AS tf
+                INNER JOIN printstickets AS pt ON tf.i_idTicket = pt.i_id
+                INNER JOIN gd_ticketprojecttype AS gdpt ON pt.i_projecttype = gdpt.i_id
+                WHERE tf.i_id = ?`;
+  const resGetUserTicket = await data.app.executeQuery(data.app.db, query, [idFile]);
+  /* c8 ignore start */
+  if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
+    console.log(resGetUserTicket[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+  if (resGetUserTicket[1].length < 1) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+  const idTicketUser = resGetUserTicket[1][0].id;
+  if (!isNaN(data.params.id) && idTicketUser != userIdAgent) {
+    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    if (!authViewResult) {
+      return {
+        type: "code",
+        code: 403,
+      };
+    }
+  }
+  if (fs.existsSync(__dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName)) {
     return {
       type: "download",
       code: 200,
       path: __dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName,
-      fileName: idTicketUser == userIdAgent ? resGetUserTicket[1][0].fileName : resGetUserTicket[1][0].projectTypeName + "-" + idFile + "_" + resGetUserTicket[1][0].fileName,
+      fileName:
+        idTicketUser == userIdAgent
+          ? resGetUserTicket[1][0].fileName
+          : resGetUserTicket[1][0].projectTypeName + "-" + idFile + "_" + resGetUserTicket[1][0].fileName,
     };
   } else {
     return {
@@ -371,7 +501,12 @@ async function ticketFilePost(data) {
           /* c8 ignore stop */
           const queryInsert = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
                                         VALUES (?, ?, ?, ?);`;
-          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsert, [userIdAgent, idTicket, file.name, newFileName]);
+          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsert, [
+            userIdAgent,
+            idTicket,
+            file.name,
+            newFileName,
+          ]);
           /* c8 ignore start */
           if (resInsertFile[0]) {
             console.log(resInsertFile[0]);
@@ -499,7 +634,10 @@ async function ticketFilePut(data) {
                         SET v_comment = ?
                         ${data.body.idprinter !== undefined ? ", `i_idprinter` = ?" : ""}
                         WHERE i_id = ?`;
-  const options = data.body.idprinter !== undefined ? [data.body.comment, data.body.idprinter, idTicket] : [data.body.comment, idTicket];
+  const options =
+    data.body.idprinter !== undefined
+      ? [data.body.comment, data.body.idprinter, idTicket]
+      : [data.body.comment, idTicket];
   const resUpdateFile = await data.app.executeQuery(data.app.db, queryUpdate, options);
   /* c8 ignore start */
   if (resUpdateFile[0]) {
@@ -531,6 +669,18 @@ async function startApi(app) {
       await require("../../functions/apiActions").sendResponse(req, res, result);
     } catch (err) {
       console.log("ERROR: GET /api/ticket/:id/file/");
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/file/:id/getToken", async (req, res) => {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const result = await ticketFileGetToken(data);
+      await require("../../functions/apiActions").sendResponse(req, res, result);
+    } catch (err) {
+      console.log("ERROR: GET /api/file/:id/getToken");
       console.log(err);
       res.sendStatus(500);
     }
