@@ -5,7 +5,7 @@ import WebSocket from "../../components/webSocket";
 import { CubeIcon, UserCircleIcon, CogIcon, ExclamationIcon } from "@heroicons/react/outline";
 import { useEffect, Fragment, useState } from "react";
 import Moment from "react-moment";
-import STLViewer from "stl-viewer";
+import { StlViewer } from "react-stl-viewer";
 import { Dialog, Transition, Menu } from "@headlessui/react";
 import { getCookie } from "cookies-next";
 import axios from "axios";
@@ -58,7 +58,6 @@ const GestionTicket = ({
 
   // Si l'id du ticket est invalid (un string par exemple) la page 404 va être affiché
   useEffect(function () {
-    console.log(ticket);
     if (ticket.error) {
       if (isNaN(id)) {
         router.push("/404");
@@ -214,14 +213,12 @@ const GestionTicket = ({
     const cookie = getCookie("jwt");
     await axios({
       method: "GET",
-      responseType: "blob",
-      url: process.env.API + "/api/file/" + id,
+      url: process.env.API + "/api/file/" + id + "/getToken",
       headers: {
         dvflCookie: cookie,
       },
     }).then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      setUrlStl(url);
+      setUrlStl(process.env.API + "/api/file/" + response.data);
     });
   }
 
@@ -299,7 +296,6 @@ const GestionTicket = ({
                                     <div className="ml-4 flex-shrink-0">
                                       <button
                                         onClick={() => {
-                                          console.log(r);
                                           changeSTLColor();
                                           setTicketFile(r);
                                           getUrlSTL(r.id);
@@ -408,7 +404,7 @@ const GestionTicket = ({
                             </div>
                             {authorizations.myFabAgent ? (
                               <button
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setOpenUser(true);
                                 }}
@@ -454,7 +450,7 @@ const GestionTicket = ({
                             <div>{ticket.projectType}</div>
                             {authorizations.myFabAgent ? (
                               <button
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setparamType("projectType");
                                   setOpenStatus(true);
@@ -473,7 +469,7 @@ const GestionTicket = ({
                             <div>{ticket.statusName}</div>
                             {authorizations.myFabAgent && !ticket.isCancel ? (
                               <button
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setparamType("status");
                                   setOpenStatus(true);
@@ -487,7 +483,7 @@ const GestionTicket = ({
                           </dd>
                           {ticket.userCanCancel && !ticket.isCancel ? (
                             <button
-                              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-3 rounded"
+                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-3 rounded"
                               onClick={() => {
                                 setparamType("cancel");
                                 setOpenStatus(true);
@@ -558,16 +554,16 @@ const GestionTicket = ({
                   <p className="text-center font-medium">Aperçu du fichier STL:</p>
                   <p className="text-sm text-center text-gray-500">{ticketFile.filename}</p>
                   <center>
-                    <STLViewer
-                      width={typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300}
-                      height={typeof window !== "undefined" ? window.innerHeight / 2.2 : 200}
-                      modelColor={STLColor}
-                      backgroundColor="#FFFFFF"
-                      rotate={true}
+                    <StlViewer
+                      style={{
+                        top: 0,
+                        left: 0,
+                        width: typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300,
+                        height: typeof window !== "undefined" ? window.innerHeight / 2.2 : 200,
+                      }}
+                      modelProps={{ color: STLColor }}
                       orbitControls={true}
-                      model={urlStl}
-                      lightColor="#ffffff"
-                      lights={[1, 1, 1]}
+                      url={urlStl}
                     />
 
                     {authorizations.myFabAgent ? (
@@ -578,7 +574,7 @@ const GestionTicket = ({
                             <textarea
                               id="comment"
                               name="comment"
-                              maxlength="256"
+                              maxLength="256"
                               rows={ticketFile.comment && ticketFile.comment.length < 150 ? 3 : 5}
                               onChange={(e) => {
                                 if (ticketFile.comment !== e.target.value) {
@@ -604,13 +600,13 @@ const GestionTicket = ({
                               name="type"
                               className="mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                             >
-                              <option value={0} selected={ticketFile.idprinter === 0 ? "'selected'" : ""}>
+                              <option value={0} defaultValue={ticketFile.idprinter === 0 ? "'selected'" : ""}>
                                 (Sélectionnez une imprimante)
                               </option>
                               {printers.map((item) => {
                                 const elementSelected = ticketFile.idprinter === item.id;
                                 return (
-                                  <option selected={elementSelected ? "'selected'" : ""} value={item.id}>
+                                  <option defaultValue={elementSelected ? "'selected'" : ""} value={item.id}>
                                     {item.name}
                                   </option>
                                 );
@@ -778,7 +774,7 @@ const GestionTicket = ({
                           {(paramType === "status" ? status : projectType).map((item) => {
                             const elementSelected = paramType === "status" ? ticket.statusName : ticket.projectType;
                             return (
-                              <option selected={item.name === elementSelected ? "'selected'" : ""} value={item.id}>
+                              <option defaultValue={item.name === elementSelected ? "'selected'" : ""} value={item.id}>
                                 {item.name}
                               </option>
                             );
@@ -793,7 +789,7 @@ const GestionTicket = ({
                   <div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
                       <button
-                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
                         onClick={() => {
                           setOpenStatus(false);
                           cancelTicket();
@@ -802,7 +798,7 @@ const GestionTicket = ({
                         Annuler la demande
                       </button>
                       <button
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
                         onClick={() => setOpenStatus(false)}
                       >
                         Retour
