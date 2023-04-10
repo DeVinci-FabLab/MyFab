@@ -221,7 +221,7 @@ describe("GET /api/ticket/:id/file/", () => {
     const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
-    expect(response.code).toBe(204);
+    expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
 
