@@ -92,7 +92,7 @@ async function ticketFileGetListOfFile(data) {
                             WHERE i_id = ?`;
   const resGetUserTicket = await data.app.executeQuery(data.app.db, queryGetUserTicket, [idTicket]);
   /* c8 ignore start */
-  if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
+  if (resGetUserTicket[0]) {
     console.log(resGetUserTicket[0]);
     return {
       type: "code",
@@ -100,6 +100,12 @@ async function ticketFileGetListOfFile(data) {
     };
   }
   /* c8 ignore stop */
+  if (resGetUserTicket[1].length !== 1) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
 
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
