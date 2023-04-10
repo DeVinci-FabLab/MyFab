@@ -15,10 +15,11 @@ module.exports = {
   reactStrictMode: true,
   basePath: process.env.BASE_PATH ? process.env.BASE_PATH : "",
   env: {
-    API:
-      process.env.API.split("")[process.env.API.length - 1] === "/"
+    API: process.env.API
+      ? process.env.API.split("")[process.env.API.length - 1] === "/"
         ? process.env.API.substring(0, process.env.API.length - 1)
-        : process.env.API,
+        : process.env.API
+      : null,
     BASE_PATH: process.env.BASE_PATH ? process.env.BASE_PATH : "",
   },
 };
