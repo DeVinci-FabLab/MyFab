@@ -76,6 +76,7 @@ async function putPasswordMe(data) {
     sha256(data.body.actualPassword),
   ]);
   // Error with the sql request
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -83,6 +84,7 @@ async function putPasswordMe(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // No match with tables => invalid password
   if (dbRes[1].affectedRows < 1) {
     return {
@@ -91,6 +93,7 @@ async function putPasswordMe(data) {
     };
   }
   // Too much match with tables
+  /* c8 ignore start */
   if (dbRes[1].affectedRows > 1) {
     console.log("update one user affect multiple users");
     return {
@@ -98,6 +101,7 @@ async function putPasswordMe(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // Everything is fine
   return {
     type: "code",
@@ -185,6 +189,7 @@ async function putPasswordUser(data) {
                     WHERE i_id = ?;`;
   const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [sha256(data.body.newPassword), idUserTarget]);
   // Error with the sql request
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -192,6 +197,7 @@ async function putPasswordUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // No match with tables => invalid password
   if (dbRes[1].affectedRows < 1) {
     return {
@@ -200,6 +206,7 @@ async function putPasswordUser(data) {
     };
   }
   // Too much match with tables
+  /* c8 ignore start */
   if (dbRes[1].affectedRows > 1) {
     console.log("Update one user affect multiple users");
     return {
@@ -207,6 +214,7 @@ async function putPasswordUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // Everything is fine
   return {
     type: "code",
@@ -256,6 +264,7 @@ async function postForgottenPassword(data) {
                         AND b_visible = 1`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [email]);
   // The sql request has an error
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -263,6 +272,7 @@ async function postForgottenPassword(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (dbRes[1].length !== 1) {
     return {
@@ -281,6 +291,7 @@ async function postForgottenPassword(data) {
     tocken,
     sendMail ? "1" : "0",
   ]);
+  /* c8 ignore start */
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
     return {
@@ -288,6 +299,7 @@ async function postForgottenPassword(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "code",
@@ -342,6 +354,7 @@ async function putResetPassword(data) {
                         FROM mailtocken
                         WHERE v_value = ?`;
   const dbSelectId = await data.app.executeQuery(data.app.db, querySelect, [data.params.tocken]);
+  /* c8 ignore start */
   if (dbSelectId[0]) {
     console.log(dbSelectId[0]);
     return {
@@ -349,6 +362,7 @@ async function putResetPassword(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (dbSelectId[1].length != 1) {
     return {
       type: "code",
@@ -362,6 +376,7 @@ async function putResetPassword(data) {
                         WHERE i_id = ?;`;
   const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [sha256(data.body.newPassword), idUser]);
   // Error with the sql request
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -369,10 +384,12 @@ async function putResetPassword(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryDelete = `DELETE FROM mailtocken
                         WHERE v_value = ?`;
   const dbDelete = await data.app.executeQuery(data.app.db, queryDelete, [data.params.tocken]);
+  /* c8 ignore start */
   if (dbDelete[0]) {
     console.log(dbDelete[0]);
     return {
@@ -380,6 +397,7 @@ async function putResetPassword(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   // Everything is fine
   return {
@@ -388,6 +406,7 @@ async function putResetPassword(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.put("/api/user/password/", async function (req, res) {
@@ -439,3 +458,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */

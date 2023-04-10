@@ -416,6 +416,46 @@ describe("POST /api/user/forgottenPassword/", () => {
     expect(response.type).toBe("code");
   });
 
+  test("200dontSendMail", async () => {
+    //Execute
+    let requestNumber = 0;
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 1 }]];
+            case 2:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
+        cookiesList: {},
+      },
+      sendMailFunction: {
+        sendMail: (email, title, body) => {},
+      },
+      body: {
+        email: "test@test.com",
+        sendMail: false,
+      },
+    };
+    const response = await require("../../../api/user/password").postForgottenPassword(data);
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("code");
+  });
+
   test("200butUnknownMail", async () => {
     //Execute
     const data = {
