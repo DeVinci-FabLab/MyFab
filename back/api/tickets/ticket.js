@@ -1,6 +1,8 @@
 const fs = require("fs");
 const maxTicket = 30;
+module.exports.maxTicket = maxTicket;
 
+/* c8 ignore start */
 function makeid(length, filename) {
   var result = "";
   var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -14,6 +16,7 @@ function makeid(length, filename) {
     return result + "_" + filename;
   }
 }
+/* c8 ignore stop */
 
 /**
  * @swagger
@@ -126,6 +129,7 @@ async function getTicketAllFromUser(data) {
              ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
 
   const dbRes = await data.app.executeQuery(data.app.db, query, [userIdAgent, maxTicket, maxTicket * page]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -133,6 +137,7 @@ async function getTicketAllFromUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryCount = `SELECT COUNT(1) AS count
              FROM printstickets AS pt
@@ -141,6 +146,7 @@ async function getTicketAllFromUser(data) {
              ORDER BY pt.i_id DESC;`;
 
   const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [userIdAgent, maxTicket, maxTicket * page]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -148,6 +154,7 @@ async function getTicketAllFromUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const calcTicketByMaxTicket = dbResCount[1][0].count / maxTicket;
   const maxPage =
     Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket
@@ -190,6 +197,7 @@ async function getTicketAllFromUser(data) {
  *        description: "Internal error with the request"
  */
 
+/* c8 ignore start */
 function getOrderCollumnName(collumnName) {
   switch (collumnName) {
     case "name":
@@ -207,6 +215,7 @@ function getOrderCollumnName(collumnName) {
       return "pt.i_id";
   }
 }
+/* c8 ignore stop */
 
 module.exports.getTicketAll = getTicketAll;
 async function getTicketAll(data) {
@@ -269,6 +278,7 @@ async function getTicketAll(data) {
     maxTicket,
     maxTicket * page,
   ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -276,6 +286,7 @@ async function getTicketAll(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryCount = `SELECT COUNT(1) AS 'count'
             FROM printstickets AS pt
@@ -306,6 +317,7 @@ async function getTicketAll(data) {
     inputText,
     inputText,
   ]);
+  /* c8 ignore start */
   if (dbResCount[0]) {
     console.log(dbResCount[0]);
     return {
@@ -313,6 +325,7 @@ async function getTicketAll(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const calcTicketByMaxTicket = dbResCount[1][0].count / maxTicket;
   const maxPage =
     Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket
@@ -384,12 +397,14 @@ async function getTicketById(data) {
                         FROM printstickets
                         WHERE i_id = ? AND b_isDeleted = 0`;
   const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelectUser, [data.params.id]);
+  /* c8 ignore start */
   if (resGetUserTicket[0]) {
     console.log(resGetUserTicket[0]);
     return {
       type: "code",
       code: 500,
     };
+    /* c8 ignore stop */
   } else if (resGetUserTicket[1].length !== 1) {
     return {
       type: "code",
@@ -419,6 +434,7 @@ async function getTicketById(data) {
              LEFT OUTER JOIN gd_status AS stat ON pt.i_status = stat.i_id
              WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [data.params.id]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -426,6 +442,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (dbRes[1] == null || dbRes[1].length !== 1) {
     return {
       type: "code",
@@ -449,6 +466,7 @@ async function getTicketById(data) {
     result.id,
     result.id,
   ]);
+  /* c8 ignore start */
   if (dbResSelectCounterUser[0]) {
     console.log(dbResSelectCounterUser[0]);
     return {
@@ -456,6 +474,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   result.ticketCountUser = dbResSelectCounterUser[1][0].countUser;
 
   if (result.groupNumber) {
@@ -474,6 +493,7 @@ async function getTicketById(data) {
       result.id,
       result.id,
     ]);
+    /* c8 ignore start */
     if (dbResSelectCounterGroup[0]) {
       console.log(dbResSelectCounterGroup[0]);
       return {
@@ -481,6 +501,7 @@ async function getTicketById(data) {
         code: 500,
       };
     }
+    /* c8 ignore stop */
     result.ticketCountGroup = dbResSelectCounterGroup[1][0].countGroup;
   } else {
     result.ticketCountGroup = null;
@@ -497,6 +518,7 @@ async function getTicketById(data) {
   const dbResSelectLogUpdProjectType = await data.app.executeQuery(data.app.db, querySelectLogUpdProjectType, [
     data.params.id,
   ]);
+  /* c8 ignore start */
   if (dbResSelectLogUpdProjectType[0]) {
     console.log(dbResSelectLogUpdProjectType[0]);
     return {
@@ -504,6 +526,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   result.history = dbResSelectLogUpdProjectType[1];
 
   const querySelectLogUpdStatus = `SELECT
@@ -515,6 +538,7 @@ async function getTicketById(data) {
             WHERE i_idTicket = ? AND v_action = 'upd_status'
             ORDER BY ltc.dt_timeStamp ASC`;
   const dbResSelectLogStatus = await data.app.executeQuery(data.app.db, querySelectLogUpdStatus, [data.params.id]);
+  /* c8 ignore start */
   if (dbResSelectLogStatus[0]) {
     console.log(dbResSelectLogStatus[0]);
     return {
@@ -522,6 +546,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   for (const elem of dbResSelectLogStatus[1]) {
     result.history.push(elem);
   }
@@ -533,6 +558,7 @@ async function getTicketById(data) {
             INNER JOIN gd_ticketpriority AS gdtp ON ltc.v_newValue = gdtp.i_id
             WHERE i_idTicket = ? AND v_action = 'upd_priority'`;
   const dbResSelectLogPriority = await data.app.executeQuery(data.app.db, querySelectLogPriority, [data.params.id]);
+  /* c8 ignore start */
   if (dbResSelectLogPriority[0]) {
     console.log(dbResSelectLogPriority[0]);
     return {
@@ -540,6 +566,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   for (const elem of dbResSelectLogPriority[1]) {
     result.history.push(elem);
   }
@@ -639,12 +666,14 @@ async function postTicket(data) {
   const resSelectProjectType = await data.app.executeQuery(data.app.db, querySelectProjectType, [
     data.body.projectType,
   ]);
+  /* c8 ignore start */
   if (resSelectProjectType[0]) {
     console.log(resSelectProjectType[0]);
     return {
       type: "code",
       code: 500,
     };
+    /* c8 ignore stop */
   } else if (resSelectProjectType[1].length == 0) {
     return {
       type: "code",
@@ -659,6 +688,7 @@ async function postTicket(data) {
     data.body.projectType,
     data.body.groupNumber,
   ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -666,8 +696,10 @@ async function postTicket(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const querySelectLastId = `SELECT LAST_INSERT_ID() AS 'id';`;
   const lastIdentityRes = await data.app.executeQuery(data.app.db, querySelectLastId, []);
+  /* c8 ignore start */
   if (lastIdentityRes[0] || lastIdentityRes[1].length !== 1) {
     console.log(lastIdentityRes[0]);
     return {
@@ -675,6 +707,7 @@ async function postTicket(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   //Detects if there are one or more files
   let files;
@@ -689,7 +722,9 @@ async function postTicket(data) {
       await new Promise(async (resolve) => {
         const newFileName = makeid(10, file.name);
         fs.copyFile(file.tempFilePath, __dirname + "/../../data/files/stl/" + newFileName, async (err) => {
+          /* c8 ignore start */
           if (err) throw err;
+          /* c8 ignore stop */
           const queryInsertFile = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
                                             VALUES (?, ?, ?, ?);`;
           const resInsertFile = await data.app.executeQuery(data.app.db, queryInsertFile, [
@@ -698,6 +733,7 @@ async function postTicket(data) {
             file.name,
             newFileName,
           ]);
+          /* c8 ignore start */
           if (resInsertFile[0]) {
             console.log(resInsertFile[0]);
             return {
@@ -705,6 +741,7 @@ async function postTicket(data) {
               code: 500,
             };
           }
+          /* c8 ignore stop */
           resolve();
         });
       });
@@ -719,6 +756,7 @@ async function postTicket(data) {
     lastIdentityRes[1][0].id,
     data.body.comment,
   ]);
+  /* c8 ignore start */
   if (resCommentInsert[0]) {
     console.log(resCommentInsert[0]);
     return {
@@ -726,6 +764,7 @@ async function postTicket(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   return {
@@ -788,6 +827,7 @@ async function deleteTicketWithId(data) {
                                 FROM printstickets
                                 WHERE i_id = ?`;
   const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelect, [data.params.id]);
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -795,6 +835,7 @@ async function deleteTicketWithId(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resGetUserTicket[1].length < 1) {
     return {
       type: "code",
@@ -816,12 +857,14 @@ async function deleteTicketWithId(data) {
                         SET b_isDeleted = '1'
                         WHERE i_id = ?;`;
   const resDeleteTicket = await data.app.executeQuery(data.app.db, queryUpdate, [data.params.id]);
+  /* c8 ignore start */
   if (resDeleteTicket[0]) {
     console.log(resDeleteTicket[0]);
     return {
       type: "code",
       code: 500,
     };
+    /* c8 ignore stop */
   } else if (resDeleteTicket[0] || resDeleteTicket[1].changedRows !== 1) {
     return {
       type: "code",
@@ -912,6 +955,7 @@ async function putTicketNewProjectType(data) {
             FROM gd_ticketprojecttype
             WHERE i_id = ?`;
   const resTestIfRoleExist = await data.app.executeQuery(data.app.db, querySelect, [data.query.projecttype]);
+  /* c8 ignore start */
   if (resTestIfRoleExist[0]) {
     console.log(resTestIfRoleExist[0]);
     return {
@@ -919,11 +963,13 @@ async function putTicketNewProjectType(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryUpdate = `UPDATE printstickets
             SET i_projecttype = ?
             WHERE i_id = ?`;
   const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [data.query.projecttype, data.params.id]);
+  /* c8 ignore start */
   if (resUpdate[0]) {
     console.log(resUpdate[0]);
     return {
@@ -931,6 +977,7 @@ async function putTicketNewProjectType(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (resUpdate[1].changedRows < 1) {
     return {
@@ -947,6 +994,7 @@ async function putTicketNewProjectType(data) {
     data.params.id,
     data.query.projecttype,
   ]);
+  /* c8 ignore start */
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -954,6 +1002,7 @@ async function putTicketNewProjectType(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
@@ -1041,6 +1090,7 @@ async function putTicketNewStatus(data) {
                          SET i_status = ?
                          WHERE i_id = ?`;
   const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [idStatus, idTicket]);
+  /* c8 ignore start */
   if (resUpdate[0]) {
     console.log(resUpdate[0]);
     return {
@@ -1048,6 +1098,7 @@ async function putTicketNewStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (resUpdate[1].changedRows < 1) {
     return {
@@ -1060,6 +1111,7 @@ async function putTicketNewStatus(data) {
              (i_idUser, i_idTicket, v_action, v_newValue)
              VALUES (?, ?, 'upd_status', ?)`;
   const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, idTicket, idStatus]);
+  /* c8 ignore start */
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -1067,6 +1119,7 @@ async function putTicketNewStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
@@ -1133,6 +1186,7 @@ async function putTicketCancelStatus(data) {
                         FROM printstickets
                         WHERE i_id = ?`;
   const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelectTicket, [data.params.id]);
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -1140,6 +1194,7 @@ async function putTicketCancelStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
     return {
@@ -1156,6 +1211,7 @@ async function putTicketCancelStatus(data) {
                           )
                         WHERE i_id = ?`;
   const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [idTicket]);
+  /* c8 ignore start */
   if (resUpdate[0]) {
     console.log(resUpdate[0]);
     return {
@@ -1163,6 +1219,7 @@ async function putTicketCancelStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (resUpdate[1].changedRows < 1) {
     return {
@@ -1179,6 +1236,7 @@ async function putTicketCancelStatus(data) {
               WHERE b_isCancel = 1
               ))`;
   const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, idTicket]);
+  /* c8 ignore start */
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -1186,6 +1244,7 @@ async function putTicketCancelStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
@@ -1243,6 +1302,7 @@ async function getHighDemand(data) {
               AND pt.dt_creationdate < CURDATE();`;
 
   const resGet = await data.app.executeQuery(data.app.db, queryGet, []);
+  /* c8 ignore start */
   if (resGet[0]) {
     console.log(resGet[0]);
     return {
@@ -1250,6 +1310,7 @@ async function getHighDemand(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "json",
@@ -1258,6 +1319,7 @@ async function getHighDemand(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/ticket/highDemand/", async function (req, res) {
@@ -1368,3 +1430,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */
