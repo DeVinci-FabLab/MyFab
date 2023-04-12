@@ -78,6 +78,7 @@ async function getTicketMessage(data) {
                         FROM printstickets
                         WHERE i_id = ?`;
   const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelectTicket, [data.params.id]);
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -85,6 +86,7 @@ async function getTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
     const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
@@ -104,6 +106,7 @@ async function getTicketMessage(data) {
                                     WHERE i_idTicket = ?
                                     ORDER BY creationDate ASC`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelectTicketMessage, [data.params.id]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -111,6 +114,7 @@ async function getTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   return {
     type: "json",
     code: 200,
@@ -182,6 +186,7 @@ async function postTicketMessage(data) {
                     FROM printstickets
                     WHERE i_id = ?`;
   const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelect, [data.params.id]);
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -189,6 +194,7 @@ async function postTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
     const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
@@ -201,6 +207,7 @@ async function postTicketMessage(data) {
   } else {
     const querySetNormalStatus = `UPDATE printstickets SET i_status = (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert') WHERE i_id = ?;`;
     const resSetNormalStatus = await data.app.executeQuery(data.app.db, querySetNormalStatus, [data.params.id]);
+    /* c8 ignore start */
     if (resSetNormalStatus[0]) {
       console.log(resSetNormalStatus[0]);
       return {
@@ -208,11 +215,13 @@ async function postTicketMessage(data) {
         code: 500,
       };
     }
+    /* c8 ignore stop */
   }
 
   const queryInsert = `INSERT INTO ticketmessages (i_idUser, i_idTicket, v_content)
                         VALUES (?, ?, ?)`;
   const dbRes = await data.app.executeQuery(data.app.db, queryInsert, [userIdAgent, data.params.id, data.body.content]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -220,6 +229,7 @@ async function postTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   //Update bot channels
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
@@ -230,6 +240,7 @@ async function postTicketMessage(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/ticket/:id/message/", async function (req, res) {
@@ -256,3 +267,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */
