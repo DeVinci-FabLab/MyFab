@@ -200,6 +200,31 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(response.type).toBe("code");
   });
 
+  test("400fileNotExist", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
   test("403unauthorized", async () => {
     //Execute
     let requestNumber = 0;
@@ -234,7 +259,7 @@ describe("GET /api/ticket/:id/file/", () => {
   });
 });
 
-describe("GET /api/file/:id/", () => {
+describe("GET /api/file/:id/getToken/", () => {
   test("200myFabAgent", async () => {
     //Execute
     const data = {

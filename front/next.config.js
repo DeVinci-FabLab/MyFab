@@ -19,7 +19,7 @@ module.exports = {
       ? process.env.API.split("")[process.env.API.length - 1] === "/"
         ? process.env.API.substring(0, process.env.API.length - 1)
         : process.env.API
-      : null,
+      : "http://localhost:5000",
     BASE_PATH: process.env.BASE_PATH ? process.env.BASE_PATH : "",
   },
 };

@@ -44,6 +44,88 @@ describe("POST /user/register/", () => {
     expect(response.type).toBe("code");
   });
 
+  test("200language", async () => {
+    //Execute
+    let requestNumber = 0;
+    const data = {
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, []];
+            case 2:
+              return [null, { affectedRows: 1 }];
+            case 3:
+              return [null, [{ id: 1 }]];
+            case 4:
+              return [null, []];
+            case 5:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
+        io,
+      },
+      body: {
+        firstName: "test",
+        lastName: "200",
+        email: "test@test.fr",
+        password: "test",
+        language: "fr",
+      },
+      sendMailFunction: {
+        sendMail: (email, title, body) => {},
+      },
+    };
+    const response = await require("../../../api/user/register").postRegister(data);
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("code");
+  });
+
+  test("200sendMail", async () => {
+    //Execute
+    let requestNumber = 0;
+    const data = {
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, []];
+            case 2:
+              return [null, { affectedRows: 1 }];
+            case 3:
+              return [null, [{ id: 1 }]];
+            case 4:
+              return [null, []];
+            case 5:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
+        io,
+      },
+      body: {
+        firstName: "test",
+        lastName: "200",
+        email: "test@test.fr",
+        password: "test",
+        sendMail: false,
+      },
+      sendMailFunction: {
+        sendMail: (email, title, body) => {},
+      },
+    };
+    const response = await require("../../../api/user/register").postRegister(data);
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("code");
+  });
+
   test("400noBody", async () => {
     //Execute
     const data = {
