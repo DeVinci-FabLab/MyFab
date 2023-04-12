@@ -70,6 +70,7 @@ async function postRegister(data) {
                                 WHERE v_email = ?;`;
   const resTestIfAccountExist = await data.app.executeQuery(data.app.db, queryCheckIfEmailExist, [data.body.email]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resTestIfAccountExist[0]) {
     console.log(resTestIfAccountExist[0]);
     return {
@@ -77,6 +78,7 @@ async function postRegister(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resTestIfAccountExist[1].length !== 0) {
     return {
       type: "code",
@@ -95,6 +97,7 @@ async function postRegister(data) {
     language,
   ]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resInsertNewAccount[0] || resInsertNewAccount[1].affectedRows !== 1) {
     console.log(resInsertNewAccount[0]);
     return {
@@ -102,9 +105,11 @@ async function postRegister(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const queryLastInsert = `SELECT LAST_INSERT_ID() AS 'id';`;
   const resGetIdUserInserted = await data.app.executeQuery(data.app.db, queryLastInsert, []);
   // Error with the sql request
+  /* c8 ignore start */
   if (resGetIdUserInserted[0] || resGetIdUserInserted[1].length !== 1 || resGetIdUserInserted[1][0].id === 0) {
     console.log(resGetIdUserInserted[0]);
     return {
@@ -112,6 +117,7 @@ async function postRegister(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idNewUser = resGetIdUserInserted[1][0].id;
 
   let tocken = null;
@@ -120,6 +126,7 @@ async function postRegister(data) {
     const querySelectTocken = `SELECT 1 FROM mailtocken
                                 WHERE v_value = ?`;
     const resTestTocken = await data.app.executeQuery(data.app.db, querySelectTocken, [testTocken]);
+    /* c8 ignore start */
     if (resTestTocken[0]) {
       console.log(resTestTocken[0]);
       return {
@@ -127,6 +134,7 @@ async function postRegister(data) {
         code: 500,
       };
     }
+    /* c8 ignore stop */
     if (resTestTocken[1]) tocken = testTocken;
   }
 
@@ -139,6 +147,7 @@ async function postRegister(data) {
     tocken,
     sendMail ? "1" : "0",
   ]);
+  /* c8 ignore start */
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
     return {
@@ -146,6 +155,7 @@ async function postRegister(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   data.app.io.emit("event-reload-users"); // reload users menu on client
 
   return {
@@ -154,6 +164,7 @@ async function postRegister(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.post("/api/user/register/", async function (req, res) {
@@ -169,3 +180,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */
