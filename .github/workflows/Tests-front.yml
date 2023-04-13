@@ -30,9 +30,8 @@ jobs:
       - name: Install dependencies
         run: |
           cd front/ && npm install
-      - name: Run build
-        run: |
-          cd front/ && npm run build
-      - name: Run tests
-        run: |
-          cd front/ && npm run cy:server
+      - name: Test front
+        uses: cypress-io/github-action@v5
+        with:
+          build: cd front/ && npm run build
+          start: cd front/ && npm run start
