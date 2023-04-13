@@ -27,15 +27,10 @@ jobs:
           echo ADSF_ISSUER=http://app.example.com >> .env
           echo ADFS_FRONT_URL=http://localhost:3000/test/ >> .env
           ls -lA .env
-      - name: Install dependencies
-        run: |
-          cd front/ && npm install
-      - name: Install dependencies
-        run: |
-          cd front/ && npm run build
       - name: Test front
         uses: cypress-io/github-action@v5
         with:
+          install-command: npm install
           build: npm run build
           start: npm run start
           working-directory: front
