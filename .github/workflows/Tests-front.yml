@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: |
           cd front/ && npm install
+      - name: Install dependencies
+        run: |
+          cd front/ && pwd
       - name: Test front
         uses: cypress-io/github-action@v5
         with:
