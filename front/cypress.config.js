@@ -20,5 +20,5 @@ module.exports = defineConfig({
       : "",
     IS_TEST_MODE: process.env.IS_TEST_MODE ? process.env.IS_TEST_MODE : false,
   },
-  videoCompression: process.env.VIDEO_COMPRESSION ? process.env.VIDEO_COMPRESSION : true,
+  videoCompression: process.env.VIDEO_COMPRESSION ? false : 15,
 });
