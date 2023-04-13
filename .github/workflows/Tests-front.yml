@@ -36,5 +36,6 @@ jobs:
       - name: Test front
         uses: cypress-io/github-action@v5
         with:
-          build: npm --prefix front/ run build
-          start: npm --prefix front/ run start
+          build: npm run build
+          start: npm run start
+          working-directory: front
