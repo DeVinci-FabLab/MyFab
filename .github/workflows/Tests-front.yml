@@ -34,3 +34,6 @@ jobs:
           build: npm run build
           start: npm run start
           working-directory: front
+          env: |
+            IS_TEST_MODE=true
+            VIDEO_COMPRESSION=false
