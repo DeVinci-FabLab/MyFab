@@ -21,5 +21,6 @@ module.exports = {
         : process.env.API
       : "http://localhost:5000",
     BASE_PATH: process.env.BASE_PATH ? process.env.BASE_PATH : "",
+    IS_TEST_MODE: process.env.IS_TEST_MODE ? process.env.IS_TEST_MODE : false,
   },
 };

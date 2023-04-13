@@ -13,7 +13,10 @@ export default function Error() {
         />
         <h1 className="font-medium text-xl text-indigo-700">Oups une erreur est survenue...</h1>
         <p>La page que vous recherchez actuellement n'existe pas.</p>
-        <button onClick={() => (window.location.href = process.env.BASE_PATH + "/")} className="bg-indigo-700 text-white p-2 rounded-md hover:bg-indigo-500 mt-5">
+        <button
+          onClick={() => (window.location.href = process.env.BASE_PATH + "/")}
+          className="bg-indigo-700 text-white p-2 rounded-md hover:bg-indigo-500 mt-5 back-button"
+        >
           Retourner sur la page d'accueil
         </button>
       </div>
