@@ -19,7 +19,7 @@ jobs:
           cd back/ && export NODE_OPTIONS=--no-experimental-fetch && npm test 2>> results.txt >> coverage.txt
       - name: Run test
         run: |
-          cd /home/runner/work/ && grep -rni step
+          cd /home/runner/work/ && grep -rni pass
       - name: Create GITHUB_STEP_SUMMARY
         run: |
           sed '0,/-----/{/-----/d}' coverage.txt > coverage.txt && sed '$ d' coverage.txt > $GITHUB_STEP_SUMMARY && cat results.txt >> $GITHUB_STEP_SUMMARY
