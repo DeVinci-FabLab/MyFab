@@ -12,7 +12,7 @@ jobs:
           echo PORT_FRONT=3000 > front/.env
           echo PORT_BACK=5000 >> front/.env
           echo API=http://localhost:5000 >> front/.env
-          echo BASE_PATH=/dvfl >> front/.env
+          echo BASE_PATH=/test >> front/.env
           echo IS_TEST_MODE=true >> front/.env
           echo VIDEO_COMPRESSION=false >> front/.env
           echo DB_HOST=localhost >> front/.env
@@ -33,6 +33,5 @@ jobs:
           install-command: npm install
           build: npm run build
           start: npm run start
-          wait-on: "http://localhost:3000"
+          wait-on: "http://localhost:3000/test"
           working-directory: front
-          env: IS_TEST_MODE=true,VIDEO_COMPRESSION=false
