@@ -27,7 +27,10 @@ jobs:
           ls -lA .env
       - name: Build back
         run: |
-          docker-compose build back | grep '--->\|Step' >> $GITHUB_STEP_SUMMARY
+          docker-compose build back
+      - name: Get metrics
+        run: |
+          docker images >> $GITHUB_STEP_SUMMARY
 
   Build-front:
     runs-on: ubuntu-latest
@@ -54,4 +57,7 @@ jobs:
           ls -lA .env
       - name: Build front
         run: |
-          docker-compose build front | grep '--->\|Step' >> $GITHUB_STEP_SUMMARY
+          docker-compose build front
+      - name: Get metrics
+        run: |
+          docker images >> $GITHUB_STEP_SUMMARY
