@@ -1,0 +1,15 @@
+name: Linter for MyFab
+run-name: "Linter : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
+on: [push]
+jobs:
+  Back:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install linter
+        run: |
+          cd back/ && npm install --save-dev --save-exact prettier
+      - name: Check code
+        run: |
+          cd back/ && if npx prettier -c . > /dev/null ; then echo "Linter back is ok" >> $GITHUB_STEP_SUMMARY; else echo "Linter back failed" >> $GITHUB_STEP_SUMMARY && npx prettier -c . >> $GITHUB_STEP_SUMMARY; fi
