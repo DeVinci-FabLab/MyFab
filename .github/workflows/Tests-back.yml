@@ -19,4 +19,4 @@ jobs:
           cd back/ && export NODE_OPTIONS=--no-experimental-fetch && npm test 2>> results.txt >> coverage.txt
       - name: Run test
         run: |
-          sed '0,/-----/{/-----/d}' back/coverage.txt > back/coverage.txt && sed '$ d' back/coverage.txt > $GITHUB_STEP_SUMMARY && cat results.txt >> $GITHUB_STEP_SUMMARY
+          sed '0,/-----/{/-----/d}' coverage.txt > coverage.txt && sed '$ d' coverage.txt > $GITHUB_STEP_SUMMARY && cat results.txt >> $GITHUB_STEP_SUMMARY
