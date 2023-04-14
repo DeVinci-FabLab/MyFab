@@ -27,7 +27,7 @@ jobs:
           ls -lA .env
       - name: Build back
         run: |
-          docker-compose build back
+          docker-compose build back >> $GITHUB_STEP_SUMMARY
 
   Build-front:
     runs-on: ubuntu-latest
@@ -54,4 +54,4 @@ jobs:
           ls -lA .env
       - name: Build front
         run: |
-          docker-compose build front
+          docker-compose build front >> $GITHUB_STEP_SUMMARY

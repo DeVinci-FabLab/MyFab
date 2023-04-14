@@ -16,4 +16,4 @@ jobs:
           ls -lA back/.env
       - name: Run test
         run: |
-          cd back/ && export NODE_OPTIONS=--no-experimental-fetch && npm test
+          cd back/ && export NODE_OPTIONS=--no-experimental-fetch && npm test >> $GITHUB_STEP_SUMMARY

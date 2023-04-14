@@ -2,7 +2,7 @@ name: Test Front-end
 run-name: "Front : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
 on: [push]
 jobs:
-  Test-end-to-end:
+  End-to-end:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
