@@ -30,7 +30,11 @@ jobs:
           docker-compose build back
       - name: Get metrics
         run: |
-          docker images | sed 's/  */ /g' | cut -d ' ' -f1,2,7 | sed 's/ /|/g' |sed 's/REPOSITORY|TAG/REPOSITORY|TAG|SIZE\n----------|---|----/g' >> $GITHUB_STEP_SUMMARY
+          IMAGE_NAME=$(docker images | sed 's/  */ /g' | grep myfab_front | cut -d ' ' -f1,2)
+          IMAGE_SIZE=$(docker images | sed 's/  */ /g' | grep myfab_front | rev | cut -d ' ' -f1 | rev)
+          NODE_SIZE=$(docker images | sed 's/  */ /g' | grep "node 18.13.0" | rev | cut -d ' ' -f1 | rev)
+          IMAGES=$(echo -e "node 18.13.0 $NODE_SIZE\n$IMAGE_NAME $IMAGE_SIZE" | sed 's/ /|/g')
+          echo -e "REPOSITORY|TAG|SIZE\n----------|---|----\n$IMAGES">> $GITHUB_STEP_SUMMARY
 
   Build-front:
     runs-on: ubuntu-latest
@@ -60,4 +64,8 @@ jobs:
           docker-compose build front
       - name: Get metrics
         run: |
-          docker images | sed 's/  */ /g' | cut -d ' ' -f1,2,7 | sed 's/ /|/g' |sed 's/REPOSITORY|TAG/REPOSITORY|TAG|SIZE\n----------|---|----/g' >> $GITHUB_STEP_SUMMARY
+          IMAGE_NAME=$(docker images | sed 's/  */ /g' | grep myfab_front | cut -d ' ' -f1,2)
+          IMAGE_SIZE=$(docker images | sed 's/  */ /g' | grep myfab_front | rev | cut -d ' ' -f1 | rev)
+          NODE_SIZE=$(docker images | sed 's/  */ /g' | grep "node 18.13.0" | rev | cut -d ' ' -f1 | rev)
+          IMAGES=$(echo -e "node 18.13.0 $NODE_SIZE\n$IMAGE_NAME $IMAGE_SIZE" | sed 's/ /|/g')
+          echo -e "REPOSITORY|TAG|SIZE\n----------|---|----\n$IMAGES">> $GITHUB_STEP_SUMMARY
