@@ -35,6 +35,6 @@ jobs:
           start: npm run start
           wait-on: "http://localhost:3000"
           working-directory: front
-          env: |
+          env:
             IS_TEST_MODE=true
             VIDEO_COMPRESSION=false
