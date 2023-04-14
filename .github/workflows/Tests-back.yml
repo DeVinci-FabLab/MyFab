@@ -14,9 +14,7 @@ jobs:
         run: |
           echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> back/.env
           ls -lA back/.env
-      - name: Run test
+      - name: Create summary
         run: |
           cd back/ && export NODE_OPTIONS=--no-experimental-fetch && npm test 2>> /tmp/results.txt >> /tmp/coverage0.txt
-      - name: Create GITHUB_STEP_SUMMARY
-        run: |
-          sed '0,/-----/{/-----/d}' /tmp/coverage0.txt > /tmp/coverage1.txt && sed '$ d' /tmp/coverage1.txt > $GITHUB_STEP_SUMMARY && echo -e "" >> $GITHUB_STEP_SUMMARY && cat /tmp/results.txt >> $GITHUB_STEP_SUMMARY
+          awk 'NR>5' /tmp/coverage0.txt > /tmp/coverage1.txt && sed '$ d' /tmp/coverage1.txt > $GITHUB_STEP_SUMMARY && echo -e "" >> $GITHUB_STEP_SUMMARY && cat /tmp/results.txt >> $GITHUB_STEP_SUMMARY
