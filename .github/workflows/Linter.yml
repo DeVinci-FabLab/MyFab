@@ -12,4 +12,4 @@ jobs:
           cd back/ && npm install --save-dev --save-exact prettier
       - name: Check code
         run: |
-          cd back/ && if npx prettier -c . > /dev/null ; then echo "Linter back is ok" >> $GITHUB_STEP_SUMMARY; else echo "Linter back failed" >> $GITHUB_STEP_SUMMARY && npx prettier -c . >> $GITHUB_STEP_SUMMARY; fi
+          cd back/ && if npx prettier -c . ; then echo "Linter back is ok" >> $GITHUB_STEP_SUMMARY; else echo -e "Linter back failed\n```" >> $GITHUB_STEP_SUMMARY && npx prettier -c . 2>> $GITHUB_STEP_SUMMARY && echo -e "```"; fi
