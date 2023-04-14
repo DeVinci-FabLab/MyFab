@@ -33,6 +33,7 @@ jobs:
           install-command: npm install
           build: npm run build
           start: npm run start
+          wait-on: "http://localhost:3000"
           working-directory: front
           env: |
             IS_TEST_MODE=true
