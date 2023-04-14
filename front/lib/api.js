@@ -6,7 +6,6 @@ export function getURL(path = "") {
 }
 
 export async function fetchAPIAuth(path, jwt) {
-  console.log(process.env);
   if (process.env.IS_TEST_MODE) {
     return mockApi(path, jwt);
   } else {
