@@ -24,7 +24,12 @@ const fs = require("fs");
 const allowedFileType = ["image"];
 module.exports.getImage = getImage;
 async function getImage(data) {
-  if (!data.params || !data.params.type || !data.params.tag || !allowedFileType.includes(data.params.type)) {
+  if (
+    !data.params ||
+    !data.params.type ||
+    !data.params.tag ||
+    !allowedFileType.includes(data.params.type)
+  ) {
     return {
       type: "code",
       code: 400,
@@ -50,10 +55,18 @@ async function getImage(data) {
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/files/:type/:tag", async function (req, res) {
-    const data = await require("../../functions/apiActions").prepareData(app, req, res);
+    const data = await require("../../functions/apiActions").prepareData(
+      app,
+      req,
+      res
+    );
     try {
       const result = await getImage(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/files/:type/:tag");
       console.log(error);

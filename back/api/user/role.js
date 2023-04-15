@@ -79,7 +79,11 @@ async function getRoles(data) {
                          b_isProtected AS 'isProtected'
                          FROM gd_roles
                          ORDER BY i_id ASC`;
-  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelect, []);
+  const resTestIfCorrelationExist = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    []
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
@@ -155,7 +159,11 @@ async function getRolesForUserById(data) {
       code: 401,
     };
   }
-  const authResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authResult) {
     return {
       type: "code",
@@ -174,7 +182,11 @@ async function getRolesForUserById(data) {
                          ON rolescorrelation.i_idRole = gd_roles.i_id
                          WHERE rolescorrelation.i_idUser = ?
                          ORDER BY gd_roles.i_id ASC`;
-  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelect, [userId]);
+  const resTestIfCorrelationExist = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    [userId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
@@ -246,7 +258,11 @@ async function getRolesForActualUser(data) {
                          INNER JOIN gd_roles ON rolescorrelation.i_idRole = gd_roles.i_id
                          WHERE rolescorrelation.i_idUser = ?
                          ORDER BY gd_roles.i_id ASC`;
-  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelect, [userId]);
+  const resTestIfCorrelationExist = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    [userId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
@@ -325,14 +341,22 @@ async function postAddRoleForUser(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authViewResult) {
     return {
       type: "code",
       code: 401,
     };
   }
-  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "changeUserRole");
+  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "changeUserRole"
+  );
   if (!authChangeRoleResult) {
     return {
       type: "code",
@@ -353,7 +377,11 @@ async function postAddRoleForUser(data) {
                          FROM rolescorrelation
                          WHERE i_idUser = ?
                          AND i_idRole = ?;`;
-  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelectIfExist, [userId, roleId]);
+  const resTestIfCorrelationExist = await data.app.executeQuery(
+    data.app.db,
+    querySelectIfExist,
+    [userId, roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
@@ -375,7 +403,11 @@ async function postAddRoleForUser(data) {
                              b_isProtected AS 'isProtected'
                              FROM gd_roles
                              WHERE i_id = ? ;`;
-  const resIsProtected = await data.app.executeQuery(data.app.db, queryIfProtected, [roleId]);
+  const resIsProtected = await data.app.executeQuery(
+    data.app.db,
+    queryIfProtected,
+    [roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resIsProtected[0]) {
@@ -393,11 +425,12 @@ async function postAddRoleForUser(data) {
     };
   }
   if (resIsProtected[1][0].isProtected) {
-    const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(
-      data.app,
-      userIdAgent,
-      "changeUserProtectedRole"
-    );
+    const authChangeProtectedRoleResult =
+      await data.userAuthorization.validateUserAuth(
+        data.app,
+        userIdAgent,
+        "changeUserProtectedRole"
+      );
     if (!authChangeProtectedRoleResult) {
       return {
         type: "code",
@@ -408,13 +441,17 @@ async function postAddRoleForUser(data) {
 
   const queryInsertCorrelation = `INSERT INTO rolescorrelation (i_idUser, i_idRole)
                                      VALUES (?, ?);`;
-  const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryInsertCorrelation, [
-    userId,
-    roleId,
-  ]);
+  const resInsertNewRoleCorrelation = await data.app.executeQuery(
+    data.app.db,
+    queryInsertCorrelation,
+    [userId, roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
-  if (resInsertNewRoleCorrelation[0] || resInsertNewRoleCorrelation[1].affectedRows !== 1) {
+  if (
+    resInsertNewRoleCorrelation[0] ||
+    resInsertNewRoleCorrelation[1].affectedRows !== 1
+  ) {
     console.log(resInsertNewRoleCorrelation[0]);
     return {
       type: "code",
@@ -425,7 +462,11 @@ async function postAddRoleForUser(data) {
 
   const queryInsertLog = `INSERT INTO log_roleschange (i_idUserAdmin, i_idUserTarget, v_actionType, i_idRole)
                              VALUES (?, ?, 'ADD', ?);`;
-  const resInsertNewLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, userId, roleId]);
+  const resInsertNewLog = await data.app.executeQuery(
+    data.app.db,
+    queryInsertLog,
+    [userIdAgent, userId, roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resInsertNewLog[0] || resInsertNewLog[1].affectedRows !== 1) {
@@ -505,14 +546,22 @@ async function deleteRemoveRoleForUser(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authViewResult) {
     return {
       type: "code",
       code: 401,
     };
   }
-  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "manageUser");
+  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "manageUser"
+  );
   if (!authChangeRoleResult) {
     return {
       type: "code",
@@ -533,10 +582,11 @@ async function deleteRemoveRoleForUser(data) {
                                      FROM rolescorrelation
                                      WHERE i_idUser = ?
                                      AND i_idRole = ?`;
-  const resTestIfCorrelationExist = await data.app.executeQuery(data.app.db, querySelectIfCorrelation, [
-    userId,
-    roleId,
-  ]);
+  const resTestIfCorrelationExist = await data.app.executeQuery(
+    data.app.db,
+    querySelectIfCorrelation,
+    [userId, roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfCorrelationExist[0]) {
@@ -557,7 +607,11 @@ async function deleteRemoveRoleForUser(data) {
   const querySelectIfProtected = `SELECT b_isProtected AS 'isProtected'
                                      FROM gd_roles
                                      WHERE i_id = ?`;
-  const resIsProtected = await data.app.executeQuery(data.app.db, querySelectIfProtected, [roleId]);
+  const resIsProtected = await data.app.executeQuery(
+    data.app.db,
+    querySelectIfProtected,
+    [roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resIsProtected[0]) {
@@ -570,11 +624,12 @@ async function deleteRemoveRoleForUser(data) {
   /* c8 ignore stop */
 
   if (resIsProtected[1][0].isProtected) {
-    const authChangeProtectedRoleResult = await data.userAuthorization.validateUserAuth(
-      data.app,
-      userIdAgent,
-      "changeUserProtectedRole"
-    );
+    const authChangeProtectedRoleResult =
+      await data.userAuthorization.validateUserAuth(
+        data.app,
+        userIdAgent,
+        "changeUserProtectedRole"
+      );
     if (!authChangeProtectedRoleResult) {
       return {
         type: "code",
@@ -585,12 +640,17 @@ async function deleteRemoveRoleForUser(data) {
 
   const queryDelete = `DELETE FROM rolescorrelation
                          WHERE i_id = ?`;
-  const resInsertNewRoleCorrelation = await data.app.executeQuery(data.app.db, queryDelete, [
-    resTestIfCorrelationExist[1][0].id,
-  ]);
+  const resInsertNewRoleCorrelation = await data.app.executeQuery(
+    data.app.db,
+    queryDelete,
+    [resTestIfCorrelationExist[1][0].id]
+  );
   // Error with the sql request
   /* c8 ignore start */
-  if (resInsertNewRoleCorrelation[0] || resInsertNewRoleCorrelation[1].affectedRows !== 1) {
+  if (
+    resInsertNewRoleCorrelation[0] ||
+    resInsertNewRoleCorrelation[1].affectedRows !== 1
+  ) {
     console.log(resInsertNewRoleCorrelation[0]);
     return {
       type: "code",
@@ -601,7 +661,11 @@ async function deleteRemoveRoleForUser(data) {
 
   const queryInsert = `INSERT INTO log_roleschange (i_idUserAdmin, i_idUserTarget, v_actionType, i_idRole)
                          VALUES (?, ?, 'DEL', ?);`;
-  const resInsertNewLog = await data.app.executeQuery(data.app.db, queryInsert, [userIdAgent, userId, roleId]);
+  const resInsertNewLog = await data.app.executeQuery(
+    data.app.db,
+    queryInsert,
+    [userIdAgent, userId, roleId]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resInsertNewLog[0] || resInsertNewLog[1].affectedRows !== 1) {
@@ -625,9 +689,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/role/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getRoles(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/role/");
       console.log(error);
@@ -637,9 +709,17 @@ async function startApi(app) {
 
   app.get("/api/user/:idUser/role/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getRolesForUserById(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/user/:idUser/role/");
       console.log(error);
@@ -649,9 +729,17 @@ async function startApi(app) {
 
   app.get("/api/user/role/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getRolesForActualUser(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/user/role/");
       console.log(error);
@@ -661,9 +749,17 @@ async function startApi(app) {
 
   app.post("/api/user/:idUser/role/:idRole/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await postAddRoleForUser(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/user/:idUser/role/:idRole/");
       console.log(error);
@@ -673,9 +769,17 @@ async function startApi(app) {
 
   app.delete("/api/user/:idUser/role/:idRole/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await deleteRemoveRoleForUser(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: DELETE /api/user/:idUser/role/:idRole/");
       console.log(error);

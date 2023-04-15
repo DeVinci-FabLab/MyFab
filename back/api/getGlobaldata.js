@@ -189,7 +189,9 @@ async function getPrinter(data) {
 
 module.exports.getMyFabOpen = getMyFabOpen;
 async function getMyFabOpen(data) {
-  const myFabOpen = JSON.parse(fs.readFileSync(__dirname + "/../data/serviceData.json")).myFabOpen;
+  const myFabOpen = JSON.parse(
+    fs.readFileSync(__dirname + "/../data/serviceData.json")
+  ).myFabOpen;
   return {
     type: "json",
     code: 200,
@@ -227,7 +229,11 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/status", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getStatus(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -239,7 +245,11 @@ async function startApi(app) {
 
   app.get("/api/projectType/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getProjectType(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -251,7 +261,11 @@ async function startApi(app) {
 
   app.get("/api/printer/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getPrinter(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -263,7 +277,11 @@ async function startApi(app) {
 
   app.get("/api/version/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getVersion(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -275,7 +293,11 @@ async function startApi(app) {
 
   app.get("/api/myFabOpen/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getMyFabOpen(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {

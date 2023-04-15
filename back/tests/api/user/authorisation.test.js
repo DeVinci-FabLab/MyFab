@@ -16,7 +16,9 @@ describe("GET /api/user/authorization/", () => {
       },
       app: {},
     };
-    const response = await require("../../../api/user/authorisation").getAuth(data);
+    const response = await require("../../../api/user/authorisation").getAuth(
+      data
+    );
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
@@ -28,7 +30,9 @@ describe("GET /api/user/authorization/", () => {
   test("401userUnauthenticated", async () => {
     const data = {};
 
-    const response = await require("../../../api/user/authorisation").getAuth(data);
+    const response = await require("../../../api/user/authorisation").getAuth(
+      data
+    );
 
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");

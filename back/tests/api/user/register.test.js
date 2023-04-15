@@ -39,7 +39,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
   });
@@ -80,7 +82,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
   });
@@ -121,7 +125,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
   });
@@ -136,7 +142,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -156,7 +164,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -176,7 +186,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -196,7 +208,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -216,7 +230,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -237,7 +253,9 @@ describe("POST /user/register/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -262,7 +280,9 @@ describe("POST /user/register/", () => {
       },
     };
     await require("../../../api/user/register").postRegister(data);
-    const response = await require("../../../api/user/register").postRegister(data);
+    const response = await require("../../../api/user/register").postRegister(
+      data
+    );
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
   });

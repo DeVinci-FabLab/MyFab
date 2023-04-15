@@ -26,7 +26,9 @@ describe("GET /api/projectType/", () => {
         },
       },
     };
-    const response = await require("../../api/getGlobaldata").getProjectType(data);
+    const response = await require("../../api/getGlobaldata").getProjectType(
+      data
+    );
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
@@ -68,7 +70,9 @@ describe("GET /api/version/", () => {
 describe("GET /api/myFabOpen/", () => {
   test("200", async () => {
     const data = {};
-    const response = await require("../../api/getGlobaldata").getMyFabOpen(data);
+    const response = await require("../../api/getGlobaldata").getMyFabOpen(
+      data
+    );
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");

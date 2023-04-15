@@ -7,7 +7,9 @@ const fs = require("fs");
 const app = express();
 require("dotenv").config();
 const server = require("http").Server(app);
-const io = require("socket.io")(server, { transports: ["websocket", "polling"] });
+const io = require("socket.io")(server, {
+  transports: ["websocket", "polling"],
+});
 app.io = io;
 
 app.use(
@@ -45,7 +47,8 @@ app.use(
     },
     {
       key: "Access-Control-Allow-Headers",
-      value: "Origin, Content-Type, X-Auth-Token, dvflCookie, Authorization, specialCode",
+      value:
+        "Origin, Content-Type, X-Auth-Token, dvflCookie, Authorization, specialCode",
     },
   ])
 );
@@ -92,7 +95,9 @@ async function start() {
   console.log();
   console.log("Server is now listening port " + port);
   if (process.env.SHOWSWAGGER === "true")
-    console.log("Swagger documentation available here : " + process.env.API + "/api-docs");
+    console.log(
+      "Swagger documentation available here : " + process.env.API + "/api-docs"
+    );
 
   fs.readdirSync(__dirname + "/functions/cron/").forEach(async (file) => {
     const cron = require(__dirname + "/functions/cron/" + file);

@@ -14,7 +14,9 @@ describe("PUT /user/password/", () => {
         newPassword: "newPassword",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordMe(data);
+    const response = await require("../../../api/user/password").putPasswordMe(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -29,7 +31,9 @@ describe("PUT /user/password/", () => {
         cookiesList: {},
       },
     };
-    const response = await require("../../../api/user/password").putPasswordMe(data);
+    const response = await require("../../../api/user/password").putPasswordMe(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -47,7 +51,9 @@ describe("PUT /user/password/", () => {
         newPassword: "newPassword",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordMe(data);
+    const response = await require("../../../api/user/password").putPasswordMe(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -65,7 +71,9 @@ describe("PUT /user/password/", () => {
         actualPassword: "string",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordMe(data);
+    const response = await require("../../../api/user/password").putPasswordMe(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -83,7 +91,9 @@ describe("PUT /user/password/", () => {
         newPassword: "newPassword",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordMe(data);
+    const response = await require("../../../api/user/password").putPasswordMe(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -105,7 +115,9 @@ describe("PUT /user/password/", () => {
         newPassword: "newPassword",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordMe(data);
+    const response = await require("../../../api/user/password").putPasswordMe(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);
@@ -136,7 +148,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -159,7 +172,8 @@ describe("PUT /user/password/:id", () => {
         newPassword: "newPassword",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -183,7 +197,8 @@ describe("PUT /user/password/:id", () => {
       },
       params: {},
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -209,7 +224,8 @@ describe("PUT /user/password/:id", () => {
         id: "userDataTarget",
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -232,7 +248,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -256,7 +273,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -281,7 +299,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -310,7 +329,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -339,7 +359,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -368,7 +389,8 @@ describe("PUT /user/password/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/user/password").putPasswordUser(data);
+    const response =
+      await require("../../../api/user/password").putPasswordUser(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -409,7 +431,8 @@ describe("POST /api/user/forgottenPassword/", () => {
         email: "test@test.com",
       },
     };
-    const response = await require("../../../api/user/password").postForgottenPassword(data);
+    const response =
+      await require("../../../api/user/password").postForgottenPassword(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -449,7 +472,8 @@ describe("POST /api/user/forgottenPassword/", () => {
         sendMail: false,
       },
     };
-    const response = await require("../../../api/user/password").postForgottenPassword(data);
+    const response =
+      await require("../../../api/user/password").postForgottenPassword(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -478,7 +502,8 @@ describe("POST /api/user/forgottenPassword/", () => {
         email: "user@wrongMail.com",
       },
     };
-    const response = await require("../../../api/user/password").postForgottenPassword(data);
+    const response =
+      await require("../../../api/user/password").postForgottenPassword(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -501,7 +526,8 @@ describe("POST /api/user/forgottenPassword/", () => {
         sendMail: (email, title, body) => {},
       },
     };
-    const response = await require("../../../api/user/password").postForgottenPassword(data);
+    const response =
+      await require("../../../api/user/password").postForgottenPassword(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -525,7 +551,8 @@ describe("POST /api/user/forgottenPassword/", () => {
       },
       body: {},
     };
-    const response = await require("../../../api/user/password").postForgottenPassword(data);
+    const response =
+      await require("../../../api/user/password").postForgottenPassword(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -570,7 +597,8 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
         tocken: "token",
       },
     };
-    const response = await require("../../../api/user/password").putResetPassword(data);
+    const response =
+      await require("../../../api/user/password").putResetPassword(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -592,7 +620,8 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
         newPassword: "newPassword",
       },
     };
-    const response = await require("../../../api/user/password").putResetPassword(data);
+    const response =
+      await require("../../../api/user/password").putResetPassword(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -615,7 +644,8 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
       },
       params: {},
     };
-    const response = await require("../../../api/user/password").putResetPassword(data);
+    const response =
+      await require("../../../api/user/password").putResetPassword(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -637,7 +667,8 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
         tocken: "token",
       },
     };
-    const response = await require("../../../api/user/password").putResetPassword(data);
+    const response =
+      await require("../../../api/user/password").putResetPassword(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -660,7 +691,8 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
         tocken: "token",
       },
     };
-    const response = await require("../../../api/user/password").putResetPassword(data);
+    const response =
+      await require("../../../api/user/password").putResetPassword(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -689,7 +721,8 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
         tocken: "token",
       },
     };
-    const response = await require("../../../api/user/password").putResetPassword(data);
+    const response =
+      await require("../../../api/user/password").putResetPassword(data);
 
     //Tests
     expect(response.code).toBe(401);

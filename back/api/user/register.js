@@ -9,7 +9,8 @@ const validateEmail = (email) => {
 
 function makeid(length) {
   var result = "";
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -68,7 +69,11 @@ async function postRegister(data) {
   }
   const queryCheckIfEmailExist = `SELECT 1 FROM users
                                 WHERE v_email = ?;`;
-  const resTestIfAccountExist = await data.app.executeQuery(data.app.db, queryCheckIfEmailExist, [data.body.email]);
+  const resTestIfAccountExist = await data.app.executeQuery(
+    data.app.db,
+    queryCheckIfEmailExist,
+    [data.body.email]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resTestIfAccountExist[0]) {
@@ -89,13 +94,17 @@ async function postRegister(data) {
   const language = data.body.language ? data.body.language : "fr";
   const queryInsert = `INSERT INTO users (v_firstName, v_lastName, v_email, v_password, v_language)
                         VALUES (?, ?, ?, ?, ?);`;
-  const resInsertNewAccount = await data.app.executeQuery(data.app.db, queryInsert, [
-    data.body.firstName,
-    data.body.lastName,
-    data.body.email,
-    sha256(data.body.password),
-    language,
-  ]);
+  const resInsertNewAccount = await data.app.executeQuery(
+    data.app.db,
+    queryInsert,
+    [
+      data.body.firstName,
+      data.body.lastName,
+      data.body.email,
+      sha256(data.body.password),
+      language,
+    ]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resInsertNewAccount[0] || resInsertNewAccount[1].affectedRows !== 1) {
@@ -107,10 +116,18 @@ async function postRegister(data) {
   }
   /* c8 ignore stop */
   const queryLastInsert = `SELECT LAST_INSERT_ID() AS 'id';`;
-  const resGetIdUserInserted = await data.app.executeQuery(data.app.db, queryLastInsert, []);
+  const resGetIdUserInserted = await data.app.executeQuery(
+    data.app.db,
+    queryLastInsert,
+    []
+  );
   // Error with the sql request
   /* c8 ignore start */
-  if (resGetIdUserInserted[0] || resGetIdUserInserted[1].length !== 1 || resGetIdUserInserted[1][0].id === 0) {
+  if (
+    resGetIdUserInserted[0] ||
+    resGetIdUserInserted[1].length !== 1 ||
+    resGetIdUserInserted[1][0].id === 0
+  ) {
     console.log(resGetIdUserInserted[0]);
     return {
       type: "code",
@@ -125,7 +142,11 @@ async function postRegister(data) {
     const testTocken = makeid(10);
     const querySelectTocken = `SELECT 1 FROM mailtocken
                                 WHERE v_value = ?`;
-    const resTestTocken = await data.app.executeQuery(data.app.db, querySelectTocken, [testTocken]);
+    const resTestTocken = await data.app.executeQuery(
+      data.app.db,
+      querySelectTocken,
+      [testTocken]
+    );
     /* c8 ignore start */
     if (resTestTocken[0]) {
       console.log(resTestTocken[0]);
@@ -142,11 +163,11 @@ async function postRegister(data) {
 
   const queryInsertTocken = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
                             VALUES (?, ?, ?);`;
-  const resInsertTocken = await data.app.executeQuery(data.app.db, queryInsertTocken, [
-    idNewUser,
-    tocken,
-    sendMail ? "1" : "0",
-  ]);
+  const resInsertTocken = await data.app.executeQuery(
+    data.app.db,
+    queryInsertTocken,
+    [idNewUser, tocken, sendMail ? "1" : "0"]
+  );
   /* c8 ignore start */
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
@@ -169,10 +190,18 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.post("/api/user/register/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       data.sendMailFunction = require("../../functions/sendMail");
       const result = await postRegister(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /user/register/");
       console.log(error);

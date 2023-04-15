@@ -33,7 +33,9 @@ async function putValidateRules(data) {
                         SET dt_ruleSignature = CURRENT_TIMESTAMP()
                         WHERE i_id = ?
                         AND dt_ruleSignature IS NULL;`;
-  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [userId]);
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    userId,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (resUpdate[0]) {
@@ -62,9 +64,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.put("/api/user/validateRules/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putValidateRules(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/role/");
       console.log(error);

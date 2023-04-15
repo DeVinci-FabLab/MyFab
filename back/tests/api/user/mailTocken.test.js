@@ -23,7 +23,9 @@ describe("GET /api/user/mailtoken/", () => {
       },
     };
 
-    const response = await require("../../../api/user/mailTocken").getMailtoken(data);
+    const response = await require("../../../api/user/mailTocken").getMailtoken(
+      data
+    );
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
@@ -44,7 +46,9 @@ describe("GET /api/user/mailtoken/", () => {
       },
     };
 
-    const response = await require("../../../api/user/mailTocken").getMailtoken(data);
+    const response = await require("../../../api/user/mailTocken").getMailtoken(
+      data
+    );
 
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
@@ -63,7 +67,9 @@ describe("GET /api/user/mailtoken/", () => {
       },
     };
 
-    const response = await require("../../../api/user/mailTocken").getMailtoken(data);
+    const response = await require("../../../api/user/mailTocken").getMailtoken(
+      data
+    );
 
     expect(response.code).toBe(403);
     expect(response.type).toBe("code");

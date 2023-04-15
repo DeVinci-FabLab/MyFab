@@ -56,7 +56,10 @@ async function postLogin(data) {
                         WHERE v_email = ?
                         AND v_password = ?
                         AND b_deleted = 0;`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [data.body.email, sha256(data.body.password)]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
+    data.body.email,
+    sha256(data.body.password),
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -93,11 +96,16 @@ async function postLogin(data) {
     };
   }
   const id = dbRes[1][0].id;
-  const cookie = await require("../../functions/apiActions").saveNewCookie(data.app, {
-    id,
-    email: data.body.email,
-    expireIn: data.body.expires ? new Date(data.body.expires).toISOString() : null,
-  });
+  const cookie = await require("../../functions/apiActions").saveNewCookie(
+    data.app,
+    {
+      id,
+      email: data.body.email,
+      expireIn: data.body.expires
+        ? new Date(data.body.expires).toISOString()
+        : null,
+    }
+  );
 
   return {
     type: "json",
@@ -113,9 +121,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.post("/api/user/login/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await postLogin(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/user/login/");
       console.log(error);

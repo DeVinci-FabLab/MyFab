@@ -31,7 +31,10 @@ async function getAuth(data) {
       code: 401,
     };
   }
-  const result = await data.userAuthorization.getUserAuth(data.app, userIdAgent);
+  const result = await data.userAuthorization.getUserAuth(
+    data.app,
+    userIdAgent
+  );
   return {
     type: "json",
     code: 200,
@@ -44,9 +47,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/user/authorization/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getAuth(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/user/authorization/");
       console.log(error);

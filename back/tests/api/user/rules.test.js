@@ -9,7 +9,9 @@ describe("GET /api/user/validateRules/", () => {
         },
       },
     };
-    const response = await require("../../../api/user/rules").putValidateRules(data);
+    const response = await require("../../../api/user/rules").putValidateRules(
+      data
+    );
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
   });
@@ -23,7 +25,9 @@ describe("GET /api/user/validateRules/", () => {
         },
       },
     };
-    const response = await require("../../../api/user/rules").putValidateRules(data);
+    const response = await require("../../../api/user/rules").putValidateRules(
+      data
+    );
     expect(response.code).toBe(204);
     expect(response.type).toBe("code");
   });
@@ -32,7 +36,9 @@ describe("GET /api/user/validateRules/", () => {
     const data = {
       app: {},
     };
-    const response = await require("../../../api/user/rules").putValidateRules(data);
+    const response = await require("../../../api/user/rules").putValidateRules(
+      data
+    );
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
   });

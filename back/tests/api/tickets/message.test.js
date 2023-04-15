@@ -8,7 +8,8 @@ const io = { emit: emptyFunction, to: emptyFunction };
 afterAll(() => {
   fs.readdir(__dirname + "/../../../data/files/stl/", (err, files) => {
     files.forEach((file) => {
-      if (file.endsWith("-test.STL")) fs.unlinkSync(__dirname + "/../../../data/files/stl/" + file);
+      if (file.endsWith("-test.STL"))
+        fs.unlinkSync(__dirname + "/../../../data/files/stl/" + file);
     });
   });
 });
@@ -52,7 +53,8 @@ describe("GET /api/ticket/:id/message/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -60,7 +62,10 @@ describe("GET /api/ticket/:id/message/", () => {
     expect(response.json.length).not.toBe(0);
     expect(typeof response.json[0].userName).toBe("string");
     expect(typeof response.json[0].content).toBe("string");
-    expect(Object.prototype.toString.call(response.json[0].creationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
   });
 
   test("200userOwner", async () => {
@@ -101,7 +106,8 @@ describe("GET /api/ticket/:id/message/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -109,7 +115,10 @@ describe("GET /api/ticket/:id/message/", () => {
     expect(response.json.length).not.toBe(0);
     expect(typeof response.json[0].userName).toBe("string");
     expect(typeof response.json[0].content).toBe("string");
-    expect(Object.prototype.toString.call(response.json[0].creationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
   });
 
   test("400noParams", async () => {
@@ -125,7 +134,8 @@ describe("GET /api/ticket/:id/message/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -146,7 +156,8 @@ describe("GET /api/ticket/:id/message/", () => {
       },
       params: {},
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -169,7 +180,8 @@ describe("GET /api/ticket/:id/message/", () => {
         id: "idTicket",
       },
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -191,7 +203,8 @@ describe("GET /api/ticket/:id/message/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -225,7 +238,8 @@ describe("GET /api/ticket/:id/message/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/message").getTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").getTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -266,7 +280,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -307,7 +322,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -330,7 +346,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -354,7 +371,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -380,7 +398,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -403,7 +422,8 @@ describe("POST /api/ticket/:id/message/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -427,7 +447,8 @@ describe("POST /api/ticket/:id/message/", () => {
       },
       body: {},
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -452,7 +473,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -489,7 +511,8 @@ describe("POST /api/ticket/:id/message/", () => {
         content: "testContent",
       },
     };
-    const response = await require("../../../api/tickets/message").postTicketMessage(data);
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
 
     //Tests
     expect(response.code).toBe(403);
