@@ -76,10 +76,13 @@ export default function Rules({ userNeedToAccept }) {
   return (
     <div className="flex h-screen bg-gray-50">
       <div className="max-w-3xl m-auto text-center space-y-3 ">
-        <h1 className="font-semibold leading-6 text-xl">Avant d'accéder à MyFab, vous devez accepter notre règlement.</h1>
+        <h1 className="font-semibold leading-6 text-xl">
+          Avant d'accéder à MyFab, vous devez accepter notre règlement.
+        </h1>
         <p className="font-light text-md text-gray-500">
-          L'utilisation de MyFab étant réglementé, l'acceptation de ces règles est obligatoire. Vous pouvez à tout moment nous contacter à fablab@devinci.fr si vous souhaitez faire
-          valoir vos droits.
+          L'utilisation de MyFab étant réglementé, l'acceptation de ces règles
+          est obligatoire. Vous pouvez à tout moment nous contacter à
+          fablab@devinci.fr si vous souhaitez faire valoir vos droits.
         </p>
 
         <div className="prose max-w-4xl overflow-y-auto max-h-96 mx-5 p-5 shadow-sm block w-full ring-indigo-500 border-indigo-500 sm:text-sm border rounded-md text-left text-justify">

@@ -2,7 +2,9 @@
 
 describe("Page 404", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/404", { failOnStatusCode: false });
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/404", {
+      failOnStatusCode: false,
+    });
   });
 
   it("Go back to auth", () => {
@@ -10,6 +12,9 @@ describe("Page 404", () => {
     cy.get(".login-button", {
       timeout: 10000,
     }).should("be.visible");
-    cy.location("href").should("eq", "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth");
+    cy.location("href").should(
+      "eq",
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth"
+    );
   });
 });

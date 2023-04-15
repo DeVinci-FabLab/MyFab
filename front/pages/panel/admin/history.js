@@ -53,7 +53,8 @@ export default function OverviewAdmin({ user, role, authorizations }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked])
+      newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -104,10 +105,19 @@ export default function OverviewAdmin({ user, role, authorizations }) {
 
   return (
     <div>
-      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-tickets", action: update }]} userId={user.id} />
+      <WebSocket
+        realodPage={realodPage}
+        event={[{ name: "event-reload-tickets", action: update }]}
+        userId={user.id}
+      />
       {authorizations.myFabAgent ? (
         <div>
-          <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Gestion des demandes">
+          <LayoutPanel
+            user={user}
+            role={role}
+            authorizations={authorizations}
+            titleMenu="Gestion des demandes"
+          >
             <Seo title={"Historique"} />
 
             <NavbarAdmin role={role} />
@@ -120,9 +130,17 @@ export default function OverviewAdmin({ user, role, authorizations }) {
                     <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
                       <div className="mb-3 grow">
                         <div className="space-x-2">
-                          <form onSubmit={handleSubmit} className="relative grow">
+                          <form
+                            onSubmit={handleSubmit}
+                            className="relative grow"
+                          >
                             <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
-                              <svg className="hi-solid hi-search inline-block w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                              <svg
+                                className="hi-solid hi-search inline-block w-5 h-5"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
                                 <path
                                   fillRule="evenodd"
                                   d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -139,7 +157,11 @@ export default function OverviewAdmin({ user, role, authorizations }) {
                                 type="text"
                                 placeholder="Rechercher un ticket"
                               />
-                              <button type="submit" className="w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => update(true)}>
+                              <button
+                                type="submit"
+                                className="w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => update(true)}
+                              >
                                 Rechercher
                               </button>
                             </div>
@@ -177,7 +199,10 @@ export async function getServerSideProps({ req }) {
   const resUserConnected = isUserConnected(user);
   if (resUserConnected) return resUserConnected;
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  const authorizations = await fetchAPIAuth(
+    "/user/authorization/",
+    cookies.jwt
+  );
 
   // Pass the data to our page via props
   return {

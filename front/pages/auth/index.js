@@ -15,48 +15,60 @@ export default function Auth() {
   useEffect(() => {
     if (router.query.close != null) {
       setCookies("adfs", false);
-      toast.error("MyFab est actuellement fermé merci de réessayer plus tard.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "MyFab est actuellement fermé merci de réessayer plus tard.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
     if (router.query.error != null) {
-      toast.error("Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
     if (router.query.mail != null) {
       if (router.query.mail == "ok") {
-        toast.success("Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success(
+          "Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
       } else {
-        toast.error("Une erreur est survenue lors de la vérification de votre e-mail.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error(
+          "Une erreur est survenue lors de la vérification de votre e-mail.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
       }
       router.replace("/auth");
     } else {
@@ -104,7 +116,27 @@ export default function Auth() {
           });
         }
         if (response.status == 204) {
-          toast.warning("Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.", {
+          toast.warning(
+            "Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(true);
+        setTimeout(() => setError(false), 5000);
+        toast.error(
+          "Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.",
+          {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -112,22 +144,8 @@ export default function Auth() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setError(true);
-        setTimeout(() => setError(false), 5000);
-        toast.error("Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+          }
+        );
       });
   }
 
@@ -136,14 +154,22 @@ export default function Auth() {
       <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
-            <img className="h-12 w-auto" src={process.env.BASE_PATH + "/logo.png"} alt="Devinci FabLab" />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Connectez-vous à MyFab</h2>
+            <img
+              className="h-12 w-auto"
+              src={process.env.BASE_PATH + "/logo.png"}
+              alt="Devinci FabLab"
+            />
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Connectez-vous à MyFab
+            </h2>
           </div>
 
           <div className="mt-8">
             <div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Se connecter avec</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">
+                  Se connecter avec
+                </p>
 
                 <div className="mt-1">
                   <div className="">
@@ -160,23 +186,33 @@ export default function Auth() {
                             url: process.env.API + "/api/myFabOpen",
                           }).then((response) => {
                             if (response.data.myFabOpen === true) {
-                              router.push(process.env.API + "/api/user/login/adfs/");
+                              router.push(
+                                process.env.API + "/api/user/login/adfs/"
+                              );
                             } else {
-                              toast.error("MyFab est actuellement fermé merci de réessayer plus tard.", {
-                                position: "top-right",
-                                autoClose: 3000,
-                                hideProgressBar: true,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                              });
+                              toast.error(
+                                "MyFab est actuellement fermé merci de réessayer plus tard.",
+                                {
+                                  position: "top-right",
+                                  autoClose: 3000,
+                                  hideProgressBar: true,
+                                  closeOnClick: true,
+                                  pauseOnHover: true,
+                                  draggable: true,
+                                  progress: undefined,
+                                }
+                              );
                             }
                           });
                         }}
                       >
                         <span className="sr-only">Mon compte LéoID</span>
-                        <img src={process.env.BASE_PATH + "/photo/Microsoft_logo.svg"} className="h-5 w-5" />
+                        <img
+                          src={
+                            process.env.BASE_PATH + "/photo/Microsoft_logo.svg"
+                          }
+                          className="h-5 w-5"
+                        />
                         <p className="ml-2">Mon compte LéoID</p>
                       </div>
                     </div>
@@ -185,11 +221,16 @@ export default function Auth() {
               </div>
 
               <div className="mt-6 relative">
-                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div
+                  className="absolute inset-0 flex items-center"
+                  aria-hidden="true"
+                >
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
+                  <span className="px-2 bg-white text-gray-500">
+                    Ou continuer avec
+                  </span>
                 </div>
               </div>
             </div>
@@ -198,7 +239,9 @@ export default function Auth() {
                 <div className="">
                   <label
                     htmlFor="email"
-                    className={`block text-sm font-medium ${error ? "text-red-500" : "text-gray-700"}`}
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
                   >
                     Adresse e-mail
                   </label>
@@ -220,7 +263,9 @@ export default function Auth() {
                 <div className="space-y-1">
                   <label
                     htmlFor="password"
-                    className={`block text-sm font-medium ${error ? "text-red-500" : "text-gray-700"}`}
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
                   >
                     Mot de passe
                   </label>
@@ -248,14 +293,19 @@ export default function Auth() {
                       onChange={() => setChecked(!checked)}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                    <label
+                      htmlFor="remember-me"
+                      className="ml-2 block text-sm text-gray-900"
+                    >
                       Se souvenir de moi
                     </label>
                   </div>
 
                   <div className="text-sm">
                     <Link href="/auth/forget">
-                      <p className="font-medium text-blue-700 hover:text-blue-600">Mot de passe oublié ?</p>
+                      <p className="font-medium text-blue-700 hover:text-blue-600">
+                        Mot de passe oublié ?
+                      </p>
                     </Link>
                   </div>
                 </div>
@@ -270,7 +320,8 @@ export default function Auth() {
                     Se connecter
                   </button>
                   <p className="text-sm text-center text-gray-500 p-1">
-                    La connexion par adresse e-mail est réservée aux anciens comptes MyFab.
+                    La connexion par adresse e-mail est réservée aux anciens
+                    comptes MyFab.
                   </p>
                   {/*<Link href="/auth/register">
                     <p className="text-sm text-center text-gray-500 p-1 hover:cursor-pointer">S'inscrire</p>

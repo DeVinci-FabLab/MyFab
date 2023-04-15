@@ -3,12 +3,12 @@ import { createContext } from "react";
 import Router from "next/router";
 import NProgress from "nprogress"; //nprogress module
 import "nprogress/nprogress.css"; //styles of nprogress
-import 'moment/locale/fr'
-import '../styles/global.css'
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import "moment/locale/fr";
+import "../styles/global.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Seo from "../components/seo";
-import Cookie from '../components/cookie';
+import Cookie from "../components/cookie";
 import { getCookie } from "cookies-next";
 
 //Binding events.
@@ -21,11 +21,13 @@ export const GlobalContext = createContext({});
 const MyApp = ({ Component, pageProps }) => {
   return (
     <>
-      <Seo title={"Accueil"} description={"Bienvenue sur le site du Devinci FabLab !"} />
-      <Component {...pageProps}>
-      </Component>
+      <Seo
+        title={"Accueil"}
+        description={"Bienvenue sur le site du Devinci FabLab !"}
+      />
+      <Component {...pageProps}></Component>
       <ToastContainer />
-      {getCookie('cookie')?'':<Cookie />}
+      {getCookie("cookie") ? "" : <Cookie />}
     </>
   );
 };

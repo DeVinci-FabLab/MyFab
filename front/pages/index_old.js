@@ -48,11 +48,17 @@ const Home = ({ posts }) => {
       <div className="container xl:max-w-7xl mx-auto px-4 mt-16 lg:px-8 overflow-hidden">
         <div className="text-center mb-20">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
-            Bienvenue sur le site du <span className="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-blue-400 animate-gradient-x"> DeVinci FabLab </span>!
+            Bienvenue sur le site du{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-blue-400 animate-gradient-x">
+              {" "}
+              DeVinci FabLab{" "}
+            </span>
+            !
           </h2>
           <h3 className="text-lg md:text-xl md:leading-relaxed font-medium text-gray-600 lg:w-2/3 mx-auto">
-            Le FabLab est un lieu d'échange et de création du pôle universitaire Léonard de Vinci. Que vous soyez étudiant ou non, venez découvrir nos créations, articles et tutos
-            !
+            Le FabLab est un lieu d'échange et de création du pôle universitaire
+            Léonard de Vinci. Que vous soyez étudiant ou non, venez découvrir
+            nos créations, articles et tutos !
           </h3>
         </div>
 
@@ -64,8 +70,19 @@ const Home = ({ posts }) => {
 
             <div className="absolute rounded-lg inset-0 bg-gray-200 w-full h-full"></div>
             <div className="absolute rounded-lg placeholder w-full h-full animate-gradient-placeholder"></div>
-            <video width="840" height="560" controls={false} autoPlay="autoplay" muted loop={true} className="mt-5 rounded-lg mx-auto shadow-lg relative">
-              <source src={process.env.BASE_PATH + "/video/banner.mp4"} type="video/mp4" />
+            <video
+              width="840"
+              height="560"
+              controls={false}
+              autoPlay="autoplay"
+              muted
+              loop={true}
+              className="mt-5 rounded-lg mx-auto shadow-lg relative"
+            >
+              <source
+                src={process.env.BASE_PATH + "/video/banner.mp4"}
+                type="video/mp4"
+              />
             </video>
           </div>
         </center>
@@ -79,19 +96,37 @@ const Home = ({ posts }) => {
                 <br /> Qui sommes nous ?
               </h2>
               <p className="mt-10 text-lg leading-6 text-gray-500 text-justify">
-                Le DeVinci FabLab est une association étudiante du Pôle Léonard De Vinci qui s'occupe de l'espace de fabrication situé au fond du Leaning center. Le but de notre
-                association est de vous aider dans vos projets académiques comme personnels, que ce soit avec des outils, des machines, des matériaux ou des formations. Nous gérons
-                ainsi le parc d'imprimante 3D qui vous permettra de réaliser toutes les pièces que vous aurez conçues, ainsi que les ateliers mis à la disposition de tous où vous
-                pourrez faire votre bricolage. L'espace a les mêmes horaires d'ouverture que le pôle donc n'hésitez pas à venir nous y rencontrer !
+                Le DeVinci FabLab est une association étudiante du Pôle Léonard
+                De Vinci qui s'occupe de l'espace de fabrication situé au fond
+                du Leaning center. Le but de notre association est de vous aider
+                dans vos projets académiques comme personnels, que ce soit avec
+                des outils, des machines, des matériaux ou des formations. Nous
+                gérons ainsi le parc d'imprimante 3D qui vous permettra de
+                réaliser toutes les pièces que vous aurez conçues, ainsi que les
+                ateliers mis à la disposition de tous où vous pourrez faire
+                votre bricolage. L'espace a les mêmes horaires d'ouverture que
+                le pôle donc n'hésitez pas à venir nous y rencontrer !
               </p>
             </div>
           </div>
           <div className="order-1 max-w-md m-auto md:m-0 md:w-full">
             <div className="items-center justify-center">
-              <img className="rounded-lg shadow-2xl" src={process.env.BASE_PATH + "/photo/P1000136.jpg"} alt="Banner" />
+              <img
+                className="rounded-lg shadow-2xl"
+                src={process.env.BASE_PATH + "/photo/P1000136.jpg"}
+                alt="Banner"
+              />
               <div className="grid grid-cols-2 gap-2 content-start mt-5">
-                <img className="rounded-lg shadow-lg" src={process.env.BASE_PATH + "/photo/P1000163.jpg"} alt="Banner" />
-                <img className="rounded-lg shadow-lg" src={process.env.BASE_PATH + "/photo/P1000167.jpg"} alt="Banner" />
+                <img
+                  className="rounded-lg shadow-lg"
+                  src={process.env.BASE_PATH + "/photo/P1000163.jpg"}
+                  alt="Banner"
+                />
+                <img
+                  className="rounded-lg shadow-lg"
+                  src={process.env.BASE_PATH + "/photo/P1000167.jpg"}
+                  alt="Banner"
+                />
               </div>
             </div>
           </div>
@@ -240,18 +275,27 @@ const Home = ({ posts }) => {
           <div className="flex justify-center space-x-6 md:order-2">
             <Link href={"/legals"}>
               <p key={"legals"} className="text-gray-400 hover:text-gray-500">
-                <span className="text-md hover:text-black cursor-pointer">Mentions légales</span>
+                <span className="text-md hover:text-black cursor-pointer">
+                  Mentions légales
+                </span>
               </p>
             </Link>
             {footer.map((item) => (
-              <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
+              <a
+                key={item.name}
+                href={item.href}
+                className="text-gray-400 hover:text-gray-500"
+              >
                 <span className="sr-only">{item.name}</span>
                 <item.icon className="h-6 w-6" aria-hidden="true" />
               </a>
             ))}
           </div>
           <div className="mt-8 md:mt-0 md:order-1">
-            <p className="text-center text-base text-gray-400">&copy; 2015-{new Date().getFullYear()} Devinci FabLab. Tous droits réservés.</p>
+            <p className="text-center text-base text-gray-400">
+              &copy; 2015-{new Date().getFullYear()} Devinci FabLab. Tous droits
+              réservés.
+            </p>
           </div>
         </div>
       </footer>

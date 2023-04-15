@@ -1,15 +1,18 @@
-import { CursorClickIcon, QuestionMarkCircleIcon } from '@heroicons/react/outline'
-import { setCookies } from 'cookies-next';
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useState } from 'react';
+import {
+  CursorClickIcon,
+  QuestionMarkCircleIcon,
+} from "@heroicons/react/outline";
+import { setCookies } from "cookies-next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Cookie() {
-    const [show, setShow] = useState(true);
+  const [show, setShow] = useState(true);
 
-    const router = useRouter();
+  const router = useRouter();
 
-  return (<div></div>);
+  return <div></div>;
   /*
     <>
       <div className={`fixed inset-x-0 bottom-0 ${show?'':'hidden'}`}>

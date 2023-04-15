@@ -5,7 +5,11 @@ class WebSocket extends Component {
   socket = null;
 
   componentDidMount() {
-    this.socket = io(process.env.API, { transports: ["websocket", "polling"], autoConnect: false, multiplex: false });
+    this.socket = io(process.env.API, {
+      transports: ["websocket", "polling"],
+      autoConnect: false,
+      multiplex: false,
+    });
     this.socket.connect();
     if (this.props.userId) {
       this.socket.emit("join-room", `user-${this.props.userId}`);

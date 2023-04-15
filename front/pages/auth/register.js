@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setCookies } from "cookies-next";
-import { useState } from "react"
-import { ExclamationIcon } from '@heroicons/react/solid'
+import { useState } from "react";
+import { ExclamationIcon } from "@heroicons/react/solid";
 import router from "next/router";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
@@ -16,7 +16,11 @@ export default function Register() {
   const [checked, setChecked] = useState(false);
 
   async function register() {
-    if (confirmPassword == null || password == null || password != confirmPassword) {
+    if (
+      confirmPassword == null ||
+      password == null ||
+      password != confirmPassword
+    ) {
       toast.warn("Vos mots de passes ne correspondent pas.", {
         position: "top-right",
         autoClose: 3000,
@@ -28,48 +32,53 @@ export default function Register() {
       });
     } else {
       await axios({
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        url: process.env.API + '/api/user/register',
+        url: process.env.API + "/api/user/register",
         data: {
           firstName,
           lastName: name,
           email,
-          password
+          password,
         },
-      }).then((response) => {
-        toast.success("Vous êtes désormais inscrits. Vous pouvez vous connecter.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        router.push('/auth');
       })
+        .then((response) => {
+          toast.success(
+            "Vous êtes désormais inscrits. Vous pouvez vous connecter.",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
+          router.push("/auth");
+        })
         .catch((error) => {
           console.log(error);
           setError(true);
           setTimeout(() => setError(false), 5000);
-          toast.error("Impossible de vous inscrire. Vérifiez que vous ayez remplis tous les champs.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        })
+          toast.error(
+            "Impossible de vous inscrire. Vérifiez que vous ayez remplis tous les champs.",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
+        });
     }
   }
-
-
 
   return (
     <div className="min-h-screen bg-white flex">
@@ -81,14 +90,21 @@ export default function Register() {
               src={process.env.BASE_PATH + "/logo.png"}
               alt="Workflow"
             />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Enregistrez-vous sur MyFab</h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Enregistrez-vous sur MyFab
+            </h2>
           </div>
 
           <div className="mt-8">
             <div className="mt-6">
               <div className="space-y-6">
                 <div className="space-y-1">
-                  <label htmlFor="name" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+                  <label
+                    htmlFor="name"
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
                     Nom
                   </label>
                   <div className="mt-1">
@@ -98,12 +114,19 @@ export default function Register() {
                       name="name"
                       type="text"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${error ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        error ? "border-red-300" : "border-gray-300"
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="firstname" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+                  <label
+                    htmlFor="firstname"
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
                     Prénom
                   </label>
                   <div className="mt-1">
@@ -113,12 +136,19 @@ export default function Register() {
                       name="firstname"
                       type="text"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${error ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        error ? "border-red-300" : "border-gray-300"
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
                   </div>
                 </div>
                 <div className="">
-                  <label htmlFor="email" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+                  <label
+                    htmlFor="email"
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
                     Adresse e-mail
                   </label>
                   <div className="mt-1">
@@ -129,13 +159,20 @@ export default function Register() {
                       type="email"
                       autoComplete="email"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${error ? 'border-red-300 ' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        error ? "border-red-300 " : "border-gray-300"
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="password" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+                  <label
+                    htmlFor="password"
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
                     Mot de passe
                   </label>
                   <div className="mt-1">
@@ -143,15 +180,22 @@ export default function Register() {
                       onChange={(e) => setPassword(e.target.value)}
                       id="password"
                       name="password"
-                      type={`${checked ? 'text' : 'password'}`}
+                      type={`${checked ? "text" : "password"}`}
                       autoComplete="current-password"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${error ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        error ? "border-red-300" : "border-gray-300"
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="confirmPassword" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+                  <label
+                    htmlFor="confirmPassword"
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
                     Confirmer mon mot de passe
                   </label>
                   <div className="mt-1">
@@ -159,10 +203,12 @@ export default function Register() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       id="confirmPassword"
                       name="confirmPassword"
-                      type={`${checked ? 'text' : 'password'}`}
+                      type={`${checked ? "text" : "password"}`}
                       autoComplete="current-password"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${error ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        error ? "border-red-300" : "border-gray-300"
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
                   </div>
                 </div>
@@ -176,12 +222,13 @@ export default function Register() {
                       onChange={() => setChecked(!checked)}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="show-password" className="ml-2 block text-sm text-gray-900">
+                    <label
+                      htmlFor="show-password"
+                      className="ml-2 block text-sm text-gray-900"
+                    >
                       Afficher mon mot de passe
                     </label>
                   </div>
-
-
                 </div>
 
                 <div>
@@ -207,23 +254,24 @@ export default function Register() {
         />
       </div>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
   const user = await fetchAPIAuth("/user/me", cookies.jwt);
 
-  if(user.error == null){
+  if (user.error == null) {
     return {
       redirect: {
         permanent: false,
         destination: "/panel/",
       },
-      props:{},
-    };  }
+      props: {},
+    };
+  }
 
   return {
-    props: { }, // will be passed to the page component as props
-  }
+    props: {}, // will be passed to the page component as props
+  };
 }
