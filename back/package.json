@@ -1,6 +1,6 @@
 {
   "name": "myfabultimate_back",
-  "description": "",
+  "description": "MyFab Edition Ultimate - Site de ticketing du Devinci FabLab",
   "version": "0.8.0",
   "main": "index.js",
   "scripts": {
