@@ -20,7 +20,12 @@ export default function Settings({ role, me, authorizations, token }) {
 
   return (
     <>
-      <LayoutPanel user={me} role={role} authorizations={authorizations} titleMenu="Gestion des tokens de création de compte">
+      <LayoutPanel
+        user={me}
+        role={role}
+        authorizations={authorizations}
+        titleMenu="Gestion des tokens de création de compte"
+      >
         <Seo title={"Paramètres administrateurs"} />
         <WebSocket realodPage={realodPage} event={[]} userId={me.id} />
         <section className="">
@@ -59,7 +64,10 @@ export async function getServerSideProps({ req }) {
   const resUserConnected = isUserConnected(me);
   if (resUserConnected) return resUserConnected;
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  const authorizations = await fetchAPIAuth(
+    "/user/authorization/",
+    cookies.jwt
+  );
   const token = await fetchAPIAuth("/user/mailtoken/", cookies.jwt);
 
   // Pass the data to our page via props

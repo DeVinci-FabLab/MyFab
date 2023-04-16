@@ -10,7 +10,8 @@ module.exports.pendingUsers = pendingUsers;
 // Code non testable
 function makeid(length) {
   var result = "";
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -115,7 +116,10 @@ async function postLoginADFS(data) {
   if (!firstName || !lastName || !email || !title) {
     console.log("Error with adfs get user info"); //DELETE THIS
     console.log(pendingUsers[data.body.token]); //DELETE THIS
-    await fs.writeFileSync(__dirname + "/../../data/samlResult.json", JSON.stringify(pendingUsers[data.body.token])); //DELETE THIS
+    await fs.writeFileSync(
+      __dirname + "/../../data/samlResult.json",
+      JSON.stringify(pendingUsers[data.body.token])
+    ); //DELETE THIS
     return {
       type: "code",
       code: 500,
@@ -157,10 +161,18 @@ async function postLoginADFS(data) {
       });
     }
     /* c8 ignore stop */
-    const resGetIdUserInserted = await data.app.executeQuery(data.app.db, "SELECT LAST_INSERT_ID() AS 'id';", []);
+    const resGetIdUserInserted = await data.app.executeQuery(
+      data.app.db,
+      "SELECT LAST_INSERT_ID() AS 'id';",
+      []
+    );
     // Error with the sql request
     /* c8 ignore start */
-    if (resGetIdUserInserted[0] || resGetIdUserInserted[1].length !== 1 || resGetIdUserInserted[1][0].id === 0) {
+    if (
+      resGetIdUserInserted[0] ||
+      resGetIdUserInserted[1].length !== 1 ||
+      resGetIdUserInserted[1][0].id === 0
+    ) {
       console.log(resGetIdUserInserted[0]);
       return resolve({
         type: "code",
@@ -169,7 +181,10 @@ async function postLoginADFS(data) {
     }
     /* c8 ignore stop */
     const idNewUser = resGetIdUserInserted[1][0].id;
-    const cookie = await require("../../functions/apiActions").saveNewCookie(data.app, { id: idNewUser, email: email });
+    const cookie = await require("../../functions/apiActions").saveNewCookie(
+      data.app,
+      { id: idNewUser, email: email }
+    );
 
     return {
       type: "json",
@@ -192,10 +207,17 @@ async function postLoginADFS(data) {
 
   const id = dbRes[1][0].id;
   if (dbRes[1][0].title !== title) {
-    await data.app.executeQuery(data.app.db, "UPDATE `users` SET `v_title` = ? WHERE `i_id` = ?;", [title, id]);
+    await data.app.executeQuery(
+      data.app.db,
+      "UPDATE `users` SET `v_title` = ? WHERE `i_id` = ?;",
+      [title, id]
+    );
   }
 
-  const cookie = await require("../../functions/apiActions").saveNewCookie(data.app, { id, email });
+  const cookie = await require("../../functions/apiActions").saveNewCookie(
+    data.app,
+    { id, email }
+  );
 
   return {
     type: "json",
@@ -227,10 +249,20 @@ async function startApi(app) {
 
   app.post("/api/user/login/adfs/", async (req, res) => {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
-      data.myFabOpen = JSON.parse(fs.readFileSync(__dirname + "/../../data/serviceData.json")).myFabOpen;
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      data.myFabOpen = JSON.parse(
+        fs.readFileSync(__dirname + "/../../data/serviceData.json")
+      ).myFabOpen;
       const result = await postLoginADFS(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/user/login/adfs/");
       console.log(error);

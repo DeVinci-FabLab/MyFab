@@ -55,7 +55,8 @@ describe("GET /api/ticket/me/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
+    const response =
+      await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -64,8 +65,15 @@ describe("GET /api/ticket/me/", () => {
     expect(response.json.values.length).not.toBe(0);
     expect(typeof response.json.values[0].id).toBe("number");
     expect(typeof response.json.values[0].userName).toBe("string");
-    expect(Object.prototype.toString.call(response.json.values[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.values[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.values[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(
+        response.json.values[0].modificationDate
+      ) === "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
   });
@@ -119,7 +127,8 @@ describe("GET /api/ticket/me/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
+    const response =
+      await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -128,8 +137,15 @@ describe("GET /api/ticket/me/", () => {
     expect(response.json.values.length).not.toBe(0);
     expect(typeof response.json.values[0].id).toBe("number");
     expect(typeof response.json.values[0].userName).toBe("string");
-    expect(Object.prototype.toString.call(response.json.values[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.values[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.values[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(
+        response.json.values[0].modificationDate
+      ) === "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
   });
@@ -184,7 +200,8 @@ describe("GET /api/ticket/me/", () => {
       },
       query: { page: 2, all: true },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
+    const response =
+      await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -193,8 +210,15 @@ describe("GET /api/ticket/me/", () => {
     expect(response.json.values.length).not.toBe(0);
     expect(typeof response.json.values[0].id).toBe("number");
     expect(typeof response.json.values[0].userName).toBe("string");
-    expect(Object.prototype.toString.call(response.json.values[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.values[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.values[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(
+        response.json.values[0].modificationDate
+      ) === "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
   });
@@ -211,7 +235,8 @@ describe("GET /api/ticket/me/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
+    const response =
+      await require("../../../api/tickets/ticket").getTicketAllFromUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -271,7 +296,9 @@ describe("GET /api/ticket/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAll(data);
+    const response = await require("../../../api/tickets/ticket").getTicketAll(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -280,8 +307,15 @@ describe("GET /api/ticket/", () => {
     expect(response.json.values.length).not.toBe(0);
     expect(typeof response.json.values[0].id).toBe("number");
     expect(typeof response.json.values[0].userName).toBe("string");
-    expect(Object.prototype.toString.call(response.json.values[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.values[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.values[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(
+        response.json.values[0].modificationDate
+      ) === "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
   });
@@ -337,7 +371,9 @@ describe("GET /api/ticket/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAll(data);
+    const response = await require("../../../api/tickets/ticket").getTicketAll(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -346,8 +382,15 @@ describe("GET /api/ticket/", () => {
     expect(response.json.values.length).not.toBe(0);
     expect(typeof response.json.values[0].id).toBe("number");
     expect(typeof response.json.values[0].userName).toBe("string");
-    expect(Object.prototype.toString.call(response.json.values[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.values[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.values[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(
+        response.json.values[0].modificationDate
+      ) === "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
   });
@@ -410,7 +453,9 @@ describe("GET /api/ticket/", () => {
         inputValue: "test",
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAll(data);
+    const response = await require("../../../api/tickets/ticket").getTicketAll(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -419,8 +464,15 @@ describe("GET /api/ticket/", () => {
     expect(response.json.values.length).not.toBe(0);
     expect(typeof response.json.values[0].id).toBe("number");
     expect(typeof response.json.values[0].userName).toBe("string");
-    expect(Object.prototype.toString.call(response.json.values[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.values[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.values[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(
+        response.json.values[0].modificationDate
+      ) === "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
   });
@@ -437,7 +489,9 @@ describe("GET /api/ticket/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAll(data);
+    const response = await require("../../../api/tickets/ticket").getTicketAll(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -457,7 +511,9 @@ describe("GET /api/ticket/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketAll(data);
+    const response = await require("../../../api/tickets/ticket").getTicketAll(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(403);
@@ -538,7 +594,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -546,8 +604,14 @@ describe("GET /api/ticket/:id/", () => {
     expect(typeof response.json.id).toBe("number");
     expect(typeof response.json.userName).toBe("string");
     expect(typeof response.json.email).toBe("string");
-    expect(Object.prototype.toString.call(response.json.creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.priorityName).toBe("string");
     expect(typeof response.json.priorityColor).toBe("string");
   });
@@ -612,7 +676,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -620,8 +686,14 @@ describe("GET /api/ticket/:id/", () => {
     expect(typeof response.json.id).toBe("number");
     expect(typeof response.json.userName).toBe("string");
     expect(typeof response.json.email).toBe("string");
-    expect(Object.prototype.toString.call(response.json.creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.priorityName).toBe("string");
     expect(typeof response.json.priorityColor).toBe("string");
   });
@@ -688,7 +760,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -696,8 +770,14 @@ describe("GET /api/ticket/:id/", () => {
     expect(typeof response.json.id).toBe("number");
     expect(typeof response.json.userName).toBe("string");
     expect(typeof response.json.email).toBe("string");
-    expect(Object.prototype.toString.call(response.json.creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json.modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json.modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
     expect(typeof response.json.priorityName).toBe("string");
     expect(typeof response.json.priorityColor).toBe("string");
   });
@@ -715,7 +795,9 @@ describe("GET /api/ticket/:id/", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -736,7 +818,9 @@ describe("GET /api/ticket/:id/", () => {
       },
       params: {},
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -759,7 +843,9 @@ describe("GET /api/ticket/:id/", () => {
         id: "NaN",
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -781,7 +867,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -807,7 +895,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);
@@ -833,7 +923,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(403);
@@ -869,7 +961,9 @@ describe("GET /api/ticket/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getTicketById(data);
+    const response = await require("../../../api/tickets/ticket").getTicketById(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);
@@ -913,7 +1007,9 @@ describe("POST /api/ticket/", () => {
       },
       files: null,
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -975,7 +1071,9 @@ describe("POST /api/ticket/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1054,7 +1152,9 @@ describe("POST /api/ticket/", () => {
         ],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1098,7 +1198,9 @@ describe("POST /api/ticket/", () => {
       },
       files: null,
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1122,7 +1224,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1148,7 +1252,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1175,7 +1281,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1201,7 +1309,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1229,7 +1339,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1260,7 +1372,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1287,7 +1401,9 @@ describe("POST /api/ticket/", () => {
         filedata: [],
       },
     };
-    const response = await require("../../../api/tickets/ticket").postTicket(data);
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -1325,7 +1441,8 @@ describe("DELETE /api/ticket/:id", () => {
         id: 2,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -1364,7 +1481,8 @@ describe("DELETE /api/ticket/:id", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -1384,7 +1502,8 @@ describe("DELETE /api/ticket/:id", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1405,7 +1524,8 @@ describe("DELETE /api/ticket/:id", () => {
       },
       params: {},
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1427,7 +1547,8 @@ describe("DELETE /api/ticket/:id", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -1453,7 +1574,8 @@ describe("DELETE /api/ticket/:id", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1479,7 +1601,8 @@ describe("DELETE /api/ticket/:id", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -1515,7 +1638,8 @@ describe("DELETE /api/ticket/:id", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").deleteTicketWithId(data);
+    const response =
+      await require("../../../api/tickets/ticket").deleteTicketWithId(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -1558,7 +1682,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1581,7 +1708,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1605,7 +1735,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1631,7 +1764,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1654,7 +1790,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1678,7 +1817,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
       },
       query: {},
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1704,7 +1846,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: "idNewProjectType",
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1729,7 +1874,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(401);
@@ -1755,7 +1903,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(403);
@@ -1794,7 +1945,10 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
         projecttype: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewProjectType(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewProjectType(
+        data
+      );
 
     //Tests
     expect(response.code).toBe(204);
@@ -1835,7 +1989,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -1858,7 +2013,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1882,7 +2038,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1908,7 +2065,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1931,7 +2089,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1955,7 +2114,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
       },
       query: {},
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -1981,7 +2141,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: "idNewPriority",
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -2006,7 +2167,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -2032,7 +2194,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -2061,7 +2224,8 @@ describe("PUT /api/ticket/:id/setStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketNewStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketNewStatus(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -2104,7 +2268,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -2127,7 +2292,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -2151,7 +2317,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -2177,7 +2344,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -2202,7 +2370,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -2231,7 +2400,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -2270,7 +2440,8 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         idStatus: 1,
       },
     };
-    const response = await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
+    const response =
+      await require("../../../api/tickets/ticket").putTicketCancelStatus(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -2295,7 +2466,9 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getHighDemand(data);
+    const response = await require("../../../api/tickets/ticket").getHighDemand(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -2317,7 +2490,9 @@ describe("PUT /api/ticket/:id/setCancelStatus", () => {
         io,
       },
     };
-    const response = await require("../../../api/tickets/ticket").getHighDemand(data);
+    const response = await require("../../../api/tickets/ticket").getHighDemand(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);

@@ -37,14 +37,22 @@ const Legals = () => {
       {/*<Seo seo={homepage.seo} />*/}
       <div className="container xl:max-w-7xl mx-auto px-4 mt-16 lg:px-8 overflow-hidden">
         <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Nos mentions légales :</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
+            Nos mentions légales :
+          </h2>
           <p className="mt-10 text-lg leading-6 text-gray-500">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor sapien faucibus vel nibh. Vel, neque, sapien, eget amet cursus vitae. Nullam nunc tristique sem proin et
-            tincidunt vestibulum ut. Magna mollis bibendum sagittis urna ut vitae, vitae id arcu. Ut nibh vitae risus magna risus, interdum vel ornare laoreet.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor
+            sapien faucibus vel nibh. Vel, neque, sapien, eget amet cursus
+            vitae. Nullam nunc tristique sem proin et tincidunt vestibulum ut.
+            Magna mollis bibendum sagittis urna ut vitae, vitae id arcu. Ut nibh
+            vitae risus magna risus, interdum vel ornare laoreet.
           </p>
           <p className="mt-10 text-md leading-5 text-gray-500 xl:max-w-5xl text-left">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor sapien faucibus vel nibh. Vel, neque, sapien, eget amet cursus vitae. Nullam nunc tristique sem proin et
-            tincidunt vestibulum ut. Magna mollis bibendum sagittis urna ut vitae, vitae id arcu. Ut nibh vitae risus magna risus, interdum vel ornare laoreet.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor
+            sapien faucibus vel nibh. Vel, neque, sapien, eget amet cursus
+            vitae. Nullam nunc tristique sem proin et tincidunt vestibulum ut.
+            Magna mollis bibendum sagittis urna ut vitae, vitae id arcu. Ut nibh
+            vitae risus magna risus, interdum vel ornare laoreet.
           </p>
         </div>
       </div>
@@ -54,18 +62,27 @@ const Legals = () => {
           <div className="flex justify-center space-x-6 md:order-2">
             <Link href={"/legals"}>
               <p key={"legals"} className="text-gray-400 hover:text-gray-500">
-                <span className="text-md hover:text-black cursor-pointer">Mentions légales</span>
+                <span className="text-md hover:text-black cursor-pointer">
+                  Mentions légales
+                </span>
               </p>
             </Link>
             {footer.map((item) => (
-              <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
+              <a
+                key={item.name}
+                href={item.href}
+                className="text-gray-400 hover:text-gray-500"
+              >
                 <span className="sr-only">{item.name}</span>
                 <item.icon className="h-6 w-6" aria-hidden="true" />
               </a>
             ))}
           </div>
           <div className="mt-8 md:mt-0 md:order-1">
-            <p className="text-center text-base text-gray-400">&copy; {new Date().getFullYear()} Devinci FabLab. Tous droits réservés.</p>
+            <p className="text-center text-base text-gray-400">
+              &copy; {new Date().getFullYear()} Devinci FabLab. Tous droits
+              réservés.
+            </p>
           </div>
         </div>
       </footer>

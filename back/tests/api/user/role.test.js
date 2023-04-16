@@ -20,28 +20,32 @@ describe("GET /api/role/", () => {
               {
                 id: 1,
                 name: "Administrateur",
-                description: "Ce role donne acces a tous les outils d'administration et de gestion du site",
+                description:
+                  "Ce role donne acces a tous les outils d'administration et de gestion du site",
                 color: "db1010",
                 isProtected: 1,
               },
               {
                 id: 2,
                 name: "Moderateur",
-                description: "Ce role donne acces aux outils pour gerer le contenu et les utilisateurs du site",
+                description:
+                  "Ce role donne acces aux outils pour gerer le contenu et les utilisateurs du site",
                 color: "eb9413",
                 isProtected: 1,
               },
               {
                 id: 3,
                 name: "Agent MyFab",
-                description: "Ce role donne acces aux outils de MyFab pour gerer les demandes du site",
+                description:
+                  "Ce role donne acces aux outils de MyFab pour gerer les demandes du site",
                 color: "e0dd22",
                 isProtected: 0,
               },
               {
                 id: 4,
                 name: "Agent blog",
-                description: "Ce role donne acces aux outils pour gerer le blog",
+                description:
+                  "Ce role donne acces aux outils pour gerer le blog",
                 color: "5865F2",
                 isProtected: 0,
               },
@@ -110,7 +114,8 @@ describe("GET /api/user/:idUser/role/", () => {
               {
                 id: 2,
                 name: "Moderateur",
-                description: "Ce role donne acces aux outils pour gerer le contenu et les utilisateurs du site",
+                description:
+                  "Ce role donne acces aux outils pour gerer le contenu et les utilisateurs du site",
                 color: "eb9413",
                 isProtected: 1,
               },
@@ -123,7 +128,8 @@ describe("GET /api/user/:idUser/role/", () => {
         idUser: 2,
       },
     };
-    const response = await require("../../../api/user/role").getRolesForUserById(data);
+    const response =
+      await require("../../../api/user/role").getRolesForUserById(data);
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(response.json.length).not.toBe(0);
@@ -145,7 +151,8 @@ describe("GET /api/user/:idUser/role/", () => {
         io,
       },
     };
-    const response = await require("../../../api/user/role").getRolesForUserById(data);
+    const response =
+      await require("../../../api/user/role").getRolesForUserById(data);
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -163,7 +170,8 @@ describe("GET /api/user/:idUser/role/", () => {
       },
       params: {},
     };
-    const response = await require("../../../api/user/role").getRolesForUserById(data);
+    const response =
+      await require("../../../api/user/role").getRolesForUserById(data);
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
   });
@@ -182,7 +190,8 @@ describe("GET /api/user/:idUser/role/", () => {
         idUser: 2,
       },
     };
-    const response = await require("../../../api/user/role").getRolesForUserById(data);
+    const response =
+      await require("../../../api/user/role").getRolesForUserById(data);
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
   });
@@ -202,7 +211,8 @@ describe("GET /api/user/:idUser/role/", () => {
         idUser: 2,
       },
     };
-    const response = await require("../../../api/user/role").getRolesForUserById(data);
+    const response =
+      await require("../../../api/user/role").getRolesForUserById(data);
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
   });
@@ -221,7 +231,8 @@ describe("GET /api/user/role/", () => {
               {
                 id: 2,
                 name: "Moderateur",
-                description: "Ce role donne acces aux outils pour gerer le contenu et les utilisateurs du site",
+                description:
+                  "Ce role donne acces aux outils pour gerer le contenu et les utilisateurs du site",
                 color: "eb9413",
                 isProtected: 1,
               },
@@ -233,7 +244,8 @@ describe("GET /api/user/role/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").getRolesForActualUser(data);
+    const response =
+      await require("../../../api/user/role").getRolesForActualUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -254,7 +266,8 @@ describe("GET /api/user/role/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").getRolesForActualUser(data);
+    const response =
+      await require("../../../api/user/role").getRolesForActualUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -301,7 +314,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -326,7 +341,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -353,7 +370,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -380,7 +399,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -409,7 +430,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -437,7 +460,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -464,7 +489,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -492,7 +519,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -520,7 +549,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -561,7 +592,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -592,7 +625,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(409);
@@ -633,7 +668,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -678,7 +715,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -719,7 +758,9 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").postAddRoleForUser(data);
+    const response = await require("../../../api/user/role").postAddRoleForUser(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -766,7 +807,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -790,7 +832,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -817,7 +860,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -844,7 +888,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -872,7 +917,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -900,7 +946,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -927,7 +974,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -955,7 +1003,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -983,7 +1032,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -1008,7 +1058,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -1036,7 +1087,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(409);
@@ -1078,7 +1130,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -1119,7 +1172,8 @@ describe("DELETE /api/user/:idUser/role/:idRole/", () => {
     };
 
     //Execute
-    const response = await require("../../../api/user/role").deleteRemoveRoleForUser(data);
+    const response =
+      await require("../../../api/user/role").deleteRemoveRoleForUser(data);
 
     //Tests
     expect(response.code).toBe(401);

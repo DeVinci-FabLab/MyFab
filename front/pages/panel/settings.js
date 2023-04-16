@@ -20,7 +20,12 @@ export default function Settings({ user, role, authorizations }) {
   }
 
   async function changePassword() {
-    if (newPassword == null || newPasswordConfirm == null || newPassword != newPasswordConfirm || newPassword.length < 1) {
+    if (
+      newPassword == null ||
+      newPasswordConfirm == null ||
+      newPassword != newPasswordConfirm ||
+      newPassword.length < 1
+    ) {
       toast.warning("Vos mots de passes ne sont pas identiques.", {
         position: "top-right",
         autoClose: 3000,
@@ -69,21 +74,29 @@ export default function Settings({ user, role, authorizations }) {
           }
         })
         .catch((e) => {
-          toast.error("Une erreur est survenue, veuillez réessayer. Vérifiez que votre mot de passe actuel est correct.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          toast.error(
+            "Une erreur est survenue, veuillez réessayer. Vérifiez que votre mot de passe actuel est correct.",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
         });
     }
   }
 
   return (
-    <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Paramètres">
+    <LayoutPanel
+      user={user}
+      role={role}
+      authorizations={authorizations}
+      titleMenu="Paramètres"
+    >
       <Seo title={"Paramètres"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
       <div className="px-10 py-10" id="status">
@@ -91,10 +104,13 @@ export default function Settings({ user, role, authorizations }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">Mes informations</h3>
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Mes informations
+                </h3>
                 <p className="mt-1 text-sm text-gray-600">
-                  Vous pouvez éditer sur cette page votre mot de passe. Si vous souhaitez modifier un autre paramètre, merci de nous contacter directement par mail à
-                  fablab@devinci.fr.
+                  Vous pouvez éditer sur cette page votre mot de passe. Si vous
+                  souhaitez modifier un autre paramètre, merci de nous contacter
+                  directement par mail à fablab@devinci.fr.
                 </p>
               </div>
             </div>
@@ -103,7 +119,10 @@ export default function Settings({ user, role, authorizations }) {
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
                   <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                     <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="lastName"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Nom
                       </label>
                       <div className="mt-1">
@@ -118,7 +137,10 @@ export default function Settings({ user, role, authorizations }) {
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="firstName"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Prénom
                       </label>
                       <div className="mt-1">
@@ -133,7 +155,10 @@ export default function Settings({ user, role, authorizations }) {
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         E-mail
                       </label>
                       <div className="mt-1">
@@ -149,14 +174,21 @@ export default function Settings({ user, role, authorizations }) {
                     </div>
                     {user.isMicrosoft == 0 ? (
                       <div>
-                        <h1 className="text-lg font-medium leading-6 text-gray-900">Changer mon mot de passe</h1>
+                        <h1 className="text-lg font-medium leading-6 text-gray-900">
+                          Changer mon mot de passe
+                        </h1>
                         <div>
-                          <label htmlFor="actualPassword" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="actualPassword"
+                            className="block text-sm font-medium text-gray-700"
+                          >
                             Mot de passe actuel
                           </label>
                           <div className="mt-1">
                             <input
-                              onChange={(e) => setActualPassword(e.target.value)}
+                              onChange={(e) =>
+                                setActualPassword(e.target.value)
+                              }
                               type="password"
                               name="actualPassword"
                               id="actualPassword"
@@ -165,7 +197,10 @@ export default function Settings({ user, role, authorizations }) {
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="password"
+                            className="block text-sm font-medium text-gray-700"
+                          >
                             Mot de passe
                           </label>
                           <div className="mt-1">
@@ -179,12 +214,17 @@ export default function Settings({ user, role, authorizations }) {
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="confirmPassword"
+                            className="block text-sm font-medium text-gray-700"
+                          >
                             Confirmer votre mot de passe
                           </label>
                           <div className="mt-1">
                             <input
-                              onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                              onChange={(e) =>
+                                setNewPasswordConfirm(e.target.value)
+                              }
                               type="password"
                               name="confirmPassword"
                               id="confirmPassword"
@@ -334,7 +374,10 @@ export async function getServerSideProps({ req }) {
   const resUserConnected = isUserConnected(user);
   if (resUserConnected) return resUserConnected;
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  const authorizations = await fetchAPIAuth(
+    "/user/authorization/",
+    cookies.jwt
+  );
 
   return {
     props: { user, role, authorizations }, // will be passed to the page component as props

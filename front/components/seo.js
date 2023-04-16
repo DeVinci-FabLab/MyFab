@@ -1,4 +1,4 @@
-import Head from "next/head"
+import Head from "next/head";
 
 const Seo = ({ title, description, image }) => {
   const siteName = "MyFab";
@@ -6,9 +6,9 @@ const Seo = ({ title, description, image }) => {
     // Add title suffix
     metaTitle: `${title} | ${siteName}`,
     // Get full image URL
-    shareImage: image || process.env.BASE_PATH + '/photo/seo.png',
-    metaDescription: description || 'Bienvenue sur le site du Devinci FabLab !'
-  }
+    shareImage: image || process.env.BASE_PATH + "/photo/seo.png",
+    metaDescription: description || "Bienvenue sur le site du Devinci FabLab !",
+  };
 
   return (
     <Head>
@@ -37,7 +37,7 @@ const Seo = ({ title, description, image }) => {
       {fullSeo.article && <meta property="og:type" content="article" />}
       <meta name="twitter:card" content="summary_large_image" />
     </Head>
-  )
-}
+  );
+};
 
-export default Seo
+export default Seo;

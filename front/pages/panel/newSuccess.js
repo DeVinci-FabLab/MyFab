@@ -74,7 +74,12 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
   }
 
   return (
-    <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Récapitulatif de la demande">
+    <LayoutPanel
+      user={user}
+      role={role}
+      authorizations={authorizations}
+      titleMenu="Récapitulatif de la demande"
+    >
       <Seo title={"Nouvelle demande créé"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
 
@@ -91,12 +96,14 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                   </div>
                   <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                     <p className="p-5">
-                      Les membres du DeVinci FabLab traiteons la demande le dès que possible. Vous pouvez suivre
-                      l'avancée de la demande sur cette plateforme.
+                      Les membres du DeVinci FabLab traiteons la demande le dès
+                      que possible. Vous pouvez suivre l'avancée de la demande
+                      sur cette plateforme.
                     </p>
                     <p className="p-5">
-                      Vous pouvez rajouter des notes sur les fichiers stl pour par exemple demander plusieurs impression
-                      pour un même fichier, une couleur d'impression spécifique, ...
+                      Vous pouvez rajouter des notes sur les fichiers stl pour
+                      par exemple demander plusieurs impression pour un même
+                      fichier, une couleur d'impression spécifique, ...
                     </p>
                     {/*
                     <div className="flex justify-center">
@@ -144,7 +151,10 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                         return (
                           <div class="col-span-6 mt-5 bg-opacity-50 border border-gray-100 rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3">
                             <div className="w-0 flex-1 flex items-center">
-                              <CubeIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                              <CubeIcon
+                                className="flex-shrink-0 h-5 w-5 text-gray-400"
+                                aria-hidden="true"
+                              />
                               <span className="ml-2 flex-1">{r.filename}</span>
                             </div>
                             <div className="flex justify-center mt-4">
@@ -165,7 +175,10 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                             {r.comment != "" ? (
                               <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm mt-2">
                                 <p className="text-ellipsis overflow-hidden">
-                                  <span className="font-medium">Commentaire </span>: {r.comment}
+                                  <span className="font-medium">
+                                    Commentaire{" "}
+                                  </span>
+                                  : {r.comment}
                                 </p>
                               </div>
                             ) : (
@@ -184,42 +197,60 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
                         Détails de la demande d'impression
                       </h3>
-                      <p className="mt-1 max-w-2xl text-sm text-gray-500">Ticket n° {ticket.id}</p>
+                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                        Ticket n° {ticket.id}
+                      </p>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                       <dl className="sm:divide-y sm:divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">Utilisateur</dt>
+                          <dt className="text-sm font-medium text-gray-500">
+                            Utilisateur
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>
-                              {user.firstName + " " + user.lastName.toString().toUpperCase()}
-                              <p className="mt-1 max-w-2xl text-sm text-gray-500">{user.title || "Ancien compte"}</p>
+                              {user.firstName +
+                                " " +
+                                user.lastName.toString().toUpperCase()}
+                              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                                {user.title || "Ancien compte"}
+                              </p>
                             </div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">Numéro de groupe</dt>
+                          <dt className="text-sm font-medium text-gray-500">
+                            Numéro de groupe
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             {ticket.groupNumber}
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">Type</dt>
+                          <dt className="text-sm font-medium text-gray-500">
+                            Type
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>{ticket.projectType}</div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">Status</dt>
+                          <dt className="text-sm font-medium text-gray-500">
+                            Status
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>{ticket.statusName}</div>
                           </dd>
                         </div>
                         {authorizations.myFabAgent ? (
                           <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">Priorité</dt>
+                            <dt className="text-sm font-medium text-gray-500">
+                              Priorité
+                            </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full`}>
+                              <div
+                                className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full`}
+                              >
                                 {ticket.priorityName}
                               </div>
                             </dd>
@@ -228,12 +259,19 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           ""
                         )}
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">Fichiers</dt>
+                          <dt className="text-sm font-medium text-gray-500">
+                            Fichiers
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>
-                              Ce ticket comporte {file.length} fichier{file.length > 1 ? "s" : ""} :
+                              Ce ticket comporte {file.length} fichier
+                              {file.length > 1 ? "s" : ""} :
                               {file.map((r) => {
-                                return <p className="mt-1 max-w-2xl text-sm text-gray-500">- {r.filename}</p>;
+                                return (
+                                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                                    - {r.filename}
+                                  </p>
+                                );
                               })}
                             </div>
                           </dd>
@@ -250,7 +288,11 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
 
       {/* modal */}
       <Transition.Root show={open} as={Fragment}>
-        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={saveFileData}>
+        <Dialog
+          as="div"
+          className="fixed z-10 inset-0 overflow-y-auto"
+          onClose={saveFileData}
+        >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -264,7 +306,10 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
               &#8203;
             </span>
             <Transition.Child
@@ -278,15 +323,25 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
             >
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6">
                 <div>
-                  <p className="text-center font-medium">Aperçu du fichier STL:</p>
-                  <p className="text-sm text-center text-gray-500">{ticketFile.filename}</p>
+                  <p className="text-center font-medium">
+                    Aperçu du fichier STL:
+                  </p>
+                  <p className="text-sm text-center text-gray-500">
+                    {ticketFile.filename}
+                  </p>
                   <center>
                     <StlViewer
                       style={{
                         top: 0,
                         left: 0,
-                        width: typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300,
-                        height: typeof window !== "undefined" ? window.innerHeight / 2.2 : 200,
+                        width:
+                          typeof window !== "undefined"
+                            ? (window.innerWidth / 100) * 45
+                            : 300,
+                        height:
+                          typeof window !== "undefined"
+                            ? window.innerHeight / 2.2
+                            : 200,
                       }}
                       modelProps={{ color: STLColor }}
                       orbitControls={true}
@@ -339,7 +394,10 @@ export async function getServerSideProps({ req, query }) {
   const file = await fetchAPIAuth("/ticket/" + idTicket + "/file", cookies.jwt);
 
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  const authorizations = await fetchAPIAuth(
+    "/user/authorization/",
+    cookies.jwt
+  );
 
   return {
     props: { user, role, ticket, file, authorizations }, // will be passed to the page component as props

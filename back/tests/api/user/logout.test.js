@@ -10,7 +10,9 @@ describe("DELETE /api/user/logout/", () => {
       },
       dvflcookie: "dvflcookieTest",
     };
-    const response = await require("../../../api/user/logout").deleteLogout(data);
+    const response = await require("../../../api/user/logout").deleteLogout(
+      data
+    );
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
@@ -27,7 +29,9 @@ describe("DELETE /api/user/logout/", () => {
       },
       dvflcookie: "dvflcookieTest",
     };
-    const response = await require("../../../api/user/logout").deleteLogout(data);
+    const response = await require("../../../api/user/logout").deleteLogout(
+      data
+    );
 
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");

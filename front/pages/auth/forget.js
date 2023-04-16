@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react"
+import { useState } from "react";
 import router from "next/router";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
@@ -12,47 +12,53 @@ export default function Forget() {
     e.preventDefault();
 
     await axios({
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      url: process.env.API + '/api/user/forgottenPassword',
+      url: process.env.API + "/api/user/forgottenPassword",
       data: {
-        email
+        email,
       },
-    }).then((response) => {
-      if (response.status == 200) {
-        toast.success("Si un compte existe à l'adresse e-mail " + email + ", vous receverez votre lien de récupération d'ici quelques minutes. Pensez à vérifier vos spams.", {
-          position: "top-right",
-          autoClose: 10000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        router.push('/auth');
-      }
     })
+      .then((response) => {
+        if (response.status == 200) {
+          toast.success(
+            "Si un compte existe à l'adresse e-mail " +
+              email +
+              ", vous receverez votre lien de récupération d'ici quelques minutes. Pensez à vérifier vos spams.",
+            {
+              position: "top-right",
+              autoClose: 10000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
+          router.push("/auth");
+        }
+      })
       .catch((error) => {
         console.log(error);
         setError(true);
         setTimeout(() => setError(false), 5000);
-        toast.error("Une erreur s'est produite. Veuillez réessayer dans quelques instants.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-
-  }
-
-
+        toast.error(
+          "Une erreur s'est produite. Veuillez réessayer dans quelques instants.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+      });
+  };
 
   return (
     <div className="min-h-screen bg-white flex">
@@ -64,15 +70,21 @@ export default function Forget() {
               src={process.env.BASE_PATH + "/logo.png"}
               alt="Workflow"
             />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Rénitialisez votre mot de passe</h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Rénitialisez votre mot de passe
+            </h2>
           </div>
 
           <div className="mt-8">
             <div className="mt-6">
               <div className="space-y-6">
-
                 <div className="">
-                  <label htmlFor="email" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+                  <label
+                    htmlFor="email"
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
                     Adresse e-mail
                   </label>
                   <div className="mt-1">
@@ -83,13 +95,12 @@ export default function Forget() {
                       type="email"
                       autoComplete="email"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${error ? 'border-red-300 ' : 'border-gray-300'} rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      className={`appearance-none block w-full px-3 py-2 border ${
+                        error ? "border-red-300 " : "border-gray-300"
+                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
                   </div>
                 </div>
-
-
-
 
                 <div>
                   <button
@@ -114,23 +125,24 @@ export default function Forget() {
         />
       </div>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
   const user = await fetchAPIAuth("/user/me", cookies.jwt);
 
-  if(user.error == null){
+  if (user.error == null) {
     return {
       redirect: {
         permanent: false,
         destination: "/panel/",
       },
-      props:{},
-    };  }
+      props: {},
+    };
+  }
 
   return {
-    props: { }, // will be passed to the page component as props
-  }
+    props: {}, // will be passed to the page component as props
+  };
 }

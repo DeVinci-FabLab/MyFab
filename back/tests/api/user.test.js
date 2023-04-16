@@ -46,9 +46,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -120,9 +124,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -172,9 +180,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -223,9 +235,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -274,9 +290,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -325,9 +345,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -376,9 +400,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -427,9 +455,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);
@@ -478,9 +510,13 @@ describe("GET /api/user/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(!!response.json && response.json.constructor === Object).toBe(true);
-    expect(!!response.json && response.json.values.constructor === Array).toBe(true);
+    expect(!!response.json && response.json.values.constructor === Array).toBe(
+      true
+    );
     expect(response.json.values.length).toBeGreaterThanOrEqual(1);
-    expect(!!response.json && response.json.maxPage.constructor === Number).toBe(true);
+    expect(
+      !!response.json && response.json.maxPage.constructor === Number
+    ).toBe(true);
     expect(response.json.values[0]["id"] != null).toBe(true);
     expect(response.json.values[0]["firstName"] != null).toBe(true);
     expect(response.json.values[0]["lastName"] != null).toBe(true);

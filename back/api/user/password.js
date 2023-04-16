@@ -2,7 +2,8 @@ const sha256 = require("sha256");
 
 function makeid(length) {
   var result = "";
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -162,7 +163,13 @@ async function putPasswordUser(data) {
     };
   }
   // The body does not have all the necessary field or id is not a number
-  if (!data.params || !data.params.id || isNaN(data.params.id) || !data.body || !data.body.newPassword) {
+  if (
+    !data.params ||
+    !data.params.id ||
+    isNaN(data.params.id) ||
+    !data.body ||
+    !data.body.newPassword
+  ) {
     return {
       type: "code",
       code: 400,
@@ -170,14 +177,22 @@ async function putPasswordUser(data) {
   }
   const idUserTarget = data.params.id;
   // if the user is not allowed
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authViewResult) {
     return {
       type: "code",
       code: 403,
     };
   }
-  const authManageUsersResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "manageUser");
+  const authManageUsersResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "manageUser"
+  );
   if (!authManageUsersResult) {
     return {
       type: "code",
@@ -187,7 +202,10 @@ async function putPasswordUser(data) {
   const queryUpdate = `UPDATE users
                     SET v_password = ?
                     WHERE i_id = ?;`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [sha256(data.body.newPassword), idUserTarget]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+    sha256(data.body.newPassword),
+    idUserTarget,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -286,11 +304,11 @@ async function postForgottenPassword(data) {
   const sendMail = data.body.sendMail == null ? true : data.body.sendMail;
   const queryInsert = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
                         VALUES (?, ?, ?);`;
-  const resInsertTocken = await data.app.executeQuery(data.app.db, queryInsert, [
-    idNewUser,
-    tocken,
-    sendMail ? "1" : "0",
-  ]);
+  const resInsertTocken = await data.app.executeQuery(
+    data.app.db,
+    queryInsert,
+    [idNewUser, tocken, sendMail ? "1" : "0"]
+  );
   /* c8 ignore start */
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
@@ -343,7 +361,12 @@ async function postForgottenPassword(data) {
 module.exports.putResetPassword = putResetPassword;
 async function putResetPassword(data) {
   // The body does not have all the necessary field
-  if (!data.body || !data.body.newPassword || !data.params || !data.params.tocken) {
+  if (
+    !data.body ||
+    !data.body.newPassword ||
+    !data.params ||
+    !data.params.tocken
+  ) {
     return {
       type: "code",
       code: 400,
@@ -353,7 +376,9 @@ async function putResetPassword(data) {
   const querySelect = `SELECT i_idUser AS 'id'
                         FROM mailtocken
                         WHERE v_value = ?`;
-  const dbSelectId = await data.app.executeQuery(data.app.db, querySelect, [data.params.tocken]);
+  const dbSelectId = await data.app.executeQuery(data.app.db, querySelect, [
+    data.params.tocken,
+  ]);
   /* c8 ignore start */
   if (dbSelectId[0]) {
     console.log(dbSelectId[0]);
@@ -374,7 +399,10 @@ async function putResetPassword(data) {
   const queryUpdate = `UPDATE users
                         SET v_password = ?
                         WHERE i_id = ?;`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [sha256(data.body.newPassword), idUser]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+    sha256(data.body.newPassword),
+    idUser,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -388,7 +416,9 @@ async function putResetPassword(data) {
 
   const queryDelete = `DELETE FROM mailtocken
                         WHERE v_value = ?`;
-  const dbDelete = await data.app.executeQuery(data.app.db, queryDelete, [data.params.tocken]);
+  const dbDelete = await data.app.executeQuery(data.app.db, queryDelete, [
+    data.params.tocken,
+  ]);
   /* c8 ignore start */
   if (dbDelete[0]) {
     console.log(dbDelete[0]);
@@ -411,9 +441,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.put("/api/user/password/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putPasswordMe(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /user/password/");
       console.log(error);
@@ -423,9 +461,17 @@ async function startApi(app) {
 
   app.put("/api/user/password/:id", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putPasswordUser(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /user/password/:id");
       console.log(error);
@@ -435,10 +481,18 @@ async function startApi(app) {
 
   app.post("/api/user/forgottenPassword/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       data.sendMailFunction = require("../../functions/sendMail");
       const result = await postForgottenPassword(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/user/forgottenPassword/");
       console.log(error);
@@ -448,9 +502,17 @@ async function startApi(app) {
 
   app.put("/api/user/resetPassword/:tocken", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putResetPassword(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /api/user/resetPassword/:tocken");
       console.log(error);

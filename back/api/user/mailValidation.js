@@ -34,7 +34,9 @@ async function putMailValidation(data) {
   const querySelect = `SELECT i_idUser AS userId
                     FROM mailtocken
                     WHERE v_value = ?`;
-  const resGetUserId = await data.app.executeQuery(data.app.db, querySelect, [token]);
+  const resGetUserId = await data.app.executeQuery(data.app.db, querySelect, [
+    token,
+  ]);
   // Error with the sql request
   /* c8 ignore start */
   if (resGetUserId[0]) {
@@ -56,7 +58,11 @@ async function putMailValidation(data) {
 
   const queryDelete = `DELETE FROM mailtocken
                     WHERE v_value = ?`;
-  const resDeleteEmailTocken = await data.app.executeQuery(data.app.db, queryDelete, [token]);
+  const resDeleteEmailTocken = await data.app.executeQuery(
+    data.app.db,
+    queryDelete,
+    [token]
+  );
   // Error with the sql request
   /* c8 ignore start */
   if (resDeleteEmailTocken[0]) {
@@ -71,7 +77,9 @@ async function putMailValidation(data) {
   const queryUpdate = `UPDATE users
                         SET b_mailValidated = '1'
                         WHERE i_id = ?`;
-  const resValidUser = await data.app.executeQuery(data.app.db, queryUpdate, [userId]);
+  const resValidUser = await data.app.executeQuery(data.app.db, queryUpdate, [
+    userId,
+  ]);
 
   // Error with the sql request
   /* c8 ignore start */
@@ -95,9 +103,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.put("/api/user/mailValidation/:tocken", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putMailValidation(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /user/mailValidation/:tocken");
       console.log(error);

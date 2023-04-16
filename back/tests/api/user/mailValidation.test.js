@@ -27,7 +27,8 @@ describe("PUT /user/mailValidation/:tocken", () => {
         tocken: "token",
       },
     };
-    const response = await require("../../../api/user/mailValidation").putMailValidation(data);
+    const response =
+      await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
@@ -39,7 +40,8 @@ describe("PUT /user/mailValidation/:tocken", () => {
       userId: 1,
       app: {},
     };
-    const response = await require("../../../api/user/mailValidation").putMailValidation(data);
+    const response =
+      await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
@@ -52,7 +54,8 @@ describe("PUT /user/mailValidation/:tocken", () => {
       app: {},
       params: {},
     };
-    const response = await require("../../../api/user/mailValidation").putMailValidation(data);
+    const response =
+      await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
@@ -71,7 +74,8 @@ describe("PUT /user/mailValidation/:tocken", () => {
         tocken: "token",
       },
     };
-    const response = await require("../../../api/user/mailValidation").putMailValidation(data);
+    const response =
+      await require("../../../api/user/mailValidation").putMailValidation(data);
 
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");

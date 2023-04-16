@@ -2,7 +2,15 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
-import { HomeIcon, MenuAlt1Icon, XIcon, BeakerIcon, CubeIcon, UsersIcon, ClipboardListIcon } from "@heroicons/react/outline";
+import {
+  HomeIcon,
+  MenuAlt1Icon,
+  XIcon,
+  BeakerIcon,
+  CubeIcon,
+  UsersIcon,
+  ClipboardListIcon,
+} from "@heroicons/react/outline";
 import { SelectorIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
@@ -13,7 +21,13 @@ let version = null;
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function LayoutPanel({ children, user, role, authorizations, titleMenu }) {
+export default function LayoutPanel({
+  children,
+  user,
+  role,
+  authorizations,
+  titleMenu,
+}) {
   const router = useRouter();
   const pn = router.pathname;
   if (!authorizations) authorizations = {};
@@ -24,11 +38,35 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
   //current = boolean pour mettre le bouton en avant pour dire qu'il est sélectionné
   //show = boolean pour montrer ou non le bouton selon les rôles de l'utilisateur
   const navigation = [
-    { name: "Mes demandes", href: "/panel", icon: HomeIcon, current: pn === "/panel", show: true },
-    { name: "Gestions des demandes", href: "/panel/admin", icon: BeakerIcon, current: pn.split("/")[2] === "admin", show: authorizations.myFabAgent == 1 },
-    { name: "Gestions des utilisateurs", href: "/panel/users", icon: UsersIcon, current: pn === "/panel/users", show: authorizations.myFabAgent == 1 },
+    {
+      name: "Mes demandes",
+      href: "/panel",
+      icon: HomeIcon,
+      current: pn === "/panel",
+      show: true,
+    },
+    {
+      name: "Gestions des demandes",
+      href: "/panel/admin",
+      icon: BeakerIcon,
+      current: pn.split("/")[2] === "admin",
+      show: authorizations.myFabAgent == 1,
+    },
+    {
+      name: "Gestions des utilisateurs",
+      href: "/panel/users",
+      icon: UsersIcon,
+      current: pn === "/panel/users",
+      show: authorizations.myFabAgent == 1,
+    },
     //{ name: "Gestions du blog", href: process.env.GHOST_URL + "/ghost", icon: ClipboardListIcon, current: false, show: authorizations.myFabAgent == 1 },
-    { name: "Assemblée générale", href: "/ag/settings", icon: ClipboardListIcon, current: false, show: false }, // Mettre les autorisations
+    {
+      name: "Assemblée générale",
+      href: "/ag/settings",
+      icon: ClipboardListIcon,
+      current: false,
+      show: false,
+    }, // Mettre les autorisations
     //{ name: "Retourner au site", href: "/", icon: CubeIcon, current: false, show: true },
   ];
 
@@ -71,7 +109,11 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
   return (
     <div className="relative h-screen flex overflow-hidden bg-white">
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setSidebarOpen}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 flex z-40 lg:hidden"
+          onClose={setSidebarOpen}
+        >
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -116,25 +158,40 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
               <div className="flex-shrink-0 flex items-center px-4">
                 <LogoDvfl user={user} />
               </div>
-              <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
+              <Menu
+                as="div"
+                className="px-3 mt-6 relative inline-block text-left"
+              >
                 <div>
                   <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                     <span className="flex w-full justify-between items-center">
                       <span className="flex min-w-0 items-center justify-between space-x-3">
                         <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                          {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
+                          {name[0].toString().toUpperCase() +
+                            " " +
+                            surname[0].toString().toUpperCase()}
                         </div>
                         <span className="flex-1 flex flex-col min-w-0">
-                          <span className="text-gray-900 text-sm font-medium truncate">{name + " " + surname.toUpperCase()}</span>
-                          <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
+                          <span className="text-gray-900 text-sm font-medium truncate">
+                            {name + " " + surname.toUpperCase()}
+                          </span>
+                          <span className="text-gray-500 text-sm truncate">
+                            {user.title || "Ancien compte"}
+                          </span>
                         </span>
                       </span>
-                      <SelectorIcon className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
+                      <SelectorIcon
+                        className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                      />
                     </span>
                     <div className="mt-3 space-x-1 space-y-1 text-center">
                       {role.map((r) => {
                         return (
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`} style={{ backgroundColor: "#" + r.color }}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
+                            style={{ backgroundColor: "#" + r.color }}
+                          >
                             {r.name}
                           </span>
                         );
@@ -158,7 +215,12 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         {({ active }) => (
                           <a
                             onClick={() => router.push("/panel/settings")}
-                            className={classNames(active ? "bg-gray-100 text-gray-900" : "text-gray-700", "block px-4 py-2 text-sm cursor-pointer")}
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm cursor-pointer"
+                            )}
                           >
                             <button>Mes paramètres</button>
                           </a>
@@ -170,7 +232,12 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             onClick={() => {
                               logout(user);
                             }}
-                            className={classNames(active ? "bg-gray-100 text-gray-900" : "text-gray-700", "block px-4 py-2 text-sm cursor-pointer")}
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm cursor-pointer"
+                            )}
                           >
                             <button>Se déconnecter</button>
                           </a>
@@ -190,13 +257,20 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             <p
                               key={item.name}
                               className={classNames(
-                                item.current ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                                item.current
+                                  ? "bg-gray-100 text-gray-900"
+                                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
                                 "group flex items-center px-2 py-2 text-base leading-5 font-medium rounded-md"
                               )}
                               aria-current={item.current ? "page" : undefined}
                             >
                               <item.icon
-                                className={classNames(item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500", "mr-3 flex-shrink-0 h-6 w-6")}
+                                className={classNames(
+                                  item.current
+                                    ? "text-gray-500"
+                                    : "text-gray-400 group-hover:text-gray-500",
+                                  "mr-3 flex-shrink-0 h-6 w-6"
+                                )}
                                 aria-hidden="true"
                               />
                               {item.name}
@@ -208,13 +282,21 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                   </div>
                 </nav>
               </div>
-              <span className="text-xs text-gray-400 text-center" onClick={() => router.push("https://github.com/MathieuSchl/")}>
+              <span
+                className="text-xs text-gray-400 text-center"
+                onClick={() => router.push("https://github.com/MathieuSchl/")}
+              >
                 MyFab by Cody
               </span>
-              <span className="text-xs text-gray-400 text-center" onClick={() => router.push("https://github.com/eliasto/")}>
+              <span
+                className="text-xs text-gray-400 text-center"
+                onClick={() => router.push("https://github.com/eliasto/")}
+              >
                 Front-End by Eliasto
               </span>
-              <span className="text-xs text-gray-400 text-center">version {version ? version : "1.0.0"} - fablab@devinci.fr</span>
+              <span className="text-xs text-gray-400 text-center">
+                version {version ? version : "1.0.0"} - fablab@devinci.fr
+              </span>
             </div>
           </Transition.Child>
           <div className="flex-shrink-0 w-14" aria-hidden="true"></div>
@@ -227,25 +309,40 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
             <LogoDvfl user={user} />
           </div>
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
-            <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
+            <Menu
+              as="div"
+              className="px-3 mt-6 relative inline-block text-left"
+            >
               <div>
                 <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                        {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
+                        {name[0].toString().toUpperCase() +
+                          " " +
+                          surname[0].toString().toUpperCase()}
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
-                        <span className="text-gray-900 text-sm font-medium truncate">{name + " " + surname.toUpperCase()}</span>
-                        <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
+                        <span className="text-gray-900 text-sm font-medium truncate">
+                          {name + " " + surname.toUpperCase()}
+                        </span>
+                        <span className="text-gray-500 text-sm truncate">
+                          {user.title || "Ancien compte"}
+                        </span>
                       </span>
                     </span>
-                    <SelectorIcon className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
+                    <SelectorIcon
+                      className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
                   </span>
                   <div className="mt-3 space-x-1 space-y-1 text-center">
                     {role.map((r) => {
                       return (
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`} style={{ backgroundColor: "#" + r.color }}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
+                          style={{ backgroundColor: "#" + r.color }}
+                        >
                           {r.name}
                         </span>
                       );
@@ -269,7 +366,12 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                       {({ active }) => (
                         <a
                           onClick={() => router.push("/panel/settings")}
-                          className={classNames(active ? "bg-gray-100 text-gray-900" : "text-gray-700", "block px-4 py-2 text-sm cursor-pointer")}
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm cursor-pointer"
+                          )}
                         >
                           <button>Mes paramètres</button>
                         </a>
@@ -281,7 +383,12 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                           onClick={() => {
                             logout(user);
                           }}
-                          className={classNames(active ? "bg-gray-100 text-gray-900" : "text-gray-700", "block px-4 py-2 text-sm cursor-pointer")}
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm cursor-pointer"
+                          )}
                         >
                           <button>Se déconnecter</button>
                         </a>
@@ -300,13 +407,20 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         <p
                           key={`1-${item.name}`}
                           className={classNames(
-                            item.current ? "bg-gray-200 text-gray-900" : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+                            item.current
+                              ? "bg-gray-200 text-gray-900"
+                              : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
                             "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                           )}
                           aria-current={item.current ? "page" : undefined}
                         >
                           <item.icon
-                            className={classNames(item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500", "mr-3 flex-shrink-0 h-6 w-6")}
+                            className={classNames(
+                              item.current
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
+                              "mr-3 flex-shrink-0 h-6 w-6"
+                            )}
                             aria-hidden="true"
                           />
                           {item.name}
@@ -318,13 +432,21 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
               </div>
             </nav>
           </div>
-          <span className="text-xs text-gray-400 text-center" onClick={() => router.push("https://github.com/MathieuSchl/")}>
+          <span
+            className="text-xs text-gray-400 text-center"
+            onClick={() => router.push("https://github.com/MathieuSchl/")}
+          >
             MyFab by Cody
           </span>
-          <span className="text-xs text-gray-400 text-center" onClick={() => router.push("https://github.com/eliasto/")}>
+          <span
+            className="text-xs text-gray-400 text-center"
+            onClick={() => router.push("https://github.com/eliasto/")}
+          >
             Front-End by Eliasto
           </span>
-          <span className="text-xs text-gray-400 text-center">version {version ? version : "1.0.0"} - fablab@devinci.fr</span>
+          <span className="text-xs text-gray-400 text-center">
+            version {version ? version : "1.0.0"} - fablab@devinci.fr
+          </span>
         </div>
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
@@ -345,7 +467,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                   <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                     <span className="sr-only">Open user menu</span>
                     <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                      {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
+                      {name[0].toString().toUpperCase() +
+                        " " +
+                        surname[0].toString().toUpperCase()}
                     </div>
                   </Menu.Button>
                 </div>
@@ -364,7 +488,12 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         {({ active }) => (
                           <a
                             onClick={() => router.push("/panel/settings")}
-                            className={classNames(active ? "bg-gray-100 text-gray-900" : "text-gray-700", "block px-4 py-2 text-sm")}
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
                           >
                             <button>Mes paramètres</button>
                           </a>
@@ -377,7 +506,12 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                               logout(user);
                             }}
                             href="#"
-                            className={classNames(active ? "bg-gray-100 text-gray-900" : "text-gray-700", "block px-4 py-2 text-sm")}
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
                           >
                             <button>Se déconnecter</button>
                           </a>
@@ -393,7 +527,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">{title}</h1>
+              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">
+                {title}
+              </h1>
             </div>
             <div className="mt-4 flex sm:mt-0 sm:ml-4">
               <Link href="/panel/new">

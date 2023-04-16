@@ -6,7 +6,10 @@ function emptyFunction() {
 const io = { emit: emptyFunction, to: emptyFunction };
 
 beforeAll(async () => {
-  await fs.copyFileSync(__dirname + "/../../pyramid.stl", __dirname + "/../../../data/files/stl/token-test.STL");
+  await fs.copyFileSync(
+    __dirname + "/../../pyramid.stl",
+    __dirname + "/../../../data/files/stl/token-test.STL"
+  );
 });
 
 describe("GET /api/ticket/:id/file/", () => {
@@ -52,7 +55,8 @@ describe("GET /api/ticket/:id/file/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -62,8 +66,14 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(typeof response.json[0].filename).toBe("string");
     expect(typeof response.json[0].comment).toBe("string");
     expect(response.json[0].isValid == null).toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
   });
 
   test("200userOwner", async () => {
@@ -108,7 +118,8 @@ describe("GET /api/ticket/:id/file/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -118,8 +129,14 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(typeof response.json[0].filename).toBe("string");
     expect(typeof response.json[0].comment).toBe("string");
     expect(response.json[0].isValid == null).toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
   });
 
   test("400noParams", async () => {
@@ -133,7 +150,8 @@ describe("GET /api/ticket/:id/file/", () => {
       },
       app: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -152,7 +170,8 @@ describe("GET /api/ticket/:id/file/", () => {
       app: {},
       params: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -173,7 +192,8 @@ describe("GET /api/ticket/:id/file/", () => {
         id: "idTicket",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -193,7 +213,8 @@ describe("GET /api/ticket/:id/file/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -218,7 +239,8 @@ describe("GET /api/ticket/:id/file/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -251,7 +273,8 @@ describe("GET /api/ticket/:id/file/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -288,8 +311,10 @@ describe("GET /api/file/:id/getToken/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
-    const tokenDownload = await require("../../../api/tickets/file").tokenDownload;
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const tokenDownload = await require("../../../api/tickets/file")
+      .tokenDownload;
 
     //Tests
     expect(response.code).toBe(200);
@@ -331,8 +356,10 @@ describe("GET /api/file/:id/getToken/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
-    const tokenDownload = await require("../../../api/tickets/file").tokenDownload;
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const tokenDownload = await require("../../../api/tickets/file")
+      .tokenDownload;
 
     //Tests
     expect(response.code).toBe(200);
@@ -357,7 +384,8 @@ describe("GET /api/file/:id/getToken/", () => {
       },
       app: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -376,7 +404,8 @@ describe("GET /api/file/:id/getToken/", () => {
       app: {},
       params: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -401,7 +430,8 @@ describe("GET /api/file/:id/getToken/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -422,7 +452,8 @@ describe("GET /api/file/:id/getToken/", () => {
         id: "idTicket",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -442,7 +473,8 @@ describe("GET /api/file/:id/getToken/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -477,7 +509,8 @@ describe("GET /api/file/:id/getToken/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -512,7 +545,8 @@ describe("GET /api/file/:id/getToken/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -549,13 +583,16 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("download");
     expect(response.path != null).toBe(true);
-    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(
+      true
+    );
   });
 
   test("200userOwner", async () => {
@@ -586,13 +623,16 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("download");
     expect(response.path != null).toBe(true);
-    expect(response.fileName.endsWith("oneFileTest200UserOwner.stl")).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserOwner.stl")).toBe(
+      true
+    );
   });
 
   test("400noParams", async () => {
@@ -606,7 +646,8 @@ describe("GET /api/file/:id/", () => {
       },
       app: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -625,7 +666,8 @@ describe("GET /api/file/:id/", () => {
       app: {},
       params: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -650,7 +692,8 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -671,7 +714,8 @@ describe("GET /api/file/:id/", () => {
         id: "idTicket",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -691,7 +735,8 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -726,7 +771,8 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -761,7 +807,8 @@ describe("GET /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -802,13 +849,16 @@ describe("GET /api/file/:id/", () => {
         id: token,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("download");
     expect(response.path != null).toBe(true);
-    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(
+      true
+    );
   });
 
   test("400unknownToken", async () => {
@@ -841,7 +891,8 @@ describe("GET /api/file/:id/", () => {
         id: token,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -882,7 +933,8 @@ describe("GET /api/file/:id/", () => {
         id: token,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -893,7 +945,9 @@ describe("GET /api/file/:id/", () => {
 describe("POST /api/ticket/:id/file/", () => {
   test("200_noFile", async () => {
     //Prepare
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -914,12 +968,16 @@ describe("POST /api/ticket/:id/file/", () => {
       },
       files: null,
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
@@ -935,7 +993,9 @@ describe("POST /api/ticket/:id/file/", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     let requestNumber = 0;
@@ -971,12 +1031,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount + 1);
   });
 
@@ -984,7 +1048,11 @@ describe("POST /api/ticket/:id/file/", () => {
     //Prepare
     const file1Stream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test1-200_multiplesFiles"));
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test1-200_multiplesFiles"
+        )
+      );
     //wait end copy of file
     await new Promise((resolve) => {
       file1Stream.on("finish", () => {
@@ -993,14 +1061,20 @@ describe("POST /api/ticket/:id/file/", () => {
     });
     const file2Stream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test2-200_multiplesFiles"));
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test2-200_multiplesFiles"
+        )
+      );
     //wait end copy of file
     await new Promise((resolve) => {
       file2Stream.on("finish", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     let requestNumber = 0;
@@ -1044,12 +1118,16 @@ describe("POST /api/ticket/:id/file/", () => {
         ],
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount + 2);
   });
 
@@ -1057,14 +1135,18 @@ describe("POST /api/ticket/:id/file/", () => {
     //Prepare
     const fileStream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-200_myFabAgent"));
+      .pipe(
+        fs.createWriteStream(__dirname + "/../../../tmp/test-200_myFabAgent")
+      );
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     let requestNumber = 0;
@@ -1100,12 +1182,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount + 1);
   });
 
@@ -1120,7 +1206,9 @@ describe("POST /api/ticket/:id/file/", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -1140,12 +1228,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
@@ -1160,7 +1252,9 @@ describe("POST /api/ticket/:id/file/", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -1181,12 +1275,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
@@ -1201,7 +1299,9 @@ describe("POST /api/ticket/:id/file/", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -1224,12 +1324,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
@@ -1237,14 +1341,20 @@ describe("POST /api/ticket/:id/file/", () => {
     //Prepare
     const fileStream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-401unauthenticatedUser"));
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test-401unauthenticatedUser"
+        )
+      );
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -1266,12 +1376,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
@@ -1279,14 +1393,18 @@ describe("POST /api/ticket/:id/file/", () => {
     //Prepare
     const fileStream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400unknownTicket"));
+      .pipe(
+        fs.createWriteStream(__dirname + "/../../../tmp/test-400unknownTicket")
+      );
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -1312,12 +1430,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
@@ -1325,14 +1447,20 @@ describe("POST /api/ticket/:id/file/", () => {
     //Prepare
     const fileStream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
-      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-403unauthorizedUser"));
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test-403unauthorizedUser"
+        )
+      );
     //wait end copy of file
     await new Promise((resolve) => {
       fileStream.on("finish", () => {
         resolve();
       });
     });
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     let requestNumber = 0;
@@ -1366,12 +1494,16 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(403);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 });
@@ -1411,7 +1543,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1450,7 +1584,9 @@ describe("PUT /api/file/:id/", () => {
         comment: "test",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1489,7 +1625,9 @@ describe("PUT /api/file/:id/", () => {
         comment: "New comment",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1534,7 +1672,9 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     await require("../../../api/tickets/file").ticketFilePut(data);
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1558,7 +1698,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1583,7 +1725,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1610,7 +1754,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1633,7 +1779,9 @@ describe("PUT /api/file/:id/", () => {
         id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1657,7 +1805,9 @@ describe("PUT /api/file/:id/", () => {
       },
       body: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1683,7 +1833,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: "notABoolean",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1709,7 +1861,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -1739,7 +1893,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(403);
@@ -1769,7 +1925,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);
@@ -1798,7 +1956,9 @@ describe("PUT /api/file/:id/", () => {
         comment: "test",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);

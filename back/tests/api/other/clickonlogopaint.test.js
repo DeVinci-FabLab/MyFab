@@ -9,7 +9,10 @@ describe("POST /api/clickonlogopaint/", () => {
       },
     };
 
-    const response = await require("../../../api/other/clickonlogopaint").clickOnLogoPaintPost(data);
+    const response =
+      await require("../../../api/other/clickonlogopaint").clickOnLogoPaintPost(
+        data
+      );
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
@@ -20,7 +23,10 @@ describe("POST /api/clickonlogopaint/", () => {
       app: {},
     };
 
-    const response = await require("../../../api/other/clickonlogopaint").clickOnLogoPaintPost(data);
+    const response =
+      await require("../../../api/other/clickonlogopaint").clickOnLogoPaintPost(
+        data
+      );
 
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");

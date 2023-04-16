@@ -133,7 +133,11 @@ async function pingDelete(data) {
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/ping/", async function (req, res) {
-    const data = await require("../functions/apiActions").prepareData(app, req, res);
+    const data = await require("../functions/apiActions").prepareData(
+      app,
+      req,
+      res
+    );
     try {
       const result = await pingGet(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -145,7 +149,11 @@ async function startApi(app) {
   });
 
   app.post("/api/ping/", async function (req, res) {
-    const data = await require("../functions/apiActions").prepareData(app, req, res);
+    const data = await require("../functions/apiActions").prepareData(
+      app,
+      req,
+      res
+    );
     try {
       const result = await pingPost(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -157,7 +165,11 @@ async function startApi(app) {
   });
 
   app.put("/api/ping/", async function (req, res) {
-    const data = await require("../functions/apiActions").prepareData(app, req, res);
+    const data = await require("../functions/apiActions").prepareData(
+      app,
+      req,
+      res
+    );
     try {
       const result = await pingDelete(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -169,7 +181,11 @@ async function startApi(app) {
   });
 
   app.delete("/api/ping/", async function (req, res) {
-    const data = await require("../functions/apiActions").prepareData(app, req, res);
+    const data = await require("../functions/apiActions").prepareData(
+      app,
+      req,
+      res
+    );
     try {
       const result = await pingDelete(data);
       await require("../functions/apiActions").sendResponse(req, res, result);

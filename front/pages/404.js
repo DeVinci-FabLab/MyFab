@@ -11,7 +11,9 @@ export default function Error() {
           width="65%"
           height="65%"
         />
-        <h1 className="font-medium text-xl text-indigo-700">Oups une erreur est survenue...</h1>
+        <h1 className="font-medium text-xl text-indigo-700">
+          Oups une erreur est survenue...
+        </h1>
         <p>La page que vous recherchez actuellement n'existe pas.</p>
         <button
           onClick={() => (window.location.href = process.env.BASE_PATH + "/")}
