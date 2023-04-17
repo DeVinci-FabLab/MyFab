@@ -1,0 +1,19 @@
+{
+  "name": "agent",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:back": "set ENV_NAME=back && node index.js",
+    "start:front": "set ENV_NAME=back && node index.js",
+    "dev": "set ENV_NAME=back && nodemon",
+    "linter": "npx prettier -w ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.3.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
+}
