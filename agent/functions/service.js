@@ -8,15 +8,39 @@ module.exports.stopService = async (service) => {
       "ps | grep 'node' | grep ? | sed 's/  */ /g' | cut -d ' ' -f2",
       (err, pid, stderr) => {
         if (err) throw err;
-        if (!pid) resolve();
+
         exec("kill " + pid, (err, stdout, stderr) => {
-          if (err) throw err;
           resolve();
         });
       }
     );
   });
 };
+
+async function execSpawn(cmd, parameters, options) {
+  return await new Promise((resolve, reject) => {
+    cmdSpawn = spawn(cmd, parameters, options);
+
+    cmdSpawn.stdout.on("data", (data) => {
+      fs.appendFile("logApp.txt", data.toString(), function (err) {
+        if (err) throw err;
+      });
+    });
+
+    cmdSpawn.stderr.on("data", (data) => {
+      fs.appendFile("logApp.txt", data.toString(), function (err) {
+        if (err) throw err;
+      });
+    });
+
+    cmdSpawn.on("exit", (code) => {
+      fs.appendFile("logApp.txt", "\n", function (err) {
+        if (err) throw err;
+      });
+      resolve();
+    });
+  });
+}
 
 module.exports.startService = async (serviceName) => {
   const date = new Date();
@@ -26,12 +50,35 @@ module.exports.startService = async (serviceName) => {
       -2
     )}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${(
       "0" + date.getHours()
-    ).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}\n`
+    ).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}\n\n`
   );
   let service = null;
   switch (serviceName) {
     case "back":
-      service = spawn("sh", ["run.sh", "node", "index.js"], { cwd: "../back" });
+      await execSpawn("sh", ["run.sh", "npm", "install"], { cwd: "../back" });
+      service = spawn("sh", ["run.sh", "npm", "run", "start"], {
+        cwd: "../back",
+      });
+      break;
+
+    case "front":
+      fs.appendFile("logApp.txt", "Install 'front'\n\n", function (err) {
+        if (err) throw err;
+      });
+      await execSpawn("sh", ["run.sh", "npm", "install"], { cwd: "../front" });
+      fs.appendFile("logApp.txt", "Build 'front'\n\n", function (err) {
+        if (err) throw err;
+      });
+      await execSpawn("sh", ["run.sh", "npm", "run", "build"], {
+        cwd: "../front",
+      });
+      fs.appendFile("logApp.txt", "Starting 'front'\n\n", function (err) {
+        if (err) throw err;
+      });
+
+      await execSpawn("sh", ["run.sh", "npm", "run", "start"], {
+        cwd: "../front",
+      });
       break;
 
     default:

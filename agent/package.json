@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:back": "set ENV_NAME=back && node index.js",
-    "start:front": "set ENV_NAME=back && node index.js",
+    "start:front": "set ENV_NAME=front && node index.js",
     "dev": "set ENV_NAME=back && nodemon",
     "linter": "npx prettier -w ."
   },

@@ -27,7 +27,7 @@
     "dotenv": "^16.0.3",
     "escape-string-regexp": "^5.0.0",
     "moment": "^2.29.1",
-    "next": "latest",
+    "next": "^13.3.0",
     "nprogress": "^0.2.0",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
