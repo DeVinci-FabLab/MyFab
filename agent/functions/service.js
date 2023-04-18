@@ -1,7 +1,10 @@
 const { exec, spawn } = require("node:child_process");
 const fs = require("fs");
+require("dotenv").config();
+const env_name = process.env.ENV_NAME.trim();
 
-module.exports.stopService = async (service) => {
+module.exports.stopService = stopService;
+async function stopService(service) {
   if (service) service.kill();
   return await new Promise((resolve, reject) => {
     exec(
@@ -15,7 +18,7 @@ module.exports.stopService = async (service) => {
       }
     );
   });
-};
+}
 
 async function execSpawn(cmd, parameters, options) {
   return await new Promise((resolve, reject) => {
@@ -42,7 +45,8 @@ async function execSpawn(cmd, parameters, options) {
   });
 }
 
-module.exports.startService = async (serviceName) => {
+module.exports.startService = startService;
+async function startService(serviceName) {
   const date = new Date();
   fs.writeFileSync(
     "logApp.txt", //("0" + (date.getMinutes() + 1)).slice(-2)
@@ -110,9 +114,10 @@ module.exports.startService = async (serviceName) => {
   });
 
   return service;
-};
+}
 
-module.exports.gitPull = async () => {
+module.exports.gitPull = gitPull;
+async function gitPull() {
   return await new Promise((resolve, reject) => {
     exec("git pull", (err, stdout, stderr) => {
       if (err) throw err;
@@ -120,5 +125,20 @@ module.exports.gitPull = async () => {
 
       resolve(true); //New code
     });
+  });
+}
+
+let actionIsRunning = false;
+module.exports.restartService = async (service) => {
+  return await new Promise(async (resolve, reject) => {
+    if (actionIsRunning) return service;
+    actionIsRunning = true;
+
+    await stopService(service);
+    setTimeout(async () => {
+      service = await startService(env_name);
+      actionIsRunning = false;
+      resolve(service);
+    }, 5000);
   });
 };
