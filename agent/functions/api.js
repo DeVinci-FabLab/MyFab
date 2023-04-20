@@ -5,6 +5,10 @@ const servicesManager = require("./service");
 const frontLocation = "front/";
 
 module.exports.startApi = async (app, service) => {
+  app.get("/ping", async (req, res) => {
+    res.sendStatus(200);
+  });
+
   app.get("/gitPull", async (req, res) => {
     res.sendStatus(200);
 
@@ -13,5 +17,11 @@ module.exports.startApi = async (app, service) => {
     const newCode = await servicesManager.gitPull();
     //if (!newCode) return;
     service = await servicesManager.restartService(service);
+  });
+
+  app.get("/restart", async (req, res) => {
+    res.sendStatus(200);
+
+    process.exit(1);
   });
 };
