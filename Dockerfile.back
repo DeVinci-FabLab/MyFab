@@ -1,9 +1,21 @@
-FROM node:18.13.0
+FROM ubuntu:23.04
 
-COPY ./back/package*.json /home/node/MyFabUltimate_Back/
-WORKDIR /home/node/MyFabUltimate_Back/
-RUN npm install
-COPY ./back/ .
-COPY .env .
-RUN npm run prepareFolders
-CMD ["npm", "run", "startOnServer"]
+RUN apt-get update
+RUN apt-get install -y git
+
+ENV NODE_VERSION=18.13.0
+RUN apt install -y curl iproute2
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN ln -s /root/.nvm/versions/node/v18.13.0/bin/node /bin/node
+
+COPY . /home/node/MyFab/
+WORKDIR /home/node/MyFab/agent
+RUN git remote set-url origin https://github.com/DeVinci-FabLab/MyFab.git
+ENV ENV_NAME=back
+
+CMD ["sh", "start.sh"]
