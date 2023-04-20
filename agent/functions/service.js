@@ -6,12 +6,13 @@ const env_name = process.env.ENV_NAME.trim();
 module.exports.stopService = stopService;
 async function stopService(service) {
   if (service) service.kill();
+return
   return await new Promise((resolve, reject) => {
+exec("ps",(err, pid, stderr) => {console.log(pid);});
     exec(
       "ps | grep 'node' | grep ? | sed 's/  */ /g' | cut -d ' ' -f2",
       (err, pid, stderr) => {
         if (err) throw err;
-
         exec("kill " + pid, (err, stdout, stderr) => {
           resolve();
         });
@@ -59,8 +60,8 @@ async function startService(serviceName) {
   let service = null;
   switch (serviceName) {
     case "back":
-      await execSpawn("sh", ["run.sh", "npm", "install"], { cwd: "../back" });
-      service = spawn("sh", ["run.sh", "npm", "run", "start"], {
+      await execSpawn("npm", ["install"], { cwd: "../back" });
+      service = spawn("npm", ["run", "start"], {
         cwd: "../back",
       });
       break;
@@ -69,18 +70,18 @@ async function startService(serviceName) {
       fs.appendFile("logApp.txt", "Install 'front'\n\n", function (err) {
         if (err) throw err;
       });
-      await execSpawn("sh", ["run.sh", "npm", "install"], { cwd: "../front" });
+      await execSpawn("npm", [ "install"], { cwd: "../front" });
       fs.appendFile("logApp.txt", "Build 'front'\n\n", function (err) {
         if (err) throw err;
       });
-      await execSpawn("sh", ["run.sh", "npm", "run", "build"], {
+      await execSpawn("npm", ["run", "build"], {
         cwd: "../front",
       });
       fs.appendFile("logApp.txt", "Starting 'front'\n\n", function (err) {
         if (err) throw err;
       });
 
-      await execSpawn("sh", ["run.sh", "npm", "run", "start"], {
+      service = spawn("npm", ["run", "start"], {
         cwd: "../front",
       });
       break;
