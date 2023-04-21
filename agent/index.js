@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const servicesManager = require("./functions/service");
 require("dotenv").config();
-const env_name = process.env.ENV_NAME.trim();
+const env_name = process.env.ENV_NAME?.trim();
 if (!env_name) {
   console.error("env_name is not defined");
   process.exit(1);

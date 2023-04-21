@@ -2,11 +2,12 @@ const { exec, spawn } = require("node:child_process");
 const fs = require("fs");
 require("dotenv").config();
 const env_name = process.env.ENV_NAME.trim();
+const is_linux = !process.env.IS_LINUX?.includes("false");
 
 module.exports.stopService = stopService;
 async function stopService(service) {
   if (service) service.kill();
-  if (process.env.IS_LINUX) {
+  if (is_linux) {
     return await new Promise((resolve, reject) => {
       exec(
         "ss -lptn 'sport = :5000' | grep LISTEN | sed 's/  */ /g' | cut -d '=' -f2 | cut -d ',' -f1",
@@ -72,10 +73,10 @@ async function startService(serviceName) {
   let service = null;
   switch (serviceName) {
     case "back":
-      process.env.IS_LINUX
+      is_linux
         ? await execSpawn("npm", ["install"], { cwd: "../back" })
         : await execSpawn("sh", ["npm", "install"], { cwd: "../back" });
-      service = process.env.IS_LINUX
+      service = is_linux
         ? spawn("npm", ["run", "start"], {
             cwd: "../back",
           })
@@ -86,14 +87,14 @@ async function startService(serviceName) {
       fs.appendFile("logApp.txt", "Install 'front'\n\n", function (err) {
         if (err) throw err;
       });
-      process.env.IS_LINUX
+      is_linux
         ? await execSpawn("npm", ["install"], { cwd: "../front" })
         : await execSpawn("sh", ["npm", "install"], { cwd: "../front" });
 
       fs.appendFile("logApp.txt", "Build 'front'\n\n", function (err) {
         if (err) throw err;
       });
-      process.env.IS_LINUX
+      is_linux
         ? await execSpawn("npm", ["run", "build"], {
             cwd: "../front",
           })
@@ -104,7 +105,7 @@ async function startService(serviceName) {
         if (err) throw err;
       });
 
-      service = process.env.IS_LINUX
+      service = is_linux
         ? spawn("npm", ["run", "start"], {
             cwd: "../front",
           })
