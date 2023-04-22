@@ -1,6 +1,8 @@
 const axios = require("axios");
 const CronJob = require("cron").CronJob;
 require("dotenv").config();
+const servicesManager = require("./service");
+
 const env_name = process.env.ENV_NAME.trim();
 const is_linux = !process.env.IS_LINUX?.includes("false");
 const restart_cron_time =
@@ -8,7 +10,9 @@ const restart_cron_time =
 const always_restart = process.env.ALWAYS_RESTART?.includes("true");
 const failsafe_cron_time =
   process.env.FAILSAFE_CRON_TIME?.trim() || "0 */15 9-23 * * *";
-const servicesManager = require("./service");
+const ping_url = is_linux ? "http://back:5000/api/ping" :
+  env_name == "back" ? "http://localhost:5000/api/ping"
+    : null;
 
 module.exports.startCron = async (service) => {
   const dailyRestart = new CronJob(
@@ -29,12 +33,8 @@ module.exports.startCron = async (service) => {
   const failsafe = new CronJob(
     failsafe_cron_time,
     async function () {
-      if (is_linux) url = "http://back:5000/api/ping";
-      else if (env_name == "back") url = "http://localhost:5000/api/ping";
-      else return;
-
-      console.log("Pinging '" + url + "'...");
-      ping(url)
+      console.log("Pinging '" + ping_url + "'...");
+      ping(ping_url)
         .then(async (result) => {
           if (!result) {
             console.log("Ping failed");
@@ -47,7 +47,7 @@ module.exports.startCron = async (service) => {
         });
     },
     null,
-    true
+    ping_url != null
   );
 };
 
