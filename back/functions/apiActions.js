@@ -55,6 +55,7 @@ module.exports.startApi = async (app) => {
 };
 
 const userAuthorization = require("../functions/userAuthorization");
+const sendApiRequest = require("../functions/sendApiRequest").sendApiRequest;
 module.exports.prepareData = async (app, req, res) => {
   if (activeLogs) addLogsApiRequest(req);
   const data = {
@@ -69,7 +70,8 @@ module.exports.prepareData = async (app, req, res) => {
         : null,
     files: req.files,
     specialcode: req.headers.specialcode,
-    userAuthorization: userAuthorization,
+    userAuthorization,
+    sendApiRequest,
   };
   return data;
 };
