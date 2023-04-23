@@ -20,7 +20,6 @@ async function startApi(app) {
         req,
         res
       );
-      console.log(data);
       const result = await update(data);
       await require("../../functions/apiActions").sendResponse(
         req,
