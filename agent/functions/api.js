@@ -12,10 +12,8 @@ module.exports.startApi = async (app, service) => {
   app.get("/gitPull", async (req, res) => {
     res.sendStatus(200);
 
-    if (env_name === "back")
-      axios.get(frontLocation + "gitPull").catch(() => {});
     const newCode = await servicesManager.gitPull();
-    //if (!newCode) return;
+    if (!newCode) return;
     service = await servicesManager.restartService(service);
   });
 

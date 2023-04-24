@@ -47,7 +47,7 @@ module.exports.startCron = async (service) => {
         });
     },
     null,
-    ping_url != null
+    ping_url
   );
 };
 
