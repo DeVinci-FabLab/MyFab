@@ -5,14 +5,10 @@ const servicesManager = require("./service");
 
 const env_name = process.env.ENV_NAME.trim();
 const is_linux = !process.env.IS_LINUX?.includes("false");
-const restart_cron_time =
-  process.env.RESTART_CRON_TIME?.trim() || "0 12 2 * * *";
+const restart_cron_time = process.env.RESTART_CRON_TIME?.trim() || "0 12 2 * * *";
 const daily_pull_always_restarts = process.env.DAILY_PULL_ALWAYS_RESTARTS?.includes("true");
-const failsafe_cron_time =
-  process.env.FAILSAFE_CRON_TIME?.trim() || "0 */15 9-23 * * *";
-const ping_url = is_linux ? "http://back:5000/api/ping" :
-  env_name == "back" ? "http://localhost:5000/api/ping"
-    : null;
+const failsafe_cron_time = process.env.FAILSAFE_CRON_TIME?.trim() || "0 */15 9-23 * * *";
+const ping_url = is_linux ? "http://back:5000/api/ping" : env_name == "back" ? "http://localhost:5000/api/ping" : null;
 
 module.exports.startCron = async (service) => {
   const dailyRestart = new CronJob(
@@ -62,6 +58,7 @@ async function ping(url) {
 
 async function saveService(service) {
   console.log("Attempting to save service...");
-  await servicesManager.gitPull();
+  const newCode = await servicesManager.gitPull();
+  if (!newCode) return;
   service = await servicesManager.restartService(service);
 }
