@@ -2,7 +2,10 @@ const { exec, spawn } = require("node:child_process");
 const fs = require("fs");
 require("dotenv").config();
 const env_name = process.env.ENV_NAME.trim();
-const is_linux = process.env.IS_LINUX == undefined ? false : process.env.IS_LINUX.includes("true");
+const is_linux =
+  process.env.IS_LINUX == undefined
+    ? false
+    : process.env.IS_LINUX.includes("true");
 
 module.exports.stopService = stopService;
 async function stopService(service) {
@@ -21,12 +24,15 @@ async function stopService(service) {
     });
   } else {
     return await new Promise((resolve, reject) => {
-      exec("ps | grep 'node' | grep ? | sed 's/  */ /g' | cut -d ' ' -f2", (err, pid, stderr) => {
-        if (err) throw err;
-        exec("kill " + pid, (err, stdout, stderr) => {
-          resolve();
-        });
-      });
+      exec(
+        "ps | grep 'node' | grep ? | sed 's/  */ /g' | cut -d ' ' -f2",
+        (err, pid, stderr) => {
+          if (err) throw err;
+          exec("kill " + pid, (err, stdout, stderr) => {
+            resolve();
+          });
+        }
+      );
     });
   }
 }
@@ -61,10 +67,11 @@ async function startService(serviceName) {
   const date = new Date();
   fs.writeFileSync(
     "logApp.txt", //("0" + (date.getMinutes() + 1)).slice(-2)
-    `Service '${serviceName}' is starting at : ${("0" + date.getDate()).slice(-2)}/${(
-      "0" +
-      (date.getMonth() + 1)
-    ).slice(-2)}/${date.getFullYear()} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}\n\n`
+    `Service '${serviceName}' is starting at : ${("0" + date.getDate()).slice(
+      -2
+    )}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${(
+      "0" + date.getHours()
+    ).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}\n\n`
   );
   let service = null;
   switch (serviceName) {

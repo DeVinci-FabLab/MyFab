@@ -10,6 +10,7 @@ if (!env_name) {
 console.log("Agent '" + env_name + "' is starting");
 
 async function start() {
+  await require("./functions/api").envFileSynchronization();
   await servicesManager.stopService();
   let service = await servicesManager.startService(env_name);
 

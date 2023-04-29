@@ -40,6 +40,8 @@ services:
     container_name: Myfab_Front
     depends_on:
       - "back"
+    volumes:
+      - ./back/data/:/home/node/MyFabUltimate_Back/data/
     ports:
       - ${PORT_FRONT}:3000
     networks:

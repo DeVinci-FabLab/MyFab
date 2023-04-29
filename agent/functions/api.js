@@ -1,7 +1,22 @@
-const axios = require("axios");
+const envSavedPath = __dirname + "/../../back/data/.env";
+const envBackPath = __dirname + "/../../back/.env";
+const envFrontPath = __dirname + "/../../front/.env";
 require("dotenv").config();
 const env_name = process.env.ENV_NAME.trim();
 const servicesManager = require("./service");
+const fs = require("fs");
+
+module.exports.envFileSynchronization = envFileSynchronization;
+async function envFileSynchronization() {
+  const fileEnvExist = fs.existsSync(envSavedPath);
+  if (!fileEnvExist && env_name === "back")
+    fs.copyFileSync(envBackPath, envSavedPath);
+  else if (fileEnvExist && env_name === "back")
+    fs.copyFileSync(envSavedPath, envBackPath);
+  else if (fileEnvExist && env_name === "front")
+    fs.copyFileSync(envSavedPath, envFrontPath);
+  return;
+}
 
 module.exports.startApi = async (app, service) => {
   app.get("/ping", async (req, res) => {
@@ -16,10 +31,61 @@ module.exports.startApi = async (app, service) => {
     service = await servicesManager.restartService(service);
   });
 
-  app.post("/env", async (req, res) => {
-    console.log(req.query);
-    res.sendStatus(200);
-  });
+  if (env_name === "back")
+    app.post("/env", async (req, res) => {
+      const action = req.query.action;
+      const key = req.query.key;
+      const value = req.query.value;
+      if (!action || !key) {
+        return res.sendStatus(400);
+      }
+
+      const env = fs.readFileSync(envBackPath, { encoding: "utf8", flag: "r" });
+      const lines = env.split("\n");
+      let indexKey = -1;
+      for (let index = 0; index < lines.length; index++) {
+        const element = lines[index];
+        if (element.includes(key + "=")) indexKey = index;
+      }
+
+      switch (action) {
+        case "add":
+          if (!value) return res.sendStatus(400);
+          if (indexKey !== -1) return res.sendStatus(405);
+          lines.push(`${key}=${value}`);
+          break;
+        case "update":
+          if (!value) return res.sendStatus(400);
+          if (indexKey === -1) return res.sendStatus(405);
+          lines[indexKey] = `${key}=${value}`;
+          break;
+        case "remove":
+          if (indexKey === -1) return res.sendStatus(405);
+          lines.splice(indexKey, 1);
+          break;
+
+        default:
+          return res.sendStatus(400);
+      }
+
+      let newEnv = lines.length === 0 ? "" : lines[0];
+      for (let index = 1; index < lines.length; index++) {
+        const element = lines[index];
+        newEnv += "\n" + element;
+      }
+
+      fs.writeFileSync(envBackPath, newEnv);
+
+      await envFileSynchronization();
+
+      res.sendStatus(200);
+    });
+
+  if (env_name === "front")
+    app.post("/env", async (req, res) => {
+      await envFileSynchronization();
+      res.sendStatus(200);
+    });
 
   app.get("/restart", async (req, res) => {
     res.sendStatus(200);
