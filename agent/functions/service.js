@@ -143,8 +143,10 @@ async function startService(serviceName) {
     if (code === null) return;
 
     console.log(`Service '${serviceName}' is stopping with code '${code}'`);
-    console.log(`Safe mode activation`);
-    //Safe mode
+
+    if (code === 0) return;
+
+    process.exit(1);
   });
 
   return service;
