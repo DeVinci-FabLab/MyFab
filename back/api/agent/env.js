@@ -4,10 +4,12 @@ const qs = require("qs");
 module.exports.env = env;
 async function env(data) {
   const resBack = await data.backEnv(data.query);
-  if(resBack!==200){  return {
-    type: "code",
-    code: resBack,
-  }};
+  if (resBack !== 200) {
+    return {
+      type: "code",
+      code: resBack,
+    };
+  }
 
   const resFront = await data.frontEnv();
 
@@ -32,19 +34,18 @@ async function startApi(app) {
       data.backEnv = async (queryData) => {
         return await new Promise(async (resolve, reject) => {
           try {
-          return await axios({
-            method: "post",
-            url: "http://back:2224/env?" + qs.stringify(queryData),
-          })
-            .then(function (response) {
-              // handle success
-              resolve(response.status)
+            return await axios({
+              method: "post",
+              url: "http://back:2224/env?" + qs.stringify(queryData),
             })
-            .catch(function (error) {
-              // handle error
-              resolve(error.response.status);
-            });
-        
+              .then(function (response) {
+                // handle success
+                resolve(response.status);
+              })
+              .catch(function (error) {
+                // handle error
+                resolve(error.response.status);
+              });
           } catch {
             resolve(404);
           }
@@ -56,11 +57,11 @@ async function startApi(app) {
           try {
             return await axios({
               method: "post",
-              url: "http://front:2224/env"
+              url: "http://front:2224/env",
             })
               .then(function (response) {
                 // handle success
-                resolve(response.status)
+                resolve(response.status);
               })
               .catch(function (error) {
                 // handle error
