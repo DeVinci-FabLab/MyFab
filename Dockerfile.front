@@ -10,11 +10,12 @@ ENV NVM_DIR=/root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 COPY . /home/node/MyFab/
 WORKDIR /home/node/MyFab/agent
 RUN git remote set-url origin https://github.com/DeVinci-FabLab/MyFab.git
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+ENV IS_LINUX=true
 ENV ENV_NAME=front
 
 CMD ["sh", "start.sh"]

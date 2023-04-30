@@ -126,12 +126,14 @@ async function startService(serviceName) {
 
   service.stdout.on("data", (data) => {
     fs.appendFile("logApp.txt", data.toString(), function (err) {
+      console.log(data.toString());
       if (err) throw err;
     });
   });
 
   service.stderr.on("data", (data) => {
     fs.appendFile("logApp.txt", data.toString(), function (err) {
+      console.log(data.toString());
       if (err) throw err;
     });
   });

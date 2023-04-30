@@ -6,15 +6,18 @@ const env_name = process.env.ENV_NAME.trim();
 const servicesManager = require("./service");
 const fs = require("fs");
 
+let env_modified = false;
+
 module.exports.envFileSynchronization = envFileSynchronization;
-async function envFileSynchronization() {
+async function envFileSynchronization(saveFile) {
   const fileEnvExist = fs.existsSync(envSavedPath);
-  if (!fileEnvExist && env_name === "back")
+  if ((!fileEnvExist && env_name === "back") || saveFile) {
     fs.copyFileSync(envBackPath, envSavedPath);
-  else if (fileEnvExist && env_name === "back")
+  } else if (fileEnvExist && env_name === "back") {
     fs.copyFileSync(envSavedPath, envBackPath);
-  else if (fileEnvExist && env_name === "front")
+  } else if (fileEnvExist && env_name === "front") {
     fs.copyFileSync(envSavedPath, envFrontPath);
+  }
   return;
 }
 
@@ -27,7 +30,8 @@ module.exports.startApi = async (app, service) => {
     res.sendStatus(200);
 
     const newCode = await servicesManager.gitPull();
-    if (!newCode) return;
+    if (!newCode || env_modified) return;
+    env_modified = false;
     service = await servicesManager.restartService(service);
   });
 
@@ -76,7 +80,8 @@ module.exports.startApi = async (app, service) => {
 
       fs.writeFileSync(envBackPath, newEnv);
 
-      await envFileSynchronization();
+      await envFileSynchronization(true);
+      env_modified = true;
 
       res.sendStatus(200);
     });
@@ -84,6 +89,7 @@ module.exports.startApi = async (app, service) => {
   if (env_name === "front")
     app.post("/env", async (req, res) => {
       await envFileSynchronization();
+      env_modified = true;
       res.sendStatus(200);
     });
 

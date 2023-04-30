@@ -16,6 +16,7 @@ RUN ln -s /root/.nvm/versions/node/v18.13.0/bin/node /bin/node
 COPY . /home/node/MyFab/
 WORKDIR /home/node/MyFab/agent
 RUN git remote set-url origin https://github.com/DeVinci-FabLab/MyFab.git
+ENV IS_LINUX=true
 ENV ENV_NAME=back
 
 CMD ["sh", "start.sh"]
