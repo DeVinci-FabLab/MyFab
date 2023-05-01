@@ -6,9 +6,13 @@ const is_linux =
   process.env.IS_LINUX == undefined
     ? false
     : process.env.IS_LINUX.includes("true");
+const createAppWaitingScreen = require("./api").createAppWaitingScreen;
+let appWaitingScreen;
+let appServer;
 
 module.exports.stopService = stopService;
 async function stopService(service) {
+  if (!appWaitingScreen) appWaitingScreen = await createAppWaitingScreen();
   if (service) service.kill();
   if (is_linux) {
     return await new Promise((resolve, reject) => {
@@ -17,6 +21,10 @@ async function stopService(service) {
         (err, pid, stderr) => {
           if (err) throw err;
           exec("kill " + pid, (err, stdout, stderr) => {
+            if (env_name === "front") {
+              appServer = appWaitingScreen.listen(3000);
+              console.log("waiting screen started");
+            }
             resolve();
           });
         }
@@ -29,6 +37,10 @@ async function stopService(service) {
         (err, pid, stderr) => {
           if (err) throw err;
           exec("kill " + pid, (err, stdout, stderr) => {
+            if (env_name === "front") {
+              appServer = appWaitingScreen.listen(3000);
+              console.log("Waiting screen started");
+            }
             resolve();
           });
         }
@@ -108,6 +120,12 @@ async function startService(serviceName) {
         if (err) throw err;
       });
 
+      if (env_name === "front" && appServer) {
+        appServer.close();
+        appServer = undefined;
+        console.log("Waiting screen closed");
+      }
+
       service = is_linux
         ? spawn("npm", ["run", "start"], {
             cwd: "../front",
@@ -126,7 +144,6 @@ async function startService(serviceName) {
 
   service.stdout.on("data", (data) => {
     fs.appendFile("logApp.txt", data.toString(), function (err) {
-      console.log(data.toString());
       if (err) throw err;
     });
   });

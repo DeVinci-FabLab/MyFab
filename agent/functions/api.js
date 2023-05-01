@@ -8,6 +8,24 @@ const fs = require("fs");
 
 let env_modified = false;
 
+//Waiting screen : Only for front
+module.exports.createAppWaitingScreen = async () => {
+  return await new Promise((resolve) => {
+    if (env_name !== "front") return resolve(null);
+    const express = require("express");
+    const appWaitingScreen = express();
+    const waitingScreen = fs.readFileSync(__dirname + "/waitingScreen.html", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    appWaitingScreen.get("*", async (req, res) => {
+      res.send(waitingScreen);
+    });
+
+    return resolve(appWaitingScreen);
+  });
+};
+
 module.exports.envFileSynchronization = envFileSynchronization;
 async function envFileSynchronization(saveFile) {
   const fileEnvExist = fs.existsSync(envSavedPath);
