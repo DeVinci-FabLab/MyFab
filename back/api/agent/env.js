@@ -3,6 +3,16 @@ const qs = require("qs");
 
 module.exports.env = env;
 async function env(data) {
+  const resCheckCode = await data.userAuthorization.checkSpecialCode(
+    data.specialcode
+  );
+  if (!resCheckCode) {
+    return {
+      type: "code",
+      code: 404,
+    };
+  }
+
   const resBack = await data.backEnv(data.query);
   if (resBack !== 200) {
     return {
