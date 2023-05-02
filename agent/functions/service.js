@@ -7,6 +7,7 @@ const is_linux =
     ? false
     : process.env.IS_LINUX.includes("true");
 const createAppWaitingScreen = require("./api").createAppWaitingScreen;
+const serviceLogsPath = __dirname + "/../logsService.txt";
 let appWaitingScreen;
 let appServer;
 
@@ -54,19 +55,19 @@ async function execSpawn(cmd, parameters, options) {
     cmdSpawn = spawn(cmd, parameters, options);
 
     cmdSpawn.stdout.on("data", (data) => {
-      fs.appendFile("logApp.txt", data.toString(), function (err) {
+      fs.appendFile(serviceLogsPath, data.toString(), function (err) {
         if (err) throw err;
       });
     });
 
     cmdSpawn.stderr.on("data", (data) => {
-      fs.appendFile("logApp.txt", data.toString(), function (err) {
+      fs.appendFile(serviceLogsPath, data.toString(), function (err) {
         if (err) throw err;
       });
     });
 
     cmdSpawn.on("exit", (code) => {
-      fs.appendFile("logApp.txt", "\n", function (err) {
+      fs.appendFile(serviceLogsPath, "\n", function (err) {
         if (err) throw err;
       });
       resolve();
@@ -78,7 +79,7 @@ module.exports.startService = startService;
 async function startService(serviceName) {
   const date = new Date();
   fs.writeFileSync(
-    "logApp.txt", //("0" + (date.getMinutes() + 1)).slice(-2)
+    serviceLogsPath, //("0" + (date.getMinutes() + 1)).slice(-2)
     `Service '${serviceName}' is starting at : ${("0" + date.getDate()).slice(
       -2
     )}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${(
@@ -99,14 +100,14 @@ async function startService(serviceName) {
       break;
 
     case "front":
-      fs.appendFile("logApp.txt", "Install 'front'\n\n", function (err) {
+      fs.appendFile(serviceLogsPath, "Install 'front'\n\n", function (err) {
         if (err) throw err;
       });
       is_linux
         ? await execSpawn("npm", ["install"], { cwd: "../front" })
         : await execSpawn("sh", ["npm", "install"], { cwd: "../front" });
 
-      fs.appendFile("logApp.txt", "Build 'front'\n\n", function (err) {
+      fs.appendFile(serviceLogsPath, "Build 'front'\n\n", function (err) {
         if (err) throw err;
       });
       is_linux
@@ -116,7 +117,7 @@ async function startService(serviceName) {
         : await execSpawn("sh", ["npm", "run", "build"], {
             cwd: "../front",
           });
-      fs.appendFile("logApp.txt", "Starting 'front'\n\n", function (err) {
+      fs.appendFile(serviceLogsPath, "Starting 'front'\n\n", function (err) {
         if (err) throw err;
       });
 
@@ -143,13 +144,13 @@ async function startService(serviceName) {
   console.log(`Service '${serviceName}' is starting`);
 
   service.stdout.on("data", (data) => {
-    fs.appendFile("logApp.txt", data.toString(), function (err) {
+    fs.appendFile(serviceLogsPath, data.toString(), function (err) {
       if (err) throw err;
     });
   });
 
   service.stderr.on("data", (data) => {
-    fs.appendFile("logApp.txt", data.toString(), function (err) {
+    fs.appendFile(serviceLogsPath, data.toString(), function (err) {
       console.log(data.toString());
       if (err) throw err;
     });

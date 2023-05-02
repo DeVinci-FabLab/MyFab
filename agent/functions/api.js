@@ -1,6 +1,8 @@
 const envSavedPath = __dirname + "/../../back/data/.env";
 const envBackPath = __dirname + "/../../back/.env";
 const envFrontPath = __dirname + "/../../front/.env";
+const serviceLogsPath = __dirname + "/../logsService.txt";
+const agentLogsPath = __dirname + "/../logsAgent.txt";
 require("dotenv").config();
 const env_name = process.env.ENV_NAME.trim();
 const servicesManager = require("./service");
