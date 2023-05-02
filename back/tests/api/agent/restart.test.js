@@ -1,4 +1,4 @@
-describe("POST /api/sql/", () => {
+describe("GET /api/agent/restart/", () => {
   test("200", async () => {
     const data = {
       app: {},

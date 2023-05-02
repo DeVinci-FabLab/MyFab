@@ -1,4 +1,4 @@
-describe("POST /api/sql/", () => {
+describe("POST /api/agent/sql/", () => {
   test("200", async () => {
     const data = {
       app: {},
