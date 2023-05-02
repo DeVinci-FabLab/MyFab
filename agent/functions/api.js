@@ -118,4 +118,25 @@ module.exports.startApi = async (app, service) => {
 
     process.exit(1);
   });
+
+  app.get("/logs", async (req, res) => {
+    let agent;
+    let service;
+
+    try {
+      agent = fs.readFileSync(agentLogsPath, 'utf-8');
+    } catch (err) {
+      agent = err;
+    }
+    try {
+      service = fs.readFileSync(serviceLogsPath, 'utf-8');
+    } catch (err) {
+      service = err;
+    }
+
+    res.send({
+      "agent": agent,
+      "service": service,
+    });
+  });
 };
