@@ -1,3 +1,4 @@
+date
 git pull
 cp ../.env ./.env
 cp ../.env ../front/.env

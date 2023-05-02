@@ -2,10 +2,7 @@ const { exec, spawn } = require("node:child_process");
 const fs = require("fs");
 require("dotenv").config();
 const env_name = process.env.ENV_NAME.trim();
-const is_linux =
-  process.env.IS_LINUX == undefined
-    ? false
-    : process.env.IS_LINUX.includes("true");
+const is_linux = process.env.IS_LINUX == undefined ? false : process.env.IS_LINUX.includes("true");
 const createAppWaitingScreen = require("./api").createAppWaitingScreen;
 const serviceLogsPath = __dirname + "/../logsService.txt";
 let appWaitingScreen;
@@ -33,19 +30,16 @@ async function stopService(service) {
     });
   } else {
     return await new Promise((resolve, reject) => {
-      exec(
-        "ps | grep 'node' | grep ? | sed 's/  */ /g' | cut -d ' ' -f2",
-        (err, pid, stderr) => {
-          if (err) throw err;
-          exec("kill " + pid, (err, stdout, stderr) => {
-            if (env_name === "front") {
-              appServer = appWaitingScreen.listen(3000);
-              console.log("Waiting screen started");
-            }
-            resolve();
-          });
-        }
-      );
+      exec("ps | grep 'node' | grep ? | sed 's/  */ /g' | cut -d ' ' -f2", (err, pid, stderr) => {
+        if (err) throw err;
+        exec("kill " + pid, (err, stdout, stderr) => {
+          if (env_name === "front") {
+            appServer = appWaitingScreen.listen(3000);
+            console.log("Waiting screen started");
+          }
+          resolve();
+        });
+      });
     });
   }
 }
@@ -55,19 +49,19 @@ async function execSpawn(cmd, parameters, options) {
     cmdSpawn = spawn(cmd, parameters, options);
 
     cmdSpawn.stdout.on("data", (data) => {
-      fs.appendFile(serviceLogsPath, data.toString(), function (err) {
+      fs.appendFile(serviceLogsPath, data.toString(), "utf8", function (err) {
         if (err) throw err;
       });
     });
 
     cmdSpawn.stderr.on("data", (data) => {
-      fs.appendFile(serviceLogsPath, data.toString(), function (err) {
+      fs.appendFile(serviceLogsPath, data.toString(), "utf8", function (err) {
         if (err) throw err;
       });
     });
 
     cmdSpawn.on("exit", (code) => {
-      fs.appendFile(serviceLogsPath, "\n", function (err) {
+      fs.appendFile(serviceLogsPath, "\n", "utf8", function (err) {
         if (err) throw err;
       });
       resolve();
@@ -80,11 +74,10 @@ async function startService(serviceName) {
   const date = new Date();
   fs.writeFileSync(
     serviceLogsPath, //("0" + (date.getMinutes() + 1)).slice(-2)
-    `Service '${serviceName}' is starting at : ${("0" + date.getDate()).slice(
-      -2
-    )}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${(
-      "0" + date.getHours()
-    ).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}\n\n`
+    `Service '${serviceName}' is starting at : ${("0" + date.getDate()).slice(-2)}/${(
+      "0" +
+      (date.getMonth() + 1)
+    ).slice(-2)}/${date.getFullYear()} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}\n\n`
   );
   let service = null;
   switch (serviceName) {
@@ -100,14 +93,14 @@ async function startService(serviceName) {
       break;
 
     case "front":
-      fs.appendFile(serviceLogsPath, "Install 'front'\n\n", function (err) {
+      fs.appendFile(serviceLogsPath, "Install 'front'\n\n", "utf8", function (err) {
         if (err) throw err;
       });
       is_linux
         ? await execSpawn("npm", ["install"], { cwd: "../front" })
         : await execSpawn("sh", ["npm", "install"], { cwd: "../front" });
 
-      fs.appendFile(serviceLogsPath, "Build 'front'\n\n", function (err) {
+      fs.appendFile(serviceLogsPath, "Build 'front'\n\n", "utf8", function (err) {
         if (err) throw err;
       });
       is_linux
@@ -117,7 +110,7 @@ async function startService(serviceName) {
         : await execSpawn("sh", ["npm", "run", "build"], {
             cwd: "../front",
           });
-      fs.appendFile(serviceLogsPath, "Starting 'front'\n\n", function (err) {
+      fs.appendFile(serviceLogsPath, "Starting 'front'\n\n", "utf8", function (err) {
         if (err) throw err;
       });
 
@@ -144,13 +137,13 @@ async function startService(serviceName) {
   console.log(`Service '${serviceName}' is starting`);
 
   service.stdout.on("data", (data) => {
-    fs.appendFile(serviceLogsPath, data.toString(), function (err) {
+    fs.appendFile(serviceLogsPath, data.toString(), "utf8", function (err) {
       if (err) throw err;
     });
   });
 
   service.stderr.on("data", (data) => {
-    fs.appendFile(serviceLogsPath, data.toString(), function (err) {
+    fs.appendFile(serviceLogsPath, data.toString(), "utf8", function (err) {
       console.log(data.toString());
       if (err) throw err;
     });
