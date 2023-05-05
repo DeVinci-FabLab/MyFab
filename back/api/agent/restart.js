@@ -31,7 +31,11 @@ async function startApi(app) {
         res
       );
       const result = await restart(data);
-      await require("../../functions/restart").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/agent/restart/");
       console.log(error);
