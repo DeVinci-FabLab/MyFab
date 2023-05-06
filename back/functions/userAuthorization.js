@@ -80,6 +80,7 @@ module.exports.validateUserAuth = async (app, userId, authName) => {
     return userAuth[authName] ? true : false;
   else return null;
 };
+/* c8 ignore stop */
 
 module.exports.generateCode = generateCode;
 function generateCode(date) {
@@ -107,4 +108,3 @@ module.exports.checkSpecialCode = async (codeToTest) => {
   if (tockenPrev === codeToTest) return true;
   return false;
 };
-/* c8 ignore stop */

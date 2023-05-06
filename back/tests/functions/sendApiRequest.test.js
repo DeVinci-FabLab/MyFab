@@ -1,4 +1,4 @@
-describe("GET /api/ping/", () => {
+describe("sendApiRequest", () => {
   test("service up", async () => {
     const response =
       await require("../../functions/sendApiRequest").sendApiRequest(
