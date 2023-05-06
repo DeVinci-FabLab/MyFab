@@ -76,7 +76,7 @@ module.exports.startApi = async (app, service) => {
         case "add":
           if (!value) return res.sendStatus(400);
           if (indexKey !== -1) return res.sendStatus(405);
-          lines.push(`${key}=${value}`);
+          lines.push(`${key}=${value}\n`);
           break;
         case "update":
           if (!value) return res.sendStatus(400);
@@ -124,19 +124,19 @@ module.exports.startApi = async (app, service) => {
     let service;
 
     try {
-      agent = fs.readFileSync(agentLogsPath, 'utf-8');
+      agent = fs.readFileSync(agentLogsPath, "utf-8");
     } catch (err) {
       agent = err;
     }
     try {
-      service = fs.readFileSync(serviceLogsPath, 'utf-8');
+      service = fs.readFileSync(serviceLogsPath, "utf-8");
     } catch (err) {
       service = err;
     }
 
     res.send({
-      "agent": agent,
-      "service": service,
+      agent: agent,
+      service: service,
     });
   });
 };
