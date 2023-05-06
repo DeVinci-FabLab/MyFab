@@ -50,9 +50,10 @@ module.exports.startApi = async (app, service) => {
     res.sendStatus(200);
 
     const newCode = await servicesManager.gitPull();
-    if (!newCode || env_modified) return;
-    env_modified = false;
-    service = await servicesManager.restartService(service);
+    if (newCode || env_modified) {
+      env_modified = false;
+      service = await servicesManager.restartService(service);
+    }
   });
 
   if (env_name === "back")
