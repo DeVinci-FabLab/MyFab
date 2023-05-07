@@ -161,7 +161,9 @@ async function startService(serviceName) {
 
     if (code === 0) return;
 
-    process.exit(1);
+    setTimeout(() => {
+      process.exit(1);
+    }, 5 * 60 * 1000);
   });
 
   return service;
