@@ -13,11 +13,11 @@ async function env(data) {
     };
   }
 
-  const resBack = await data.backEnv(data.body);
-  if (resBack !== 200) {
+  const resBack = await data.backEnv(data.query);
+  if (resBack.status !== 200) {
     return {
       type: "code",
-      code: resBack,
+      code: resBack.status,
     };
   }
 
@@ -26,7 +26,7 @@ async function env(data) {
   return {
     type: "json",
     code: 200,
-    json: { back: resBack, front: resFront },
+    json: { back: resBack.status, front: resFront, env: resBack.data.env },
   };
 }
 
@@ -46,16 +46,15 @@ async function startApi(app) {
           try {
             return await axios({
               method: "post",
-              url: "http://back:2224/env",
-              data: queryData,
+              url: "http://back:2224/env?" + qs.stringify(queryData),
             })
               .then(function (response) {
                 // handle success
-                resolve(response.status);
+                resolve(response);
               })
               .catch(function (error) {
                 // handle error
-                resolve(error.response.status);
+                resolve(error.response);
               });
           } catch {
             resolve(404);

@@ -59,10 +59,10 @@ module.exports.startApi = async (app, service) => {
 
   if (env_name === "back")
     app.post("/env", async (req, res) => {
-      const action = req.body.action;
-      const key = req.body.key;
-      const value = req.body.value;
-      if (!action || !key) {
+      const action = req.query.action;
+      const key = req.query.key;
+      const value = req.query.value;
+      if (!action) {
         return res.sendStatus(400);
       }
 
@@ -77,18 +77,28 @@ module.exports.startApi = async (app, service) => {
       switch (action) {
         case "add":
           if (!value) return res.sendStatus(400);
+          if (!key) return res.sendStatus(400);
           if (indexKey !== -1) return res.sendStatus(405);
-          lines.push(`${key}=${value}\n`);
+          lines.push(`${key}=${value}`);
           break;
         case "update":
           if (!value) return res.sendStatus(400);
+          if (!key) return res.sendStatus(400);
           if (indexKey === -1) return res.sendStatus(405);
           lines[indexKey] = `${key}=${value}`;
           break;
         case "remove":
+          if (!key) return res.sendStatus(400);
           if (indexKey === -1) return res.sendStatus(405);
           lines.splice(indexKey, 1);
+          console.log(lines[lines.length - 1].trim());
+          console.log(lines[lines.length - 2].trim());
+          while (lines[lines.length - 1].trim() === "" && lines[lines.length - 2].trim() === "") {
+            lines.splice(lines.length - 1, 1);
+          }
           break;
+        case "get":
+          return res.json({ env: env });
 
         default:
           return res.sendStatus(400);

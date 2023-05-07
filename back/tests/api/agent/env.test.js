@@ -1,4 +1,4 @@
-describe("POST /api/agent/sql/", () => {
+describe("POST /api/agent/env/", () => {
   test("200", async () => {
     const data = {
       app: {},
@@ -8,7 +8,7 @@ describe("POST /api/agent/sql/", () => {
         },
       },
       backEnv: async () => {
-        return 200;
+        return { status: 200, data: { env: "env example" } };
       },
       frontEnv: async () => {
         return 200;
@@ -19,7 +19,11 @@ describe("POST /api/agent/sql/", () => {
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
-    expect(response.json).toStrictEqual({ back: 200, front: 200 });
+    expect(response.json).toStrictEqual({
+      back: 200,
+      front: 200,
+      env: "env example",
+    });
   });
 
   test("404specialcodenotValid", async () => {
@@ -53,7 +57,7 @@ describe("POST /api/agent/sql/", () => {
         },
       },
       backEnv: async () => {
-        return 404;
+        return { status: 404 };
       },
       frontEnv: async () => {
         return 200;
@@ -75,7 +79,7 @@ describe("POST /api/agent/sql/", () => {
         },
       },
       backEnv: async () => {
-        return 200;
+        return { status: 200, data: { env: "env example" } };
       },
       frontEnv: async () => {
         return 404;
@@ -86,6 +90,10 @@ describe("POST /api/agent/sql/", () => {
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
-    expect(response.json).toStrictEqual({ back: 200, front: 404 });
+    expect(response.json).toStrictEqual({
+      back: 200,
+      front: 404,
+      env: "env example",
+    });
   });
 });
