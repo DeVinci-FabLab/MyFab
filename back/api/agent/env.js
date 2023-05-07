@@ -13,7 +13,7 @@ async function env(data) {
     };
   }
 
-  const resBack = await data.backEnv(data.query);
+  const resBack = await data.backEnv(data.body);
   if (resBack !== 200) {
     return {
       type: "code",
@@ -46,7 +46,8 @@ async function startApi(app) {
           try {
             return await axios({
               method: "post",
-              url: "http://back:2224/env?" + qs.stringify(queryData),
+              url: "http://back:2224/env",
+              data: queryData,
             })
               .then(function (response) {
                 // handle success
