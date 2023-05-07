@@ -1,5 +1,5 @@
-name: Test build
-run-name: "Build : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
+name: Test agent
+run-name: "Agent : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
 on: [push]
 jobs:
   Test-agent:
@@ -39,6 +39,7 @@ jobs:
       - name: Test update
         run: |
           docker-compose up -d mariadb back
+          docker exec Myfab_Back touch logsService.txt
           while ! curl -XGET 'localhost:5000/api/ping' &> /dev/null
           do
             sleep 1
