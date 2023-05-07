@@ -2,7 +2,7 @@ name: Test build
 run-name: "Build : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
 on: [push]
 jobs:
-  Build-back:
+  Test-agent:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -24,8 +24,9 @@ jobs:
           echo ADSF_ENTRYPOINT=http://localhost:8080/simplesaml/saml2/idp/SSOService.php >> .env
           echo ADSF_ISSUER=http://app.example.com >> .env
           echo ADFS_FRONT_URL=http://localhost:3000/test/ >> .env
+          echo IS_TEST_MODE=true >> .env
           ls -lA .env
-      - name: Build back
+      - name: Build apps
         run: |
           docker-compose build back
       - name: Get metrics
@@ -35,37 +36,19 @@ jobs:
           UBUNTU_SIZE=$(docker images | sed 's/  */ /g' | grep "ubuntu 23.04" | rev | cut -d ' ' -f1 | rev)
           IMAGES=$(echo -e "ubuntu 23.04 $UBUNTU_SIZE\n$IMAGE_NAME $IMAGE_SIZE" | sed 's/ /|/g')
           echo -e "REPOSITORY|TAG|SIZE\n----------|---|----\n$IMAGES" >> $GITHUB_STEP_SUMMARY
+      - name: Test update
+        run: |
+          docker-compose up -d mariadb back
+          while ! curl -XGET 'localhost:5000/api/ping' &> /dev/null
+          do
+            sleep 1
+          done
+          docker exec -it Myfab_Back cat logsAgent.txt
 
-  Build-front:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Create .env file
-        run: |
-          echo PORT_FRONT=3000 > .env
-          echo PORT_BACK=5000 >> .env
-          echo API=http://localhost:5000 >> .env
-          echo BASE_PATH=/test >> .env
-          echo DB_HOST=localhost >> .env
-          echo DB_USER=test >> .env
-          echo DB_ROOT_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> .env
-          echo DB_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> .env
-          echo DB_DATABASE=myFab >> .env
-          echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> .env
-          echo SHOWSWAGGER=false >> .env
-          echo ACTIVELOGS=false >> .env
-          echo ADSF_ENTRYPOINT=http://localhost:8080/simplesaml/saml2/idp/SSOService.php >> .env
-          echo ADSF_ISSUER=http://app.example.com >> .env
-          echo ADFS_FRONT_URL=http://localhost:3000/test/ >> .env
-          ls -lA .env
-      - name: Build front
-        run: |
-          docker-compose build front
-      - name: Get metrics
-        run: |
-          IMAGE_NAME=$(docker images | sed 's/  */ /g' | grep myfab_front | cut -d ' ' -f1,2)
-          IMAGE_SIZE=$(docker images | sed 's/  */ /g' | grep myfab_front | rev | cut -d ' ' -f1 | rev)
-          UBUNTU_SIZE=$(docker images | sed 's/  */ /g' | grep "ubuntu 23.04" | rev | cut -d ' ' -f1 | rev)
-          IMAGES=$(echo -e "ubuntu 23.04 $UBUNTU_SIZE\n$IMAGE_NAME $IMAGE_SIZE" | sed 's/ /|/g')
-          echo -e "REPOSITORY|TAG|SIZE\n----------|---|----\n$IMAGES" >> $GITHUB_STEP_SUMMARY
+#      - name: Get metrics
+#        run: |
+#          IMAGE_NAME=$(docker images | sed 's/  */ /g' | grep myfab_front | cut -d ' ' -f1,2)
+#          IMAGE_SIZE=$(docker images | sed 's/  */ /g' | grep myfab_front | rev | cut -d ' ' -f1 | rev)
+#          UBUNTU_SIZE=$(docker images | sed 's/  */ /g' | grep "ubuntu 23.04" | rev | cut -d ' ' -f1 | rev)
+#          IMAGES=$(echo -e "ubuntu 23.04 $UBUNTU_SIZE\n$IMAGE_NAME $IMAGE_SIZE" | sed 's/ /|/g')
+#          echo -e "REPOSITORY|TAG|SIZE\n----------|---|----\n$IMAGES" >> $GITHUB_STEP_SUMMARY
