@@ -11,7 +11,7 @@ let appServer;
 module.exports.stopService = stopService;
 async function stopService(service) {
   if (!appWaitingScreen) appWaitingScreen = await createAppWaitingScreen();
-  if (service) service.kill();
+  if (service) await service.kill();
   if (is_linux) {
     return await new Promise((resolve, reject) => {
       exec(
@@ -22,8 +22,10 @@ async function stopService(service) {
           if (err) throw err;
           exec("kill " + pid, (err, stdout, stderr) => {
             if (env_name === "front") {
-              appServer = appWaitingScreen.listen(3000);
-              console.log("waiting screen started");
+              setTimeout(() => {
+                appServer = appWaitingScreen.listen(3000);
+                console.log("waiting screen started");
+              }, 5000);
             }
             resolve();
           });
