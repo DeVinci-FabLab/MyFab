@@ -43,10 +43,11 @@ jobs:
           while ! curl -XGET 'localhost:5000/api/ping' &> /dev/null
           do
             sleep 1
-            docker exec Myfab_Back cat logsService.txt
+            docker ps
           done
           docker exec -it Myfab_Back cat logsAgent.txt
 
+# docker exec Myfab_Back cat logsService.txt
 #      - name: Get metrics
 #        run: |
 #          IMAGE_NAME=$(docker images | sed 's/  */ /g' | grep myfab_front | cut -d ' ' -f1,2)
