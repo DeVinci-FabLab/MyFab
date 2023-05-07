@@ -6,7 +6,7 @@ const generateCode = require("../../back/functions/userAuthorization").generateC
 async function cmd() {
   const res = await makeRequest();
   if (res.status === 200) {
-    console.log("MyFab has restart");
+    console.log("MyFab has restarted");
   } else if (res.status === 404) {
     console.log("Special code is invalid");
   } else {
