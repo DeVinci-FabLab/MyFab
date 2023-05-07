@@ -59,9 +59,9 @@ module.exports.startApi = async (app, service) => {
 
   if (env_name === "back")
     app.post("/env", async (req, res) => {
-      const action = req.query.action;
-      const key = req.query.key;
-      const value = req.query.value;
+      const action = req.body.action;
+      const key = req.body.key;
+      const value = req.body.value;
       if (!action || !key) {
         return res.sendStatus(400);
       }

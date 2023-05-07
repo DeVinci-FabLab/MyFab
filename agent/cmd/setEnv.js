@@ -52,7 +52,7 @@ async function makeRequest({ action, resultQuestionKey: key, resultQuestionValue
       headers: {
         specialcode: code,
       },
-      params: { action, key, value },
+      data: { action, key, value },
     })
       .then(function (response) {
         // handle success
