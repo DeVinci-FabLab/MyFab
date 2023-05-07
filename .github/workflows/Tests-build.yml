@@ -42,6 +42,7 @@ jobs:
           while ! curl -XGET 'localhost:5000/api/ping' &> /dev/null
           do
             sleep 1
+            docker exec -it Myfab_Back cat logService.txt
           done
           docker exec -it Myfab_Back cat logsAgent.txt
 
