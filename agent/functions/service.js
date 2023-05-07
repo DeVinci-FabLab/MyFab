@@ -16,7 +16,7 @@ async function stopService(service) {
     return await new Promise((resolve, reject) => {
       exec(
         `ss -lptn 'sport = :${
-          serviceName === "back" ? "5000" : "3000"
+          env_name === "back" ? "5000" : "3000"
         }' | grep LISTEN | sed 's/  */ /g' | cut -d '=' -f2 | cut -d ',' -f1`,
         (err, pid, stderr) => {
           if (err) throw err;
