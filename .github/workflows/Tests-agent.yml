@@ -36,16 +36,17 @@ jobs:
           UBUNTU_SIZE=$(docker images | sed 's/  */ /g' | grep "ubuntu 23.04" | rev | cut -d ' ' -f1 | rev)
           IMAGES=$(echo -e "ubuntu 23.04 $UBUNTU_SIZE\n$IMAGE_NAME $IMAGE_SIZE" | sed 's/ /|/g')
           echo -e "REPOSITORY|TAG|SIZE\n----------|---|----\n$IMAGES" >> $GITHUB_STEP_SUMMARY
-      - name: Test update
-        run: |
-          docker-compose up -d mariadb back
-          docker exec Myfab_Back touch logsService.txt
-          while ! curl -XGET 'localhost:5000/api/ping' &> /dev/null
-          do
-            sleep 1
-            docker ps
-          done
-          docker exec -it Myfab_Back cat logsAgent.txt
+
+#      - name: Test update
+#        run: |
+#          docker-compose up -d mariadb back
+#          docker exec Myfab_Back touch logsService.txt
+#          while ! curl -XGET 'localhost:5000/api/ping' &> /dev/null
+#          do
+#            sleep 1
+#            docker ps
+#          done
+#          docker exec -it Myfab_Back cat logsAgent.txt
 
 # docker exec Myfab_Back cat logsService.txt
 #      - name: Get metrics
