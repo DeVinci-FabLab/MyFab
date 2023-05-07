@@ -7,6 +7,7 @@ require("dotenv").config();
 const env_name = process.env.ENV_NAME.trim();
 const servicesManager = require("./service");
 const fs = require("fs");
+const is_test_mode = process.env.IS_TEST_MODE;
 
 let env_modified = false;
 
@@ -50,7 +51,7 @@ module.exports.startApi = async (app, service) => {
     res.sendStatus(200);
 
     const newCode = await servicesManager.gitPull();
-    if (newCode || env_modified) {
+    if (newCode || env_modified || is_test_mode) {
       env_modified = false;
       service = await servicesManager.restartService(service);
     }
