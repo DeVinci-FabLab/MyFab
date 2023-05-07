@@ -15,7 +15,9 @@ async function stopService(service) {
   if (is_linux) {
     return await new Promise((resolve, reject) => {
       exec(
-        "ss -lptn 'sport = :5000' | grep LISTEN | sed 's/  */ /g' | cut -d '=' -f2 | cut -d ',' -f1",
+        `ss -lptn 'sport = :${
+          serviceName === "back" ? "5000" : "3000"
+        }' | grep LISTEN | sed 's/  */ /g' | cut -d '=' -f2 | cut -d ',' -f1`,
         (err, pid, stderr) => {
           if (err) throw err;
           exec("kill " + pid, (err, stdout, stderr) => {
