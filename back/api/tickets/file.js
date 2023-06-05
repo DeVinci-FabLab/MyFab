@@ -426,7 +426,7 @@ async function ticketFileGetOneFile(data) {
             "-" +
             idFile +
             "_" +
-            resGetUserTicket[1][0].fileName,*
+            resGetUserTicket[1][0].fileName,
     };
   } else {
     return {
