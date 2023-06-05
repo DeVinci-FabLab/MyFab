@@ -27,6 +27,7 @@ services:
     volumes:
       - ./back/data/:/home/node/MyFab/back/data/
       - ./back/logs/:/home/node/MyFab/back/logs/
+      - ./.env:/home/node/MyFab/back/.env
     ports:
       - ${PORT_BACK}:5000
     networks:
@@ -42,6 +43,7 @@ services:
       - "back"
     volumes:
       - ./back/data/:/home/node/MyFab/back/data/
+      - ./.env:/home/node/MyFab/front/.env
     ports:
       - ${PORT_FRONT}:3000
     networks:
