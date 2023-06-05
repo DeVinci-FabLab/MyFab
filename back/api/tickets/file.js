@@ -224,6 +224,7 @@ async function ticketFileGetToken(data) {
                 INNER JOIN printstickets AS pt ON tf.i_idTicket = pt.i_id
                 INNER JOIN gd_ticketprojecttype AS gdpt ON pt.i_projecttype = gdpt.i_id
                 WHERE tf.i_id = ?`;
+
   const resGetUserTicket = await data.app.executeQuery(data.app.db, query, [
     idFile,
   ]);
@@ -425,7 +426,7 @@ async function ticketFileGetOneFile(data) {
             "-" +
             idFile +
             "_" +
-            resGetUserTicket[1][0].fileName,
+            resGetUserTicket[1][0].fileName,*
     };
   } else {
     return {
