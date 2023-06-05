@@ -1,24 +1,21 @@
-FROM node:18.13.0 as dependencies
-WORKDIR /my-project
-COPY ./front/package.json ./
-RUN npm install --force
+FROM ubuntu:23.04
 
-FROM node:18.13.0 as builder
-WORKDIR /my-project
-COPY ./front/ .
-COPY .env .env
-COPY --from=dependencies /my-project/node_modules ./node_modules
-RUN npm run build
+RUN apt-get update
+RUN apt-get install -y git
 
-FROM node:18.13.0 as runner
-WORKDIR /my-project
-ENV NODE_ENV production
-COPY --from=builder /my-project/next.config.js ./
-COPY --from=builder /my-project/.env ./
-COPY --from=builder /my-project/public ./public
-COPY --from=builder /my-project/.next ./.next
-COPY --from=builder /my-project/node_modules ./node_modules
-COPY --from=builder /my-project/package.json ./package.json
+ENV NODE_VERSION=18.13.0
+RUN apt install -y curl iproute2
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 
-EXPOSE 3000
-CMD ["npm", "run", "start"]
+COPY . /home/node/MyFab/
+WORKDIR /home/node/MyFab/agent
+RUN git remote set-url origin https://github.com/DeVinci-FabLab/MyFab.git
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+ENV IS_LINUX=true
+ENV ENV_NAME=front
+
+CMD ["sh", "start.sh"]

@@ -80,32 +80,31 @@ module.exports.validateUserAuth = async (app, userId, authName) => {
     return userAuth[authName] ? true : false;
   else return null;
 };
+/* c8 ignore stop */
+
+module.exports.generateCode = generateCode;
+function generateCode(date) {
+  const tocken = sha256(
+    jwtSecret +
+      (date.getUTCMonth() + 1) +
+      Math.trunc(date.getUTCSeconds() / 10) +
+      date.getUTCFullYear() +
+      date.getUTCMinutes() +
+      date.getUTCHours()
+  );
+  return tocken;
+}
 
 module.exports.checkSpecialCode = async (codeToTest) => {
   if (!jwtSecret || !codeToTest) {
     return false;
   }
   const nowDate = new Date();
-  const tockenNow = sha256(
-    jwtSecret +
-      (nowDate.getMonth() + 1) +
-      Math.trunc(nowDate.getSeconds() / 10) +
-      nowDate.getFullYear() +
-      nowDate.getMinutes() +
-      nowDate.getHours()
-  );
+  const tockenNow = generateCode(nowDate);
   if (tockenNow === codeToTest) return true;
 
   nowDate.setSeconds(nowDate.getSeconds() - 10);
-  const tockenPrev = sha256(
-    jwtSecret +
-      (nowDate.getMonth() + 1) +
-      Math.trunc(nowDate.getSeconds() / 10) +
-      nowDate.getFullYear() +
-      nowDate.getMinutes() +
-      nowDate.getHours()
-  );
+  const tockenPrev = generateCode(nowDate);
   if (tockenPrev === codeToTest) return true;
   return false;
 };
-/* c8 ignore stop */

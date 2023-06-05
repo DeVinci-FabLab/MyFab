@@ -1,0 +1,2 @@
+git remote set-url origin https://github.com/DeVinci-FabLab/MyFab.git
+git remote set-url origin git@github.com:DeVinci-FabLab/MyFab.git

@@ -22,7 +22,7 @@ async function sql(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.post("/api/sql/", async function (req, res) {
+  app.post("/api/agent/sql/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -36,7 +36,7 @@ async function startApi(app) {
         result
       );
     } catch (error) {
-      console.log("ERROR: POST /api/sql/");
+      console.log("ERROR: POST /api/agent/sql/");
       console.log(error);
       res.sendStatus(500);
     }

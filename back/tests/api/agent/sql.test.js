@@ -21,7 +21,7 @@ describe("POST /api/sql/", () => {
       body: { querry: "SHOW TABLES" },
     };
 
-    const response = await require("../../../api/other/sql").sql(data);
+    const response = await require("../../../api/agent/sql").sql(data);
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
@@ -39,7 +39,7 @@ describe("POST /api/sql/", () => {
       body: { querry: "SHOW TABLES" },
     };
 
-    const response = await require("../../../api/other/sql").sql(data);
+    const response = await require("../../../api/agent/sql").sql(data);
 
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
@@ -55,7 +55,7 @@ describe("POST /api/sql/", () => {
       },
     };
 
-    const response = await require("../../../api/other/sql").sql(data);
+    const response = await require("../../../api/agent/sql").sql(data);
 
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
@@ -72,7 +72,7 @@ describe("POST /api/sql/", () => {
       body: {},
     };
 
-    const response = await require("../../../api/other/sql").sql(data);
+    const response = await require("../../../api/agent/sql").sql(data);
 
     expect(response.code).toBe(404);
     expect(response.type).toBe("code");
