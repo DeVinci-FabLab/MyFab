@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "set IS_LINUX=true && node index.js",
+    "start": "set IS_LINUX=true && node index.js  > logsAgent.txt 2>&1",
     "start:back": "set ENV_NAME=back && node index.js > logsAgent.txt 2>&1",
     "start:front": "set ENV_NAME=front && node index.js > logsAgent.txt 2>&1",
     "dev": "set ENV_NAME=back && nodemon",
