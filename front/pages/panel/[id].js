@@ -95,11 +95,11 @@ const GestionTicket = ({
       },
     })
       .then(() => {
-        toast.success(+
-          paramType === "status"
+        toast.success(
+          +paramType === "status"
             ? "Le status du ticket a été mis à jour"
-            : "Le type de projet à été modifié",+
-          {
+            : "Le type de projet à été modifié",
+          +{
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
