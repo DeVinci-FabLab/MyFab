@@ -90,10 +90,10 @@ async function startService(serviceName) {
         ? await execSpawn("npm", ["install"], { cwd: "../back" })
         : await execSpawn("sh", ["npm", "install"], { cwd: "../back" });
       service = is_linux
-        ? spawn("npm", ["run", "start"], {
+        ? spawn("npm", ["run", "startOnServer"], {
             cwd: "../back",
           })
-        : spawn("sh", ["npm", "run", "start"], { cwd: "../back" });
+        : spawn("sh", ["npm", "run", "startOnServer"], { cwd: "../back" });
       break;
 
     case "front":
