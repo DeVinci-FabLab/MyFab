@@ -234,6 +234,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           type="number"
                           name="group"
                           id="group"
+                          min="0"
+                          max="1000"
                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           placeholder="64"
                         />
