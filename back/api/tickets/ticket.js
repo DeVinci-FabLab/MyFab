@@ -1,19 +1,27 @@
 const fs = require("fs");
 const maxTicket = 30;
+module.exports.maxTicket = maxTicket;
 
+/* c8 ignore start */
 function makeid(length, filename) {
   var result = "";
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  if (fs.existsSync(__dirname + "/../../data/files/stl/" + result + "_" + filename)) {
+  if (
+    fs.existsSync(
+      __dirname + "/../../data/files/stl/" + result + "_" + filename
+    )
+  ) {
     return makeid(length, filename);
   } else {
     return result + "_" + filename;
   }
 }
+/* c8 ignore stop */
 
 /**
  * @swagger
@@ -125,7 +133,12 @@ async function getTicketAllFromUser(data) {
              ORDER BY pt.i_id DESC
              ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
 
-  const dbRes = await data.app.executeQuery(data.app.db, query, [userIdAgent, maxTicket, maxTicket * page]);
+  const dbRes = await data.app.executeQuery(data.app.db, query, [
+    userIdAgent,
+    maxTicket,
+    maxTicket * page,
+  ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -133,6 +146,7 @@ async function getTicketAllFromUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryCount = `SELECT COUNT(1) AS count
              FROM printstickets AS pt
@@ -140,7 +154,12 @@ async function getTicketAllFromUser(data) {
              AND pt.b_isDeleted = 0 
              ORDER BY pt.i_id DESC;`;
 
-  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [userIdAgent, maxTicket, maxTicket * page]);
+  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [
+    userIdAgent,
+    maxTicket,
+    maxTicket * page,
+  ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -148,13 +167,20 @@ async function getTicketAllFromUser(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const calcTicketByMaxTicket = dbResCount[1][0].count / maxTicket;
-  const maxPage = Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket ? calcTicketByMaxTicket : Math.trunc(calcTicketByMaxTicket) + 1;
+  const maxPage =
+    Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket
+      ? calcTicketByMaxTicket
+      : Math.trunc(calcTicketByMaxTicket) + 1;
 
   return {
     type: "json",
     code: 200,
-    json: { maxPage: data.query && data.query.all ? 1 : maxPage, values: dbRes[1] },
+    json: {
+      maxPage: data.query && data.query.all ? 1 : maxPage,
+      values: dbRes[1],
+    },
   };
 }
 
@@ -187,6 +213,7 @@ async function getTicketAllFromUser(data) {
  *        description: "Internal error with the request"
  */
 
+/* c8 ignore start */
 function getOrderCollumnName(collumnName) {
   switch (collumnName) {
     case "name":
@@ -204,6 +231,7 @@ function getOrderCollumnName(collumnName) {
       return "pt.i_id";
   }
 }
+/* c8 ignore stop */
 
 module.exports.getTicketAll = getTicketAll;
 async function getTicketAll(data) {
@@ -214,7 +242,11 @@ async function getTicketAll(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent"
+  );
   if (!authViewResult) {
     return {
       type: "code",
@@ -224,7 +256,9 @@ async function getTicketAll(data) {
   if (data.query === undefined) data.query = {};
   const inputText = data.query.inputValue ? data.query.inputValue : "";
   const page = data.query.page ? data.query.page : 0;
-  const selectOpenOnly = data.query.selectOpenOnly ? data.query.selectOpenOnly : false;
+  const selectOpenOnly = data.query.selectOpenOnly
+    ? data.query.selectOpenOnly
+    : false;
   const orderCollumn = getOrderCollumnName(data.query.collumnName);
   const order = data.query.order === "false" ? "DESC" : "ASC";
   const query = `SELECT pt.i_id AS 'id',
@@ -266,6 +300,7 @@ async function getTicketAll(data) {
     maxTicket,
     maxTicket * page,
   ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -273,6 +308,7 @@ async function getTicketAll(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryCount = `SELECT COUNT(1) AS 'count'
             FROM printstickets AS pt
@@ -293,7 +329,17 @@ async function getTicketAll(data) {
                 OR tp.v_name LIKE CONCAT("%", ?, "%")
                 );`;
 
-  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [inputText, inputText, inputText, inputText, inputText, inputText, inputText, inputText]);
+  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+  ]);
+  /* c8 ignore start */
   if (dbResCount[0]) {
     console.log(dbResCount[0]);
     return {
@@ -301,8 +347,12 @@ async function getTicketAll(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const calcTicketByMaxTicket = dbResCount[1][0].count / maxTicket;
-  const maxPage = Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket ? calcTicketByMaxTicket : Math.trunc(calcTicketByMaxTicket) + 1;
+  const maxPage =
+    Math.trunc(calcTicketByMaxTicket) === calcTicketByMaxTicket
+      ? calcTicketByMaxTicket
+      : Math.trunc(calcTicketByMaxTicket) + 1;
 
   return {
     type: "json",
@@ -368,13 +418,19 @@ async function getTicketById(data) {
   const querySelectUser = `SELECT i_idUser AS 'id'
                         FROM printstickets
                         WHERE i_id = ? AND b_isDeleted = 0`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelectUser, [data.params.id]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    querySelectUser,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (resGetUserTicket[0]) {
     console.log(resGetUserTicket[0]);
     return {
       type: "code",
       code: 500,
     };
+    /* c8 ignore stop */
   } else if (resGetUserTicket[1].length !== 1) {
     return {
       type: "code",
@@ -383,7 +439,11 @@ async function getTicketById(data) {
   }
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -403,7 +463,10 @@ async function getTicketById(data) {
              INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
              LEFT OUTER JOIN gd_status AS stat ON pt.i_status = stat.i_id
              WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [data.params.id]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
+    data.params.id,
+  ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -411,6 +474,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (dbRes[1] == null || dbRes[1].length !== 1) {
     return {
       type: "code",
@@ -427,7 +491,12 @@ async function getTicketById(data) {
             AND gd_status.b_printCompleted = 1
             AND (dt_creationdate BETWEEN CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) < 9)), "/09/01")
             AND CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) + (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) > 9)), "/08/31"));`;
-  const dbResSelectCounterUser = await data.app.executeQuery(data.app.db, querySelectCountUser, [result.idUser, result.id, result.id, result.id, result.id]);
+  const dbResSelectCounterUser = await data.app.executeQuery(
+    data.app.db,
+    querySelectCountUser,
+    [result.idUser, result.id, result.id, result.id, result.id]
+  );
+  /* c8 ignore start */
   if (dbResSelectCounterUser[0]) {
     console.log(dbResSelectCounterUser[0]);
     return {
@@ -435,6 +504,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   result.ticketCountUser = dbResSelectCounterUser[1][0].countUser;
 
   if (result.groupNumber) {
@@ -445,14 +515,19 @@ async function getTicketById(data) {
                 AND i_projecttype = ?
                 AND (dt_creationdate BETWEEN CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) < 9)), "/09/01")
                 AND CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) + (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) > 9)), "/08/31"));`;
-    const dbResSelectCounterGroup = await data.app.executeQuery(data.app.db, querySelectCountGroup, [
-      result.groupNumber,
-      result.idProjectType,
-      result.id,
-      result.id,
-      result.id,
-      result.id,
-    ]);
+    const dbResSelectCounterGroup = await data.app.executeQuery(
+      data.app.db,
+      querySelectCountGroup,
+      [
+        result.groupNumber,
+        result.idProjectType,
+        result.id,
+        result.id,
+        result.id,
+        result.id,
+      ]
+    );
+    /* c8 ignore start */
     if (dbResSelectCounterGroup[0]) {
       console.log(dbResSelectCounterGroup[0]);
       return {
@@ -460,6 +535,7 @@ async function getTicketById(data) {
         code: 500,
       };
     }
+    /* c8 ignore stop */
     result.ticketCountGroup = dbResSelectCounterGroup[1][0].countGroup;
   } else {
     result.ticketCountGroup = null;
@@ -473,7 +549,12 @@ async function getTicketById(data) {
             INNER JOIN gd_ticketprojecttype AS gdtpt ON ltc.v_newValue = gdtpt.i_id
             WHERE i_idTicket = ? AND v_action = 'upd_projType'
             ORDER BY ltc.dt_timeStamp ASC`;
-  const dbResSelectLogUpdProjectType = await data.app.executeQuery(data.app.db, querySelectLogUpdProjectType, [data.params.id]);
+  const dbResSelectLogUpdProjectType = await data.app.executeQuery(
+    data.app.db,
+    querySelectLogUpdProjectType,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (dbResSelectLogUpdProjectType[0]) {
     console.log(dbResSelectLogUpdProjectType[0]);
     return {
@@ -481,6 +562,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   result.history = dbResSelectLogUpdProjectType[1];
 
   const querySelectLogUpdStatus = `SELECT
@@ -491,7 +573,12 @@ async function getTicketById(data) {
             LEFT OUTER JOIN gd_status AS gds ON ltc.v_newValue = gds.i_id
             WHERE i_idTicket = ? AND v_action = 'upd_status'
             ORDER BY ltc.dt_timeStamp ASC`;
-  const dbResSelectLogStatus = await data.app.executeQuery(data.app.db, querySelectLogUpdStatus, [data.params.id]);
+  const dbResSelectLogStatus = await data.app.executeQuery(
+    data.app.db,
+    querySelectLogUpdStatus,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (dbResSelectLogStatus[0]) {
     console.log(dbResSelectLogStatus[0]);
     return {
@@ -499,6 +586,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   for (const elem of dbResSelectLogStatus[1]) {
     result.history.push(elem);
   }
@@ -509,7 +597,12 @@ async function getTicketById(data) {
             FROM log_ticketschange AS ltc
             INNER JOIN gd_ticketpriority AS gdtp ON ltc.v_newValue = gdtp.i_id
             WHERE i_idTicket = ? AND v_action = 'upd_priority'`;
-  const dbResSelectLogPriority = await data.app.executeQuery(data.app.db, querySelectLogPriority, [data.params.id]);
+  const dbResSelectLogPriority = await data.app.executeQuery(
+    data.app.db,
+    querySelectLogPriority,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (dbResSelectLogPriority[0]) {
     console.log(dbResSelectLogPriority[0]);
     return {
@@ -517,6 +610,7 @@ async function getTicketById(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   for (const elem of dbResSelectLogPriority[1]) {
     result.history.push(elem);
   }
@@ -593,7 +687,13 @@ async function getTicketById(data) {
 module.exports.postTicket = postTicket;
 async function postTicket(data) {
   // The body does not have all the necessary field
-  if (!data.body || !data.body.projectType || isNaN(data.body.projectType) || isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) || !data.body.comment) {
+  if (
+    !data.body ||
+    !data.body.projectType ||
+    isNaN(data.body.projectType) ||
+    isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) ||
+    !data.body.comment
+  ) {
     return {
       type: "code",
       code: 400,
@@ -607,13 +707,19 @@ async function postTicket(data) {
     };
   }
   const querySelectProjectType = `SELECT 1 FROM gd_ticketprojecttype WHERE i_id = ?`;
-  const resSelectProjectType = await data.app.executeQuery(data.app.db, querySelectProjectType, [data.body.projectType]);
+  const resSelectProjectType = await data.app.executeQuery(
+    data.app.db,
+    querySelectProjectType,
+    [data.body.projectType]
+  );
+  /* c8 ignore start */
   if (resSelectProjectType[0]) {
     console.log(resSelectProjectType[0]);
     return {
       type: "code",
       code: 500,
     };
+    /* c8 ignore stop */
   } else if (resSelectProjectType[1].length == 0) {
     return {
       type: "code",
@@ -623,7 +729,12 @@ async function postTicket(data) {
 
   const queryCreateTicket = `INSERT INTO printstickets (i_idUser, i_projecttype, i_groupNumber, i_priority, i_status)
                             VALUES (?, ?, ?, (SELECT i_id FROM gd_ticketpriority WHERE v_name = 'Normal'), (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert'));`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [userId, data.body.projectType, data.body.groupNumber]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [
+    userId,
+    data.body.projectType,
+    data.body.groupNumber,
+  ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -631,8 +742,14 @@ async function postTicket(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const querySelectLastId = `SELECT LAST_INSERT_ID() AS 'id';`;
-  const lastIdentityRes = await data.app.executeQuery(data.app.db, querySelectLastId, []);
+  const lastIdentityRes = await data.app.executeQuery(
+    data.app.db,
+    querySelectLastId,
+    []
+  );
+  /* c8 ignore start */
   if (lastIdentityRes[0] || lastIdentityRes[1].length !== 1) {
     console.log(lastIdentityRes[0]);
     return {
@@ -640,6 +757,7 @@ async function postTicket(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   //Detects if there are one or more files
   let files;
@@ -653,20 +771,32 @@ async function postTicket(data) {
     if (fileNameSplited[fileNameSplited.length - 1].toLowerCase() === "stl") {
       await new Promise(async (resolve) => {
         const newFileName = makeid(10, file.name);
-        fs.copyFile(file.tempFilePath, __dirname + "/../../data/files/stl/" + newFileName, async (err) => {
-          if (err) throw err;
-          const queryInsertFile = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
+        fs.copyFile(
+          file.tempFilePath,
+          __dirname + "/../../data/files/stl/" + newFileName,
+          async (err) => {
+            /* c8 ignore start */
+            if (err) throw err;
+            /* c8 ignore stop */
+            const queryInsertFile = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
                                             VALUES (?, ?, ?, ?);`;
-          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsertFile, [userId, lastIdentityRes[1][0].id, file.name, newFileName]);
-          if (resInsertFile[0]) {
-            console.log(resInsertFile[0]);
-            return {
-              type: "code",
-              code: 500,
-            };
+            const resInsertFile = await data.app.executeQuery(
+              data.app.db,
+              queryInsertFile,
+              [userId, lastIdentityRes[1][0].id, file.name, newFileName]
+            );
+            /* c8 ignore start */
+            if (resInsertFile[0]) {
+              console.log(resInsertFile[0]);
+              return {
+                type: "code",
+                code: 500,
+              };
+            }
+            /* c8 ignore stop */
+            resolve();
           }
-          resolve();
-        });
+        );
       });
     }
     fs.unlinkSync(file.tempFilePath);
@@ -674,7 +804,12 @@ async function postTicket(data) {
 
   const queryInsert = `INSERT INTO ticketmessages (i_idUser, i_idTicket, v_content)
                         VALUES (?, ?, ?)`;
-  const resCommentInsert = await data.app.executeQuery(data.app.db, queryInsert, [userId, lastIdentityRes[1][0].id, data.body.comment]);
+  const resCommentInsert = await data.app.executeQuery(
+    data.app.db,
+    queryInsert,
+    [userId, lastIdentityRes[1][0].id, data.body.comment]
+  );
+  /* c8 ignore start */
   if (resCommentInsert[0]) {
     console.log(resCommentInsert[0]);
     return {
@@ -682,6 +817,7 @@ async function postTicket(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   return {
@@ -743,7 +879,12 @@ async function deleteTicketWithId(data) {
                                 b_isDeleted AS 'isDeleted'
                                 FROM printstickets
                                 WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelect, [data.params.id]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -751,6 +892,7 @@ async function deleteTicketWithId(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resGetUserTicket[1].length < 1) {
     return {
       type: "code",
@@ -759,7 +901,11 @@ async function deleteTicketWithId(data) {
   }
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -771,13 +917,19 @@ async function deleteTicketWithId(data) {
   const queryUpdate = `UPDATE printstickets
                         SET b_isDeleted = '1'
                         WHERE i_id = ?;`;
-  const resDeleteTicket = await data.app.executeQuery(data.app.db, queryUpdate, [data.params.id]);
+  const resDeleteTicket = await data.app.executeQuery(
+    data.app.db,
+    queryUpdate,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (resDeleteTicket[0]) {
     console.log(resDeleteTicket[0]);
     return {
       type: "code",
       code: 500,
     };
+    /* c8 ignore stop */
   } else if (resDeleteTicket[0] || resDeleteTicket[1].changedRows !== 1) {
     return {
       type: "code",
@@ -835,7 +987,14 @@ async function deleteTicketWithId(data) {
 module.exports.putTicketNewProjectType = putTicketNewProjectType;
 async function putTicketNewProjectType(data) {
   // parameters or body not valid
-  if (!data.params || !data.params.id || isNaN(data.params.id) || !data.query || !data.query.projecttype || isNaN(data.query.projecttype)) {
+  if (
+    !data.params ||
+    !data.params.id ||
+    isNaN(data.params.id) ||
+    !data.query ||
+    !data.query.projecttype ||
+    isNaN(data.query.projecttype)
+  ) {
     return {
       type: "code",
       code: 400,
@@ -849,7 +1008,11 @@ async function putTicketNewProjectType(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent"
+  );
   if (!authViewResult) {
     return {
       type: "code",
@@ -860,7 +1023,12 @@ async function putTicketNewProjectType(data) {
   const querySelect = `SELECT 1
             FROM gd_ticketprojecttype
             WHERE i_id = ?`;
-  const resTestIfRoleExist = await data.app.executeQuery(data.app.db, querySelect, [data.query.projecttype]);
+  const resTestIfRoleExist = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    [data.query.projecttype]
+  );
+  /* c8 ignore start */
   if (resTestIfRoleExist[0]) {
     console.log(resTestIfRoleExist[0]);
     return {
@@ -868,11 +1036,16 @@ async function putTicketNewProjectType(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryUpdate = `UPDATE printstickets
             SET i_projecttype = ?
             WHERE i_id = ?`;
-  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [data.query.projecttype, data.params.id]);
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    data.query.projecttype,
+    data.params.id,
+  ]);
+  /* c8 ignore start */
   if (resUpdate[0]) {
     console.log(resUpdate[0]);
     return {
@@ -880,6 +1053,7 @@ async function putTicketNewProjectType(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (resUpdate[1].changedRows < 1) {
     return {
@@ -891,7 +1065,12 @@ async function putTicketNewProjectType(data) {
   const queryInsertLog = `INSERT INTO log_ticketschange
             (i_idUser, i_idTicket, v_action, v_newValue)
             VALUES (?, ?, 'upd_projType', ?)`;
-  const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, data.params.id, data.query.projecttype]);
+  const resInsertLog = await data.app.executeQuery(
+    data.app.db,
+    queryInsertLog,
+    [userIdAgent, data.params.id, data.query.projecttype]
+  );
+  /* c8 ignore start */
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -899,6 +1078,7 @@ async function putTicketNewProjectType(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
@@ -951,7 +1131,14 @@ async function putTicketNewProjectType(data) {
 module.exports.putTicketNewStatus = putTicketNewStatus;
 async function putTicketNewStatus(data) {
   // parameters or body not valid
-  if (!data.params || !data.params.id || isNaN(data.params.id) || !data.query || !data.query.idStatus || isNaN(data.query.idStatus)) {
+  if (
+    !data.params ||
+    !data.params.id ||
+    isNaN(data.params.id) ||
+    !data.query ||
+    !data.query.idStatus ||
+    isNaN(data.query.idStatus)
+  ) {
     return {
       type: "code",
       code: 400,
@@ -967,7 +1154,11 @@ async function putTicketNewStatus(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent"
+  );
   if (!authViewResult) {
     return {
       type: "code",
@@ -978,7 +1169,11 @@ async function putTicketNewStatus(data) {
   const queryUpdate = `UPDATE printstickets 
                          SET i_status = ?
                          WHERE i_id = ?`;
-  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [idStatus, idTicket]);
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    idStatus,
+    idTicket,
+  ]);
+  /* c8 ignore start */
   if (resUpdate[0]) {
     console.log(resUpdate[0]);
     return {
@@ -986,6 +1181,7 @@ async function putTicketNewStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (resUpdate[1].changedRows < 1) {
     return {
@@ -997,7 +1193,12 @@ async function putTicketNewStatus(data) {
   const queryInsertLog = `INSERT INTO log_ticketschange
              (i_idUser, i_idTicket, v_action, v_newValue)
              VALUES (?, ?, 'upd_status', ?)`;
-  const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, idTicket, idStatus]);
+  const resInsertLog = await data.app.executeQuery(
+    data.app.db,
+    queryInsertLog,
+    [userIdAgent, idTicket, idStatus]
+  );
+  /* c8 ignore start */
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -1005,6 +1206,7 @@ async function putTicketNewStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
@@ -1070,7 +1272,12 @@ async function putTicketCancelStatus(data) {
   const querySelectTicket = `SELECT i_idUser AS 'id'
                         FROM printstickets
                         WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelectTicket, [data.params.id]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    querySelectTicket,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -1078,6 +1285,7 @@ async function putTicketCancelStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
     return {
@@ -1093,7 +1301,10 @@ async function putTicketCancelStatus(data) {
                           WHERE b_isCancel = 1
                           )
                         WHERE i_id = ?`;
-  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [idTicket]);
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    idTicket,
+  ]);
+  /* c8 ignore start */
   if (resUpdate[0]) {
     console.log(resUpdate[0]);
     return {
@@ -1101,6 +1312,7 @@ async function putTicketCancelStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   // The response has no value
   if (resUpdate[1].changedRows < 1) {
     return {
@@ -1116,7 +1328,12 @@ async function putTicketCancelStatus(data) {
               FROM gd_status
               WHERE b_isCancel = 1
               ))`;
-  const resInsertLog = await data.app.executeQuery(data.app.db, queryInsertLog, [userIdAgent, idTicket]);
+  const resInsertLog = await data.app.executeQuery(
+    data.app.db,
+    queryInsertLog,
+    [userIdAgent, idTicket]
+  );
+  /* c8 ignore start */
   if (resInsertLog[0]) {
     console.log(resInsertLog[0]);
     return {
@@ -1124,6 +1341,7 @@ async function putTicketCancelStatus(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
@@ -1181,6 +1399,7 @@ async function getHighDemand(data) {
               AND pt.dt_creationdate < CURDATE();`;
 
   const resGet = await data.app.executeQuery(data.app.db, queryGet, []);
+  /* c8 ignore start */
   if (resGet[0]) {
     console.log(resGet[0]);
     return {
@@ -1188,6 +1407,7 @@ async function getHighDemand(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   return {
     type: "json",
@@ -1196,13 +1416,22 @@ async function getHighDemand(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/ticket/highDemand/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getHighDemand(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/highDemand/");
       console.log(error);
@@ -1212,9 +1441,17 @@ async function startApi(app) {
 
   app.get("/api/ticket/me/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getTicketAllFromUser(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/me/");
       console.log(error);
@@ -1224,9 +1461,17 @@ async function startApi(app) {
 
   app.get("/api/ticket/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getTicketAll(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/");
       console.log(error);
@@ -1236,9 +1481,17 @@ async function startApi(app) {
 
   app.get("/api/ticket/:id", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getTicketById(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/:id/");
       console.log(error);
@@ -1248,9 +1501,17 @@ async function startApi(app) {
 
   app.post("/api/ticket/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await postTicket(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/ticket/");
       console.log(error);
@@ -1260,9 +1521,17 @@ async function startApi(app) {
 
   app.delete("/api/ticket/:id", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await deleteTicketWithId(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: DELETE /api/ticket/:id");
       console.log(error);
@@ -1272,9 +1541,17 @@ async function startApi(app) {
 
   app.put("/api/ticket/:id/setProjecttype", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putTicketNewProjectType(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setProjecttype/");
       console.log(error);
@@ -1284,9 +1561,17 @@ async function startApi(app) {
 
   app.put("/api/ticket/:id/setStatus", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putTicketNewStatus(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setStatus");
       console.log(error);
@@ -1296,9 +1581,17 @@ async function startApi(app) {
 
   app.put("/api/ticket/:id/setCancelStatus", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putTicketCancelStatus(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setCancelStatus");
       console.log(error);
@@ -1306,3 +1599,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */

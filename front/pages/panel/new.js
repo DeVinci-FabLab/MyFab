@@ -49,7 +49,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
   };
 
   const handleSubmit = async (e) => {
-    if (description == "Aucune déscription fournie." || group == null || file.length < 1) {
+    if (
+      description == "Aucune déscription fournie." ||
+      group == null ||
+      file.length < 1
+    ) {
       toast.error("Tous les champs ne sont pas complétés.", {
         position: "top-right",
         autoClose: 3000,
@@ -63,21 +67,6 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
       return;
     }
     e.preventDefault();
-
-    const projectType = {
-      "PIX 1": {
-        id: 1,
-      },
-      "PIX 2": {
-        id: 2,
-      },
-      PING: {
-        id: 3,
-      },
-      "PI²": { id: 4 },
-      Associatif: { id: 5 },
-      Autre: { id: 6 },
-    };
 
     const data = new FormData();
     const jwt = getCookie("jwt");
@@ -95,9 +84,30 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
       headers: {
         dvflCookie: jwt,
       },
-      onUploadProgress: (progress) => setPercent(percents(progress.loaded, progress.total)),
+      onUploadProgress: (progress) =>
+        setPercent(percents(progress.loaded, progress.total)),
     }).catch((e) => {
-      toast.error("Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.", {
+      toast.error(
+        "Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    });
+    document.getElementById("status").scrollIntoView();
+    setFile([]);
+    setDescription("Aucune déscription fournie.");
+    setType("PIX 1");
+    setGroup(null);
+    toast.success(
+      "Le ticket #" + setZero(upload_res.data.id) + " a été créé !",
+      {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: true,
@@ -105,22 +115,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      });
-    });
-    document.getElementById("status").scrollIntoView();
-    setFile([]);
-    setDescription("Aucune déscription fournie.");
-    setType("PIX 1");
-    setGroup(null);
-    toast.success("Le ticket #" + setZero(upload_res.data.id) + " a été créé !", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+      }
+    );
     router.push("/panel/newSuccess/?id=" + upload_res.data.id);
   };
 
@@ -129,7 +125,12 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
   };
 
   return (
-    <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Panel de demande d'impression 3D">
+    <LayoutPanel
+      user={user}
+      role={role}
+      authorizations={authorizations}
+      titleMenu="Panel de demande d'impression 3D"
+    >
       <Seo title={"Créer un ticket"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
 
@@ -138,8 +139,13 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">Informations</h3>
-                <p className="mt-1 text-sm text-gray-600">Ces informations permettront de traiter aux mieux votre impression. Merci de les remplir correctement.</p>
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Informations
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">
+                  Ces informations permettront de traiter aux mieux votre
+                  impression. Merci de les remplir correctement.
+                </p>
               </div>
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
@@ -147,7 +153,10 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
                   <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                     <div>
-                      <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="about"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Commentaires
                       </label>
                       <div className="mt-1">
@@ -160,11 +169,17 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
-                      <p className="mt-2 text-sm text-gray-500">Description détaillée de la demande d'impression du fichier.</p>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Description détaillée de la demande d'impression du
+                        fichier.
+                      </p>
                     </div>
 
                     <div>
-                      <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="type"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Type de projet
                       </label>
                       <select
@@ -173,11 +188,16 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         name="type"
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                       >
-                        {projectType.map((item) => {
-                          const elementSelected = projectType[0].name;
+                        {Object.keys(projectType).map((item) => {
+                          const elementSelected = Object.keys(projectType)[0];
                           return (
-                            <option selected={item.name === elementSelected ? "'selected'" : ""} value={item.name}>
-                              {item.name}
+                            <option
+                              selected={
+                                item === elementSelected ? "'selected'" : ""
+                              }
+                              value={item}
+                            >
+                              {item}
                             </option>
                           );
                         })}
@@ -185,7 +205,10 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     </div>
 
                     <div>
-                      <label htmlFor="group" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="group"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         N° de groupe
                       </label>
                       <div className="mt-1">
@@ -194,6 +217,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           type="number"
                           name="group"
                           id="group"
+                          min="0"
+                          max="1000"
                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           placeholder="64"
                         />
@@ -201,26 +226,50 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Fichier STL</label>
-                      <div onDragEnter={onDragEnter} onDragLeave={onDragLeave} onDragOver={onDragOver} onDrop={(e) => onDrop(e)}>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Fichier STL
+                      </label>
+                      <div
+                        onDragEnter={onDragEnter}
+                        onDragLeave={onDragLeave}
+                        onDragOver={onDragOver}
+                        onDrop={(e) => onDrop(e)}
+                      >
                         <div
-                          className={`${status ? "border-gray-800" : "border-gray-300"} ${
+                          className={`${
+                            status ? "border-gray-800" : "border-gray-300"
+                          } ${
                             percentage != 0 ? "hidden" : "block"
                           } dropzone mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md`}
                         >
                           <div className="space-y-1 text-center">
-                            <CubeIcon className={`mx-auto h-12 w-12 ${status ? "text-indigo-700" : "text-gray-400"}`} />
+                            <CubeIcon
+                              className={`mx-auto h-12 w-12 ${
+                                status ? "text-indigo-700" : "text-gray-400"
+                              }`}
+                            />
                             <div className="flex text-sm text-gray-600">
                               <label
                                 htmlFor="file-upload"
                                 className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                               >
                                 <span>Choisir un fichier</span>
-                                <input onChange={handleChange} id="file-upload" name="file-upload" type="file" accept=".stl" className="sr-only" />
+                                <input
+                                  onChange={handleChange}
+                                  id="file-upload"
+                                  name="file-upload"
+                                  type="file"
+                                  accept=".stl"
+                                  className="sr-only"
+                                />
                               </label>
-                              <p className="pl-1 hidden md:block">ou déposez-le</p>
+                              <p className="pl-1 hidden md:block">
+                                ou déposez-le
+                              </p>
                             </div>
-                            <p className="text-xs text-gray-500">STL jusqu'à 64MB</p>
+                            <p className="text-xs text-gray-500">
+                              STL jusqu'à 64MB
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -247,7 +296,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                             if (r[0] == null) return null;
                             return (
                               <div className="block mt-3">
-                                <p className="text-md font-semibold text-gray-700">{r[0].name}</p>
+                                <p className="text-md font-semibold text-gray-700">
+                                  {r[0].name}
+                                </p>
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -407,9 +458,19 @@ export async function getServerSideProps({ req }) {
   if (resUserConnected) return resUserConnected;
 
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  const authorizations = await fetchAPIAuth(
+    "/user/authorization/",
+    cookies.jwt
+  );
 
-  const projectType = await fetchAPIAuth("/projectType/");
+  const projectTypeList = await fetchAPIAuth("/projectType/");
+
+  const projectType = {};
+  for (const element of projectTypeList) {
+    projectType[element.name] = { id: element.id };
+  }
+  console.log(projectType);
+  console.log(Object.keys(projectType));
 
   return {
     props: { user, role, authorizations, projectType }, // will be passed to the page component as props

@@ -12,7 +12,8 @@ module.exports.importSqlTables = async (db, file) => {
       for (const line of lineData) {
         if ((line !== "\r" || line !== "") && !line.startsWith("--")) {
           const res = await executeQuery(db, line, []);
-          if (res[0] && (res[0].sql == null || res[0].sql.length > 5)) console.log(res[0]);
+          if (res[0] && (res[0].sql == null || res[0].sql.length > 5))
+            console.log(res[0]);
         }
       }
 

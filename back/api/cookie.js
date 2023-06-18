@@ -1,7 +1,9 @@
 module.exports.cookieTestSpecialCode = cookieTestSpecialCode;
 async function cookieTestSpecialCode(data) {
   const specialCodeUser = data.specialcode;
-  const resCheckCode = await data.userAuthorization.checkSpecialCode(specialCodeUser);
+  const resCheckCode = await data.userAuthorization.checkSpecialCode(
+    specialCodeUser
+  );
   if (!resCheckCode) {
     return {
       type: "code",
@@ -17,7 +19,9 @@ async function cookieTestSpecialCode(data) {
 module.exports.cookieDeleteAll = cookieDeleteAll;
 async function cookieDeleteAll(data) {
   const specialCodeUser = data.specialcode;
-  const resCheckCode = await data.userAuthorization.checkSpecialCode(specialCodeUser);
+  const resCheckCode = await data.userAuthorization.checkSpecialCode(
+    specialCodeUser
+  );
   if (!resCheckCode) {
     return {
       type: "code",
@@ -37,7 +41,11 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/cookie/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await cookieTestSpecialCode(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -49,7 +57,11 @@ async function startApi(app) {
 
   app.delete("/api/cookie/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await cookieDeleteAll(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {

@@ -77,7 +77,12 @@ async function getTicketMessage(data) {
   const querySelectTicket = `SELECT i_idUser AS 'id'
                         FROM printstickets
                         WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelectTicket, [data.params.id]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    querySelectTicket,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -85,9 +90,14 @@ async function getTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -103,7 +113,12 @@ async function getTicketMessage(data) {
                                     ON tm.i_idUser = u.i_id
                                     WHERE i_idTicket = ?
                                     ORDER BY creationDate ASC`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelectTicketMessage, [data.params.id]);
+  const dbRes = await data.app.executeQuery(
+    data.app.db,
+    querySelectTicketMessage,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -111,6 +126,7 @@ async function getTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   return {
     type: "json",
     code: 200,
@@ -164,7 +180,13 @@ async function getTicketMessage(data) {
 module.exports.postTicketMessage = postTicketMessage;
 async function postTicketMessage(data) {
   // The body does not have all the necessary field
-  if (!data.params || !data.params.id || isNaN(data.params.id) || !data.body || !data.body.content) {
+  if (
+    !data.params ||
+    !data.params.id ||
+    isNaN(data.params.id) ||
+    !data.body ||
+    !data.body.content
+  ) {
     return {
       type: "code",
       code: 400,
@@ -181,7 +203,12 @@ async function postTicketMessage(data) {
   const querySelect = `SELECT i_idUser AS 'id'
                     FROM printstickets
                     WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelect, [data.params.id]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    [data.params.id]
+  );
+  /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
     console.log(resGetUserTicket[0]);
     return {
@@ -189,9 +216,14 @@ async function postTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -200,7 +232,12 @@ async function postTicketMessage(data) {
     }
   } else {
     const querySetNormalStatus = `UPDATE printstickets SET i_status = (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert') WHERE i_id = ?;`;
-    const resSetNormalStatus = await data.app.executeQuery(data.app.db, querySetNormalStatus, [data.params.id]);
+    const resSetNormalStatus = await data.app.executeQuery(
+      data.app.db,
+      querySetNormalStatus,
+      [data.params.id]
+    );
+    /* c8 ignore start */
     if (resSetNormalStatus[0]) {
       console.log(resSetNormalStatus[0]);
       return {
@@ -208,11 +245,17 @@ async function postTicketMessage(data) {
         code: 500,
       };
     }
+    /* c8 ignore stop */
   }
 
   const queryInsert = `INSERT INTO ticketmessages (i_idUser, i_idTicket, v_content)
                         VALUES (?, ?, ?)`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryInsert, [userIdAgent, data.params.id, data.body.content]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryInsert, [
+    userIdAgent,
+    data.params.id,
+    data.body.content,
+  ]);
+  /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
     return {
@@ -220,6 +263,7 @@ async function postTicketMessage(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   //Update bot channels
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
@@ -230,13 +274,22 @@ async function postTicketMessage(data) {
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/ticket/:id/message/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getTicketMessage(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/:id/message/");
       console.log(error);
@@ -246,9 +299,17 @@ async function startApi(app) {
 
   app.post("/api/ticket/:id/message/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await postTicketMessage(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/ticket/:id/message/");
       console.log(error);
@@ -256,3 +317,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */

@@ -1,29 +1,18 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
 const fs = require("fs");
-let db;
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
   await fs.copyFileSync("defaultFiles/logo.png", "data/files/image/test.png");
 });
 
 afterAll(() => {
-  db.end();
   fs.unlinkSync("data/files/image/test.png");
 });
 
 describe("GET /api/files/:type/:tag", () => {
   test("200sendDefaultLogo", async () => {
-    const user = "getFile200sendDefaultLogo";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
       params: {
         type: "image",
         tag: "undifined.png",
@@ -38,16 +27,9 @@ describe("GET /api/files/:type/:tag", () => {
   });
 
   test("200sendPng", async () => {
-    const user = "getFile200sendPng";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
       params: {
         type: "image",
         tag: "test.png",
@@ -62,16 +44,9 @@ describe("GET /api/files/:type/:tag", () => {
   });
 
   test("400noParams", async () => {
-    const user = "getFile400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
     };
 
     const response = await require("../../../api/other/image").getImage(data);
@@ -81,16 +56,9 @@ describe("GET /api/files/:type/:tag", () => {
   });
 
   test("400noType", async () => {
-    const user = "getFile400noType";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
       params: {
         tag: "test.png",
       },
@@ -103,16 +71,9 @@ describe("GET /api/files/:type/:tag", () => {
   });
 
   test("400noTag", async () => {
-    const user = "getFile400noTag";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
       params: {
         type: "image",
       },
@@ -125,16 +86,9 @@ describe("GET /api/files/:type/:tag", () => {
   });
 
   test("400fileTypeNotAllowed", async () => {
-    const user = "getFile400fileTypeNotAllowed";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-
     const data = {
-      userId: userData,
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      userId: 1,
+      app: {},
       params: {
         type: "undifined",
         tag: "test.png",

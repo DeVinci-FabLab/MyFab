@@ -27,7 +27,11 @@ async function getMailtoken(data) {
     };
   }
 
-  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "manageUser");
+  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "manageUser"
+  );
   if (!authChangeRoleResult) {
     return {
       type: "code",
@@ -65,9 +69,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/user/mailtoken/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getMailtoken(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /user/mailtoken/");
       console.log(error);

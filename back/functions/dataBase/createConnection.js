@@ -27,20 +27,26 @@ module.exports.open = async ({ callback, dontNeedToUse, isTest } = {}) => {
         console.log("Can not reach the database");
         process.exit(1);
       }
-      db.query("USE ??", [isTest ? process.env.DB_DATABASE + "test" : process.env.DB_DATABASE], function (error, results, fields) {
-        if (error) {
-          if (dontNeedToUse) {
-            if (callback) callback(db);
-            resolve(db);
-            return;
-          } else {
-            console.log("Can not use database : '" + process.env.DB_DATABASE + "'");
-            process.exit(1);
+      db.query(
+        "USE ??",
+        [isTest ? process.env.DB_DATABASE + "test" : process.env.DB_DATABASE],
+        function (error, results, fields) {
+          if (error) {
+            if (dontNeedToUse) {
+              if (callback) callback(db);
+              resolve(db);
+              return;
+            } else {
+              console.log(
+                "Can not use database : '" + process.env.DB_DATABASE + "'"
+              );
+              process.exit(1);
+            }
           }
+          if (callback) callback(db);
+          resolve(db);
         }
-        if (callback) callback(db);
-        resolve(db);
-      });
+      );
     });
   });
 };

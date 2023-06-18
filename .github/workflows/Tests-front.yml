@@ -1,0 +1,37 @@
+name: Test Front-end
+run-name: "Front : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
+on: [push]
+jobs:
+  End-to-end:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Create .env file
+        run: |
+          echo PORT_FRONT=3000 > front/.env
+          echo PORT_BACK=5000 >> front/.env
+          echo API=http://localhost:5000 >> front/.env
+          echo BASE_PATH=/test >> front/.env
+          echo IS_TEST_MODE=true >> front/.env
+          echo VIDEO_COMPRESSION=false >> front/.env
+          echo DB_HOST=localhost >> front/.env
+          echo DB_USER=test >> front/.env
+          echo DB_ROOT_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> front/.env
+          echo DB_PASSWORD=$(echo $RANDOM | md5sum | head -c 20; echo;) >> front/.env
+          echo DB_DATABASE=myFab >> front/.env
+          echo SPECIALTOKEN=$(echo $RANDOM | md5sum | head -c 20; echo;) >> front/.env
+          echo SHOWSWAGGER=false >> front/.env
+          echo ACTIVELOGS=false >> front/.env
+          echo ADSF_ENTRYPOINT=http://localhost:8080/simplesaml/saml2/idp/SSOService.php >> front/.env
+          echo ADSF_ISSUER=http://app.example.com >> front/.env
+          echo ADFS_FRONT_URL=http://localhost:3000/test/ >> front/.env
+          ls -lA front/.env
+      - name: Test front
+        uses: cypress-io/github-action@v5
+        with:
+          install-command: npm install
+          build: npm run build
+          start: npm run start
+          wait-on: "http://localhost:3000/test"
+          working-directory: front

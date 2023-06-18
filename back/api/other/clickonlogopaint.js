@@ -31,7 +31,11 @@ async function clickOnLogoPaintPost(data) {
                                 SET dt_rickrolled = CURRENT_TIMESTAMP
                                 WHERE i_id = ?
                                 AND dt_rickrolled IS NULL;`;
-  const resUpdateRickRoll = await data.app.executeQuery(data.app.db, queryUpdateRickRoll, [userIdAgent]);
+  const resUpdateRickRoll = await data.app.executeQuery(
+    data.app.db,
+    queryUpdateRickRoll,
+    [userIdAgent]
+  );
   /* c8 ignore start */
   if (resUpdateRickRoll[0]) {
     console.log(resUpdateRickRoll[0]);
@@ -52,10 +56,18 @@ async function clickOnLogoPaintPost(data) {
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.post("/api/clickonlogopaint/", async function (req, res) {
-    const data = await require("../../functions/apiActions").prepareData(app, req, res);
+    const data = await require("../../functions/apiActions").prepareData(
+      app,
+      req,
+      res
+    );
     try {
       const result = await clickOnLogoPaintPost(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: POST /api/clickonlogopaint/");
       console.log(error);

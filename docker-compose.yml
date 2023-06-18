@@ -25,8 +25,9 @@ services:
     depends_on:
       - "mariadb"
     volumes:
-      - ./back/data/:/home/node/MyFabUltimate_Back/data/
-      - ./back/logs/:/home/node/MyFabUltimate_Back/logs/
+      - ./back/data/:/home/node/MyFab/back/data/
+      - ./back/logs/:/home/node/MyFab/back/logs/
+      - ./.env:/home/node/MyFab/back/.env
     ports:
       - ${PORT_BACK}:5000
     networks:
@@ -40,6 +41,9 @@ services:
     container_name: Myfab_Front
     depends_on:
       - "back"
+    volumes:
+      - ./back/data/:/home/node/MyFab/back/data/
+      - ./.env:/home/node/MyFab/front/.env
     ports:
       - ${PORT_FRONT}:3000
     networks:

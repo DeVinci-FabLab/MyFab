@@ -1,12 +1,13 @@
 {
   "name": "myfabultimate_back",
-  "description": "",
-  "version": "0.8.0",
+  "description": "The BackEnd for MyFab",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon",
     "test": "set NODE_OPTIONS=--no-experimental-fetch && jest -i",
+    "linter": "npx prettier -w .",
     "prepareDb": "node importSqlTables.js",
     "prepareFolders": "node createIgnoredFolders.js",
     "startOnServer": "node importSqlTables.js && node index.js"
@@ -38,12 +39,14 @@
     "nodemailer": "^6.7.2",
     "passport": "^0.6.0",
     "passport-saml": "^3.2.4",
+    "qs": "^6.11.1",
     "sha256": "^0.2.0",
     "socket.io": "^4.5.3"
   },
   "devDependencies": {
     "@alex_neo/jest-expect-message": "^1.0.5",
     "jest": "^27.5.1",
+    "prettier": "2.8.7",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0"
   }

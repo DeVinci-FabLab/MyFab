@@ -1,6 +1,4 @@
 const fs = require("fs");
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
 
 function emptyFunction() {
   return io;
@@ -8,48 +6,57 @@ function emptyFunction() {
 const io = { emit: emptyFunction, to: emptyFunction };
 
 beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-  await fs.copyFileSync(__dirname + "/../../Forme-Boîte.stl", __dirname + "/../../../data/files/stl/token-test.STL");
-});
-
-afterAll(() => {
-  db.end();
+  await fs.copyFileSync(
+    __dirname + "/../../pyramid.stl",
+    __dirname + "/../../../data/files/stl/token-test.STL"
+  );
 });
 
 describe("GET /api/ticket/:id/file/", () => {
   test("200myFabAgent", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile200user";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    const userAgent = "ticketGetTicketFile200myFabAgent";
-    const userDataAgent = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userAgent);
-    expect(userDataAgent, "User '" + userAgent + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
+    let requestNumber = 0;
     //Execute
     const data = {
-      userId: userDataAgent,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 1 }]];
+            case 2:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    filename: "test.stl",
+                    comment: "test",
+                    isValid: null,
+                    creationDate: new Date("2023-03-27T14:44:52.000Z"),
+                    modificationDate: new Date("2023-03-27T14:44:52.000Z"),
+                    idprinter: null,
+                    printerName: null,
+                  },
+                ],
+              ];
+
+            default:
+              return null;
+          }
+        },
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -59,40 +66,60 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(typeof response.json[0].filename).toBe("string");
     expect(typeof response.json[0].comment).toBe("string");
     expect(response.json[0].isValid == null).toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
   });
 
   test("200userOwner", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile200userOwner";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 1 }]];
+            case 2:
+              return [
+                null,
+                [
+                  {
+                    id: 1,
+                    filename: "test.stl",
+                    comment: "test",
+                    isValid: null,
+                    creationDate: new Date("2023-03-27T14:44:52.000Z"),
+                    modificationDate: new Date("2023-03-27T14:44:52.000Z"),
+                    idprinter: null,
+                    printerName: null,
+                  },
+                ],
+              ];
+
+            default:
+              return null;
+          }
+        },
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(200);
@@ -102,37 +129,29 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(typeof response.json[0].filename).toBe("string");
     expect(typeof response.json[0].comment).toBe("string");
     expect(response.json[0].isValid == null).toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].creationDate) === "[object Date]").toBe(true);
-    expect(Object.prototype.toString.call(response.json[0].modificationDate) === "[object Date]").toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].creationDate) ===
+        "[object Date]"
+    ).toBe(true);
+    expect(
+      Object.prototype.toString.call(response.json[0].modificationDate) ===
+        "[object Date]"
+    ).toBe(true);
   });
 
   test("400noParams", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile400noParams";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -140,33 +159,19 @@ describe("GET /api/ticket/:id/file/", () => {
   });
 
   test("400noId", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile400noId";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -174,35 +179,21 @@ describe("GET /api/ticket/:id/file/", () => {
   });
 
   test("400idIsNan", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile400idIsNan";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: {
         id: "idTicket",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -210,18 +201,6 @@ describe("GET /api/ticket/:id/file/", () => {
   });
 
   test("401noUser", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile401noUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
       userAuthorization: {
@@ -229,54 +208,73 @@ describe("GET /api/ticket/:id/file/", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: {
-        id: idTicket,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
   });
 
-  test("403unauthorized", async () => {
-    //Prepare
-    const user = "ticketGetTicketFile403unauthorizedUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    const userAgent = "ticketGetTicketFile403unauthorizedAgent";
-    const userDataAgent = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userAgent);
-    expect(userDataAgent, "User '" + userAgent + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
+  test("400fileNotExist", async () => {
     //Execute
     const data = {
-      userId: userDataAgent,
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("403unauthorized", async () => {
+    //Execute
+    let requestNumber = 0;
+    const data = {
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return false;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 2 }]];
+
+            default:
+              return null;
+          }
+        },
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetListOfFile(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -284,116 +282,110 @@ describe("GET /api/ticket/:id/file/", () => {
   });
 });
 
-describe("GET /api/file/:id/", () => {
+describe("GET /api/file/:id/getToken/", () => {
   test("200myFabAgent", async () => {
-    //Prepare
-    const user = "ticketGetFile200user";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    const userAgent = "ticketGetFile200myFabAgent";
-    const userDataAgent = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userAgent);
-    expect(userDataAgent, "User '" + userAgent + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest200UserAgent.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userDataAgent,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
       },
       params: {
-        id: idFile,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const tokenDownload = await require("../../../api/tickets/file")
+      .tokenDownload;
 
     //Tests
     expect(response.code).toBe(200);
-    expect(response.type).toBe("download");
-    expect(response.path != null).toBe(true);
-    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(true);
+    expect(response.type).toBe("json");
+    expect(response.json != null).toBe(true);
+    expect(tokenDownload[response.json] != null).toBe(true);
+    expect(tokenDownload[response.json].fileId != null).toBe(true);
+    expect(tokenDownload[response.json].timoutId != null).toBe(true);
+    expect(tokenDownload[response.json].expire != null).toBe(true);
+    clearTimeout(tokenDownload[response.json].timoutId);
+    delete tokenDownload[response.json];
   });
 
   test("200userOwner", async () => {
-    //Prepare
-    const user = "ticketGetFile200userOwner";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest200UserOwner.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
-          return true;
+          return false;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 1,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserOwner.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
       },
       params: {
-        id: idFile,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
+    const tokenDownload = await require("../../../api/tickets/file")
+      .tokenDownload;
 
     //Tests
     expect(response.code).toBe(200);
-    expect(response.type).toBe("download");
-    expect(response.path != null).toBe(true);
-    expect(response.fileName.endsWith("oneFileTest200UserOwner.stl")).toBe(true);
+    expect(response.type).toBe("json");
+    expect(response.json != null).toBe(true);
+    expect(tokenDownload[response.json] != null).toBe(true);
+    expect(tokenDownload[response.json].fileId != null).toBe(true);
+    expect(tokenDownload[response.json].timoutId != null).toBe(true);
+    expect(tokenDownload[response.json].expire != null).toBe(true);
+    clearTimeout(tokenDownload[response.json].timoutId);
+    delete tokenDownload[response.json];
   });
 
   test("400noParams", async () => {
-    //Prepare
-    const user = "ticketGetFile400noParams";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest400noParams.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -401,33 +393,19 @@ describe("GET /api/file/:id/", () => {
   });
 
   test("400noId", async () => {
-    //Prepare
-    const user = "ticketGetFile400noId";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest400noId.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -435,35 +413,25 @@ describe("GET /api/file/:id/", () => {
   });
 
   test("400fileDataNotExist", async () => {
-    //Prepare
-    const user = "ticketGetFile400fileDataNotExist";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest400fileDataNotExist.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
       },
       params: {
-        id: 9999999999999999999999,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -471,35 +439,21 @@ describe("GET /api/file/:id/", () => {
   });
 
   test("400idIsNan", async () => {
-    //Prepare
-    const user = "ticketGetFile400idIsNan";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest400idIsNan.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: {
         id: "idTicket",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(400);
@@ -507,19 +461,6 @@ describe("GET /api/file/:id/", () => {
   });
 
   test("401noUser", async () => {
-    //Prepare
-    const user = "ticketGetFile401noUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest401noUser.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
       userAuthorization: {
@@ -527,15 +468,13 @@ describe("GET /api/file/:id/", () => {
           return true;
         },
       },
-      app: {
-        db: db,
-        executeQuery: executeQuery,
-      },
+      app: {},
       params: {
-        id: idFile,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(401);
@@ -543,39 +482,35 @@ describe("GET /api/file/:id/", () => {
   });
 
   test("403unauthorized", async () => {
-    //Prepare
-    const user = "ticketGetFile403unauthorizedUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    const userAgent = "ticketGetFile403unauthorizedAgent";
-    const userDataAgent = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userAgent);
-    expect(userDataAgent, "User '" + userAgent + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest403unauthorized.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userDataAgent,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return false;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest403unauthorized.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
       },
       params: {
-        id: idFile,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(403);
@@ -583,36 +518,35 @@ describe("GET /api/file/:id/", () => {
   });
 
   test("204noSavedFile", async () => {
-    //Prepare
-    const user = "ticketGetFile204noSavedFile";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'oneFileTest204noSavedFile.stl', 'noFile.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "noFile.STL",
+                fileName: "oneFileTest204noSavedFile.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
       },
       params: {
-        id: idFile,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetToken(data);
 
     //Tests
     expect(response.code).toBe(204);
@@ -620,279 +554,764 @@ describe("GET /api/file/:id/", () => {
   });
 });
 
-describe("POST /api/ticket/:id/file/", () => {
-  test("200_noFile", async () => {
-    //Prepare
-    const user = "filePost200_noFile";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
-
+describe("GET /api/file/:id/", () => {
+  test("200myFabAgent", async () => {
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("download");
+    expect(response.path != null).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(
+      true
+    );
+  });
+
+  test("200userOwner", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return false;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 1,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserOwner.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("download");
+    expect(response.path != null).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserOwner.stl")).toBe(
+      true
+    );
+  });
+
+  test("400noParams", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400noId", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+      params: {},
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400fileDataNotExist", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400idIsNan", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+      params: {
+        id: "idTicket",
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("401noUser", async () => {
+    //Execute
+    const data = {
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {},
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(401);
+    expect(response.type).toBe("code");
+  });
+
+  test("403unauthorized", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return false;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest403unauthorized.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(403);
+    expect(response.type).toBe("code");
+  });
+
+  test("204noSavedFile", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "noFile.STL",
+                fileName: "oneFileTest204noSavedFile.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: 1,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(204);
+    expect(response.type).toBe("code");
+  });
+
+  test("200token", async () => {
+    token = "testToken200";
+    require("../../../api/tickets/file").tokenDownload[token] = {
+      fileId: 1,
+      expire: new Date(new Date().setSeconds(new Date().getSeconds() + 100)),
+    };
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: token,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("download");
+    expect(response.path != null).toBe(true);
+    expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(
+      true
+    );
+  });
+
+  test("400unknownToken", async () => {
+    token = "testToken400unknownToken";
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: token,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400tokenExpired", async () => {
+    token = "400tokenExpired";
+    require("../../../api/tickets/file").tokenDownload[token] = {
+      fileId: 1,
+      expire: new Date(),
+    };
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [
+            null,
+            [
+              {
+                id: 3,
+                fileServerName: "token-test.STL",
+                fileName: "oneFileTest200UserAgent.stl",
+                projectTypeName: "PIX",
+              },
+            ],
+          ];
+        },
+      },
+      params: {
+        id: token,
+      },
+    };
+    const response =
+      await require("../../../api/tickets/file").ticketFileGetOneFile(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+});
+
+describe("POST /api/ticket/:id/file/", () => {
+  test("200_noFile", async () => {
+    //Prepare
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
+
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1 }]];
+        },
         io,
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
       files: null,
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
   test("200_1file", async () => {
     //Prepare
-    const user = "filePost200_1file";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-200_1file"));
+
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-200_1file-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-200_1file",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount + 1);
   });
 
   test("200_multiplesFiles", async () => {
     //Prepare
-    const user = "filePost200_multiplesFiles";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test1-" + user));
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test2-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const file1Stream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test1-200_multiplesFiles"
+        )
+      );
+    //wait end copy of file
+    await new Promise((resolve) => {
+      file1Stream.on("finish", () => {
+        resolve();
+      });
+    });
+    const file2Stream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test2-200_multiplesFiles"
+        )
+      );
+    //wait end copy of file
+    await new Promise((resolve) => {
+      file2Stream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+            case 3:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
       files: {
         filedata: [
           {
-            name: "test1-" + user + "-test.STL",
-            tempFilePath: __dirname + "/../../../tmp/test1-" + user,
+            name: "test1-200_multiplesFiles-test.STL",
+            tempFilePath: __dirname + "/../../../tmp/test1-200_multiplesFiles",
           },
           {
-            name: "test2-" + user + "-test.STL",
-            tempFilePath: __dirname + "/../../../tmp/test2-" + user,
+            name: "test2-200_multiplesFiles-test.STL",
+            tempFilePath: __dirname + "/../../../tmp/test2-200_multiplesFiles",
           },
         ],
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount + 2);
   });
 
   test("200_myFabAgent", async () => {
     //Prepare
-    const user = "filePost200myFabAgentTicketOwner";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    const userAgent = "filePost200myFabAgentAgent";
-    const userDataAgent = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userAgent);
-    expect(userDataAgent, "User '" + userAgent + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(
+        fs.createWriteStream(__dirname + "/../../../tmp/test-200_myFabAgent")
+      );
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userDataAgent,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-200_myFabAgent-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-200_myFabAgent",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount + 1);
   });
 
   test("400noParams", async () => {
     //Prepare
-    const user = "filePost400noParams";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400noParams"));
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-400noParams-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-400noParams",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
   test("400noId", async () => {
     //Prepare
-    const user = "filePost400noId";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400noId"));
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {},
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-400noId-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-400noId",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
   test("400idIsNan", async () => {
     //Prepare
-    const user = "filePost400idIsNan";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-400idIsNan"));
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
@@ -900,29 +1319,42 @@ describe("POST /api/ticket/:id/file/", () => {
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-test-400idIsNan-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-400idIsNan",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
   test("401unauthenticatedUser", async () => {
     //Prepare
-    const user = "filePost401unauthenticatedUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test-401unauthenticatedUser"
+        )
+      );
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
@@ -932,147 +1364,178 @@ describe("POST /api/ticket/:id/file/", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-401unauthenticatedUser-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-401unauthenticatedUser",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
   test("400unknownTicket", async () => {
     //Prepare
-    const user = "filePost400unknownTicket";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(
+        fs.createWriteStream(__dirname + "/../../../tmp/test-400unknownTicket")
+      );
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         io,
       },
       params: {
-        id: 1000000,
+        id: 1,
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-400unknownTicket-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-400unknownTicket",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 
   test("403unauthorizedUser", async () => {
     //Prepare
-    const user = "filePost403unauthorizedUserTicketOwner";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    const unauthorizedUser = "filePost403unauthorizedUserUser";
-    const unauthorizeduserData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, unauthorizedUser);
-    expect(unauthorizeduserData, "User '" + unauthorizedUser + "' already exist").not.toBe(0);
-    await fs.createReadStream(__dirname + "../../../Forme-Boîte.stl").pipe(fs.createWriteStream(__dirname + "../../../../tmp/test-" + user));
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    const filesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(
+        fs.createWriteStream(
+          __dirname + "/../../../tmp/test-403unauthorizedUser"
+        )
+      );
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+    const filesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
 
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: unauthorizeduserData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return false;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 2 }]];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idTicket,
+        id: 1,
       },
       files: {
         filedata: {
-          name: "test-" + user + "-test.STL",
-          tempFilePath: __dirname + "/../../../tmp/test-" + user,
+          name: "test-403unauthorizedUser-test.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-403unauthorizedUser",
         },
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePost(data);
+    const response = await require("../../../api/tickets/file").ticketFilePost(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(403);
     expect(response.type).toBe("code");
-    const newFilesCount = (await fs.readdirSync(__dirname + "/../../../data/files/stl/")).length;
+    const newFilesCount = (
+      await fs.readdirSync(__dirname + "/../../../data/files/stl/")
+    ).length;
     expect(newFilesCount).toBe(filesCount);
   });
 });
 
 describe("PUT /api/file/:id/", () => {
   test("200validAndComment", async () => {
-    //Prepare
-    const user = "filePut200validAndComment";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         comment: "New comment",
@@ -1080,7 +1543,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1088,40 +1553,40 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("200valid", async () => {
-    //Prepare
-    const user = "filePut200valid";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         comment: "test",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1129,40 +1594,40 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("200comment", async () => {
-    //Prepare
-    const user = "filePut200comment";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         comment: "New comment",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1170,34 +1635,36 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("200noModification", async () => {
-    //Prepare
-    const user = "filePut";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
+    let requestNumber = 0;
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ id: 3 }]];
+            case 2:
+              return [null, {}];
+            case 3:
+              return [null, [{ id: 1 }]];
+            case 4:
+              return [null, {}];
+
+            default:
+              return null;
+          }
+        },
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         comment: "New comment",
@@ -1205,7 +1672,9 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     await require("../../../api/tickets/file").ticketFilePut(data);
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(200);
@@ -1213,30 +1682,15 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("400noParams", async () => {
-    //Prepare
-    const user = "filePut400noParams";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       body: {
@@ -1244,7 +1698,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1252,30 +1708,15 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("400noId", async () => {
-    //Prepare
-    const user = "filePut400noId";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {},
@@ -1284,7 +1725,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1292,29 +1735,15 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("400idIsNan", async () => {
-    //Prepare
-    const user = "filePut400idIsNan";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
@@ -1325,7 +1754,9 @@ describe("PUT /api/file/:id/", () => {
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1333,37 +1764,24 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("400noBody", async () => {
-    //Prepare
-    const user = "filePut400noBody";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1371,38 +1789,25 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("400noValidAndComment", async () => {
-    //Prepare
-    const user = "filePut400noValidAndComment";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {},
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1410,40 +1815,27 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("400InvalidValid", async () => {
-    //Prepare
-    const user = "filePut400InvalidValid";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         isValid: "notABoolean",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(400);
@@ -1451,19 +1843,6 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("401noUser", async () => {
-    //Prepare
-    const user = "filePut401noUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
       userAuthorization: {
@@ -1472,19 +1851,19 @@ describe("PUT /api/file/:id/", () => {
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         comment: "New comment",
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(401);
@@ -1492,43 +1871,31 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("403unauthorizedUser", async () => {
-    //Prepare
-    const user = "filePut403unauthorizedUser";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    const userTicketOwner = "filePut403unauthorizedUserTicketOwner";
-    const userTicketOwnerData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, userTicketOwner);
-    expect(userTicketOwnerData, "User '" + userTicketOwner + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userTicketOwnerData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userTicketOwnerData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return false;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 4 }]];
+        },
         io,
       },
       params: {
-        id: idFile,
+        id: 1,
       },
       body: {
         comment: "New comment",
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(403);
@@ -1536,40 +1903,31 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("204unknownFile", async () => {
-    //Prepare
-    const user = "filePut204unknownFile";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         io,
       },
       params: {
-        id: 1000000,
+        id: 1,
       },
       body: {
         comment: "New comment",
         isValid: true,
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);
@@ -1577,40 +1935,30 @@ describe("PUT /api/file/:id/", () => {
   });
 
   test("204noFileMatch", async () => {
-    //Prepare
-    const user = "filePut204noFileMatch";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, "INSERT INTO `printstickets` (`i_idUser`, `i_projecttype`, `i_priority`) VALUES (?, 1, 1)", [userData]);
-    const idTicket = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-    await executeQuery(
-      db,
-      "INSERT INTO `ticketfiles` (`i_idUser`, `i_idTicket`, `v_fileName`, `v_fileServerName`, `v_comment`) VALUES (?, ?, 'test.stl', 'token-test.STL', 'test')",
-      [userData, idTicket]
-    );
-    const idFile = (await executeQuery(db, "SELECT LAST_INSERT_ID() AS 'id'", []))[1][0].id;
-
     //Execute
     const data = {
-      userId: userData,
+      userId: 1,
       userAuthorization: {
         validateUserAuth: async (app, userIdAgent, authName) => {
           return true;
         },
       },
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         io,
       },
       params: {
-        id: 10000000000000,
+        id: 1,
       },
       body: {
         comment: "test",
       },
     };
-    const response = await require("../../../api/tickets/file").ticketFilePut(data);
+    const response = await require("../../../api/tickets/file").ticketFilePut(
+      data
+    );
 
     //Tests
     expect(response.code).toBe(204);

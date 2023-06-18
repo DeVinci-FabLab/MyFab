@@ -192,6 +192,6 @@ module.exports = {
   // Whether to use watchman for file crawling
   // watchman: true,
   globalSetup: "./tests/jestGlobalSetup.js",
-  globalTeardown: "./tests/jestGlobalTeardown.js",
-  setupFilesAfterEnv: ["@alex_neo/jest-expect-message"],
+  //globalTeardown: "./tests/jestGlobalTeardown.js",
+  //setupFilesAfterEnv: ["@alex_neo/jest-expect-message"],
 };

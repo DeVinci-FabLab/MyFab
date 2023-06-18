@@ -34,8 +34,11 @@ async function putMailValidation(data) {
   const querySelect = `SELECT i_idUser AS userId
                     FROM mailtocken
                     WHERE v_value = ?`;
-  const resGetUserId = await data.app.executeQuery(data.app.db, querySelect, [token]);
+  const resGetUserId = await data.app.executeQuery(data.app.db, querySelect, [
+    token,
+  ]);
   // Error with the sql request
+  /* c8 ignore start */
   if (resGetUserId[0]) {
     console.log(resGetUserId[0]);
     return {
@@ -43,6 +46,7 @@ async function putMailValidation(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   if (resGetUserId[1].length !== 1 || !resGetUserId[1][0].userId) {
     return {
       type: "code",
@@ -54,8 +58,13 @@ async function putMailValidation(data) {
 
   const queryDelete = `DELETE FROM mailtocken
                     WHERE v_value = ?`;
-  const resDeleteEmailTocken = await data.app.executeQuery(data.app.db, queryDelete, [token]);
+  const resDeleteEmailTocken = await data.app.executeQuery(
+    data.app.db,
+    queryDelete,
+    [token]
+  );
   // Error with the sql request
+  /* c8 ignore start */
   if (resDeleteEmailTocken[0]) {
     console.log(resDeleteEmailTocken[0]);
     return {
@@ -63,13 +72,17 @@ async function putMailValidation(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
 
   const queryUpdate = `UPDATE users
                         SET b_mailValidated = '1'
                         WHERE i_id = ?`;
-  const resValidUser = await data.app.executeQuery(data.app.db, queryUpdate, [userId]);
+  const resValidUser = await data.app.executeQuery(data.app.db, queryUpdate, [
+    userId,
+  ]);
 
   // Error with the sql request
+  /* c8 ignore start */
   if (resValidUser[0] || resValidUser[1].affectedRows !== 1) {
     console.log("Error : update user for email validation");
     console.log(resValidUser[0]);
@@ -78,19 +91,29 @@ async function putMailValidation(data) {
       code: 500,
     };
   }
+  /* c8 ignore stop */
   return {
     type: "code",
     code: 200,
   };
 }
 
+/* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
   app.put("/api/user/mailValidation/:tocken", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await putMailValidation(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: PUT /user/mailValidation/:tocken");
       console.log(error);
@@ -98,3 +121,4 @@ async function startApi(app) {
     }
   });
 }
+/* c8 ignore stop */

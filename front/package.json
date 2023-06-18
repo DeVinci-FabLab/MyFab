@@ -1,4 +1,7 @@
 {
+  "name": "myfabultimate_front",
+  "description": "The FrontEnd for MyFab",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -7,7 +10,13 @@
     "export": "next build && next export",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
-    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:server": "start-server-and-test dev http://localhost:3000/dvfl/auth cy:run",
+    "component": "cypress open --component",
+    "component:headless": "cypress run --component",
+    "linter": "npx prettier -w ."
   },
   "dependencies": {
     "@headlessui/react": "^1.4.1",
@@ -18,9 +27,10 @@
     "cookie": "^0.4.1",
     "cookies-next": "^2.0.3",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
     "escape-string-regexp": "^5.0.0",
     "moment": "^2.29.1",
-    "next": "latest",
+    "next": "^13.3.0",
     "nprogress": "^0.2.0",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
@@ -35,7 +45,10 @@
     "@tailwindcss/forms": "^0.4.0",
     "@tailwindcss/typography": "^0.5.0",
     "autoprefixer": "10.4.5",
+    "cypress": "^12.9.0",
     "postcss": "^8.4.5",
+    "prettier": "2.8.7",
+    "start-server-and-test": "^2.0.0",
     "tailwindcss": "^3.0.13"
   }
 }

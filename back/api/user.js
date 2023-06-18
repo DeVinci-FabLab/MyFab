@@ -139,17 +139,25 @@ async function userGetAll(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authViewResult) {
     return {
       type: "code",
       code: 403,
     };
   }
-  const maxUser = data.query && data.query.maxUser ? data.query.maxUser : maxUserDefault;
-  const inputText = data.query && data.query.inputValue ? data.query.inputValue : "";
+  const maxUser =
+    data.query && data.query.maxUser ? data.query.maxUser : maxUserDefault;
+  const inputText =
+    data.query && data.query.inputValue ? data.query.inputValue : "";
   const page = data.query && data.query.page ? data.query.page : 0;
-  const orderCollumn = getOrderCollumnName(data.query && data.query.collumnName ? data.query.collumnName : "i_id");
+  const orderCollumn = getOrderCollumnName(
+    data.query && data.query.collumnName ? data.query.collumnName : "i_id"
+  );
   const order = data.query && data.query.order === "false" ? "DESC" : "ASC";
   const querySelect = `SELECT i_id AS id,
                 v_firstName AS firstName,
@@ -169,7 +177,15 @@ async function userGetAll(data) {
                     )
                 ORDER BY ${orderCollumn} ${order}
                 ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [inputText, inputText, inputText, inputText, inputText, maxUser, maxUser * page]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    maxUser,
+    maxUser * page,
+  ]);
   /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
@@ -191,7 +207,15 @@ async function userGetAll(data) {
                     OR v_email LIKE CONCAT("%", ?, "%")
                     );`;
 
-  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [inputText, inputText, inputText, inputText, inputText, maxUser, maxUser * page]);
+  const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    maxUser,
+    maxUser * page,
+  ]);
   /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
@@ -202,12 +226,18 @@ async function userGetAll(data) {
   }
   /* c8 ignore stop */
   const calcUserByMaxUser = dbResCount[1][0].count / maxUser;
-  const maxPage = Math.trunc(calcUserByMaxUser) === calcUserByMaxUser ? calcUserByMaxUser : Math.trunc(calcUserByMaxUser) + 1;
+  const maxPage =
+    Math.trunc(calcUserByMaxUser) === calcUserByMaxUser
+      ? calcUserByMaxUser
+      : Math.trunc(calcUserByMaxUser) + 1;
 
   return {
     type: "json",
     code: 200,
-    json: { maxPage: data.query && data.query.all ? 1 : maxPage, values: dbRes[1] },
+    json: {
+      maxPage: data.query && data.query.all ? 1 : maxPage,
+      values: dbRes[1],
+    },
   };
 }
 
@@ -262,7 +292,10 @@ async function userGetMe(data) {
                     FROM users
                     WHERE i_id = ?
                     AND b_deleted = 0`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [userIdAgent, userIdAgent]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
+    userIdAgent,
+    userIdAgent,
+  ]);
   // The sql request has an error
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -344,7 +377,11 @@ async function userGetById(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authViewResult) {
     return {
       type: "code",
@@ -365,7 +402,10 @@ async function userGetById(data) {
                     FROM users
                     WHERE i_id = ?
                     AND b_deleted = 0`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [idUserTarget, idUserTarget]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
+    idUserTarget,
+    idUserTarget,
+  ]);
   // The sql request has an error
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -436,14 +476,22 @@ async function userDeleteById(data) {
       code: 401,
     };
   }
-  const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "viewUsers");
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
   if (!authViewResult) {
     return {
       type: "code",
       code: 403,
     };
   }
-  const authManageUserResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "manageUser");
+  const authManageUserResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "manageUser"
+  );
   if (!authManageUserResult) {
     return {
       type: "code",
@@ -461,7 +509,9 @@ async function userDeleteById(data) {
                          SET b_deleted = "1",
                          dt_creationdate = CURRENT_TIMESTAMP
                          WHERE i_id = ?;`;
-  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [idUserTarget]);
+  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+    idUserTarget,
+  ]);
   // The sql request has an error
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -490,7 +540,9 @@ async function userDeleteById(data) {
 module.exports.userRenamePut = userRenamePut;
 async function userRenamePut(data) {
   const idUserTarget = data.params ? data.params.id : undefined;
-  const resCheckCode = await data.userAuthorization.checkSpecialCode(data.specialcode);
+  const resCheckCode = await data.userAuthorization.checkSpecialCode(
+    data.specialcode
+  );
   // Id is not a number
   if (isNaN(idUserTarget) || !resCheckCode || !data.body) {
     return {
@@ -500,7 +552,10 @@ async function userRenamePut(data) {
   }
   if (data.body.firstName) {
     const queryUpdate = `UPDATE users SET v_firstName = ? WHERE i_id = ?;`;
-    const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [data.body.firstName, idUserTarget]);
+    const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+      data.body.firstName,
+      idUserTarget,
+    ]);
     // The sql request has an error
     /* c8 ignore start */
     if (dbRes[0]) {
@@ -514,7 +569,10 @@ async function userRenamePut(data) {
   }
   if (data.body.lastName) {
     const queryUpdate = `UPDATE users SET v_lastName = ? WHERE i_id = ?;`;
-    const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [data.body.lastName, idUserTarget]);
+    const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+      data.body.lastName,
+      idUserTarget,
+    ]);
     // The sql request has an error
     /* c8 ignore start */
     if (dbRes[0]) {
@@ -528,7 +586,10 @@ async function userRenamePut(data) {
   }
   if (data.body.title) {
     const queryUpdate = `UPDATE users SET v_title = ? WHERE i_id = ?;`;
-    const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [data.body.title, idUserTarget]);
+    const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+      data.body.title,
+      idUserTarget,
+    ]);
     // The sql request has an error
     /* c8 ignore start */
     if (dbRes[0]) {
@@ -554,7 +615,11 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/user/", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await userGetAll(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -566,7 +631,11 @@ async function startApi(app) {
 
   app.get("/api/user/me", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await userGetMe(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -578,7 +647,11 @@ async function startApi(app) {
 
   app.get("/api/user/:id", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await userGetById(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -590,7 +663,11 @@ async function startApi(app) {
 
   app.delete("/api/user/:id", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await userDeleteById(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
@@ -602,7 +679,11 @@ async function startApi(app) {
 
   app.put("/api/user/rename/:id", async function (req, res) {
     try {
-      const data = await require("../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await userRenamePut(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {

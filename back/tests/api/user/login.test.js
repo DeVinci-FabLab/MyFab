@@ -1,29 +1,15 @@
-const executeQuery = require("../../../functions/dataBase/executeQuery").run;
-let db;
-
-beforeAll(async () => {
-  db = await require("../../../functions/dataBase/createConnection").open({ isTest: true });
-});
-
-afterAll(() => {
-  db.end();
-});
-
 describe("POST /api/user/login/", () => {
   test("200", async () => {
-    const user = "loginPost200";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1, mailValidated: 1 }]];
+        },
         cookiesList: {},
       },
       body: {
-        email: user + "@test.com",
+        email: "test@test.com",
         password: "string",
       },
     };
@@ -33,23 +19,20 @@ describe("POST /api/user/login/", () => {
     expect(response.type).toBe("json");
     expect(response.json.dvflCookie != null).toBe(true);
     expect(Object.keys(data.app.cookiesList).length).not.toBe(0);
-    expect(data.app.cookiesList[response.json.dvflCookie].id).toBe(userData);
+    expect(data.app.cookiesList[response.json.dvflCookie].id).toBe(1);
   });
 
   test("200testExpire", async () => {
-    const user = "loginPost200testExpire";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1, mailValidated: 1 }]];
+        },
         cookiesList: {},
       },
       body: {
-        email: user + "@test.com",
+        email: "test@test.com",
         password: "string",
         expires: new Date().setHours(new Date().getHours() + 2),
       },
@@ -60,13 +43,10 @@ describe("POST /api/user/login/", () => {
     expect(response.type).toBe("json");
     expect(response.json.dvflCookie != null).toBe(true);
     expect(Object.keys(data.app.cookiesList).length).not.toBe(0);
-    expect(data.app.cookiesList[response.json.dvflCookie].id).toBe(userData);
+    expect(data.app.cookiesList[response.json.dvflCookie].id).toBe(1);
   });
 
   test("400_noBody", async () => {
-    const user = "loginPostNoBody400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {};
 
     const response = await require("../../../api/user/login").postLogin(data);
@@ -76,9 +56,6 @@ describe("POST /api/user/login/", () => {
   });
 
   test("400_noEmailAndPassword", async () => {
-    const user = "loginPostNoEmailAndPassword400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
       body: {},
     };
@@ -90,9 +67,6 @@ describe("POST /api/user/login/", () => {
   });
 
   test("400_noEmail", async () => {
-    const user = "loginPostNoEmail400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
       body: {
         password: "string",
@@ -106,12 +80,9 @@ describe("POST /api/user/login/", () => {
   });
 
   test("400_noPassword", async () => {
-    const user = "loginPostNoPassword400";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
       body: {
-        email: user + "@test.com",
+        email: "test@test.com",
       },
     };
 
@@ -122,15 +93,12 @@ describe("POST /api/user/login/", () => {
   });
 
   test("401_wrongEmail", async () => {
-    const user = "loginPostWrongEmail401";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         cookiesList: {},
       },
       body: {
@@ -145,19 +113,16 @@ describe("POST /api/user/login/", () => {
   });
 
   test("401_wrongPassword", async () => {
-    const user = "loginPostWrongPassword401";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         cookiesList: {},
       },
       body: {
-        email: user + "@test.com",
+        email: "test@test.com",
         password: "wrongPassword",
       },
     };
@@ -167,16 +132,13 @@ describe("POST /api/user/login/", () => {
     expect(response.type).toBe("code");
   });
 
-  test("401_wrongEmailAndPassword401", async () => {
-    const user = "loginPostWrongEmailAndPassword401";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
+  test("401_wrongEmailAndPassword", async () => {
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         cookiesList: {},
       },
       body: {
@@ -191,20 +153,16 @@ describe("POST /api/user/login/", () => {
   });
 
   test("401_deleted401", async () => {
-    const user = "loginPostDeleted401";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, `UPDATE users SET b_deleted = '1' WHERE i_id = ?`, [userData]);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, []];
+        },
         cookiesList: {},
       },
       body: {
-        email: user + "@test.com",
+        email: "test@test.com",
         password: "string",
       },
     };
@@ -215,20 +173,16 @@ describe("POST /api/user/login/", () => {
   });
 
   test("204_mailNotValidated", async () => {
-    const user = "loginPostMailNotValidated204";
-    const userData = await require("../../createNewUserAndLog").createNewUserAndLog(db, executeQuery, user);
-    expect(userData, "User '" + user + "' already exist").not.toBe(0);
-    await executeQuery(db, `UPDATE users SET b_mailValidated = '0' WHERE i_id = ?`, [userData]);
     const data = {
-      userId: userData,
-      userAuthorization: require("../../../functions/userAuthorization"),
+      userId: 1,
       app: {
-        db: db,
-        executeQuery: executeQuery,
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1, mailValidated: 0 }]];
+        },
         cookiesList: {},
       },
       body: {
-        email: user + "@test.com",
+        email: "test@test.com",
         password: "string",
       },
     };

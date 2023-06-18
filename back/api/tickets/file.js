@@ -2,13 +2,18 @@ const fs = require("fs");
 
 function makeid(length, filename) {
   var result = "";
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   /* c8 ignore start */
-  if (fs.existsSync(__dirname + "/../../data/files/stl/" + result + "_" + filename)) {
+  if (
+    fs.existsSync(
+      __dirname + "/../../data/files/stl/" + result + "_" + filename
+    )
+  ) {
     // Test ignoré parce que cette fonction n'est pas idempotent. Cette condition gère les fichiers qui ont le même nom et id
     return makeid(length, filename);
     /* c8 ignore stop */
@@ -90,9 +95,13 @@ async function ticketFileGetListOfFile(data) {
   const queryGetUserTicket = `SELECT i_idUser AS 'id'
                             FROM printstickets 
                             WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, queryGetUserTicket, [idTicket]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    queryGetUserTicket,
+    [idTicket]
+  );
   /* c8 ignore start */
-  if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
+  if (resGetUserTicket[0]) {
     console.log(resGetUserTicket[0]);
     return {
       type: "code",
@@ -100,10 +109,20 @@ async function ticketFileGetListOfFile(data) {
     };
   }
   /* c8 ignore stop */
+  if (resGetUserTicket[1].length !== 1) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
 
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -124,7 +143,9 @@ async function ticketFileGetListOfFile(data) {
                             LEFT JOIN gd_printer AS gp
                             ON i_idprinter = gp.i_id
                             WHERE tf.i_idTicket = ?`;
-  const dbRes = await data.app.executeQuery(data.app.db, querySelectFiles, [idTicket]);
+  const dbRes = await data.app.executeQuery(data.app.db, querySelectFiles, [
+    idTicket,
+  ]);
   /* c8 ignore start */
   if (dbRes[0]) {
     console.log(dbRes[0]);
@@ -203,7 +224,10 @@ async function ticketFileGetToken(data) {
                 INNER JOIN printstickets AS pt ON tf.i_idTicket = pt.i_id
                 INNER JOIN gd_ticketprojecttype AS gdpt ON pt.i_projecttype = gdpt.i_id
                 WHERE tf.i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, query, [idFile]);
+
+  const resGetUserTicket = await data.app.executeQuery(data.app.db, query, [
+    idFile,
+  ]);
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
     console.log(resGetUserTicket[0]);
@@ -221,7 +245,11 @@ async function ticketFileGetToken(data) {
   }
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -229,19 +257,33 @@ async function ticketFileGetToken(data) {
       };
     }
   }
-  if (fs.existsSync(__dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName)) {
+  if (
+    fs.existsSync(
+      __dirname +
+        "/../../data/files/stl/" +
+        resGetUserTicket[1][0].fileServerName
+    )
+  ) {
     let result = "";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     for (var i = 0; i < 10; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     const token = "t" + result;
-    tokenDownload[token] = { fileId: idFile, expire: new Date(new Date().setSeconds(new Date().getSeconds() + 10)) };
-
-    setTimeout(() => {
+    /* c8 ignore start */
+    // 15s is to long to test this
+    const timoutId = setTimeout(() => {
       delete tokenDownload[token];
     }, 15000);
+    /* c8 ignore stop */
+
+    tokenDownload[token] = {
+      fileId: idFile,
+      timoutId,
+      expire: new Date(new Date().setSeconds(new Date().getSeconds() + 10)),
+    };
 
     return {
       type: "json",
@@ -299,7 +341,9 @@ async function ticketFileGetOneFile(data) {
   //Test if Id is a token
   else if (
     !(
-      (isNaN(data.params.id) && tokenDownload[data.params.id] && new Date() < tokenDownload[data.params.id].expire) ||
+      (isNaN(data.params.id) &&
+        tokenDownload[data.params.id] &&
+        new Date() < tokenDownload[data.params.id].expire) ||
       !isNaN(data.params.id)
     )
   ) {
@@ -308,7 +352,9 @@ async function ticketFileGetOneFile(data) {
       code: 400,
     };
   }
-  const idFile = isNaN(data.params.id) ? tokenDownload[data.params.id].fileId : data.params.id;
+  const idFile = isNaN(data.params.id)
+    ? tokenDownload[data.params.id].fileId
+    : data.params.id;
 
   // if the user is not allowed
   const userIdAgent = data.userId;
@@ -327,7 +373,9 @@ async function ticketFileGetOneFile(data) {
                 INNER JOIN printstickets AS pt ON tf.i_idTicket = pt.i_id
                 INNER JOIN gd_ticketprojecttype AS gdpt ON pt.i_projecttype = gdpt.i_id
                 WHERE tf.i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, query, [idFile]);
+  const resGetUserTicket = await data.app.executeQuery(data.app.db, query, [
+    idFile,
+  ]);
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
     console.log(resGetUserTicket[0]);
@@ -345,7 +393,11 @@ async function ticketFileGetOneFile(data) {
   }
   const idTicketUser = resGetUserTicket[1][0].id;
   if (!isNaN(data.params.id) && idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -353,15 +405,28 @@ async function ticketFileGetOneFile(data) {
       };
     }
   }
-  if (fs.existsSync(__dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName)) {
+  if (
+    fs.existsSync(
+      __dirname +
+        "/../../data/files/stl/" +
+        resGetUserTicket[1][0].fileServerName
+    )
+  ) {
     return {
       type: "download",
       code: 200,
-      path: __dirname + "/../../data/files/stl/" + resGetUserTicket[1][0].fileServerName,
+      path:
+        __dirname +
+        "/../../data/files/stl/" +
+        resGetUserTicket[1][0].fileServerName,
       fileName:
         idTicketUser == userIdAgent
           ? resGetUserTicket[1][0].fileName
-          : resGetUserTicket[1][0].projectTypeName + "-" + idFile + "_" + resGetUserTicket[1][0].fileName,
+          : resGetUserTicket[1][0].projectTypeName +
+            "-" +
+            idFile +
+            "_" +
+            resGetUserTicket[1][0].fileName,
     };
   } else {
     return {
@@ -453,7 +518,11 @@ async function ticketFilePost(data) {
   const querySelect = `SELECT i_idUser AS 'id'
                         FROM printstickets 
                         WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, querySelect, [idTicket]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    querySelect,
+    [idTicket]
+  );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
     console.log(resGetUserTicket[0]);
@@ -477,7 +546,11 @@ async function ticketFilePost(data) {
   }
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       for (const file of files) {
         fs.unlinkSync(file.tempFilePath);
@@ -495,29 +568,32 @@ async function ticketFilePost(data) {
     if (fileNameSplited[fileNameSplited.length - 1].toLowerCase() === "stl") {
       const res = await new Promise(async (resolve) => {
         const newFileName = makeid(10, file.name);
-        fs.copyFile(file.tempFilePath, __dirname + "/../../data/files/stl/" + newFileName, async (err) => {
-          /* c8 ignore start */
-          if (err) throw err;
-          /* c8 ignore stop */
-          const queryInsert = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
+        fs.copyFile(
+          file.tempFilePath,
+          __dirname + "/../../data/files/stl/" + newFileName,
+          async (err) => {
+            /* c8 ignore start */
+            if (err) throw err;
+            /* c8 ignore stop */
+            const queryInsert = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
                                         VALUES (?, ?, ?, ?);`;
-          const resInsertFile = await data.app.executeQuery(data.app.db, queryInsert, [
-            userIdAgent,
-            idTicket,
-            file.name,
-            newFileName,
-          ]);
-          /* c8 ignore start */
-          if (resInsertFile[0]) {
-            console.log(resInsertFile[0]);
-            resolve({
-              type: "code",
-              code: 500,
-            });
+            const resInsertFile = await data.app.executeQuery(
+              data.app.db,
+              queryInsert,
+              [userIdAgent, idTicket, file.name, newFileName]
+            );
+            /* c8 ignore start */
+            if (resInsertFile[0]) {
+              console.log(resInsertFile[0]);
+              resolve({
+                type: "code",
+                code: 500,
+              });
+            }
+            /* c8 ignore stop */
+            resolve();
           }
-          /* c8 ignore stop */
-          resolve();
-        });
+        );
       });
       /* c8 ignore start */
       if (res) {
@@ -603,7 +679,11 @@ async function ticketFilePut(data) {
   const queryGetUserTicket = `SELECT i_idUser AS 'id'
                             FROM ticketfiles 
                             WHERE i_id = ?`;
-  const resGetUserTicket = await data.app.executeQuery(data.app.db, queryGetUserTicket, [idTicket]);
+  const resGetUserTicket = await data.app.executeQuery(
+    data.app.db,
+    queryGetUserTicket,
+    [idTicket]
+  );
   /* c8 ignore start */
   if (resGetUserTicket[0]) {
     console.log(resGetUserTicket[0]);
@@ -621,7 +701,11 @@ async function ticketFilePut(data) {
 
   const idTicketUser = resGetUserTicket[1][0].id;
   if (idTicketUser != userIdAgent) {
-    const authViewResult = await data.userAuthorization.validateUserAuth(data.app, userIdAgent, "myFabAgent");
+    const authViewResult = await data.userAuthorization.validateUserAuth(
+      data.app,
+      userIdAgent,
+      "myFabAgent"
+    );
     if (!authViewResult) {
       return {
         type: "code",
@@ -632,13 +716,21 @@ async function ticketFilePut(data) {
 
   const queryUpdate = `UPDATE ticketfiles
                         SET v_comment = ?
-                        ${data.body.idprinter !== undefined ? ", `i_idprinter` = ?" : ""}
+                        ${
+                          data.body.idprinter !== undefined
+                            ? ", `i_idprinter` = ?"
+                            : ""
+                        }
                         WHERE i_id = ?`;
   const options =
     data.body.idprinter !== undefined
       ? [data.body.comment, data.body.idprinter, idTicket]
       : [data.body.comment, idTicket];
-  const resUpdateFile = await data.app.executeQuery(data.app.db, queryUpdate, options);
+  const resUpdateFile = await data.app.executeQuery(
+    data.app.db,
+    queryUpdate,
+    options
+  );
   /* c8 ignore start */
   if (resUpdateFile[0]) {
     console.log(resUpdateFile[0]);
@@ -664,9 +756,17 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.get("/api/ticket/:id/file", async (req, res) => {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await ticketFileGetListOfFile(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (err) {
       console.log("ERROR: GET /api/ticket/:id/file/");
       console.log(err);
@@ -676,9 +776,17 @@ async function startApi(app) {
 
   app.get("/api/file/:id/getToken", async (req, res) => {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await ticketFileGetToken(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (err) {
       console.log("ERROR: GET /api/file/:id/getToken");
       console.log(err);
@@ -688,9 +796,17 @@ async function startApi(app) {
 
   app.get("/api/file/:id/", async (req, res) => {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await ticketFileGetOneFile(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (err) {
       console.log("ERROR: GET /api/file/:id/");
       console.log(err);
@@ -700,9 +816,17 @@ async function startApi(app) {
 
   app.post("/api/ticket/:id/file/", async (req, res) => {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await ticketFilePost(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (err) {
       console.log("ERROR: POST /api/ticket/:id/file/");
       console.log(err);
@@ -712,9 +836,17 @@ async function startApi(app) {
 
   app.put("/api/file/:id/", async (req, res) => {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await ticketFilePut(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (err) {
       console.log("ERROR: PUT /api/file/:id/");
       console.log(err);

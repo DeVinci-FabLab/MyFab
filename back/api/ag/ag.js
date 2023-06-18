@@ -55,11 +55,21 @@ async function getAg(data) {
 
 module.exports.startApi = startApi;
 async function startApi(app) {
+  //Feature not available yet
+  return;
   app.get("/api/ag/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       const result = await getAg(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: GET /api/ag/");
       console.log(error);

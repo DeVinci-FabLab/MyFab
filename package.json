@@ -1,0 +1,19 @@
+{
+  "name": "myfab",
+  "version": "1.0.0",
+  "description": "Bonjour ! Vous vous trouvez actuellement sur le respository de MyFab. Vous trouvez dans ce repo les fichiers pour faire fonctionner le service de MyFab.",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd back && set NODE_OPTIONS=--no-experimental-fetch && jest -i"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeVinci-FabLab/MyFab.git"
+  },
+  "author": "CodyIsTheSenate",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DeVinci-FabLab/MyFab/issues"
+  },
+  "homepage": "https://github.com/DeVinci-FabLab/MyFab#readme"
+}

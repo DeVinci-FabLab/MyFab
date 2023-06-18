@@ -42,10 +42,18 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   app.delete("/api/user/logout/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
       data.dvflcookie = req.headers.dvflcookie;
       const result = await deleteLogout(data);
-      await require("../../functions/apiActions").sendResponse(req, res, result);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
     } catch (error) {
       console.log("ERROR: DELETE /api/user/logout/");
       console.log(error);
