@@ -1,6 +1,20 @@
-# ![Wooow quel beau logo](https://www.fablabs.io/media/W1siZiIsIjIwMTcvMTAvMjUvMTMvNDgvMjQvZTQzZDgxMGUtM2ZiMy00MjZjLTlhNzYtOGFlYzg1ZWY1OGNjL0xPR08gREVWSU5DSSBGQUJMQUIucG5nIl0sWyJwIiwidGh1bWIiLCIzMDB4MzAwIl1d/LOGO%20DEVINCI%20FABLAB.png?sha=9ae18eebf0e6ea56)MyFab
+<div align="center">
+	<br />
+	<p>
+		<a><img src="back/defaultFiles/logo.png" width="500" alt="MyFab" /></a>
+	</p>
+	<br />
+	<p>
+		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-agent.yml/badge.svg" alt="Agent status" /></a>
+		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-back.yml/badge.svg" alt="Back status" /></a>
+		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-front.yml/badge.svg" alt="Front status" /></a>
+		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Linter.yml/badge.svg" alt="Linter status" /></a>
+  </p>
+</div>
 
-Bonjour ! Vous vous trouvez actuellement sur le respository de MyFab. Vous trouvez dans ce dossier les fichiers pour faire fonctionner le service du back-end.
+# MyFab
+
+Bonjour ! Vous vous trouvez actuellement sur le respository de MyFab. Vous trouvez dans ce repository les fichiers pour faire fonctionner notre outils de ticketing pour des demande d'impression 3D.
 
 ### Installation
 
