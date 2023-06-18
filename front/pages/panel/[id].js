@@ -922,7 +922,6 @@ const GestionTicket = ({
                           Attention, vous allez annuler la demande{" "}
                           <strong>#{ticket.id}</strong>
                         </p>
-                        <p>Cette action est irréversible</p>
                       </div>
                     ) : (
                       <div className="mt-2">
