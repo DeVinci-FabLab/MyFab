@@ -93,7 +93,10 @@ module.exports.startApi = async (app, service) => {
           lines.splice(indexKey, 1);
           console.log(lines[lines.length - 1].trim());
           console.log(lines[lines.length - 2].trim());
-          while (lines[lines.length - 1].trim() === "" && lines[lines.length - 2].trim() === "") {
+          while (
+            lines[lines.length - 1].trim() === "" &&
+            lines[lines.length - 2].trim() === ""
+          ) {
             lines.splice(lines.length - 1, 1);
           }
           break;

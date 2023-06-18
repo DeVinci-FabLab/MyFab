@@ -1,7 +1,8 @@
 const axios = require("axios");
 require("dotenv").config();
 const target = process.env.TARGET?.trim();
-const generateCode = require("../../back/functions/userAuthorization").generateCode;
+const generateCode =
+  require("../../back/functions/userAuthorization").generateCode;
 const readline = require("readline");
 
 async function cmd() {
@@ -28,14 +29,21 @@ async function cmd() {
     return;
   }
 
-  const resultQuestionKey = action !== "get" ? await askQuestion(`Type the key to ${action} : `) : null;
+  const resultQuestionKey =
+    action !== "get" ? await askQuestion(`Type the key to ${action} : `) : null;
   if (resultQuestionKey) console.log();
 
   const resultQuestionValue =
-    action !== "remove" && action !== "get" ? await askQuestion(`Type the value to ${action} : `) : null;
+    action !== "remove" && action !== "get"
+      ? await askQuestion(`Type the value to ${action} : `)
+      : null;
   if (resultQuestionValue) console.log();
 
-  const res = await makeRequest({ action, resultQuestionKey, resultQuestionValue });
+  const res = await makeRequest({
+    action,
+    resultQuestionKey,
+    resultQuestionValue,
+  });
   if (!res) {
     console.log("Service not responding");
   } else if (res.status === 200 && res.data.env) {
@@ -51,7 +59,11 @@ async function cmd() {
   }
 }
 
-async function makeRequest({ action, resultQuestionKey: key, resultQuestionValue: value }) {
+async function makeRequest({
+  action,
+  resultQuestionKey: key,
+  resultQuestionValue: value,
+}) {
   const code = generateCode(new Date());
   return await new Promise(async (resolve, reject) => {
     await axios({

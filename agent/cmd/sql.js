@@ -1,7 +1,8 @@
 const axios = require("axios");
 require("dotenv").config();
 const target = process.env.TARGET?.trim();
-const generateCode = require("../../back/functions/userAuthorization").generateCode;
+const generateCode =
+  require("../../back/functions/userAuthorization").generateCode;
 const readline = require("readline");
 
 async function cmd() {

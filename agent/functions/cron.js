@@ -10,7 +10,7 @@ const restart_cron_time =
 const daily_pull_always_restarts =
   process.env.DAILY_PULL_ALWAYS_RESTARTS?.includes("true");
 const failsafe_cron_time =
-  process.env.FAILSAFE_CRON_TIME?.trim() || "0 */15 9-23 * * *";
+  process.env.FAILSAFE_CRON_TIME?.trim() || "0 */15 7-23 * * *";
 const ping_url = is_linux
   ? "http://back:5000/api/ping"
   : env_name == "back"
