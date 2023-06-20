@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getCookie, setCookies } from "cookies-next";
 import { useEffect, useState } from "react";
 import router from "next/router";
@@ -11,66 +10,57 @@ export default function Auth() {
   const [password, setPassword] = useState(null);
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [toastedLoad, setToastedLoad] = useState(false);
 
   useEffect(() => {
-    if (router.query.close != null) {
+    if (!toastedLoad && router.query.close != null) {
+      setToastedLoad(true);
       setCookies("adfs", false);
-      toast.error(
-        "MyFab est actuellement fermé merci de réessayer plus tard.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+      toast.error("MyFab est actuellement fermé merci de réessayer plus tard.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
-    if (router.query.error != null) {
-      toast.error(
-        "Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+    if (!toastedLoad && router.query.error != null) {
+      setToastedLoad(true);
+      toast.error("Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
-    if (router.query.mail != null) {
+    if (!toastedLoad && router.query.mail != null) {
+      setToastedLoad(true);
       if (router.query.mail == "ok") {
-        toast.success(
-          "Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
+        toast.success("Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
-        toast.error(
-          "Une erreur est survenue lors de la vérification de votre e-mail.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
+        toast.error("Une erreur est survenue lors de la vérification de votre e-mail.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
-      router.replace("/auth");
     } else {
       // Connection avec le DVIC
       const adfs = getCookie("adfs");
@@ -80,7 +70,7 @@ export default function Auth() {
 
   async function login() {
     const expires = new Date(Date.now() + 7200000);
-    await axios({
+    const responseLogin = await fetchAPIAuth({
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -93,60 +83,51 @@ export default function Auth() {
         rememberMe: checked,
         expires: !checked ? expires : null,
       },
-    })
-      .then(async (response) => {
-        if (response.status == 200) {
-          if (!checked) {
-            setCookies("jwt", response.data.dvflCookie, { expires });
-          } else {
-            setCookies("jwt", response.data.dvflCookie);
-          }
-          await axios({
-            method: "GET",
-            headers: {
-              dvflCookie: response.data.dvflCookie,
-            },
-            url: process.env.API + "/api/user/authorization",
-          }).then((response) => {
-            if (response.data.myFabAgent == 1) {
-              router.push("/panel/admin");
-            } else {
-              router.push("/panel");
-            }
-          });
-        }
-        if (response.status == 204) {
-          toast.warning(
-            "Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.",
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            }
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setError(true);
-        setTimeout(() => setError(false), 5000);
-        toast.error(
-          "Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
+    });
+
+    if (responseLogin.status == 200) {
+      if (!checked) {
+        setCookies("jwt", response.data.dvflCookie, { expires });
+      } else {
+        setCookies("jwt", response.data.dvflCookie);
+      }
+
+      const responseAuth = await fetchAPIAuth({
+        method: "GET",
+        headers: {
+          dvflCookie: response.data.dvflCookie,
+        },
+        url: process.env.API + "/api/user/authorization",
       });
+
+      if (responseAuth.data.myFabAgent == 1) {
+        router.push("/panel/admin");
+      } else {
+        router.push("/panel");
+      }
+    } else if (responseLogin.status == 204) {
+      toast.warning("Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (responseLogin.error) {
+      setError(true);
+      setTimeout(() => setError(false), 5000);
+      toast.error("Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   return (
@@ -154,65 +135,40 @@ export default function Auth() {
       <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
-            <img
-              className="h-12 w-auto"
-              src={process.env.BASE_PATH + "/logo.png"}
-              alt="Devinci FabLab"
-            />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-              Connectez-vous à MyFab
-            </h2>
+            <img className="h-12 w-auto" src={process.env.BASE_PATH + "/logo.png"} alt="Devinci FabLab" />
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Connectez-vous à MyFab</h2>
           </div>
 
           <div className="mt-8">
             <div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">
-                  Se connecter avec
-                </p>
+                <p className="text-sm font-medium text-gray-700 mb-2">Se connecter avec</p>
 
                 <div className="mt-1">
                   <div className="">
                     <div>
                       <div
                         className="cursor-pointer w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:bg-black hover:text-white duration-300"
-                        onClick={() => {
-                          axios({
-                            method: "GET",
-                            headers: {
-                              Accept: "application/json",
-                              "Content-Type": "application/json",
-                            },
-                            url: process.env.API + "/api/myFabOpen",
-                          }).then((response) => {
-                            if (response.data.myFabOpen === true) {
-                              router.push(
-                                process.env.API + "/api/user/login/adfs/"
-                              );
-                            } else {
-                              toast.error(
-                                "MyFab est actuellement fermé merci de réessayer plus tard.",
-                                {
-                                  position: "top-right",
-                                  autoClose: 3000,
-                                  hideProgressBar: true,
-                                  closeOnClick: true,
-                                  pauseOnHover: true,
-                                  draggable: true,
-                                  progress: undefined,
-                                }
-                              );
-                            }
-                          });
+                        onClick={async () => {
+                          const responseMyFabOpen = await fetchAPIAuth("/myFabOpen");
+
+                          if (responseMyFabOpen.myFabOpen === true) {
+                            router.push(process.env.API + "/api/user/login/adfs/");
+                          } else {
+                            toast.error("MyFab est actuellement fermé merci de réessayer plus tard.", {
+                              position: "top-right",
+                              autoClose: 3000,
+                              hideProgressBar: true,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                            });
+                          }
                         }}
                       >
                         <span className="sr-only">Mon compte LéoID</span>
-                        <img
-                          src={
-                            process.env.BASE_PATH + "/photo/Microsoft_logo.svg"
-                          }
-                          className="h-5 w-5"
-                        />
+                        <img src={process.env.BASE_PATH + "/photo/Microsoft_logo.svg"} className="h-5 w-5" />
                         <p className="ml-2">Mon compte LéoID</p>
                       </div>
                     </div>
@@ -221,16 +177,11 @@ export default function Auth() {
               </div>
 
               <div className="mt-6 relative">
-                <div
-                  className="absolute inset-0 flex items-center"
-                  aria-hidden="true"
-                >
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Ou continuer avec
-                  </span>
+                  <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
                 </div>
               </div>
             </div>
@@ -239,9 +190,7 @@ export default function Auth() {
                 <div className="">
                   <label
                     htmlFor="email"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
+                    className={`block text-sm font-medium ${error ? "text-red-500" : "text-gray-700"}`}
                   >
                     Adresse e-mail
                   </label>
@@ -263,9 +212,7 @@ export default function Auth() {
                 <div className="space-y-1">
                   <label
                     htmlFor="password"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
+                    className={`block text-sm font-medium ${error ? "text-red-500" : "text-gray-700"}`}
                   >
                     Mot de passe
                   </label>
@@ -293,19 +240,14 @@ export default function Auth() {
                       onChange={() => setChecked(!checked)}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label
-                      htmlFor="remember-me"
-                      className="ml-2 block text-sm text-gray-900"
-                    >
+                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                       Se souvenir de moi
                     </label>
                   </div>
 
                   <div className="text-sm">
                     <Link href="/auth/forget">
-                      <p className="font-medium text-blue-700 hover:text-blue-600">
-                        Mot de passe oublié ?
-                      </p>
+                      <p className="font-medium text-blue-700 hover:text-blue-600">Mot de passe oublié ?</p>
                     </Link>
                   </div>
                 </div>
@@ -320,8 +262,7 @@ export default function Auth() {
                     Se connecter
                   </button>
                   <p className="text-sm text-center text-gray-500 p-1">
-                    La connexion par adresse e-mail est réservée aux anciens
-                    comptes MyFab.
+                    La connexion par adresse e-mail est réservée aux anciens comptes MyFab.
                   </p>
                   {/*<Link href="/auth/register">
                     <p className="text-sm text-center text-gray-500 p-1 hover:cursor-pointer">S'inscrire</p>
