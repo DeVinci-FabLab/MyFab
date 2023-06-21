@@ -58,9 +58,8 @@ export default function OverviewAdmin({
             ) : (
               <div className="p-4 md:p-5 rounded flex justify-between text-gray-700 bg-gray-100">
                 <p>
-                  Il n'y a aucun ticket à traiter. Vous pouvez accéder à
-                  l'historique des tickets déjà traités en cliquant sur le
-                  bouton suivant.
+                  Il n'y a aucun ticket à traiter. Vous pouvez accéder à l'historique des tickets déjà traités en
+                  cliquant sur le bouton suivant.
                 </p>
                 <Link href="/panel/admin/history">
                   <p className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
@@ -72,7 +71,7 @@ export default function OverviewAdmin({
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
@@ -89,9 +88,8 @@ export default function OverviewAdmin({
               <div className="">
                 <h3 className="text-xl font-bold">FAQ</h3>
                 <p className="text-sm text-gray-500 text-justify">
-                  Un trou de mémoire ? Vous n'êtes pas sûr de ce que vous allez
-                  faire ? Consultez d'abord cette mini FAQ avant de demander à
-                  un membre de l'association.
+                  Un trou de mémoire ? Vous n'êtes pas sûr de ce que vous allez faire ? Consultez d'abord cette mini FAQ
+                  avant de demander à un membre de l'association.
                 </p>
               </div>
               <dl className="divide-y divide-gray-200">
@@ -101,24 +99,17 @@ export default function OverviewAdmin({
                       <>
                         <dt className="text-sm">
                           <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
-                            <span className="font-medium text-gray-900">
-                              {faq.question}
-                            </span>
+                            <span className="font-medium text-gray-900">{faq.question}</span>
                             <span className="ml-6 h-7 flex items-center">
                               <ChevronDownIcon
-                                className={classNames(
-                                  open ? "-rotate-180" : "rotate-0",
-                                  "h-6 w-6 transform"
-                                )}
+                                className={classNames(open ? "-rotate-180" : "rotate-0", "h-6 w-6 transform")}
                                 aria-hidden="true"
                               />
                             </span>
                           </Disclosure.Button>
                         </dt>
                         <Disclosure.Panel as="dd" className="mt-2 pr-12">
-                          <p className="text-sm text-gray-500 text-justify">
-                            {faq.answer}
-                          </p>
+                          <p className="text-sm text-gray-500 text-justify">{faq.answer}</p>
                         </Disclosure.Panel>
                       </>
                     )}
