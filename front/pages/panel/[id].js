@@ -2,12 +2,7 @@ import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import LayoutPanel from "../../components/layoutPanel";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
-import {
-  CubeIcon,
-  UserCircleIcon,
-  CogIcon,
-  ExclamationIcon,
-} from "@heroicons/react/outline";
+import { CubeIcon, UserCircleIcon, CogIcon, ExclamationIcon } from "@heroicons/react/outline";
 import { useEffect, Fragment, useState } from "react";
 import Moment from "react-moment";
 import { StlViewer } from "react-stl-viewer";
@@ -96,9 +91,7 @@ const GestionTicket = ({
     })
       .then(() => {
         toast.success(
-          paramType === "status"
-            ? "Le status du ticket a été mis à jour"
-            : "Le type de projet à été modifié",
+          paramType === "status" ? "Le status du ticket a été mis à jour" : "Le type de projet à été modifié",
           {
             position: "top-right",
             autoClose: 3000,
@@ -263,19 +256,9 @@ const GestionTicket = ({
   }
 
   return (
-    <LayoutPanel
-      user={user}
-      role={role}
-      authorizations={authorizations}
-      titleMenu="Panel de demande d'impression 3D"
-    >
+    <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Panel de demande d'impression 3D">
       <Seo title={"Ticket #" + setZero(ticket.id)} />
-      <WebSocket
-        realodPage={realodPage}
-        event={[]}
-        userId={user.id}
-        ticketId={ticket.id}
-      />
+      <WebSocket realodPage={realodPage} event={[]} userId={user.id} ticketId={ticket.id} />
 
       {/* Dernières activités */}
       <div className="py-6 px-3">
@@ -285,42 +268,26 @@ const GestionTicket = ({
               <div className="flex flex-wrap -mx-4">
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4">
                   <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Fichiers et commentaires
-                    </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                      Ticket n° {ticket.id}
-                    </p>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">Fichiers et commentaires</h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">Ticket n° {ticket.id}</p>
                   </div>
                   <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                     <dl className="sm:divide-y sm:divide-gray-200">
                       <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500">
-                          Fichier(s) stl
-                        </dt>
+                        <dt className="text-sm font-medium text-gray-500">Fichier(s) stl</dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                          <ul
-                            role="list"
-                            className="border border-gray-200 rounded-md divide-y divide-gray-200"
-                          >
-                            {file.map((r) => {
+                          <ul role="list" className="border border-gray-200 rounded-md divide-y divide-gray-200">
+                            {file.map((r, index) => {
                               return (
-                                <div>
+                                <div key={`file-${index}`}>
                                   <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                                     <div className="w-0 flex-1 flex items-center">
-                                      <CubeIcon
-                                        className="flex-shrink-0 h-5 w-5 text-gray-400"
-                                        aria-hidden="true"
-                                      />
-                                      <span className="ml-2 flex-1 w-0 truncate">
-                                        {r.filename}
-                                      </span>
+                                      <CubeIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                      <span className="ml-2 flex-1 w-0 truncate">{r.filename}</span>
                                     </div>
                                     <div className="ml-4 flex-shrink-0">
                                       <button
-                                        onClick={() =>
-                                          download(r.id, r.filename)
-                                        }
+                                        onClick={() => download(r.id, r.filename)}
                                         className="font-medium text-indigo-600 hover:text-indigo-500"
                                       >
                                         Télécharger
@@ -342,10 +309,7 @@ const GestionTicket = ({
                                   {r.comment != "" ? (
                                     <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm">
                                       <p className="text-ellipsis overflow-hidden">
-                                        <span className="font-medium">
-                                          Commentaire sur le fichier
-                                        </span>
-                                        : {r.comment}
+                                        <span className="font-medium">Commentaire sur le fichier</span>: {r.comment}
                                       </p>
                                     </div>
                                   ) : (
@@ -354,13 +318,8 @@ const GestionTicket = ({
                                   {authorizations.myFabAgent ? (
                                     <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm">
                                       <p className="text-ellipsis overflow-hidden">
-                                        <span className="font-medium">
-                                          Impression lancé sur
-                                        </span>
-                                        :{" "}
-                                        {r.printerName
-                                          ? r.printerName
-                                          : "Non lancé"}
+                                        <span className="font-medium">Impression lancé sur</span>:{" "}
+                                        {r.printerName ? r.printerName : "Non lancé"}
                                       </p>
                                     </div>
                                   ) : (
@@ -373,45 +332,25 @@ const GestionTicket = ({
                         </dd>
                       </div>
                       <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500">
-                          Commentaires
-                        </dt>
+                        <dt className="text-sm font-medium text-gray-500">Commentaires</dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul role="list" className="divide-y divide-gray-200">
-                            {message.map((r) => (
-                              <li
-                                key={r.id}
-                                className="relative bg-white py-5 px-4 hover:bg-gray-50"
-                              >
+                            {message.map((r, index) => (
+                              <li key={`message-${index}`} className="relative bg-white py-5 px-4 hover:bg-gray-50">
                                 <div className="flex justify-between space-x-3">
                                   <div className="min-w-0 flex-1">
-                                    <a
-                                      href="#"
-                                      className="block focus:outline-none"
-                                    >
-                                      <span
-                                        className="absolute inset-0 cursor-default"
-                                        aria-hidden="true"
-                                      />
-                                      <p className="text-sm font-medium text-gray-900 truncate">
-                                        {r.userName}
-                                      </p>
-                                      <p className="text-sm text-gray-500 truncate">
-                                        {r.subject}
-                                      </p>
+                                    <a href="#" className="block focus:outline-none">
+                                      <span className="absolute inset-0 cursor-default" aria-hidden="true" />
+                                      <p className="text-sm font-medium text-gray-900 truncate">{r.userName}</p>
+                                      <p className="text-sm text-gray-500 truncate">{r.subject}</p>
                                     </a>
                                   </div>
-                                  <Moment
-                                    format="Do MMM YYYY à HH:mm"
-                                    locale="fr"
-                                  >
+                                  <Moment format="Do MMM YYYY à HH:mm" locale="fr">
                                     {r.creationDate}
                                   </Moment>
                                 </div>
                                 <div className="mt-1">
-                                  <p className="line-clamp-2 text-sm text-gray-600">
-                                    {r.content}
-                                  </p>
+                                  <p className="line-clamp-2 text-sm text-gray-600">{r.content}</p>
                                 </div>
                               </li>
                             ))}
@@ -434,8 +373,7 @@ const GestionTicket = ({
                                 Envoyer mon commentaire
                               </button>
                               <p className="mt-2 text-sm text-gray-500">
-                                Vous pouvez communiquer avec les membres du
-                                FabLab via ce formulaire.
+                                Vous pouvez communiquer avec les membres du FabLab via ce formulaire.
                               </p>
                             </div>
                           </ul>
@@ -451,29 +389,18 @@ const GestionTicket = ({
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
                         Détails de la demande d'impression
                       </h3>
-                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                        Ticket n° {ticket.id}
-                      </p>
+                      <p className="mt-1 max-w-2xl text-sm text-gray-500">Ticket n° {ticket.id}</p>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
                       <dl className="sm:divide-y sm:divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
-                            Utilisateur
-                          </dt>
+                          <dt className="text-sm font-medium text-gray-500">Utilisateur</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>
                               {ticket.userFirstName +
                                 " " +
-                                (ticket.userLastName
-                                  ? ticket.userLastName
-                                  : "undefined"
-                                )
-                                  .toString()
-                                  .toUpperCase()}
-                              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                                {user.title || "Ancien compte"}
-                              </p>
+                                (ticket.userLastName ? ticket.userLastName : "undefined").toString().toUpperCase()}
+                              <p className="mt-1 max-w-2xl text-sm text-gray-500">{user.title || "Ancien compte"}</p>
                             </div>
                             {authorizations.myFabAgent ? (
                               <button
@@ -492,10 +419,8 @@ const GestionTicket = ({
                           {authorizations.myFabAgent ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
-                                Cet utilisateur a {ticket.ticketCountUser}{" "}
-                                ticket{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
-                                réalisé{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
-                                cette année
+                                Cet utilisateur a {ticket.ticketCountUser} ticket{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
+                                réalisé{ticket.ticketCountUser > 1 ? "s" : ""} cette année
                               </div>
                             </dd>
                           ) : (
@@ -503,9 +428,7 @@ const GestionTicket = ({
                           )}
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
-                            Numéro de groupe
-                          </dt>
+                          <dt className="text-sm font-medium text-gray-500">Numéro de groupe</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             {ticket.groupNumber}
                           </dd>
@@ -515,8 +438,7 @@ const GestionTicket = ({
                               <div>
                                 Ce groupe a {ticket.ticketCountGroup} ticket
                                 {ticket.ticketCountGroup > 1 ? "s" : ""} réalisé
-                                {ticket.ticketCountGroup > 1 ? "s" : ""} cette
-                                année
+                                {ticket.ticketCountGroup > 1 ? "s" : ""} cette année
                               </div>
                             </dd>
                           ) : (
@@ -524,9 +446,7 @@ const GestionTicket = ({
                           )}
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
-                            Type
-                          </dt>
+                          <dt className="text-sm font-medium text-gray-500">Type</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>{ticket.projectType}</div>
                             {authorizations.myFabAgent ? (
@@ -545,9 +465,7 @@ const GestionTicket = ({
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
-                            Status
-                          </dt>
+                          <dt className="text-sm font-medium text-gray-500">Status</dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>{ticket.statusName}</div>
                             {authorizations.myFabAgent && !ticket.isCancel ? (
@@ -580,9 +498,7 @@ const GestionTicket = ({
                         </div>
                         {authorizations.myFabAgent ? (
                           <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Priorité
-                            </dt>
+                            <dt className="text-sm font-medium text-gray-500">Priorité</dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                               <div
                                 className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full ${
@@ -608,11 +524,7 @@ const GestionTicket = ({
 
       {/* modal */}
       <Transition.Root show={open} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={saveFileData}
-        >
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={saveFileData}>
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -626,10 +538,7 @@ const GestionTicket = ({
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
@@ -643,25 +552,15 @@ const GestionTicket = ({
             >
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6">
                 <div>
-                  <p className="text-center font-medium">
-                    Aperçu du fichier STL:
-                  </p>
-                  <p className="text-sm text-center text-gray-500">
-                    {ticketFile.filename}
-                  </p>
+                  <p className="text-center font-medium">Aperçu du fichier STL:</p>
+                  <p className="text-sm text-center text-gray-500">{ticketFile.filename}</p>
                   <center>
                     <StlViewer
                       style={{
                         top: 0,
                         left: 0,
-                        width:
-                          typeof window !== "undefined"
-                            ? (window.innerWidth / 100) * 45
-                            : 300,
-                        height:
-                          typeof window !== "undefined"
-                            ? window.innerHeight / 2.2
-                            : 200,
+                        width: typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300,
+                        height: typeof window !== "undefined" ? window.innerHeight / 2.2 : 200,
                       }}
                       modelProps={{ color: STLColor }}
                       orbitControls={true}
@@ -670,21 +569,14 @@ const GestionTicket = ({
 
                     {authorizations.myFabAgent ? (
                       <div>
-                        <p className="text-center font-medium">
-                          Commentaire et imprimante:
-                        </p>
+                        <p className="text-center font-medium">Commentaire et imprimante:</p>
                         <div className="flex flex-wrap -mx-4">
                           <div className="overflow-hidden sm:rounded-lg w-full lg:w-7/12 pl-4">
                             <textarea
                               id="comment"
                               name="comment"
                               maxLength="256"
-                              rows={
-                                ticketFile.comment &&
-                                ticketFile.comment.length < 150
-                                  ? 3
-                                  : 5
-                              }
+                              rows={ticketFile.comment && ticketFile.comment.length < 150 ? 3 : 5}
                               onChange={(e) => {
                                 if (ticketFile.comment !== e.target.value) {
                                   ticketFile.comment = e.target.value;
@@ -701,8 +593,7 @@ const GestionTicket = ({
                                 //setNewParam(e.target.value)
                                 if (ticketFile.idprinter !== e.target.value) {
                                   ticketFile.idprinter = e.target.value;
-                                  ticketFile.printerName =
-                                    printerObject[ticketFile.idprinter];
+                                  ticketFile.printerName = printerObject[ticketFile.idprinter];
                                   setTicketFile(ticketFile);
                                 }
                               }}
@@ -710,22 +601,15 @@ const GestionTicket = ({
                               name="type"
                               className="mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                             >
-                              <option
-                                value={0}
-                                defaultValue={
-                                  ticketFile.idprinter === 0 ? "'selected'" : ""
-                                }
-                              >
+                              <option value={0} defaultValue={ticketFile.idprinter === 0 ? "'selected'" : ""}>
                                 (Sélectionnez une imprimante)
                               </option>
-                              {printers.map((item) => {
-                                const elementSelected =
-                                  ticketFile.idprinter === item.id;
+                              {printers.map((item, index) => {
+                                const elementSelected = ticketFile.idprinter === item.id;
                                 return (
                                   <option
-                                    defaultValue={
-                                      elementSelected ? "'selected'" : ""
-                                    }
+                                    key={`printer-${index}`}
+                                    defaultValue={elementSelected ? "'selected'" : ""}
                                     value={item.id}
                                   >
                                     {item.name}
@@ -773,11 +657,7 @@ const GestionTicket = ({
 
       {/* modal */}
       <Transition.Root show={openUser} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={setOpenUser}
-        >
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpenUser}>
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -791,10 +671,7 @@ const GestionTicket = ({
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
@@ -808,39 +685,23 @@ const GestionTicket = ({
             >
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:p-6">
                 <div>
-                  <p className="text-center font-medium">
-                    Aperçu de l'utilisateur :
-                  </p>
+                  <p className="text-center font-medium">Aperçu de l'utilisateur :</p>
                   <dl className="sm:divide-y sm:divide-gray-200">
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
-                        Nom et prénom
-                      </dt>
+                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Nom et prénom</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {ticket.userFirstName +
-                          " " +
-                          ticket.userLastName.toString().toUpperCase()}
+                        {ticket.userFirstName + " " + ticket.userLastName.toString().toUpperCase()}
                       </dd>
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
-                        Ecole et année
-                      </dt>
+                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Ecole et année</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                         {ticket.title || "Ancien compte"}
                       </dd>
                     </div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
-                        Adresse e-mail
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {ticket.email}
-                      </dd>
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
-                        Type de projet
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {ticket.projectType}
-                      </dd>
+                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Adresse e-mail</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{ticket.email}</dd>
+                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">Type de projet</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{ticket.projectType}</dd>
                     </div>
                   </dl>
                 </div>
@@ -861,11 +722,7 @@ const GestionTicket = ({
 
       {/* modal */}
       <Transition.Root show={openStatus} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={setOpenStatus}
-        >
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpenStatus}>
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -879,10 +736,7 @@ const GestionTicket = ({
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
@@ -897,33 +751,23 @@ const GestionTicket = ({
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6">
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <ExclamationIcon
-                      className="h-6 w-6 text-red-600"
-                      aria-hidden="true"
-                    />
+                    <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg leading-6 font-medium text-gray-900"
-                    >
+                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                       {paramType === "cancel" ? (
                         <p>Annulation de la demande</p>
                       ) : (
                         <p>
-                          Changer le{" "}
-                          {paramType === "status" ? "status" : "type"} du ticket{" "}
-                          {paramType === "status"
-                            ? ticket.statusName
-                            : ticket.projectType}
+                          Changer le {paramType === "status" ? "status" : "type"} du ticket{" "}
+                          {paramType === "status" ? ticket.statusName : ticket.projectType}
                         </p>
                       )}
                     </Dialog.Title>
                     {paramType === "cancel" ? (
                       <div>
                         <p className="pt-4">
-                          Attention, vous allez annuler la demande{" "}
-                          <strong>#{ticket.id}</strong>
+                          Attention, vous allez annuler la demande <strong>#{ticket.id}</strong>
                         </p>
                       </div>
                     ) : (
@@ -934,27 +778,18 @@ const GestionTicket = ({
                           name="type"
                           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                         >
-                          {(paramType === "status" ? status : projectType).map(
-                            (item) => {
-                              const elementSelected =
-                                paramType === "status"
-                                  ? ticket.statusName
-                                  : ticket.projectType;
-                              console.log(item.name === elementSelected);
-                              return (
-                                <option
-                                  selected={
-                                    item.name === elementSelected
-                                      ? "'selected'"
-                                      : ""
-                                  }
-                                  value={item.id}
-                                >
-                                  {item.name}
-                                </option>
-                              );
-                            }
-                          )}
+                          {(paramType === "status" ? status : projectType).map((item, index) => {
+                            const elementSelected = paramType === "status" ? ticket.statusName : ticket.projectType;
+                            return (
+                              <option
+                                key={`param-${index}`}
+                                selected={item.name === elementSelected ? "'selected'" : ""}
+                                value={item.id}
+                              >
+                                {item.name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                     )}
@@ -1021,10 +856,7 @@ export async function getServerSideProps({ req, params }) {
   const ticket = await fetchAPIAuth("/ticket/" + id, cookies.jwt);
   const file = await fetchAPIAuth("/ticket/" + id + "/file", cookies.jwt);
   const message = await fetchAPIAuth("/ticket/" + id + "/message", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
   const status = await fetchAPIAuth("/status/");
   const projectType = await fetchAPIAuth("/projectType/");
   const printers = await fetchAPIAuth("/printer/");
