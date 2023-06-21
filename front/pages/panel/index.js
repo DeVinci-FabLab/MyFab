@@ -149,8 +149,8 @@ export default function NewPanel({ data, user, role, authorizations, highDemand 
                       </p>
                     </div>
                     <dl className="divide-y divide-gray-200">
-                      {faq.map((faq) => (
-                        <Disclosure as="div" key={faq.question} className="pt-6">
+                      {faq.map((faq, index) => (
+                        <Disclosure as="div" key={`faq-${index}`} className="pt-6">
                           {({ open }) => (
                             <>
                               <dt className="text-sm">
@@ -214,9 +214,12 @@ export default function NewPanel({ data, user, role, authorizations, highDemand 
                             </tr>
                           </thead>
                           <tbody>
-                            {userTicketResult.map((r) => {
+                            {userTicketResult.map((r, index) => {
                               return (
-                                <tr className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer">
+                                <tr
+                                  key={`ticket-${index}`}
+                                  className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                                >
                                   <td className="p-3 text-center" onClick={() => router.push(`/panel/${r.id}`)}>
                                     <span className="font-medium">#{setZero(r.id)}</span>
                                   </td>
@@ -290,11 +293,11 @@ export default function NewPanel({ data, user, role, authorizations, highDemand 
                           >
                             &lt;
                           </button>
-                          <p className="inline-flex py-2 px-4">
+                          <div className="inline-flex py-2 px-4">
                             Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>
                             &nbsp;sur&nbsp;
                             <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
-                          </p>
+                          </div>
                           <button
                             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
                             onClick={() => nextPrevPage(1)}
@@ -310,7 +313,7 @@ export default function NewPanel({ data, user, role, authorizations, highDemand 
                         Les demandes d'impressions apparaîteront ici. Pour en créer une, cliquez sur le bouton suivant.
                       </p>
                       <Link href="/panel/new/">
-                        <p className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
+                        <div className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
                           <span>Créer une demande</span>
                           <svg
                             className="hi-solid hi-arrow-right inline-block w-4 h-4"
@@ -324,7 +327,7 @@ export default function NewPanel({ data, user, role, authorizations, highDemand 
                               clipRule="evenodd"
                             />
                           </svg>
-                        </p>
+                        </div>
                       </Link>
                     </div>
                   )}
