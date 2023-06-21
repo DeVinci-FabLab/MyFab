@@ -4,6 +4,7 @@ import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
 export function setZero(number) {
+  if (!number) return "";
   if (number < 10) {
     return "000" + number;
   } else if (number < 100) {

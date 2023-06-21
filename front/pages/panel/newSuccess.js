@@ -140,9 +140,12 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                     </div>
 
                     <div className="grid grid-cols-6 gap-5 p-5 ">
-                      {file.map((r) => {
+                      {file.map((r, index) => {
                         return (
-                          <div className="col-span-6 mt-5 bg-opacity-50 border border-gray-100 rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3">
+                          <div
+                            key={`file-${index}`}
+                            className="col-span-6 mt-5 bg-opacity-50 border border-gray-100 rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3"
+                          >
                             <div className="w-0 flex-1 flex items-center">
                               <CubeIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
                               <span className="ml-2 flex-1">{r.filename}</span>
@@ -233,8 +236,12 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                             <div>
                               Ce ticket comporte {file.length} fichier
                               {file.length > 1 ? "s" : ""} :
-                              {file.map((r) => {
-                                return <p className="mt-1 max-w-2xl text-sm text-gray-500">- {r.filename}</p>;
+                              {file.map((r, index) => {
+                                return (
+                                  <p key={`fileName-${index}`} className="mt-1 max-w-2xl text-sm text-gray-500">
+                                    - {r.filename}
+                                  </p>
+                                );
                               })}
                             </div>
                           </dd>
@@ -341,6 +348,14 @@ export async function getServerSideProps({ req, query }) {
 
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
   const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  if (ticket.error)
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/panel/",
+      },
+      props: {},
+    };
 
   return {
     props: { user, role, ticket, file, authorizations }, // will be passed to the page component as props
