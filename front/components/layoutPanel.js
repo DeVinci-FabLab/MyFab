@@ -21,13 +21,7 @@ let version = null;
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function LayoutPanel({
-  children,
-  user,
-  role,
-  authorizations,
-  titleMenu,
-}) {
+export default function LayoutPanel({ children, user, role, authorizations, titleMenu }) {
   const router = useRouter();
   const pn = router.pathname;
   if (!authorizations) authorizations = {};
@@ -109,11 +103,7 @@ export default function LayoutPanel({
   return (
     <div className="relative h-screen flex overflow-hidden bg-white">
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 flex z-40 lg:hidden"
-          onClose={setSidebarOpen}
-        >
+        <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setSidebarOpen}>
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -158,26 +148,19 @@ export default function LayoutPanel({
               <div className="flex-shrink-0 flex items-center px-4">
                 <LogoDvfl user={user} />
               </div>
-              <Menu
-                as="div"
-                className="px-3 mt-6 relative inline-block text-left"
-              >
+              <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
                 <div>
                   <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                     <span className="flex w-full justify-between items-center">
                       <span className="flex min-w-0 items-center justify-between space-x-3">
                         <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                          {name[0].toString().toUpperCase() +
-                            " " +
-                            surname[0].toString().toUpperCase()}
+                          {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
                         </div>
                         <span className="flex-1 flex flex-col min-w-0">
                           <span className="text-gray-900 text-sm font-medium truncate">
                             {name + " " + surname.toUpperCase()}
                           </span>
-                          <span className="text-gray-500 text-sm truncate">
-                            {user.title || "Ancien compte"}
-                          </span>
+                          <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
                         </span>
                       </span>
                       <SelectorIcon
@@ -186,9 +169,10 @@ export default function LayoutPanel({
                       />
                     </span>
                     <div className="mt-3 space-x-1 space-y-1 text-center">
-                      {role.map((r) => {
+                      {role.map((r, index) => {
                         return (
                           <span
+                            key={`role-small-${index}`}
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
                             style={{ backgroundColor: "#" + r.color }}
                           >
@@ -216,9 +200,7 @@ export default function LayoutPanel({
                           <a
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
@@ -233,9 +215,7 @@ export default function LayoutPanel({
                               logout(user);
                             }}
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
@@ -250,12 +230,11 @@ export default function LayoutPanel({
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2">
                   <div className="space-y-1">
-                    {navigation.map((item) => {
+                    {navigation.map((item, index) => {
                       if (item.show == true) {
                         return (
-                          <Link href={item.href}>
+                          <Link key={`nav-small-${index}`} href={item.href}>
                             <p
-                              key={item.name}
                               className={classNames(
                                 item.current
                                   ? "bg-gray-100 text-gray-900"
@@ -266,9 +245,7 @@ export default function LayoutPanel({
                             >
                               <item.icon
                                 className={classNames(
-                                  item.current
-                                    ? "text-gray-500"
-                                    : "text-gray-400 group-hover:text-gray-500",
+                                  item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
                                   "mr-3 flex-shrink-0 h-6 w-6"
                                 )}
                                 aria-hidden="true"
@@ -309,26 +286,19 @@ export default function LayoutPanel({
             <LogoDvfl user={user} />
           </div>
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
-            <Menu
-              as="div"
-              className="px-3 mt-6 relative inline-block text-left"
-            >
+            <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
               <div>
                 <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                        {name[0].toString().toUpperCase() +
-                          " " +
-                          surname[0].toString().toUpperCase()}
+                        {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
                         <span className="text-gray-900 text-sm font-medium truncate">
                           {name + " " + surname.toUpperCase()}
                         </span>
-                        <span className="text-gray-500 text-sm truncate">
-                          {user.title || "Ancien compte"}
-                        </span>
+                        <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
                       </span>
                     </span>
                     <SelectorIcon
@@ -337,9 +307,10 @@ export default function LayoutPanel({
                     />
                   </span>
                   <div className="mt-3 space-x-1 space-y-1 text-center">
-                    {role.map((r) => {
+                    {role.map((r, index) => {
                       return (
                         <span
+                          key={`role-large-${index}`}
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
                           style={{ backgroundColor: "#" + r.color }}
                         >
@@ -367,9 +338,7 @@ export default function LayoutPanel({
                         <a
                           onClick={() => router.push("/panel/settings")}
                           className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
+                            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
@@ -384,9 +353,7 @@ export default function LayoutPanel({
                             logout(user);
                           }}
                           className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
+                            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
@@ -400,12 +367,11 @@ export default function LayoutPanel({
             </Menu>
             <nav className="px-3 mt-6">
               <div className="space-y-1">
-                {navigation.map((item) => {
+                {navigation.map((item, index) => {
                   if (item.show == true) {
                     return (
-                      <Link href={item.href}>
+                      <Link key={`Nav-large-${index}`} href={item.href}>
                         <p
-                          key={`1-${item.name}`}
                           className={classNames(
                             item.current
                               ? "bg-gray-200 text-gray-900"
@@ -416,9 +382,7 @@ export default function LayoutPanel({
                         >
                           <item.icon
                             className={classNames(
-                              item.current
-                                ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
+                              item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
                               "mr-3 flex-shrink-0 h-6 w-6"
                             )}
                             aria-hidden="true"
@@ -467,9 +431,7 @@ export default function LayoutPanel({
                   <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                     <span className="sr-only">Open user menu</span>
                     <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                      {name[0].toString().toUpperCase() +
-                        " " +
-                        surname[0].toString().toUpperCase()}
+                      {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
                     </div>
                   </Menu.Button>
                 </div>
@@ -489,9 +451,7 @@ export default function LayoutPanel({
                           <a
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm"
                             )}
                           >
@@ -507,9 +467,7 @@ export default function LayoutPanel({
                             }}
                             href="#"
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm"
                             )}
                           >
@@ -527,9 +485,7 @@ export default function LayoutPanel({
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">
-                {title}
-              </h1>
+              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">{title}</h1>
             </div>
             <div className="mt-4 flex sm:mt-0 sm:ml-4">
               <Link href="/panel/new">
