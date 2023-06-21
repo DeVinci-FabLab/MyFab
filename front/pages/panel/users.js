@@ -75,18 +75,15 @@ export default function Settings({ role, me, authorizations }) {
         setUsersListResult(response.data.values);
       })
       .catch(() => {
-        toast.error(
-          "Une erreur est survenue lors du chargement des utilisateurs.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
+        toast.error("Une erreur est survenue lors du chargement des utilisateurs.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       });
   }
 
@@ -100,8 +97,7 @@ export default function Settings({ role, me, authorizations }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked])
-      newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -135,18 +131,9 @@ export default function Settings({ role, me, authorizations }) {
 
   return (
     <div>
-      <WebSocket
-        realodPage={realodPage}
-        event={[{ name: "event-reload-users", action: update }]}
-        userId={me.id}
-      />
+      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-users", action: update }]} userId={me.id} />
       {authorizations.viewUsers ? (
-        <LayoutPanel
-          user={me}
-          role={role}
-          authorizations={authorizations}
-          titleMenu="Gestion des utilisateurs"
-        >
+        <LayoutPanel user={me} role={role} authorizations={authorizations} titleMenu="Gestion des utilisateurs">
           <Seo title={"Paramètres administrateurs"} />
           <section className="">
             <div className="container px-4 mx-auto">
@@ -157,10 +144,7 @@ export default function Settings({ role, me, authorizations }) {
                     <div className="mb-3 grow">
                       <div className="space-x-2">
                         <div className="relative grow">
-                          <form
-                            onSubmit={handleSubmit}
-                            className="relative grow"
-                          >
+                          <form onSubmit={handleSubmit} className="relative grow">
                             <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
                               <svg
                                 className="hi-solid hi-search inline-block w-5 h-5"
@@ -176,7 +160,7 @@ export default function Settings({ role, me, authorizations }) {
                               </svg>
                             </div>
 
-                            <div class="w-full inline-flex">
+                            <div className="w-full inline-flex">
                               <input
                                 onChange={(e) => {
                                   setInputValue(e.target.value);
@@ -187,7 +171,7 @@ export default function Settings({ role, me, authorizations }) {
                               />
                               <button
                                 type="submit"
-                                class="w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                className="w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 onClick={() => update(true)}
                               >
                                 Rechercher
@@ -212,11 +196,7 @@ export default function Settings({ role, me, authorizations }) {
             </div>
           </section>
           <Transition.Root show={open} as={Fragment}>
-            <Dialog
-              as="div"
-              className="fixed z-10 inset-0 overflow-y-auto"
-              onClose={setOpen}
-            >
+            <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpen}>
               <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <Transition.Child
                   as={Fragment}
@@ -231,10 +211,7 @@ export default function Settings({ role, me, authorizations }) {
                 </Transition.Child>
 
                 {/* This element is to trick the browser into centering the modal contents. */}
-                <span
-                  className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                  aria-hidden="true"
-                >
+                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
                   &#8203;
                 </span>
                 <Transition.Child
@@ -249,19 +226,12 @@ export default function Settings({ role, me, authorizations }) {
                   <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6">
                     <div>
                       <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
-                        <InformationCircleIcon
-                          className="h-6 w-6 text-blue-600"
-                          aria-hidden="true"
-                        />
+                        <InformationCircleIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />
                       </div>
                       <div className="mt-3 text-center sm:mt-5">
-                        <Dialog.Title
-                          as="h3"
-                          className="text-lg leading-6 font-medium text-gray-900"
-                        >
+                        <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                           <p>
-                            Utilisateur <strong>#{setZero(data.id)}</strong>:{" "}
-                            {data.firstName} {data.lastName}
+                            Utilisateur <strong>#{setZero(data.id)}</strong>: {data.firstName} {data.lastName}
                           </p>
                           <div>{data.title ? data.title : "Ancien compte"}</div>
                           <div>
@@ -278,30 +248,21 @@ export default function Settings({ role, me, authorizations }) {
                                     className="inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
                                     style={{
                                       backgroundColor: "#" + r.color,
-                                      paddingRight: buttonAvailable
-                                        ? ""
-                                        : "8px",
+                                      paddingRight: buttonAvailable ? "" : "8px",
                                     }}
                                   >
                                     {r.name}
                                     {buttonAvailable ? (
                                       <button
                                         onClick={async () => {
-                                          setUserRole(
-                                            userRole.filter((e) => e != r)
-                                          );
+                                          setUserRole(userRole.filter((e) => e != r));
                                           var array = allRole;
                                           array.push(r);
                                           setAllRole(array);
 
                                           await axios({
                                             method: "DELETE",
-                                            url:
-                                              process.env.API +
-                                              "/api/user/" +
-                                              data.id +
-                                              "/role/" +
-                                              r.id,
+                                            url: process.env.API + "/api/user/" + data.id + "/role/" + r.id,
                                             headers: {
                                               dvflCookie: getCookie("jwt"),
                                             },
@@ -327,37 +288,23 @@ export default function Settings({ role, me, authorizations }) {
                                               }
                                             })
                                             .catch((e) => {
-                                              toast.error(
-                                                "Une erreur est survenue. Impossible de supprimer le rôle",
-                                                {
-                                                  position: "top-right",
-                                                  autoClose: 3000,
-                                                  hideProgressBar: true,
-                                                  closeOnClick: true,
-                                                  pauseOnHover: true,
-                                                  draggable: true,
-                                                  progress: undefined,
-                                                }
-                                              );
+                                              toast.error("Une erreur est survenue. Impossible de supprimer le rôle", {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: true,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                              });
                                             });
                                         }}
                                         type="button"
                                         className="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
                                       >
-                                        <span className="sr-only">
-                                          Remove small option
-                                        </span>
-                                        <svg
-                                          className="h-2 w-2"
-                                          stroke="currentColor"
-                                          fill="none"
-                                          viewBox="0 0 8 8"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeWidth="1.5"
-                                            d="M1 1l6 6m0-6L1 7"
-                                          />
+                                        <span className="sr-only">Remove small option</span>
+                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                          <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
                                         </svg>
                                       </button>
                                     ) : (
@@ -375,35 +322,23 @@ export default function Settings({ role, me, authorizations }) {
                               <div className="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
                                 <div className="space-y-6 sm:space-y-5">
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">
-                                      Prénom
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">Prénom</label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                      <p className="text-left self-end justify-end">
-                                        {data.firstName}
-                                      </p>
+                                      <p className="text-left self-end justify-end">{data.firstName}</p>
                                     </div>
                                   </div>
 
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">
-                                      Nom
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">Nom</label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                      <p className="text-left self-end justify-end">
-                                        {data.lastName}
-                                      </p>
+                                      <p className="text-left self-end justify-end">{data.lastName}</p>
                                     </div>
                                   </div>
 
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">
-                                      E-mail
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">E-mail</label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                      <p className="text-left self-end justify-end">
-                                        {data.email}
-                                      </p>
+                                      <p className="text-left self-end justify-end">{data.email}</p>
                                     </div>
                                   </div>
 
@@ -427,49 +362,34 @@ export default function Settings({ role, me, authorizations }) {
                                             className="inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
                                             style={{
                                               backgroundColor: "#" + r.color,
-                                              paddingRight: buttonAvailable
-                                                ? ""
-                                                : "8px",
+                                              paddingRight: buttonAvailable ? "" : "8px",
                                             }}
                                           >
                                             {r.name}
                                             {buttonAvailable ? (
                                               <button
                                                 onClick={async () => {
-                                                  setAllRole(
-                                                    allRole.filter(
-                                                      (e) => e != r
-                                                    )
-                                                  );
+                                                  setAllRole(allRole.filter((e) => e != r));
                                                   var array = userRole;
                                                   array.push(r);
                                                   setUserRole(array);
 
                                                   await axios({
                                                     method: "POST",
-                                                    url:
-                                                      process.env.API +
-                                                      "/api/user/" +
-                                                      data.id +
-                                                      "/role/" +
-                                                      r.id,
+                                                    url: process.env.API + "/api/user/" + data.id + "/role/" + r.id,
                                                     headers: {
-                                                      dvflCookie:
-                                                        getCookie("jwt"),
+                                                      dvflCookie: getCookie("jwt"),
                                                     },
                                                   })
                                                     .then((response) => {
-                                                      if (
-                                                        response.status == 200
-                                                      ) {
+                                                      if (response.status == 200) {
                                                         toast.success(
                                                           "Le rôle " +
                                                             r.name +
                                                             " a été ajouté à l'utilisateur #" +
                                                             setZero(data.id),
                                                           {
-                                                            position:
-                                                              "top-right",
+                                                            position: "top-right",
                                                             autoClose: 3000,
                                                             hideProgressBar: true,
                                                             closeOnClick: true,
@@ -498,9 +418,7 @@ export default function Settings({ role, me, authorizations }) {
                                                 type="button"
                                                 className="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
                                               >
-                                                <span className="sr-only">
-                                                  Remove small option
-                                                </span>
+                                                <span className="sr-only">Remove small option</span>
                                                 <PlusIcon className="h-2 w-2" />
                                               </button>
                                             ) : (
@@ -550,10 +468,7 @@ export async function getServerSideProps({ req }) {
   const resUserConnected = isUserConnected(me);
   if (resUserConnected) return resUserConnected;
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
 
   // Pass the data to our page via props
   return {

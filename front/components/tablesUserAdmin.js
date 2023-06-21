@@ -3,10 +3,8 @@ import { setZero } from "../lib/function";
 
 function getChevron(collumnState, type) {
   if (!collumnState) return null;
-  if (collumnState[type] === true)
-    return <ChevronUpIcon className="w-5 h-5 m-auto" />;
-  if (collumnState[type] === false)
-    return <ChevronDownIcon className="w-5 h-5 m-auto" />;
+  if (collumnState[type] === true) return <ChevronUpIcon className="w-5 h-5 m-auto" />;
+  if (collumnState[type] === false) return <ChevronDownIcon className="w-5 h-5 m-auto" />;
   return null;
 }
 
@@ -32,10 +30,7 @@ export default function UserTablesAdmin({
                 changeCollumnDefined ? "cursor-pointer select-none" : ""
               }`}
             >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("id")}
-              >
+              <div className="inline-flex" onClick={() => changeCollumnState("id")}>
                 Id
                 {getChevron(collumnState, "id")}
               </div>
@@ -45,10 +40,7 @@ export default function UserTablesAdmin({
                 changeCollumnDefined ? "cursor-pointer select-none" : ""
               }`}
             >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("firstname")}
-              >
+              <div className="inline-flex" onClick={() => changeCollumnState("firstname")}>
                 Prénom
                 {getChevron(collumnState, "firstname")}
               </div>
@@ -58,10 +50,7 @@ export default function UserTablesAdmin({
                 changeCollumnDefined ? "cursor-pointer select-none" : ""
               }`}
             >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("lastname")}
-              >
+              <div className="inline-flex" onClick={() => changeCollumnState("lastname")}>
                 Nom
                 {getChevron(collumnState, "lastname")}
               </div>
@@ -71,10 +60,7 @@ export default function UserTablesAdmin({
                 changeCollumnDefined ? "cursor-pointer select-none" : ""
               }`}
             >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("email")}
-              >
+              <div className="inline-flex" onClick={() => changeCollumnState("email")}>
                 E-mail
                 {getChevron(collumnState, "email")}
               </div>
@@ -84,10 +70,7 @@ export default function UserTablesAdmin({
                 changeCollumnDefined ? "cursor-pointer select-none" : ""
               }`}
             >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("title")}
-              >
+              <div className="inline-flex" onClick={() => changeCollumnState("title")}>
                 Ecole et année
                 {getChevron(collumnState, "title")}
               </div>
@@ -110,23 +93,13 @@ export default function UserTablesAdmin({
                   <p className="font-medium">{r.firstName}</p>
                 </td>
                 <td className="p-3 text-center">
-                  <div
-                    className={`font-medium inline-flex leading-4 rounded-full uppercase`}
-                  >
-                    {r.lastName}
-                  </div>
+                  <div className={`font-medium inline-flex leading-4 rounded-full uppercase`}>{r.lastName}</div>
                 </td>
                 <td className="p-3 text-center">
-                  <div
-                    className={`font-medium inline-flex py-1 leading-4 rounded-full`}
-                  >
-                    {r.email}
-                  </div>
+                  <div className={`font-medium inline-flex py-1 leading-4 rounded-full`}>{r.email}</div>
                 </td>
                 <td className="p-3 text-center">
-                  <div
-                    className={`font-medium inline-flex py-1 leading-4 rounded-full`}
-                  >
+                  <div className={`font-medium inline-flex py-1 leading-4 rounded-full`}>
                     {r.title ? r.title : "Ancien compte"}
                   </div>
                 </td>
@@ -135,20 +108,20 @@ export default function UserTablesAdmin({
           })}
         </tbody>
       </table>
-      <div class="grid place-items-center mb-10">
-        <div class="inline-flex mt-3">
+      <div className="grid place-items-center mb-10">
+        <div className="inline-flex mt-3">
           <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
             onClick={() => nextPrevPage(-1)}
           >
             &lt;
           </button>
-          <p class="inline-flex py-2 px-4">
-            Pages&nbsp;<p class="font-bold">{actualPage + 1}</p>&nbsp;sur&nbsp;
-            <p class="font-bold">{maxPage != 0 ? maxPage : 1}</p>
+          <p className="inline-flex py-2 px-4">
+            Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>&nbsp;sur&nbsp;
+            <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
           </p>
           <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
             onClick={() => nextPrevPage(1)}
           >
             &gt;
