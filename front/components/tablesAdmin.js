@@ -107,9 +107,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
             </tr>
           </thead>
           <tbody>
-            {tickets.map((r) => {
+            {tickets.map((r, index) => {
               return (
                 <tr
+                  key={`ticket-${index}`}
                   className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
                   onClick={() => router.push(`/panel/${r.id}`)}
                 >
@@ -174,10 +175,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
           >
             &lt;
           </button>
-          <p className="inline-flex py-2 px-4">
+          <div className="inline-flex py-2 px-4">
             Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>&nbsp;sur&nbsp;
             <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
-          </p>
+          </div>
           <button
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
             onClick={() => nextPrevPage(1)}

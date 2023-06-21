@@ -46,10 +46,10 @@ function NavbarAdmin({ router, role }) {
       <div className="hidden sm:block">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8 px-8" aria-label="Tabs">
-            {tabs.map((tab) => {
+            {tabs.map((tab, index) => {
               if (tab.show == true) {
                 return (
-                  <Link href={tab.href}>
+                  <Link key={`nav-${index}`} href={tab.href}>
                     <p
                       key={tab.name}
                       className={classNames(

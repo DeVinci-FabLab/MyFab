@@ -93,8 +93,8 @@ export default function OverviewAdmin({
                 </p>
               </div>
               <dl className="divide-y divide-gray-200">
-                {faqs.map((faq) => (
-                  <Disclosure as="div" key={faq.question} className="pt-6">
+                {faqs.map((faq, index) => (
+                  <Disclosure as="div" key={`faq-${index}`} className="pt-6">
                     {({ open }) => (
                       <>
                         <dt className="text-sm">
