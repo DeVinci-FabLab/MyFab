@@ -18,24 +18,35 @@ function dateDiff(date1, date2) {
   const diffDate = date2.getDate() - date1.getDate();
   if (diffDate !== 0) return `${diffDate} jour${diffDate > 1 ? "s" : ""}`;
 
-  const diffHour = date2.getDate() - date1.getDate();
+  const diffHour = date2.getHours() - date1.getHours();
   if (diffHour !== 0) return `${diffHour} heure${diffHour > 1 ? "s" : ""}`;
 
   const diffMinute = date2.getMinutes() - date1.getMinutes();
-  if (diffMinute !== 0) return `${diffMinute} minute${diffMinute > 1 ? "s" : ""}`;
+  if (diffMinute !== 0)
+    return `${diffMinute} minute${diffMinute > 1 ? "s" : ""}`;
 
   const diffSecond = date2.getSeconds() - date1.getSeconds();
-  if (diffSecond !== 0) return `${diffSecond} seconde${diffSecond > 1 ? "s" : ""}`;
+  if (diffSecond !== 0)
+    return `${diffSecond} seconde${diffSecond > 1 ? "s" : ""}`;
 }
 
 function getChevron(collumnState, type) {
   if (!collumnState) return null;
-  if (collumnState[type] === true) return <ChevronUpIcon className="w-5 h-5 m-auto" />;
-  if (collumnState[type] === false) return <ChevronDownIcon className="w-5 h-5 m-auto" />;
+  if (collumnState[type] === true)
+    return <ChevronUpIcon className="w-5 h-5 m-auto" />;
+  if (collumnState[type] === false)
+    return <ChevronDownIcon className="w-5 h-5 m-auto" />;
   return null;
 }
 
-export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage, collumnState, changeCollumnState }) {
+export default function TablesAdmin({
+  tickets,
+  maxPage,
+  actualPage,
+  nextPrevPage,
+  collumnState,
+  changeCollumnState,
+}) {
   const dateNow = new Date();
   const changeCollumnDefined = changeCollumnState ? true : false;
   if (!changeCollumnState) changeCollumnState = function () {};
@@ -50,7 +61,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   changeCollumnDefined ? "cursor-pointer select-none" : ""
                 }`}
               >
-                <div className="inline-flex" onClick={() => changeCollumnState("id")}>
+                <div
+                  className="inline-flex"
+                  onClick={() => changeCollumnState("id")}
+                >
                   Id
                   {getChevron(collumnState, "id")}
                 </div>
@@ -60,7 +74,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   changeCollumnDefined ? "cursor-pointer select-none" : ""
                 }`}
               >
-                <div className="inline-flex" onClick={() => changeCollumnState("name")}>
+                <div
+                  className="inline-flex"
+                  onClick={() => changeCollumnState("name")}
+                >
                   Nom
                   {getChevron(collumnState, "name")}
                 </div>
@@ -70,7 +87,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   changeCollumnDefined ? "cursor-pointer select-none" : ""
                 }`}
               >
-                <div className="inline-flex" onClick={() => changeCollumnState("createAt")}>
+                <div
+                  className="inline-flex"
+                  onClick={() => changeCollumnState("createAt")}
+                >
                   Créé il y a{getChevron(collumnState, "createAt")}
                 </div>
               </th>
@@ -79,7 +99,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   changeCollumnDefined ? "cursor-pointer select-none" : ""
                 }`}
               >
-                <div className="inline-flex" onClick={() => changeCollumnState("priority")}>
+                <div
+                  className="inline-flex"
+                  onClick={() => changeCollumnState("priority")}
+                >
                   Priorité
                   {getChevron(collumnState, "priority")}
                 </div>
@@ -89,7 +112,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   changeCollumnDefined ? "cursor-pointer select-none" : ""
                 }`}
               >
-                <div className="inline-flex" onClick={() => changeCollumnState("type")}>
+                <div
+                  className="inline-flex"
+                  onClick={() => changeCollumnState("type")}
+                >
                   Type
                   {getChevron(collumnState, "type")}
                 </div>
@@ -99,7 +125,10 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   changeCollumnDefined ? "cursor-pointer select-none" : ""
                 }`}
               >
-                <div className="inline-flex" onClick={() => changeCollumnState("status")}>
+                <div
+                  className="inline-flex"
+                  onClick={() => changeCollumnState("status")}
+                >
                   État
                   {getChevron(collumnState, "status")}
                 </div>
@@ -119,10 +148,14 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                   </td>
                   <td className="p-3 text-center">
                     <p className="font-medium">{r.userName}</p>
-                    <p className="text-gray-500">{r.title || "Ancien compte"}</p>
+                    <p className="text-gray-500">
+                      {r.title || "Ancien compte"}
+                    </p>
                   </td>
                   <td className="p-3 text-center">
-                    <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}>
+                    <div
+                      className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                    >
                       {dateDiff(new Date(r.creationDate), dateNow)}
                     </div>
                   </td>
@@ -136,31 +169,19 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
                     </div>
                   </td>
                   <td className="p-3 text-center">
-                    <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}>
+                    <div
+                      className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                    >
                       {r.projectType}
                     </div>
                   </td>
                   <td className="p-3 text-center">
-                    <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}>
+                    <div
+                      className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                    >
                       {r.statusName}
                     </div>
                   </td>
-                  {/*
-                <td className="p-3 text-center space-x-2">
-                  <Link href={`/panel/admin/${r.id}`}>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center items-center space-x-2 border font-medium focus:outline-none px-2 py-1 leading-5 text-sm rounded border-gray-300 bg-white text-gray-800 shadow-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300 hover:shadow focus:ring focus:ring-gray-500 focus:ring-opacity-25 active:bg-white active:border-white active:shadow-none">
-                      <MoonIcon className="inline-block w-4 h-4" />
-                      <span>Visualiser</span>
-                    </button>
-                  </Link>
-                  <button
-                    type="button"
-                    className="inline-flex justify-center items-center space-x-2 border font-medium focus:outline-none px-1 py-1 leading-5 text-sm rounded border-gray-300 bg-white text-gray-800 shadow-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300 hover:shadow focus:ring focus:ring-gray-500 focus:ring-opacity-25 active:bg-white active:border-white active:shadow-none">
-                    <DownloadIcon className="inline-block w-4 h-4" />
-                  </button>
-                </td>*/}
                 </tr>
               );
             })}
@@ -176,7 +197,8 @@ export default function TablesAdmin({ tickets, maxPage, actualPage, nextPrevPage
             &lt;
           </button>
           <div className="inline-flex py-2 px-4">
-            Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>&nbsp;sur&nbsp;
+            Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>
+            &nbsp;sur&nbsp;
             <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
           </div>
           <button

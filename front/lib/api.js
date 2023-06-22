@@ -7,31 +7,25 @@ export function getURL(path = "") {
 }
 
 export async function fetchAPIAuth(path, jwt) {
+  const isFetch = typeof path === "string";
   if (process.env.IS_TEST_MODE) {
     return mockApi(path, jwt);
   } else {
     return await new Promise((resolve, reject) => {
-      const options =
-        typeof path === "string"
-          ? {
-              method: "GET",
-              headers: {
-                dvflCookie: jwt ? jwt : null,
-              },
-              url: getURL(path),
-            }
-          : path;
+      const options = isFetch
+        ? {
+            method: "GET",
+            headers: {
+              dvflCookie: jwt ? jwt : null,
+            },
+            url: getURL(path),
+          }
+        : path;
       axios(options)
         .then(async (response) => {
-          var data;
-          if (response.status != 200) {
-            data = {
-              error: "unauthorized",
-            };
-          } else {
-            data = await response.data;
-          }
-          resolve(data);
+          if (!isFetch) return resolve(response);
+
+          resolve(response);
         })
         .catch((e) => {
           resolve({ error: e });

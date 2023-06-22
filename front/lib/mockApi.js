@@ -1,3 +1,16 @@
 export function mockApi(path, jwt) {
-  return { error: true };
+  const options = typeof path === "string" ? null : path;
+  jwt = typeof path === "string" ? jwt : path.headers?.dvflCookie;
+  path =
+    typeof path === "string"
+      ? path
+      : path.url.replace(process.env.API + "/api", "");
+  if (path[path.length - 1] === "/") path = path.slice(0, -1);
+
+  try {
+    return require(__dirname + "/mocks" + path).mock(path, jwt, options);
+  } catch (error) {
+    console.log(path);
+    return { error: true };
+  }
 }
