@@ -80,8 +80,13 @@ const GestionTicket = ({
     const data = {};
     data[paramType === "status" ? "idStatus" : "projecttype"] = newParam;
 
-    await axios({
+    const responseUpdateTicket = await fetchAPIAuth({
       method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
       url:
         process.env.API +
         "/api/ticket/" +
@@ -89,30 +94,15 @@ const GestionTicket = ({
         "/" +
         (paramType === "status" ? "setStatus" : "setProjecttype") +
         "/",
-      params: data,
-      headers: {
-        dvflCookie: cookie,
-      },
-    })
-      .then(() => {
-        toast.success(
-          paramType === "status"
-            ? "Le status du ticket a été mis à jour"
-            : "Le type de projet à été modifié",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
-        realodPage();
-      })
-      .catch((e) => {
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
+      params,
+    });
+
+    if (!responseUpdateTicket.error) {
+      toast.success(
+        paramType === "status"
+          ? "Le status du ticket a été mis à jour"
+          : "Le type de projet à été modifié",
+        {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -120,43 +110,58 @@ const GestionTicket = ({
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        });
+        }
+      );
+      realodPage();
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    }
   }
 
   async function cancelTicket() {
     const cookie = getCookie("jwt");
 
-    await axios({
+    const responseCancelTicket = await fetchAPIAuth({
       method: "PUT",
-      url: process.env.API + "/api/ticket/" + params.id + "/setCancelStatus/",
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-    })
-      .then(() => {
-        toast.success("La demande a été annulée", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        realodPage();
-      })
-      .catch((e) => {
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      url: process.env.API + "/api/ticket/" + params.id + "/setCancelStatus/",
+      params,
+    });
+
+    if (!responseCancelTicket.error) {
+      toast.success("La demande a été annulée", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+      realodPage();
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   async function download(id, name) {
@@ -477,7 +482,7 @@ const GestionTicket = ({
                             </div>
                             {authorizations.myFabAgent ? (
                               <button
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="user-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setOpenUser(true);
                                 }}
@@ -758,7 +763,7 @@ const GestionTicket = ({
                 <div className="mt-5 sm:mt-6 justify-center">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={() => {
                       saveFileData();
                     }}
@@ -789,7 +794,7 @@ const GestionTicket = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+              <Dialog.Overlay className="outside-popup fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
             <span
@@ -848,7 +853,7 @@ const GestionTicket = ({
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={() => setOpenUser(false)}
                   >
                     Fermer
@@ -944,7 +949,7 @@ const GestionTicket = ({
                               return (
                                 <option
                                   key={`param-${index}`}
-                                  selected={
+                                  defaultValue={
                                     item.name === elementSelected
                                       ? "'selected'"
                                       : ""
@@ -1032,17 +1037,17 @@ export async function getServerSideProps({ req, params }) {
 
   return {
     props: {
-      user,
+      user: user.data,
       params,
-      role,
-      ticket,
-      file,
-      message,
-      authorizations,
+      role: role.data,
+      ticket: ticket.data,
+      file: file.data,
+      message: message.data,
+      authorizations: authorizations.data,
       id,
-      status,
-      projectType,
-      printers,
+      status: status.data,
+      projectType: projectType.data,
+      printers: printers.data,
     }, // will be passed to the page component as props
   };
 }

@@ -5,9 +5,9 @@ export function mock(path, jwt, options) {
         status: 200,
         data: {
           id: 1,
-          firstName: "root",
-          lastName: "root",
-          email: "root@root.com",
+          firstName: "admin",
+          lastName: "admin",
+          email: "admin@admin.com",
           creationDate: "2015-10-19T22:24:66.212Z",
           discordid: null,
           language: "fr",

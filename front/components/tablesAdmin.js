@@ -140,7 +140,7 @@ export default function TablesAdmin({
               return (
                 <tr
                   key={`ticket-${index}`}
-                  className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  className="ticket-element border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
                   onClick={() => router.push(`/panel/${r.id}`)}
                 >
                   <td className="p-3 text-center">
@@ -191,7 +191,7 @@ export default function TablesAdmin({
       <div className="grid place-items-center mb-10">
         <div className="inline-flex mt-3">
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
+            className="prev-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
             onClick={() => nextPrevPage(-1)}
           >
             &lt;
@@ -202,7 +202,7 @@ export default function TablesAdmin({
             <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
           </div>
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
+            className="next-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
             onClick={() => nextPrevPage(1)}
           >
             &gt;
