@@ -10,12 +10,14 @@ function NavbarAdmin({ router, role }) {
   const tabs = [
     {
       name: "Demandes à traiter",
+      classNames: "goTo-tickets-button",
       href: "/panel/admin/",
       current: pn.split("/")[3] === undefined,
       show: true,
     },
     {
       name: "Historique des demandes",
+      classNames: "goTo-history-button",
       href: "/panel/admin/history",
       current: pn.split("/")[3] == "history",
       show: true,
@@ -56,7 +58,7 @@ function NavbarAdmin({ router, role }) {
                         tab.current
                           ? "border-indigo-500 text-indigo-600"
                           : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                        "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                        "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm " + tab.classNames
                       )}
                       aria-current={tab.current ? "page" : undefined}
                     >

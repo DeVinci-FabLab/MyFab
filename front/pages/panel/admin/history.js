@@ -53,8 +53,7 @@ export default function OverviewAdmin({ user, role, authorizations }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked])
-      newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -76,48 +75,38 @@ export default function OverviewAdmin({ user, role, authorizations }) {
       params["order"] = actualCollumnState[keys[0]];
     }
 
-    await axios({
-      method: "get",
+    const responseTickets = await fetchAPIAuth({
+      method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         dvflCookie: jwt,
       },
       url: process.env.API + "/api/ticket",
-      params,
-    })
-      .then((response) => {
-        setMaxPage(response.data.maxPage);
-        setTicketResult(response.data.values);
-      })
-      .catch(() => {
-        toast.error("Une erreur est survenue lors du chargement des tickets.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      data: params,
+    });
+    if (!responseTickets.error) {
+      setMaxPage(responseTickets.data.maxPage);
+      setTicketResult(responseTickets.data.values);
+    } else {
+      toast.error("Une erreur est survenue lors du chargement des tickets.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    }
   }
 
   return (
     <div>
-      <WebSocket
-        realodPage={realodPage}
-        event={[{ name: "event-reload-tickets", action: update }]}
-        userId={user.id}
-      />
+      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-tickets", action: update }]} userId={user.id} />
       {authorizations.myFabAgent ? (
         <div>
-          <LayoutPanel
-            user={user}
-            role={role}
-            authorizations={authorizations}
-            titleMenu="Gestion des demandes"
-          >
+          <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Gestion des demandes">
             <Seo title={"Historique"} />
 
             <NavbarAdmin role={role} />
@@ -130,10 +119,7 @@ export default function OverviewAdmin({ user, role, authorizations }) {
                     <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
                       <div className="mb-3 grow">
                         <div className="space-x-2">
-                          <form
-                            onSubmit={handleSubmit}
-                            className="relative grow"
-                          >
+                          <form onSubmit={handleSubmit} className="relative grow">
                             <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
                               <svg
                                 className="hi-solid hi-search inline-block w-5 h-5"
@@ -199,13 +185,10 @@ export async function getServerSideProps({ req }) {
   const resUserConnected = isUserConnected(user);
   if (resUserConnected) return resUserConnected;
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
 
   // Pass the data to our page via props
   return {
-    props: { user, role, authorizations }, // will be passed to the page component as props
+    props: { user: user.data, role: role.data, authorizations: authorizations.data }, // will be passed to the page component as props
   };
 }
