@@ -1,10 +1,24 @@
 const { defineConfig } = require("cypress");
+const { readdirSync } = require("fs");
 require("dotenv").config();
 
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      const plugins = readdirSync(__dirname + "/cypress/plugins/").filter(
+        (file) => file.endsWith(".js")
+      );
+
+      for (const plugin of plugins) {
+        const pluginFile = require(__dirname + "/cypress/plugins/" + plugin);
+        try {
+          pluginFile(on, config);
+        } catch (error) {
+          console.log(
+            "plugin error : " + __dirname + " / cypress / plugins / " + plugin
+          );
+        }
+      }
     },
   },
   env: {
