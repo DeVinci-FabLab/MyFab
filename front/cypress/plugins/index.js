@@ -1,9 +1,9 @@
-const { rmdir } = require("fs");
+const { existsSync, rmdir } = require("fs");
 
 module.exports = (on, config) => {
   on("task", {
     deleteFolder(folderName) {
-      console.log("deleting folder %s", folderName);
+      if (!existsSync(folderName)) return;
 
       return new Promise((resolve, reject) => {
         rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {
