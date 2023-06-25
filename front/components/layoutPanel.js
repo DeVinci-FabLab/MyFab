@@ -15,7 +15,6 @@ import { SelectorIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
 import { logout } from "../lib/function";
-import axios from "axios";
 import { fetchAPIAuth } from "../lib/api";
 let version = null;
 
@@ -41,6 +40,7 @@ export default function LayoutPanel({
   const navigation = [
     {
       name: "Mes demandes",
+      className: ["my-demand-button"],
       href: "/panel",
       icon: HomeIcon,
       current: pn === "/panel",
@@ -48,6 +48,7 @@ export default function LayoutPanel({
     },
     {
       name: "Gestions des demandes",
+      className: ["users-demand-button"],
       href: "/panel/admin",
       icon: BeakerIcon,
       current: pn.split("/")[2] === "admin",
@@ -55,6 +56,7 @@ export default function LayoutPanel({
     },
     {
       name: "Gestions des utilisateurs",
+      className: ["users-button"],
       href: "/panel/users",
       icon: UsersIcon,
       current: pn === "/panel/users",
@@ -63,6 +65,7 @@ export default function LayoutPanel({
     //{ name: "Gestions du blog", href: process.env.GHOST_URL + "/ghost", icon: ClipboardListIcon, current: false, show: authorizations.myFabAgent == 1 },
     {
       name: "Assemblée générale",
+      className: ["ag-button"],
       href: "/ag/settings",
       icon: ClipboardListIcon,
       current: false,
@@ -249,10 +252,16 @@ export default function LayoutPanel({
                           <Link key={`nav-small-${index}`} href={item.href}>
                             <p
                               className={classNames(
-                                item.current
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-                                "group flex items-center px-2 py-2 text-base leading-5 font-medium rounded-md"
+                                item.className.reduce(
+                                  (accumulator, currentValue) =>
+                                    accumulator + " " + currentValue + "-small",
+                                  ""
+                                ) +
+                                  " " +
+                                  (item.current
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                                  "group flex items-center px-2 py-2 text-base leading-5 font-medium rounded-md")
                               )}
                               aria-current={item.current ? "page" : undefined}
                             >
@@ -396,13 +405,19 @@ export default function LayoutPanel({
                 {navigation.map((item, index) => {
                   if (item.show == true) {
                     return (
-                      <Link key={`Nav-large-${index}`} href={item.href}>
+                      <Link key={`nav-large-${index}`} href={item.href}>
                         <p
                           className={classNames(
-                            item.current
-                              ? "bg-gray-200 text-gray-900"
-                              : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
-                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                            item.className.reduce(
+                              (accumulator, currentValue) =>
+                                accumulator + " " + currentValue + "-large",
+                              ""
+                            ) +
+                              " " +
+                              (item.current
+                                ? "bg-gray-200 text-gray-900"
+                                : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+                              "group flex items-center px-2 py-2 text-sm font-medium rounded-md")
                           )}
                           aria-current={item.current ? "page" : undefined}
                         >
@@ -445,7 +460,7 @@ export default function LayoutPanel({
         <div className="relative flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:hidden">
           <button
             type="button"
-            className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden"
+            className="open-layout-button px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
