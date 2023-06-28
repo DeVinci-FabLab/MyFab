@@ -21,7 +21,7 @@ export function mockApi(path, jwt) {
       options
     );
   } catch (error) {
-    console.log(pathRegexResult);
+    console.log(error);
     return { error: true };
   }
 }

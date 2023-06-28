@@ -1,4 +1,10 @@
 export function mock(path, jwt, options) {
+  const method = options?.method;
+  if (method === "DELETE")
+    return {
+      status: 200,
+    };
+
   const id = path.split("/")[2];
   switch (id) {
     case "1":
