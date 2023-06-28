@@ -36,4 +36,18 @@ describe("Components tablesAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1"
     );
   });
+
+  it("Open FAQ", () => {
+    cy.setCookie("jwt", "admin");
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
+      {
+        failOnStatusCode: false,
+      }
+    );
+
+    cy.get(".faq-button").each(($btn, index) => {
+      cy.wrap($btn).click();
+    });
+  });
 });
