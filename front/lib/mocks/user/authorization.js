@@ -12,6 +12,20 @@ export function mock(path, jwt, options) {
           blogAuthor: 1,
         },
       };
+
+    case "modo":
+      return {
+        status: 200,
+        data: {
+          viewUsers: 1,
+          manageUser: 1,
+          changeUserRole: 1,
+          changeUserProtectedRole: 0,
+          myFabAgent: 1,
+          blogAuthor: 1,
+        },
+      };
+
     case "user":
       return {
         status: 200,

@@ -1,6 +1,8 @@
 export function mock(path, jwt, options) {
-  switch (jwt) {
-    case "admin":
+  const id = path.split("/")[2];
+
+  switch (id) {
+    case "1":
       return {
         status: 200,
         data: [
@@ -12,10 +14,18 @@ export function mock(path, jwt, options) {
             color: "db1010",
             isProtected: 1,
           },
+          {
+            id: 3,
+            name: "Agent MyFab",
+            description:
+              "Ce role donne acces aux outils de MyFab pour gerer les demandes du site",
+            color: "e0dd22",
+            isProtected: 0,
+          },
         ],
       };
 
-    case "modo":
+    case "4":
       return {
         status: 200,
         data: [
@@ -27,16 +37,21 @@ export function mock(path, jwt, options) {
             color: "eb9413",
             isProtected: 1,
           },
+          {
+            id: 3,
+            name: "Agent MyFab",
+            description:
+              "Ce role donne acces aux outils de MyFab pour gerer les demandes du site",
+            color: "e0dd22",
+            isProtected: 0,
+          },
         ],
       };
 
-    case "user":
+    default:
       return {
         status: 200,
         data: [],
       };
-
-    default:
-      return { error: true };
   }
 }

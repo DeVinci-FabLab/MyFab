@@ -1,6 +1,7 @@
 function applyRegex(path) {
   let pathRegexResult = path.replace(/\d/, "[value]");
 
+  if (path !== pathRegexResult) return applyRegex(pathRegexResult);
   return pathRegexResult;
 }
 
@@ -21,7 +22,7 @@ export function mockApi(path, jwt) {
       options
     );
   } catch (error) {
-    console.log(error);
+    console.log(pathRegexResult);
     return { error: true };
   }
 }
