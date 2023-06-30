@@ -8,7 +8,6 @@ import Seo from "../../../components/seo";
 import TablesAdmin from "../../../components/tablesAdmin";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
 import { isUserConnected } from "../../../lib/function";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
@@ -86,6 +85,7 @@ export default function OverviewAdmin({ user, role, authorizations }) {
       url: process.env.API + "/api/ticket",
       data: params,
     });
+
     if (!responseTickets.error) {
       setMaxPage(responseTickets.data.maxPage);
       setTicketResult(responseTickets.data.values);
