@@ -1,9 +1,11 @@
 /// <reference types="cypress" />
 
-describe("Page panel/admin", () => {
+describe("Page panel/admin/history", () => {
   it("No cookie", () => {
     cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
+      "http://localhost:3000/" +
+        Cypress.env().BASE_PATH +
+        "/panel/admin/history",
       {
         failOnStatusCode: false,
       }
@@ -18,7 +20,9 @@ describe("Page panel/admin", () => {
   it("User is not allowed", () => {
     cy.setCookie("jwt", "user");
     cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
+      "http://localhost:3000/" +
+        Cypress.env().BASE_PATH +
+        "/panel/admin/history",
       {
         failOnStatusCode: false,
       }
@@ -30,7 +34,9 @@ describe("Page panel/admin", () => {
   it("Load page", () => {
     cy.setCookie("jwt", "admin");
     cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
+      "http://localhost:3000/" +
+        Cypress.env().BASE_PATH +
+        "/panel/admin/history",
       {
         failOnStatusCode: false,
       }
