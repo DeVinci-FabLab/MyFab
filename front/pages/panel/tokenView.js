@@ -2,7 +2,7 @@ import router from "next/router";
 import WebSocket from "../../components/webSocket";
 import { useEffect, useState } from "react";
 import LayoutPanel from "../../components/layoutPanel";
-import TableTablesAdmin from "../../components/tablesToken";
+import TableTokensAdmin from "../../components/tablesToken";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { isUserConnected } from "../../lib/function";
 import Seo from "../../components/seo";
@@ -48,7 +48,7 @@ export default function Settings({ role, me, authorizations, token }) {
                     </div>
                   </div>
                 </div>
-                <TableTablesAdmin token={token} />
+                <TableTokensAdmin token={token} />
               </div>
             </div>
           </div>
@@ -72,6 +72,11 @@ export async function getServerSideProps({ req }) {
 
   // Pass the data to our page via props
   return {
-    props: { role, me, authorizations, token }, // will be passed to the page component as props
+    props: {
+      role: role.data,
+      me: me.data,
+      authorizations: authorizations.data,
+      token: token.data,
+    }, // will be passed to the page component as props
   };
 }
