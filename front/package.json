@@ -27,6 +27,7 @@
     "cookie": "^0.4.1",
     "cookies-next": "^2.0.3",
     "cross-env": "^7.0.3",
+    "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.0.3",
     "escape-string-regexp": "^5.0.0",
     "moment": "^2.29.1",

@@ -1,4 +1,10 @@
 export function mock(path, jwt, options) {
+  if (options.method === "POST") {
+    return {
+      status: 200,
+      data: { id: 212 },
+    };
+  }
   const page = options?.data?.page;
   const date = new Date();
   switch (jwt) {
