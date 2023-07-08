@@ -89,7 +89,6 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
       onUploadProgress: (progress) =>
         setPercent(percents(progress.loaded, progress.total)),
     });
-    console.log(responsePostTicket);
     if (responsePostTicket.error) {
       toast.error(
         "Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.",

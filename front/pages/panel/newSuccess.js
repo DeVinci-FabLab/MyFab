@@ -29,31 +29,43 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
 
   async function saveFileData() {
     setOpen(false);
+
     const cookie = getCookie("jwt");
-    await axios({
+    const responsePutTicket = await fetchAPIAuth({
       method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
       url: process.env.API + "/api/file/" + ticketFile.id,
-      data: {
+      params: {
         comment: ticketFile.comment,
         idprinter: ticketFile.idprinter,
       },
-      headers: {
-        dvflCookie: cookie,
-      },
-    })
-      .then((response) => {})
-      .catch((e) => {
-        console.log(e);
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+    });
+    if (responsePutTicket.error) {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    } else if (process.env.IS_TEST_MODE) {
+      //Used for e2e test
+      toast.success("Le commentaire du fichier a été enregistré.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   async function changeSTLColor() {
@@ -61,6 +73,11 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
   }
 
   async function getUrlSTL(id) {
+    if (process.env.IS_TEST_MODE)
+      return setUrlStl(
+        "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
+      );
+
     const cookie = getCookie("jwt");
     await axios({
       method: "GET",
@@ -139,7 +156,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                       <Link href={ticketLink}>
                         <button
                           type="button"
-                          className={`order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                          className={`continue-button order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
                         >
                           Continuer
                         </button>
@@ -164,13 +181,12 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  console.log(r);
                                   changeSTLColor();
                                   setTicketFile(r);
                                   getUrlSTL(r.id);
                                   setOpen(true);
                                 }}
-                                className={`order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                                className={`file-button order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
                               >
                                 Mettre un commentaire
                               </button>
@@ -364,7 +380,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           ticketFile.comment = e.target.value;
                           setTicketFile(ticketFile);
                         }}
-                        className="mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                        className="comment-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
                         defaultValue={ticketFile.comment}
                       />
                     </div>
@@ -373,7 +389,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                 <div className="mt-5 sm:mt-6 justify-center">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={() => {
                       saveFileData();
                     }}
@@ -414,6 +430,12 @@ export async function getServerSideProps({ req, query }) {
     };
 
   return {
-    props: { user, role, ticket, file, authorizations }, // will be passed to the page component as props
+    props: {
+      user: user.data,
+      role: role.data,
+      ticket: ticket.data,
+      file: file.data,
+      authorizations: authorizations.data,
+    }, // will be passed to the page component as props
   };
 }
