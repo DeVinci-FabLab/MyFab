@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "buildStart": "npm run build && npm run start",
     "build": "next build",
     "start": "next start",
     "export": "next build && next export",
