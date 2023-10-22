@@ -51,8 +51,7 @@ export default function Admin({ user, role, authorizations }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked])
-      newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -97,29 +96,17 @@ export default function Admin({ user, role, authorizations }) {
 
   return (
     <div>
-      <WebSocket
-        realodPage={realodPage}
-        event={[{ name: "event-reload-tickets", action: update }]}
-        userId={user.id}
-      />
+      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-tickets", action: update }]} userId={user.id} />
       {authorizations.myFabAgent ? (
-        <LayoutPanel
-          user={user}
-          role={role}
-          authorizations={authorizations}
-          titleMenu="Gestion des demandes"
-        >
+        <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Gestion des demandes">
           <Seo title={"Administration"} />
           <NavbarAdmin role={role} />
           <div className="md:py-8 md:px-6">
             <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
-              <h2 className="text-2xl font-bold text-white">
-                Bonjour, {user.firstName} 👋{" "}
-              </h2>
+              <h2 className="text-2xl font-bold text-white">Bonjour, {user.firstName} 👋 </h2>
               <h3 className="text-md font-medium text-white">
                 Il y a {ticketResult.length} impression
-                {ticketResult.length > 1 ? "s" : ""} à traiter. N'hésite pas à
-                t'en occuper !
+                {ticketResult.length > 1 ? "s" : ""} à traiter. N'hésite pas à t'en occuper !
               </h3>
             </div>
           </div>
@@ -147,10 +134,7 @@ export async function getServerSideProps({ req }) {
   const resUserConnected = isUserConnected(user);
   if (resUserConnected) return resUserConnected;
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
 
   return {
     props: { user, role, authorizations }, // will be passed to the page component as props
