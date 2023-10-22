@@ -14,10 +14,7 @@ RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 COPY . /home/node/MyFab_Front/
 WORKDIR /home/node/MyFab_Front/
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-ENV IS_LINUX=true
-ENV ENV_NAME=front
 
 RUN npm install 
-RUN npm run build 
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "buildStart"]
