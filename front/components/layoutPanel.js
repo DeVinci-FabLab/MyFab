@@ -15,7 +15,7 @@ import { SelectorIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
 import { logout } from "../lib/function";
-import axios from "axios";
+import { fetchAPIAuth } from "../lib/api";
 let version = null;
 
 function classNames(...classes) {
@@ -40,6 +40,7 @@ export default function LayoutPanel({
   const navigation = [
     {
       name: "Mes demandes",
+      className: ["my-demand-button"],
       href: "/panel",
       icon: HomeIcon,
       current: pn === "/panel",
@@ -47,6 +48,7 @@ export default function LayoutPanel({
     },
     {
       name: "Gestions des demandes",
+      className: ["users-demand-button"],
       href: "/panel/admin",
       icon: BeakerIcon,
       current: pn.split("/")[2] === "admin",
@@ -54,6 +56,7 @@ export default function LayoutPanel({
     },
     {
       name: "Gestions des utilisateurs",
+      className: ["users-button"],
       href: "/panel/users",
       icon: UsersIcon,
       current: pn === "/panel/users",
@@ -62,6 +65,7 @@ export default function LayoutPanel({
     //{ name: "Gestions du blog", href: process.env.GHOST_URL + "/ghost", icon: ClipboardListIcon, current: false, show: authorizations.myFabAgent == 1 },
     {
       name: "Assemblée générale",
+      className: ["ag-button"],
       href: "/ag/settings",
       icon: ClipboardListIcon,
       current: false,
@@ -76,22 +80,13 @@ export default function LayoutPanel({
     }
     if (!version) {
       setTimeout(async () => {
-        await axios({
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          url: process.env.API + "/api/version",
-        })
-          .then((response) => {
-            if (response.status == 200) {
-              version = response.data.version;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        const authorizationsResponse = await fetchAPIAuth("/version/");
+        if (
+          !authorizationsResponse.error &&
+          authorizationsResponse.status == 200
+        ) {
+          version = authorizationsResponse.data.version;
+        }
       }, 100);
     }
   }, []);
@@ -186,9 +181,10 @@ export default function LayoutPanel({
                       />
                     </span>
                     <div className="mt-3 space-x-1 space-y-1 text-center">
-                      {role.map((r) => {
+                      {role.map((r, index) => {
                         return (
                           <span
+                            key={`role-small-${index}`}
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
                             style={{ backgroundColor: "#" + r.color }}
                           >
@@ -250,17 +246,22 @@ export default function LayoutPanel({
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2">
                   <div className="space-y-1">
-                    {navigation.map((item) => {
+                    {navigation.map((item, index) => {
                       if (item.show == true) {
                         return (
-                          <Link href={item.href}>
+                          <Link key={`nav-small-${index}`} href={item.href}>
                             <p
-                              key={item.name}
                               className={classNames(
-                                item.current
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-                                "group flex items-center px-2 py-2 text-base leading-5 font-medium rounded-md"
+                                item.className.reduce(
+                                  (accumulator, currentValue) =>
+                                    accumulator + " " + currentValue + "-small",
+                                  ""
+                                ) +
+                                  " " +
+                                  (item.current
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                                  "group flex items-center px-2 py-2 text-base leading-5 font-medium rounded-md")
                               )}
                               aria-current={item.current ? "page" : undefined}
                             >
@@ -337,9 +338,10 @@ export default function LayoutPanel({
                     />
                   </span>
                   <div className="mt-3 space-x-1 space-y-1 text-center">
-                    {role.map((r) => {
+                    {role.map((r, index) => {
                       return (
                         <span
+                          key={`role-large-${index}`}
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
                           style={{ backgroundColor: "#" + r.color }}
                         >
@@ -400,17 +402,22 @@ export default function LayoutPanel({
             </Menu>
             <nav className="px-3 mt-6">
               <div className="space-y-1">
-                {navigation.map((item) => {
+                {navigation.map((item, index) => {
                   if (item.show == true) {
                     return (
-                      <Link href={item.href}>
+                      <Link key={`nav-large-${index}`} href={item.href}>
                         <p
-                          key={`1-${item.name}`}
                           className={classNames(
-                            item.current
-                              ? "bg-gray-200 text-gray-900"
-                              : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
-                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                            item.className.reduce(
+                              (accumulator, currentValue) =>
+                                accumulator + " " + currentValue + "-large",
+                              ""
+                            ) +
+                              " " +
+                              (item.current
+                                ? "bg-gray-200 text-gray-900"
+                                : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+                              "group flex items-center px-2 py-2 text-sm font-medium rounded-md")
                           )}
                           aria-current={item.current ? "page" : undefined}
                         >
@@ -453,7 +460,7 @@ export default function LayoutPanel({
         <div className="relative flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:hidden">
           <button
             type="button"
-            className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden"
+            className="open-layout-button px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>

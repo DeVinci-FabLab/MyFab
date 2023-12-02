@@ -72,7 +72,7 @@ export default function OverviewAdmin({
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
@@ -95,8 +95,8 @@ export default function OverviewAdmin({
                 </p>
               </div>
               <dl className="divide-y divide-gray-200">
-                {faqs.map((faq) => (
-                  <Disclosure as="div" key={faq.question} className="pt-6">
+                {faqs.map((faq, index) => (
+                  <Disclosure as="div" key={`faq-${index}`} className="pt-6">
                     {({ open }) => (
                       <>
                         <dt className="text-sm">
@@ -108,7 +108,7 @@ export default function OverviewAdmin({
                               <ChevronDownIcon
                                 className={classNames(
                                   open ? "-rotate-180" : "rotate-0",
-                                  "h-6 w-6 transform"
+                                  "faq-button h-6 w-6 transform"
                                 )}
                                 aria-hidden="true"
                               />

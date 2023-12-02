@@ -14,12 +14,11 @@ import WebSocket from "../../components/webSocket";
 const percents = (value, total) => Math.round(value / total) * 100;
 
 export default function NewPanel({ user, role, authorizations, projectType }) {
-  const [percentage, setPercentage] = useState(0);
   const [status, setStatus] = useState(false);
   const [userClick, setUserClick] = useState(false);
   const [file, setFile] = useState([]);
   const [description, setDescription] = useState("Aucune déscription fournie.");
-  const [type, setType] = useState("PIX 1");
+  const [type, setType] = useState(Object.keys(projectType)[0]);
   const [group, setGroup] = useState(null);
   const [percent, setPercent] = useState(0);
 
@@ -50,7 +49,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
   const handleSubmit = async (e) => {
     if (
-      description == "Aucune déscription fournie." ||
+      description == "Aucune description fournie." ||
       group == null ||
       file.length < 1
     ) {
@@ -77,16 +76,20 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
     data.append("comment", description);
     data.append("groupNumber", group);
     data.append("projectType", projectType[type].id);
-    const upload_res = await axios({
+    const responsePostTicket = await fetchAPIAuth({
       method: "POST",
-      url: process.env.API + "/api/ticket",
-      data,
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         dvflCookie: jwt,
       },
+
+      url: process.env.API + "/api/ticket",
+      data,
       onUploadProgress: (progress) =>
         setPercent(percents(progress.loaded, progress.total)),
-    }).catch((e) => {
+    });
+    if (responsePostTicket.error) {
       toast.error(
         "Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.",
         {
@@ -99,25 +102,27 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
           progress: undefined,
         }
       );
-    });
-    document.getElementById("status").scrollIntoView();
-    setFile([]);
-    setDescription("Aucune déscription fournie.");
-    setType("PIX 1");
-    setGroup(null);
-    toast.success(
-      "Le ticket #" + setZero(upload_res.data.id) + " a été créé !",
-      {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      }
-    );
-    router.push("/panel/newSuccess/?id=" + upload_res.data.id);
+      setUserClick(false);
+    } else {
+      document.getElementById("status").scrollIntoView();
+      setFile([]);
+      setDescription("Aucune description fournie.");
+      setType(Object.keys(projectType)[0]);
+      setGroup(null);
+      toast.success(
+        "Le ticket #" + setZero(responsePostTicket.data.id) + " a été créé !",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      router.push("/panel/newSuccess/?id=" + responsePostTicket.data.id);
+    }
   };
 
   const handleChange = (e) => {
@@ -165,7 +170,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           id="about"
                           name="about"
                           rows={3}
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                          className="description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
@@ -186,13 +191,14 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         onChange={(e) => setType(e.target.value)}
                         id="type"
                         name="type"
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                       >
-                        {Object.keys(projectType).map((item) => {
+                        {Object.keys(projectType).map((item, index) => {
                           const elementSelected = Object.keys(projectType)[0];
                           return (
                             <option
-                              selected={
+                              key={`projectType-${index}`}
+                              defaultValue={
                                 item === elementSelected ? "'selected'" : ""
                               }
                               value={item}
@@ -219,7 +225,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           id="group"
                           min="0"
                           max="1000"
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="group-number-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           placeholder="64"
                         />
                       </div>
@@ -239,7 +245,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           className={`${
                             status ? "border-gray-800" : "border-gray-300"
                           } ${
-                            percentage != 0 ? "hidden" : "block"
+                            percent != 0 ? "hidden" : "block"
                           } dropzone mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md`}
                         >
                           <div className="space-y-1 text-center">
@@ -292,10 +298,10 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         ""
                       )}
                       {file.length >= 1
-                        ? file.map((r) => {
+                        ? file.map((r, index) => {
                             if (r[0] == null) return null;
                             return (
-                              <div className="block mt-3">
+                              <div key={`file-${index}`} className="block mt-3">
                                 <p className="text-md font-semibold text-gray-700">
                                   {r[0].name}
                                 </p>
@@ -328,7 +334,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                       handleSubmit(e);
                     }}
                     type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                    className="submit-button inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
                     disabled={userClick}
                   >
                     Valider et envoyer mon fichier
@@ -344,108 +350,6 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
             <div className="border-t border-gray-200" />
           </div>
         </div>
-
-        {/*<div className="mt-10 sm:mt-0">
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Notifications
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  Recevez des notifications dès que votre fichier STL a été
-                  approuvé, quand son impression est terminée ou encore quand il
-                  a été déposé dans un casier.
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:mt-0 md:col-span-2">
-              <form action="#" method="POST">
-                <div className="shadow overflow-hidden sm:rounded-md">
-                  <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                    <fieldset>
-                      <div>
-                        <legend className="text-base font-medium text-gray-900">
-                          Type de notification
-                        </legend>
-                        <p className="text-sm text-gray-500">
-                          Recevez des notifications par SMS ou e-mail, comme
-                          pour votre colis chronopost.
-                        </p>
-                      </div>
-                      <div className="mt-4 space-y-4">
-                        <div className="flex items-center">
-                          <input
-                            id="push-everything"
-                            name="push-notifications"
-                            type="radio"
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                          />
-                          <label
-                            htmlFor="push-everything"
-                            className="ml-3 block text-sm font-medium text-gray-700"
-                          >
-                            Par e-mail
-                          </label>
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            id="push-email"
-                            name="push-notifications"
-                            type="radio"
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                          />
-                          <label
-                            htmlFor="push-email"
-                            className="ml-3 block text-sm font-medium text-gray-700"
-                          >
-                            Par SMS
-                          </label>
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            id="both"
-                            name="push-notifications"
-                            type="radio"
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                          />
-                          <label
-                            htmlFor="both"
-                            className="ml-3 block text-sm font-medium text-gray-700"
-                          >
-                            SMS et e-mail
-                          </label>
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            id="push-nothing"
-                            name="push-notifications"
-                            type="radio"
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                          />
-                          <label
-                            htmlFor="push-nothing"
-                            className="ml-3 block text-sm font-medium text-gray-700"
-                          >
-                            Aucune notification
-                          </label>
-                        </div>
-                      </div>
-                    </fieldset>
-                  </div>
-                  <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Valider et envoyer mon fichier
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>*/}
       </div>
     </LayoutPanel>
   );
@@ -466,13 +370,16 @@ export async function getServerSideProps({ req }) {
   const projectTypeList = await fetchAPIAuth("/projectType/");
 
   const projectType = {};
-  for (const element of projectTypeList) {
+  for (const element of projectTypeList.data) {
     projectType[element.name] = { id: element.id };
   }
-  console.log(projectType);
-  console.log(Object.keys(projectType));
 
   return {
-    props: { user, role, authorizations, projectType }, // will be passed to the page component as props
+    props: {
+      user: user.data,
+      role: role.data,
+      authorizations: authorizations.data,
+      projectType,
+    }, // will be passed to the page component as props
   };
 }

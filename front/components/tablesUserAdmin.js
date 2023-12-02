@@ -95,10 +95,11 @@ export default function UserTablesAdmin({
           </tr>
         </thead>
         <tbody>
-          {user.map((r) => {
+          {user.map((r, index) => {
             return (
               <tr
-                className="border-b border-gray-200 hover:bg-gray-50"
+                key={`user-${index}`}
+                className={`user-${index} border-b border-gray-200 hover:bg-gray-50`}
                 onClick={() => {
                   id(r.id);
                 }}
@@ -135,20 +136,21 @@ export default function UserTablesAdmin({
           })}
         </tbody>
       </table>
-      <div class="grid place-items-center mb-10">
-        <div class="inline-flex mt-3">
+      <div className="grid place-items-center mb-10">
+        <div className="inline-flex mt-3">
           <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
+            className="prev-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
             onClick={() => nextPrevPage(-1)}
           >
             &lt;
           </button>
-          <p class="inline-flex py-2 px-4">
-            Pages&nbsp;<p class="font-bold">{actualPage + 1}</p>&nbsp;sur&nbsp;
-            <p class="font-bold">{maxPage != 0 ? maxPage : 1}</p>
-          </p>
+          <div className="inline-flex py-2 px-4">
+            Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>
+            &nbsp;sur&nbsp;
+            <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
+          </div>
           <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
+            className="next-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
             onClick={() => nextPrevPage(1)}
           >
             &gt;

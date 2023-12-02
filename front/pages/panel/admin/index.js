@@ -7,7 +7,6 @@ import WebSocket from "../../../components/webSocket";
 import Seo from "../../../components/seo";
 import Error from "../../404";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { isUserConnected } from "../../../lib/function";
 import { toast } from "react-toastify";
@@ -68,31 +67,30 @@ export default function Admin({ user, role, authorizations }) {
       params["order"] = actualCollumnState[keys[0]];
     }
 
-    await axios({
-      method: "get",
+    const responseTickets = await fetchAPIAuth({
+      method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         dvflCookie: jwt,
       },
       url: process.env.API + "/api/ticket",
-      params,
-    })
-      .then((response) => {
-        setMaxPage(response.data.maxPage);
-        setTicketResult(response.data.values);
-      })
-      .catch(() => {
-        toast.error("Une erreur est survenue lors du chargement des tickets.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      data: params,
+    });
+    if (!responseTickets.error) {
+      setMaxPage(responseTickets.data.maxPage);
+      setTicketResult(responseTickets.data.values);
+    } else {
+      toast.error("Une erreur est survenue lors du chargement des tickets.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    }
   }
 
   return (
@@ -153,6 +151,10 @@ export async function getServerSideProps({ req }) {
   );
 
   return {
-    props: { user, role, authorizations }, // will be passed to the page component as props
+    props: {
+      user: user.data,
+      role: role.data,
+      authorizations: authorizations.data,
+    }, // will be passed to the page component as props
   };
 }

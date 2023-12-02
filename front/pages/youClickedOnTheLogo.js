@@ -1,28 +1,29 @@
-import { fetchAPIAuth, parseCookies } from "../lib/api";
+import { fetchAPIAuth } from "../lib/api";
+import { getCookie } from "cookies-next";
 
 export default function Rules() {
-  return (
-    <head>
-      <title>HTML Meta Tag</title>
-      <meta
-        httpEquiv="refresh"
-        content="3; url = https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-      />
-    </head>
-  );
+  return <div></div>;
 }
 
 export async function getServerSideProps({ req }) {
-  const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-
-  await fetch(process.env.API + "/api/clickonlogopaint", {
-    method: "post",
-    headers: new Headers({
-      dvflCookie: "" + cookies.jwt,
-      "Content-Type": "application/x-www-form-urlencoded",
-    }),
+  const cookie = getCookie("jwt");
+  await fetchAPIAuth({
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      dvflCookie: cookie,
+    },
+    url: process.env.API + "/api/clickonlogopaint",
   });
+
+  return {
+    redirect: {
+      permanent: false,
+      destination: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    },
+    props: {},
+  };
 
   return {
     props: {}, // will be passed to the page component as props
