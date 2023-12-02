@@ -1,4 +1,4 @@
-import { InformationCircleIcon, UserAddIcon } from "@heroicons/react/outline";
+import { InformationCircleIcon } from "@heroicons/react/outline";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import LayoutPanel from "../../components/layoutPanel";
@@ -8,7 +8,6 @@ import Error from "../404";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
 import { toast } from "react-toastify";
@@ -25,8 +24,8 @@ export default function Settings({ role, me, authorizations }) {
   const [collumnState, setCollumnState] = useState({});
   let newActualPage = 0;
   const [usersListResult, setUsersListResult] = useState([]);
-  const [allRole, setAllRole] = useState([]);
-  const [userRole, setUserRole] = useState([]);
+  const [allRole, setAllRole] = useState({ data: [] });
+  const [userRole, setUserRole] = useState({ data: [] });
 
   function realodPage() {
     router.replace(router.asPath);
@@ -35,7 +34,7 @@ export default function Settings({ role, me, authorizations }) {
     async function getAuth() {
       const jwt = getCookie("jwt");
       const authorizations = await fetchAPIAuth("/user/authorization/", jwt);
-      if (authorizations.viewUsers) {
+      if (authorizations.data.viewUsers) {
         update();
       } else {
         setUsersListResult([]);
@@ -53,41 +52,42 @@ export default function Settings({ role, me, authorizations }) {
     const actualCollumnState = newCollumnState ? newCollumnState : collumnState;
     const keys = Object.keys(actualCollumnState);
     if (newReserch) setActualPage(0);
-    const jwt = getCookie("jwt");
     const params = { page: newActualPage, inputValue };
     if (keys.length === 1) {
       params["collumnName"] = keys[0];
       params["order"] = actualCollumnState[keys[0]];
     }
 
-    await axios({
-      method: "get",
+    const cookie = getCookie("jwt");
+    const responseGetUsers = await fetchAPIAuth({
+      method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        dvflCookie: jwt,
+        dvflCookie: cookie,
       },
+
       url: process.env.API + "/api/user",
-      params,
-    })
-      .then((response) => {
-        setMaxPage(response.data.maxPage);
-        setUsersListResult(response.data.values);
-      })
-      .catch(() => {
-        toast.error(
-          "Une erreur est survenue lors du chargement des utilisateurs.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
-      });
+      data: params,
+    });
+
+    if (!responseGetUsers.error) {
+      setMaxPage(responseGetUsers.data.maxPage);
+      setUsersListResult(responseGetUsers.data.values);
+    } else {
+      toast.error(
+        "Une erreur est survenue lors du chargement des utilisateurs.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    }
   }
 
   function nextPrevPage(addPage) {
@@ -119,17 +119,19 @@ export default function Settings({ role, me, authorizations }) {
     const user = await fetchAPIAuth("/user/" + id, cookie);
     const userRole = await fetchAPIAuth("/user/" + id + "/role", cookie);
 
-    for (let i = 0; i < userRole.length; i++) {
-      for (let j = 0; j < allRoles.length; j++) {
-        if (userRole[i].id == allRoles[j].id) {
-          allRoles = allRoles.filter((e) => e.id != userRole[i].id);
+    for (let i = 0; i < userRole.data.length; i++) {
+      for (let j = 0; j < allRoles.data.length; j++) {
+        if (userRole.data[i].id == allRoles.data[j].id) {
+          allRoles.data = allRoles.data.filter(
+            (e) => e.id != userRole.data[i].id
+          );
         }
       }
     }
 
     setUserRole(userRole);
     setAllRole(allRoles);
-    setData(user);
+    setData(user.data);
     setOpen(true);
   }
 
@@ -176,18 +178,18 @@ export default function Settings({ role, me, authorizations }) {
                               </svg>
                             </div>
 
-                            <div class="w-full inline-flex">
+                            <div className="w-full inline-flex">
                               <input
                                 onChange={(e) => {
                                   setInputValue(e.target.value);
                                 }}
-                                className="filterInput block border placeholder-gray-400 pr-3 py-2 leading-6 w-full rounded border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 pl-10 mr-2"
+                                className="search-input filterInput block border placeholder-gray-400 pr-3 py-2 leading-6 w-full rounded border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 pl-10 mr-2"
                                 type="text"
                                 placeholder="Rechercher un étudiant"
                               />
                               <button
                                 type="submit"
-                                class="w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                className="search-validation-button w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 onClick={() => update(true)}
                               >
                                 Rechercher
@@ -266,7 +268,7 @@ export default function Settings({ role, me, authorizations }) {
                           <div>{data.title ? data.title : "Ancien compte"}</div>
                           <div>
                             <div className="space-x-1 text-center">
-                              {userRole.map((r) => {
+                              {userRole.data.map((r, index) => {
                                 const buttonAvailable =
                                   data.id === me.id
                                     ? false
@@ -275,7 +277,8 @@ export default function Settings({ role, me, authorizations }) {
                                     : authorizations.changeUserRole;
                                 return (
                                   <span
-                                    className="inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
+                                    key={`user-role-${index}`}
+                                    className="user-role inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
                                     style={{
                                       backgroundColor: "#" + r.color,
                                       paddingRight: buttonAvailable
@@ -287,62 +290,68 @@ export default function Settings({ role, me, authorizations }) {
                                     {buttonAvailable ? (
                                       <button
                                         onClick={async () => {
-                                          setUserRole(
-                                            userRole.filter((e) => e != r)
-                                          );
-                                          var array = allRole;
+                                          setUserRole({
+                                            data: userRole.data.filter(
+                                              (e) => e != r
+                                            ),
+                                          });
+                                          var array = allRole.data;
                                           array.push(r);
-                                          setAllRole(array);
+                                          setAllRole({ data: array });
 
-                                          await axios({
-                                            method: "DELETE",
-                                            url:
-                                              process.env.API +
-                                              "/api/user/" +
-                                              data.id +
-                                              "/role/" +
-                                              r.id,
-                                            headers: {
-                                              dvflCookie: getCookie("jwt"),
-                                            },
-                                          })
-                                            .then((response) => {
-                                              if (response.status == 200) {
-                                                toast.success(
-                                                  "Le rôle " +
-                                                    r.name +
-                                                    " a été supprimé à l'utilisateur #" +
-                                                    setZero(data.id),
-                                                  {
-                                                    position: "top-right",
-                                                    autoClose: 3000,
-                                                    hideProgressBar: true,
-                                                    closeOnClick: true,
-                                                    pauseOnHover: true,
-                                                    draggable: true,
-                                                    progress: undefined,
-                                                  }
-                                                );
-                                              } else {
-                                              }
-                                            })
-                                            .catch((e) => {
-                                              toast.error(
-                                                "Une erreur est survenue. Impossible de supprimer le rôle",
-                                                {
-                                                  position: "top-right",
-                                                  autoClose: 3000,
-                                                  hideProgressBar: true,
-                                                  closeOnClick: true,
-                                                  pauseOnHover: true,
-                                                  draggable: true,
-                                                  progress: undefined,
-                                                }
-                                              );
+                                          const responseDeleteUserRole =
+                                            await fetchAPIAuth({
+                                              method: "DELETE",
+                                              headers: {
+                                                Accept: "application/json",
+                                                "Content-Type":
+                                                  "application/json",
+                                                dvflCookie: getCookie("jwt"),
+                                              },
+
+                                              url:
+                                                process.env.API +
+                                                "/api/user/" +
+                                                data.id +
+                                                "/role/" +
+                                                r.id,
                                             });
+
+                                          if (
+                                            responseDeleteUserRole.status == 200
+                                          ) {
+                                            toast.success(
+                                              "Le rôle " +
+                                                r.name +
+                                                " a été supprimé à l'utilisateur #" +
+                                                setZero(data.id),
+                                              {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: true,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                              }
+                                            );
+                                          } else {
+                                            toast.error(
+                                              "Une erreur est survenue. Impossible de supprimer le rôle",
+                                              {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: true,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                              }
+                                            );
+                                          }
                                         }}
                                         type="button"
-                                        className="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
+                                        className="remove-role-button flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
                                       >
                                         <span className="sr-only">
                                           Remove small option
@@ -415,7 +424,7 @@ export default function Settings({ role, me, authorizations }) {
                                       Rôle disponible
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2 space-x-1">
-                                      {allRole.map((r) => {
+                                      {allRole.data.map((r, index) => {
                                         const buttonAvailable =
                                           data.id === me.id
                                             ? false
@@ -424,7 +433,8 @@ export default function Settings({ role, me, authorizations }) {
                                             : authorizations.changeUserRole;
                                         return (
                                           <span
-                                            className="inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
+                                            key={`role-${index}`}
+                                            className="available-role inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
                                             style={{
                                               backgroundColor: "#" + r.color,
                                               paddingRight: buttonAvailable
@@ -436,53 +446,48 @@ export default function Settings({ role, me, authorizations }) {
                                             {buttonAvailable ? (
                                               <button
                                                 onClick={async () => {
-                                                  setAllRole(
-                                                    allRole.filter(
+                                                  setAllRole({
+                                                    data: allRole.data.filter(
                                                       (e) => e != r
-                                                    )
-                                                  );
-                                                  var array = userRole;
+                                                    ),
+                                                  });
+                                                  var array = userRole.data;
                                                   array.push(r);
-                                                  setUserRole(array);
+                                                  setUserRole({ data: array });
 
-                                                  await axios({
-                                                    method: "POST",
-                                                    url:
-                                                      process.env.API +
-                                                      "/api/user/" +
-                                                      data.id +
-                                                      "/role/" +
-                                                      r.id,
-                                                    headers: {
-                                                      dvflCookie:
-                                                        getCookie("jwt"),
-                                                    },
-                                                  })
-                                                    .then((response) => {
-                                                      if (
-                                                        response.status == 200
-                                                      ) {
-                                                        toast.success(
-                                                          "Le rôle " +
-                                                            r.name +
-                                                            " a été ajouté à l'utilisateur #" +
-                                                            setZero(data.id),
-                                                          {
-                                                            position:
-                                                              "top-right",
-                                                            autoClose: 3000,
-                                                            hideProgressBar: true,
-                                                            closeOnClick: true,
-                                                            pauseOnHover: true,
-                                                            draggable: true,
-                                                            progress: undefined,
-                                                          }
-                                                        );
-                                                      }
-                                                    })
-                                                    .catch((e) => {
-                                                      toast.error(
-                                                        "Une erreur est survenue. Impossible d'ajouter le rôle",
+                                                  const responseAddUserRole =
+                                                    await fetchAPIAuth({
+                                                      method: "POST",
+                                                      headers: {
+                                                        Accept:
+                                                          "application/json",
+                                                        "Content-Type":
+                                                          "application/json",
+                                                        dvflCookie:
+                                                          getCookie("jwt"),
+                                                      },
+
+                                                      url:
+                                                        process.env.API +
+                                                        "/api/user/" +
+                                                        data.id +
+                                                        "/role/" +
+                                                        r.id,
+                                                    });
+
+                                                  if (
+                                                    responseAddUserRole.status ==
+                                                    200
+                                                  ) {
+                                                    if (
+                                                      responseAddUserRole.status ==
+                                                      200
+                                                    ) {
+                                                      toast.success(
+                                                        "Le rôle " +
+                                                          r.name +
+                                                          " a été ajouté à l'utilisateur #" +
+                                                          setZero(data.id),
                                                         {
                                                           position: "top-right",
                                                           autoClose: 3000,
@@ -493,10 +498,24 @@ export default function Settings({ role, me, authorizations }) {
                                                           progress: undefined,
                                                         }
                                                       );
-                                                    });
+                                                    }
+                                                  } else {
+                                                    toast.error(
+                                                      "Une erreur est survenue. Impossible d'ajouter le rôle",
+                                                      {
+                                                        position: "top-right",
+                                                        autoClose: 3000,
+                                                        hideProgressBar: true,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                      }
+                                                    );
+                                                  }
                                                 }}
                                                 type="button"
-                                                className="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
+                                                className="add-role-button flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
                                               >
                                                 <span className="sr-only">
                                                   Remove small option
@@ -521,7 +540,7 @@ export default function Settings({ role, me, authorizations }) {
                     <div className="mt-5 sm:mt-6">
                       <button
                         type="button"
-                        className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                        className="validate-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                         onClick={() => {
                           setOpen(false);
                         }}
@@ -557,6 +576,10 @@ export async function getServerSideProps({ req }) {
 
   // Pass the data to our page via props
   return {
-    props: { role, me, authorizations }, // will be passed to the page component as props
+    props: {
+      role: role.data,
+      me: me.data,
+      authorizations: authorizations.data,
+    }, // will be passed to the page component as props
   };
 }

@@ -80,8 +80,13 @@ const GestionTicket = ({
     const data = {};
     data[paramType === "status" ? "idStatus" : "projecttype"] = newParam;
 
-    await axios({
+    const responseUpdateTicket = await fetchAPIAuth({
       method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
       url:
         process.env.API +
         "/api/ticket/" +
@@ -89,30 +94,15 @@ const GestionTicket = ({
         "/" +
         (paramType === "status" ? "setStatus" : "setProjecttype") +
         "/",
-      params: data,
-      headers: {
-        dvflCookie: cookie,
-      },
-    })
-      .then(() => {
-        toast.success(
-          paramType === "status"
-            ? "Le status du ticket a été mis à jour"
-            : "Le type de projet à été modifié",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
-        realodPage();
-      })
-      .catch((e) => {
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
+      params,
+    });
+
+    if (!responseUpdateTicket.error) {
+      toast.success(
+        paramType === "status"
+          ? "Le status du ticket a été mis à jour"
+          : "Le type de projet à été modifié",
+        {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -120,55 +110,78 @@ const GestionTicket = ({
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        });
+        }
+      );
+      realodPage();
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    }
   }
 
   async function cancelTicket() {
     const cookie = getCookie("jwt");
 
-    await axios({
+    const responseCancelTicket = await fetchAPIAuth({
       method: "PUT",
-      url: process.env.API + "/api/ticket/" + params.id + "/setCancelStatus/",
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-    })
-      .then(() => {
-        toast.success("La demande a été annulée", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        realodPage();
-      })
-      .catch((e) => {
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      url: process.env.API + "/api/ticket/" + params.id + "/setCancelStatus/",
+      params,
+    });
+
+    if (!responseCancelTicket.error) {
+      toast.success("La demande a été annulée", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+      realodPage();
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   async function download(id, name) {
     const cookie = getCookie("jwt");
-    await axios({
-      method: "GET",
-      responseType: "blob",
-      url: process.env.API + "/api/file/" + id,
-      headers: {
-        dvflCookie: cookie,
-      },
-    }).then((response) => {
+    const options = !process.env.IS_TEST_MODE
+      ? {
+          method: "GET",
+          responseType: "blob",
+          url: process.env.API + "/api/file/" + id,
+          headers: {
+            dvflCookie: cookie,
+          },
+        }
+      : {
+          method: "GET",
+          responseType: "blob",
+          url: "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl",
+        };
+
+    await axios(options).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -181,52 +194,62 @@ const GestionTicket = ({
   async function sendComment(e) {
     e.preventDefault();
     const cookie = getCookie("jwt");
-    await axios({
+    const responseMessageTicket = await fetchAPIAuth({
       method: "POST",
-      url: process.env.API + "/api/ticket/" + params.id + "/message",
-      data: {
-        content: comment,
-      },
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-    })
-      .then((response) => {
-        toast.success("Votre commentaire a été envoyé !", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-      .catch((e) => {
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      url: process.env.API + "/api/ticket/" + params.id + "/message",
+      params: {
+        content: comment,
+      },
+    });
+    if (!responseMessageTicket.error) {
+      toast.success("Votre commentaire a été envoyé !", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
     realodPage();
   }
 
   async function getUrlSTL(id) {
+    if (process.env.IS_TEST_MODE)
+      return setUrlStl(
+        "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
+      );
+
     const cookie = getCookie("jwt");
-    await axios({
+    const responseGetUrlSTL = await fetchAPIAuth({
       method: "GET",
-      url: process.env.API + "/api/file/" + id + "/getToken",
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-    }).then((response) => {
-      setUrlStl(process.env.API + "/api/file/" + response.data);
+      url: process.env.API + "/api/file/" + id + "/getToken",
     });
+
+    setUrlStl(
+      responseGetUrlSTL.env.API + "/api/file/" + responseGetUrlSTL.data
+    );
   }
 
   async function changeSTLColor() {
@@ -236,30 +259,32 @@ const GestionTicket = ({
   async function saveFileData() {
     setOpen(false);
     const cookie = getCookie("jwt");
-    await axios({
+
+    const responseUpdateTicket = await fetchAPIAuth({
       method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
       url: process.env.API + "/api/file/" + ticketFile.id,
-      data: {
+      params: {
         comment: ticketFile.comment,
         idprinter: ticketFile.idprinter,
       },
-      headers: {
-        dvflCookie: cookie,
-      },
-    })
-      .then((response) => {})
-      .catch((e) => {
-        console.log(e);
-        toast.error("Une erreur est survenue, veuillez réessayer.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+    });
+
+    if (responseUpdateTicket.error) {
+      toast.error("Une erreur est survenue, veuillez réessayer.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    }
   }
 
   return (
@@ -303,9 +328,9 @@ const GestionTicket = ({
                             role="list"
                             className="border border-gray-200 rounded-md divide-y divide-gray-200"
                           >
-                            {file.map((r) => {
+                            {file.map((r, index) => {
                               return (
-                                <div>
+                                <div key={`file-${index}`}>
                                   <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                                     <div className="w-0 flex-1 flex items-center">
                                       <CubeIcon
@@ -321,12 +346,12 @@ const GestionTicket = ({
                                         onClick={() =>
                                           download(r.id, r.filename)
                                         }
-                                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                                        className="download-button font-medium text-indigo-600 hover:text-indigo-500"
                                       >
                                         Télécharger
                                       </button>
                                     </div>
-                                    <div className="ml-4 flex-shrink-0">
+                                    <div className="see-file-button ml-4 flex-shrink-0">
                                       <button
                                         onClick={() => {
                                           changeSTLColor();
@@ -378,9 +403,9 @@ const GestionTicket = ({
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul role="list" className="divide-y divide-gray-200">
-                            {message.map((r) => (
+                            {message.map((r, index) => (
                               <li
-                                key={r.id}
+                                key={`message-${index}`}
                                 className="relative bg-white py-5 px-4 hover:bg-gray-50"
                               >
                                 <div className="flex justify-between space-x-3">
@@ -421,7 +446,7 @@ const GestionTicket = ({
                                 name="comment"
                                 rows={3}
                                 onChange={(e) => setComment(e.target.value)}
-                                className="mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                                className="chat-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
                                 defaultValue={""}
                               />
                               <button
@@ -429,7 +454,7 @@ const GestionTicket = ({
                                   document.getElementById("comment").value = "";
                                   sendComment(e);
                                 }}
-                                className="mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
+                                className="send-message-button mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
                               >
                                 Envoyer mon commentaire
                               </button>
@@ -477,7 +502,7 @@ const GestionTicket = ({
                             </div>
                             {authorizations.myFabAgent ? (
                               <button
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="user-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setOpenUser(true);
                                 }}
@@ -531,7 +556,7 @@ const GestionTicket = ({
                             <div>{ticket.projectType}</div>
                             {authorizations.myFabAgent ? (
                               <button
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="change-type-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setparamType("projectType");
                                   setOpenStatus(true);
@@ -552,7 +577,7 @@ const GestionTicket = ({
                             <div>{ticket.statusName}</div>
                             {authorizations.myFabAgent && !ticket.isCancel ? (
                               <button
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className="change-status-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
                                 onClick={() => {
                                   setparamType("status");
                                   setOpenStatus(true);
@@ -566,7 +591,7 @@ const GestionTicket = ({
                           </dd>
                           {ticket.userCanCancel && !ticket.isCancel ? (
                             <button
-                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-3 rounded"
+                              className="cancel-ticket bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-3 rounded"
                               onClick={() => {
                                 setparamType("cancel");
                                 setOpenStatus(true);
@@ -691,7 +716,7 @@ const GestionTicket = ({
                                   setTicketFile(ticketFile);
                                 }
                               }}
-                              className="mt-5 w-full shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                              className="comment-file-textarea mt-5 w-full shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
                               defaultValue={ticketFile.comment}
                             />
                           </div>
@@ -708,7 +733,7 @@ const GestionTicket = ({
                               }}
                               id="type"
                               name="type"
-                              className="mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                              className="printer-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                             >
                               <option
                                 value={0}
@@ -718,11 +743,12 @@ const GestionTicket = ({
                               >
                                 (Sélectionnez une imprimante)
                               </option>
-                              {printers.map((item) => {
+                              {printers.map((item, index) => {
                                 const elementSelected =
                                   ticketFile.idprinter === item.id;
                                 return (
                                   <option
+                                    key={`printer-${index}`}
                                     defaultValue={
                                       elementSelected ? "'selected'" : ""
                                     }
@@ -747,7 +773,7 @@ const GestionTicket = ({
                             ticketFile.comment = e.target.value;
                             setTicketFile(ticketFile);
                           }}
-                          className="mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                          className="comment-file-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
                           defaultValue={ticketFile.comment}
                         />
                       </div>
@@ -757,7 +783,7 @@ const GestionTicket = ({
                 <div className="mt-5 sm:mt-6 justify-center">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={() => {
                       saveFileData();
                     }}
@@ -788,7 +814,7 @@ const GestionTicket = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+              <Dialog.Overlay className="outside-popup fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
             <span
@@ -847,7 +873,7 @@ const GestionTicket = ({
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={() => setOpenUser(false)}
                   >
                     Fermer
@@ -932,18 +958,18 @@ const GestionTicket = ({
                           onChange={(e) => setNewParam(e.target.value)}
                           id="type"
                           name="type"
-                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                          className="statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                         >
                           {(paramType === "status" ? status : projectType).map(
-                            (item) => {
+                            (item, index) => {
                               const elementSelected =
                                 paramType === "status"
                                   ? ticket.statusName
                                   : ticket.projectType;
-                              console.log(item.name === elementSelected);
                               return (
                                 <option
-                                  selected={
+                                  key={`param-${index}`}
+                                  defaultValue={
                                     item.name === elementSelected
                                       ? "'selected'"
                                       : ""
@@ -965,7 +991,7 @@ const GestionTicket = ({
                   <div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
                       <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
+                        className="confirmation-cancel-ticket-button bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
                         onClick={() => {
                           setOpenStatus(false);
                           cancelTicket();
@@ -974,7 +1000,7 @@ const GestionTicket = ({
                         Annuler la demande
                       </button>
                       <button
-                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                        className="back-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
                         onClick={() => setOpenStatus(false)}
                       >
                         Retour
@@ -985,7 +1011,7 @@ const GestionTicket = ({
                   <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                     <button
                       type="button"
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="approve-button w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={() => {
                         setOpenStatus(false);
                         change();
@@ -995,7 +1021,7 @@ const GestionTicket = ({
                     </button>
                     <button
                       type="button"
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                      className="cancel-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
                       onClick={() => setOpenStatus(false)}
                     >
                       Annuler
@@ -1031,17 +1057,17 @@ export async function getServerSideProps({ req, params }) {
 
   return {
     props: {
-      user,
+      user: user.data,
       params,
-      role,
-      ticket,
-      file,
-      message,
-      authorizations,
+      role: role.data,
+      ticket: ticket.data,
+      file: file.data,
+      message: message.data,
+      authorizations: authorizations.data,
       id,
-      status,
-      projectType,
-      printers,
+      status: status.data,
+      projectType: projectType.data,
+      printers: printers.data,
     }, // will be passed to the page component as props
   };
 }

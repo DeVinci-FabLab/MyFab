@@ -1,3 +1,4 @@
+import axios from "axios";
 import cookie from "cookie";
 import { mockApi } from "./mockApi";
 
@@ -6,28 +7,30 @@ export function getURL(path = "") {
 }
 
 export async function fetchAPIAuth(path, jwt) {
+  const isFetch = typeof path === "string";
   if (process.env.IS_TEST_MODE == "true") {
     return mockApi(path, jwt);
   } else {
-    const requestUrl = getURL(path);
-    const response = await fetch(requestUrl, {
-      method: "get",
-      headers: new Headers({
-        dvflCookie: "" + jwt,
-        "Content-Type": "application/x-www-form-urlencoded",
-      }),
+    return await new Promise((resolve, reject) => {
+      const options = isFetch
+        ? {
+            method: "GET",
+            headers: {
+              dvflCookie: jwt ? jwt : null,
+            },
+            url: getURL(path),
+          }
+        : path;
+      axios(options)
+        .then(async (response) => {
+          if (!isFetch) return resolve(response);
+
+          resolve(response);
+        })
+        .catch((e) => {
+          resolve({ error: e });
+        });
     });
-
-    var data;
-    if (response.status != 200) {
-      data = {
-        error: "unauthorized",
-      };
-    } else {
-      data = await response.json();
-    }
-
-    return data;
   }
 }
 

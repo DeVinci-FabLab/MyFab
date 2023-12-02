@@ -7,7 +7,7 @@ const Error = () => {
         <img
           className="text-center m-auto"
           src="https://cdn.dribbble.com/users/1192256/screenshots/6290585/1._friday.gif"
-          alt="this slowpoke moves"
+          alt="Actuellement en train de pleurer, le gif ne se charge pas"
           width="65%"
           height="65%"
         />

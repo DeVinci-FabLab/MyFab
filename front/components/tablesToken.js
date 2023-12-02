@@ -1,8 +1,5 @@
-import { MoonIcon } from "@heroicons/react/outline";
-import { setZero } from "../lib/function";
-
-export default function TableTablesAdmin({ token }) {
-  if (token.error) token = [];
+export default function TableTokensAdmin({ token }) {
+  if (!token) token = [];
   return (
     <div className="border border-gray-200 rounded overflow-x-auto min-w-full bg-white">
       <table className="min-w-full text-sm align-middle whitespace-nowrap">

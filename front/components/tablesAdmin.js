@@ -18,7 +18,7 @@ function dateDiff(date1, date2) {
   const diffDate = date2.getDate() - date1.getDate();
   if (diffDate !== 0) return `${diffDate} jour${diffDate > 1 ? "s" : ""}`;
 
-  const diffHour = date2.getDate() - date1.getDate();
+  const diffHour = date2.getHours() - date1.getHours();
   if (diffHour !== 0) return `${diffHour} heure${diffHour > 1 ? "s" : ""}`;
 
   const diffMinute = date2.getMinutes() - date1.getMinutes();
@@ -136,10 +136,11 @@ export default function TablesAdmin({
             </tr>
           </thead>
           <tbody>
-            {tickets.map((r) => {
+            {tickets.map((r, index) => {
               return (
                 <tr
-                  className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  key={`ticket-${index}`}
+                  className="ticket-element border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
                   onClick={() => router.push(`/panel/${r.id}`)}
                 >
                   <td className="p-3 text-center">
@@ -181,42 +182,27 @@ export default function TablesAdmin({
                       {r.statusName}
                     </div>
                   </td>
-                  {/*
-                <td className="p-3 text-center space-x-2">
-                  <Link href={`/panel/admin/${r.id}`}>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center items-center space-x-2 border font-medium focus:outline-none px-2 py-1 leading-5 text-sm rounded border-gray-300 bg-white text-gray-800 shadow-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300 hover:shadow focus:ring focus:ring-gray-500 focus:ring-opacity-25 active:bg-white active:border-white active:shadow-none">
-                      <MoonIcon className="inline-block w-4 h-4" />
-                      <span>Visualiser</span>
-                    </button>
-                  </Link>
-                  <button
-                    type="button"
-                    className="inline-flex justify-center items-center space-x-2 border font-medium focus:outline-none px-1 py-1 leading-5 text-sm rounded border-gray-300 bg-white text-gray-800 shadow-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300 hover:shadow focus:ring focus:ring-gray-500 focus:ring-opacity-25 active:bg-white active:border-white active:shadow-none">
-                    <DownloadIcon className="inline-block w-4 h-4" />
-                  </button>
-                </td>*/}
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-      <div class="grid place-items-center mb-10">
-        <div class="inline-flex mt-3">
+      <div className="grid place-items-center mb-10">
+        <div className="inline-flex mt-3">
           <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
+            className="prev-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
             onClick={() => nextPrevPage(-1)}
           >
             &lt;
           </button>
-          <p class="inline-flex py-2 px-4">
-            Pages&nbsp;<p class="font-bold">{actualPage + 1}</p>&nbsp;sur&nbsp;
-            <p class="font-bold">{maxPage != 0 ? maxPage : 1}</p>
-          </p>
+          <div className="inline-flex py-2 px-4">
+            Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>
+            &nbsp;sur&nbsp;
+            <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
+          </div>
           <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
+            className="next-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
             onClick={() => nextPrevPage(1)}
           >
             &gt;

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getCookie, setCookies } from "cookies-next";
 import { useEffect, useState } from "react";
 import router from "next/router";
@@ -11,9 +10,11 @@ export default function Auth() {
   const [password, setPassword] = useState(null);
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [toastedLoad, setToastedLoad] = useState(false);
 
   useEffect(() => {
-    if (router.query.close != null) {
+    if (!toastedLoad && router.query.close != null) {
+      setToastedLoad(true);
       setCookies("adfs", false);
       toast.error(
         "MyFab est actuellement fermé merci de réessayer plus tard.",
@@ -28,7 +29,8 @@ export default function Auth() {
         }
       );
     }
-    if (router.query.error != null) {
+    if (!toastedLoad && router.query.error != null) {
+      setToastedLoad(true);
       toast.error(
         "Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.",
         {
@@ -42,7 +44,8 @@ export default function Auth() {
         }
       );
     }
-    if (router.query.mail != null) {
+    if (!toastedLoad && router.query.mail != null) {
+      setToastedLoad(true);
       if (router.query.mail == "ok") {
         toast.success(
           "Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.",
@@ -70,7 +73,6 @@ export default function Auth() {
           }
         );
       }
-      router.replace("/auth");
     } else {
       // Connection avec le DVIC
       const adfs = getCookie("adfs");
@@ -80,7 +82,7 @@ export default function Auth() {
 
   async function login() {
     const expires = new Date(Date.now() + 7200000);
-    await axios({
+    const responseLogin = await fetchAPIAuth({
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -93,60 +95,57 @@ export default function Auth() {
         rememberMe: checked,
         expires: !checked ? expires : null,
       },
-    })
-      .then(async (response) => {
-        if (response.status == 200) {
-          if (!checked) {
-            setCookies("jwt", response.data.dvflCookie, { expires });
-          } else {
-            setCookies("jwt", response.data.dvflCookie);
-          }
-          await axios({
-            method: "GET",
-            headers: {
-              dvflCookie: response.data.dvflCookie,
-            },
-            url: process.env.API + "/api/user/authorization",
-          }).then((response) => {
-            if (response.data.myFabAgent == 1) {
-              router.push("/panel/admin");
-            } else {
-              router.push("/panel");
-            }
-          });
-        }
-        if (response.status == 204) {
-          toast.warning(
-            "Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.",
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            }
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setError(true);
-        setTimeout(() => setError(false), 5000);
-        toast.error(
-          "Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
+    });
+
+    if (responseLogin.status == 200) {
+      if (!checked) {
+        setCookies("jwt", responseLogin.data.dvflCookie, { expires });
+      } else {
+        setCookies("jwt", responseLogin.data.dvflCookie);
+      }
+
+      const responseAuth = await fetchAPIAuth({
+        method: "GET",
+        headers: {
+          dvflCookie: responseLogin.data.dvflCookie,
+        },
+        url: process.env.API + "/api/user/authorization",
       });
+
+      if (responseAuth.data.myFabAgent == 1) {
+        router.push("/panel/admin");
+      } else {
+        router.push("/panel");
+      }
+    } else if (responseLogin.status == 204) {
+      toast.warning(
+        "Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } else if (responseLogin.error) {
+      setError(true);
+      setTimeout(() => setError(false), 5000);
+      toast.error(
+        "Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    }
   }
 
   return (
@@ -176,34 +175,29 @@ export default function Auth() {
                     <div>
                       <div
                         className="cursor-pointer w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:bg-black hover:text-white duration-300"
-                        onClick={() => {
-                          axios({
-                            method: "GET",
-                            headers: {
-                              Accept: "application/json",
-                              "Content-Type": "application/json",
-                            },
-                            url: process.env.API + "/api/myFabOpen",
-                          }).then((response) => {
-                            if (response.data.myFabOpen === true) {
-                              router.push(
-                                process.env.API + "/api/user/login/adfs/"
-                              );
-                            } else {
-                              toast.error(
-                                "MyFab est actuellement fermé merci de réessayer plus tard.",
-                                {
-                                  position: "top-right",
-                                  autoClose: 3000,
-                                  hideProgressBar: true,
-                                  closeOnClick: true,
-                                  pauseOnHover: true,
-                                  draggable: true,
-                                  progress: undefined,
-                                }
-                              );
-                            }
-                          });
+                        onClick={async () => {
+                          const responseMyFabOpen = await fetchAPIAuth(
+                            "/myFabOpen"
+                          );
+
+                          if (responseMyFabOpen.myFabOpen === true) {
+                            router.push(
+                              process.env.API + "/api/user/login/adfs/"
+                            );
+                          } else {
+                            toast.error(
+                              "MyFab est actuellement fermé merci de réessayer plus tard.",
+                              {
+                                position: "top-right",
+                                autoClose: 3000,
+                                hideProgressBar: true,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                              }
+                            );
+                          }
                         }}
                       >
                         <span className="sr-only">Mon compte LéoID</span>
@@ -253,7 +247,7 @@ export default function Auth() {
                       type="email"
                       autoComplete="email"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`email appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300 " : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -277,7 +271,7 @@ export default function Auth() {
                       type="password"
                       autoComplete="current-password"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`password appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300" : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -291,7 +285,7 @@ export default function Auth() {
                       name="remember-me"
                       type="checkbox"
                       onChange={() => setChecked(!checked)}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
                     <label
                       htmlFor="remember-me"
@@ -315,7 +309,7 @@ export default function Auth() {
                     onClick={() => login()}
                     onSubmit={() => login()}
                     type="submit"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-blue-600 login-button"
+                    className="login-button w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-blue-600 login-button"
                   >
                     Se connecter
                   </button>

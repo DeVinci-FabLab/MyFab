@@ -34,7 +34,7 @@ export default function NewPanel({
   const [maxPage, setMaxPage] = useState(1);
   const [actualPage, setActualPage] = useState(0);
   let newActualPage = 0;
-  const [userTicketResult, setIserTicketResult] = useState([]);
+  const [userTicketResult, setUserTicketResult] = useState([]);
   const faq = [
     {
       question: "Quels sont les fichiers acceptés ?",
@@ -75,45 +75,65 @@ export default function NewPanel({
 
   async function update(newReserch) {
     if (newReserch) setActualPage(0);
-    const jwt = getCookie("jwt");
-    await axios({
-      method: "get",
+    const cookie = getCookie("jwt");
+    const responseGetTicket = await fetchAPIAuth({
+      method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        dvflCookie: jwt,
+        dvflCookie: cookie,
       },
+
       url: process.env.API + "/api/ticket/me",
-      params: { page: newActualPage },
-    })
-      .then((response) => {
-        setMaxPage(response.data.maxPage);
-        setIserTicketResult(response.data.values);
-      })
-      .catch(() => {
-        toast.error("Une erreur est survenue lors du chargement des tickets.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      data: { page: newActualPage },
+    });
+
+    if (!responseGetTicket.error) {
+      setMaxPage(responseGetTicket.data.maxPage);
+      setUserTicketResult(responseGetTicket.data.values);
+    } else {
+      toast.error("Une erreur est survenue lors du chargement des tickets.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+    }
   }
 
   const deleteTicket = async (id) => {
-    await axios({
+    const cookie = getCookie("jwt");
+    const responseDeleteTicket = await fetchAPIAuth({
       method: "DELETE",
-      url: process.env.API + "/api/ticket/" + id,
-      data,
       headers: {
-        dvflCookie: `${getCookie("jwt")}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
       },
-    })
-      .then(() => {
-        toast.success("Le ticket #" + setZero(id) + " a été supprimé.", {
+
+      url: process.env.API + "/api/ticket/" + id,
+      data: { page: newActualPage },
+    });
+
+    if (!responseDeleteTicket.error) {
+      toast.success("Le ticket #" + setZero(id) + " a été supprimé.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error(
+        "Une erreur est survenue lors de la suppression du ticket #" +
+          setZero(id) +
+          ".",
+        {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -121,25 +141,9 @@ export default function NewPanel({
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        });
-        update();
-      })
-      .catch(() => {
-        toast.error(
-          "Une erreur est survenue lors de la suppression du ticket #" +
-            setZero(id) +
-            ".",
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          }
-        );
-      });
+        }
+      );
+    }
     router.replace(router.asPath);
   };
 
@@ -174,16 +178,16 @@ export default function NewPanel({
                       </p>
                     </div>
                     <dl className="divide-y divide-gray-200">
-                      {faq.map((faq) => (
+                      {faq.map((faq, index) => (
                         <Disclosure
                           as="div"
-                          key={faq.question}
+                          key={`faq-${index}`}
                           className="pt-6"
                         >
                           {({ open }) => (
                             <>
                               <dt className="text-sm">
-                                <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
+                                <Disclosure.Button className="faq-button text-left w-full flex justify-between items-start text-gray-400">
                                   <span className="font-medium text-gray-900">
                                     {faq.question}
                                   </span>
@@ -216,10 +220,10 @@ export default function NewPanel({
             <main className="col-span-9">
               {highDemand ? (
                 <div
-                  class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4"
+                  className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4"
                   role="alert"
                 >
-                  <p class="font-bold">Attention</p>
+                  <p className="font-bold">Attention</p>
                   <p>
                     Il y a actuellement beaucoup de demandes d'impression 3D.
                     Merci pour votre patience.
@@ -256,9 +260,12 @@ export default function NewPanel({
                             </tr>
                           </thead>
                           <tbody>
-                            {userTicketResult.map((r) => {
+                            {userTicketResult.map((r, index) => {
                               return (
-                                <tr className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer">
+                                <tr
+                                  key={`ticket-${index}`}
+                                  className="ticket-element border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                                >
                                   <td
                                     className="p-3 text-center"
                                     onClick={() =>
@@ -315,7 +322,7 @@ export default function NewPanel({
                                       as="div"
                                       className="relative flex justify-end items-center"
                                     >
-                                      <Menu.Button className="w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                                      <Menu.Button className="open-delete-button w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                                         <span className="sr-only">
                                           Open options
                                         </span>
@@ -345,7 +352,7 @@ export default function NewPanel({
                                                     active
                                                       ? "bg-gray-100 text-gray-900"
                                                       : "text-gray-700",
-                                                    "group flex items-center px-4 py-2 text-sm"
+                                                    "delete-button group flex items-center px-4 py-2 text-sm"
                                                   )}
                                                 >
                                                   <TrashIcon
@@ -367,23 +374,24 @@ export default function NewPanel({
                           </tbody>
                         </table>
                       </div>
-                      <div class="grid place-items-center mb-10">
-                        <div class="inline-flex mt-3">
+                      <div className="grid place-items-center mb-10">
+                        <div className="inline-flex mt-3">
                           <button
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
+                            className="prev-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
                             onClick={() => nextPrevPage(-1)}
                           >
                             &lt;
                           </button>
-                          <p class="inline-flex py-2 px-4">
-                            Pages&nbsp;<p class="font-bold">{actualPage + 1}</p>
+                          <div className="inline-flex py-2 px-4">
+                            Pages&nbsp;
+                            <p className="font-bold">{actualPage + 1}</p>
                             &nbsp;sur&nbsp;
-                            <p class="font-bold">
+                            <p className="font-bold">
                               {maxPage != 0 ? maxPage : 1}
                             </p>
-                          </p>
+                          </div>
                           <button
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
+                            className="next-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
                             onClick={() => nextPrevPage(1)}
                           >
                             &gt;
@@ -398,7 +406,7 @@ export default function NewPanel({
                         créer une, cliquez sur le bouton suivant.
                       </p>
                       <Link href="/panel/new/">
-                        <p className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
+                        <div className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
                           <span>Créer une demande</span>
                           <svg
                             className="hi-solid hi-arrow-right inline-block w-4 h-4"
@@ -407,12 +415,12 @@ export default function NewPanel({
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              fill-rule="evenodd"
+                              fillRule="evenodd"
                               d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                               clipRule="evenodd"
                             />
                           </svg>
-                        </p>
+                        </div>
                       </Link>
                     </div>
                   )}
@@ -442,10 +450,10 @@ export async function getServerSideProps({ req }) {
 
   return {
     props: {
-      user,
-      role,
-      authorizations,
-      highDemand: highDemand.result ? highDemand.result : false,
+      user: user.data,
+      role: role.data,
+      authorizations: authorizations.data,
+      highDemand: highDemand.data.result ? highDemand.data.result : false,
     }, // will be passed to the page component as props
   };
 }

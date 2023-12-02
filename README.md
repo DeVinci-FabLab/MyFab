@@ -5,10 +5,10 @@
 	</p>
 	<br />
 	<p>
-		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-agent.yml/badge.svg" alt="Agent status" /></a>
-		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-back.yml/badge.svg" alt="Back status" /></a>
-		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-front.yml/badge.svg" alt="Front status" /></a>
-		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Linter.yml/badge.svg" alt="Linter status" /></a>
+		<a href="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-agent.yml"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-agent.yml/badge.svg" alt="Agent status" /></a>
+		<a href="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-back.yml"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-back.yml/badge.svg" alt="Back status" /></a>
+		<a href="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-front.yml"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Tests-front.yml/badge.svg" alt="Front status" /></a>
+		<a href="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Linter.yml"><img src="https://github.com/DeVinci-FabLab/MyFab/actions/workflows/Linter.yml/badge.svg" alt="Linter status" /></a>
   </p>
 </div>
 
