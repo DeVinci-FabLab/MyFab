@@ -23,7 +23,7 @@ async function restart(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/agent/restart/", async function (req, res) {
+  app.get("/agent/restart/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

@@ -55,7 +55,7 @@ async function clickOnLogoPaintPost(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.post("/api/clickonlogopaint/", async function (req, res) {
+  app.post("/clickonlogopaint/", async function (req, res) {
     const data = await require("../../functions/apiActions").prepareData(
       app,
       req,

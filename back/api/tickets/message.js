@@ -277,7 +277,7 @@ async function postTicketMessage(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/ticket/:id/message/", async function (req, res) {
+  app.get("/ticket/:id/message/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -297,7 +297,7 @@ async function startApi(app) {
     }
   });
 
-  app.post("/api/ticket/:id/message/", async function (req, res) {
+  app.post("/ticket/:id/message/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

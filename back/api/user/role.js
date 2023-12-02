@@ -687,7 +687,7 @@ async function deleteRemoveRoleForUser(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/role/", async function (req, res) {
+  app.get("/role/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -707,7 +707,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/user/:idUser/role/", async function (req, res) {
+  app.get("/user/:idUser/role/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -727,7 +727,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/user/role/", async function (req, res) {
+  app.get("/user/role/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -747,7 +747,7 @@ async function startApi(app) {
     }
   });
 
-  app.post("/api/user/:idUser/role/:idRole/", async function (req, res) {
+  app.post("/user/:idUser/role/:idRole/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -767,7 +767,7 @@ async function startApi(app) {
     }
   });
 
-  app.delete("/api/user/:idUser/role/:idRole/", async function (req, res) {
+  app.delete("/user/:idUser/role/:idRole/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

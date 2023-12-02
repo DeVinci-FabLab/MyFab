@@ -119,7 +119,7 @@ async function postLogin(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.post("/api/user/login/", async function (req, res) {
+  app.post("/user/login/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

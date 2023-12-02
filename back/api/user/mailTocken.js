@@ -67,7 +67,7 @@ async function getMailtoken(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/user/mailtoken/", async function (req, res) {
+  app.get("/user/mailtoken/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

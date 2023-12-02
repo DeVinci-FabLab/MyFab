@@ -613,7 +613,7 @@ async function userRenamePut(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/user/", async function (req, res) {
+  app.get("/user/", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -629,7 +629,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/user/me", async function (req, res) {
+  app.get("/user/me", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -645,7 +645,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/user/:id", async function (req, res) {
+  app.get("/user/:id", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -661,7 +661,7 @@ async function startApi(app) {
     }
   });
 
-  app.delete("/api/user/:id", async function (req, res) {
+  app.delete("/user/:id", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -677,7 +677,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/api/user/rename/:id", async function (req, res) {
+  app.put("/user/rename/:id", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
