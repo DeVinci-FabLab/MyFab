@@ -439,7 +439,7 @@ async function putResetPassword(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.put("/user/password/", async function (req, res) {
+  app.put("/api/user/password/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -459,7 +459,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/user/password/:id", async function (req, res) {
+  app.put("/api/user/password/:id", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -479,7 +479,7 @@ async function startApi(app) {
     }
   });
 
-  app.post("/user/forgottenPassword/", async function (req, res) {
+  app.post("/api/user/forgottenPassword/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -500,7 +500,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/user/resetPassword/:tocken", async function (req, res) {
+  app.put("/api/user/resetPassword/:tocken", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

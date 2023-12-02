@@ -754,7 +754,7 @@ async function ticketFilePut(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/ticket/:id/file", async (req, res) => {
+  app.get("/api/ticket/:id/file", async (req, res) => {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -774,7 +774,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/file/:id/getToken", async (req, res) => {
+  app.get("/api/file/:id/getToken", async (req, res) => {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -794,7 +794,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/file/:id/", async (req, res) => {
+  app.get("/api/file/:id/", async (req, res) => {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -814,7 +814,7 @@ async function startApi(app) {
     }
   });
 
-  app.post("/ticket/:id/file/", async (req, res) => {
+  app.post("/api/ticket/:id/file/", async (req, res) => {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -834,7 +834,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/file/:id/", async (req, res) => {
+  app.put("/api/file/:id/", async (req, res) => {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

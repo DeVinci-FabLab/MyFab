@@ -13,7 +13,7 @@ async function update(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/agent/update/", async function (req, res) {
+  app.get("/api/agent/update/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

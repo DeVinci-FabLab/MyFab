@@ -45,7 +45,7 @@ async function getAuth(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/user/authorization/", async function (req, res) {
+  app.get("/api/user/authorization/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
