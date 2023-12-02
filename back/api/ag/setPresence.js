@@ -50,7 +50,7 @@ module.exports.startApi = startApi;
 async function startApi(app) {
   //Feature not available yet
   return;
-  app.post("/ag/presence/", async function (req, res) {
+  app.post("/api/ag/presence/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

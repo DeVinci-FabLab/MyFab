@@ -68,7 +68,7 @@ if (process.env.SHOWSWAGGER === "true") {
       },
       servers: [
         {
-          url: process.env.API + "/",
+          url: process.env.API + "/api/",
         },
       ],
     },

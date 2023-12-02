@@ -54,7 +54,7 @@ async function getImage(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/files/:type/:tag", async function (req, res) {
+  app.get("/api/files/:type/:tag", async function (req, res) {
     const data = await require("../../functions/apiActions").prepareData(
       app,
       req,

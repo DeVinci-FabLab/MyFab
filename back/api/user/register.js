@@ -188,7 +188,7 @@ async function postRegister(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.post("/user/register/", async function (req, res) {
+  app.post("/api/user/register/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

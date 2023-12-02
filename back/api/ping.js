@@ -132,7 +132,7 @@ async function pingDelete(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/ping/", async function (req, res) {
+  app.get("/api/ping/", async function (req, res) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
@@ -148,7 +148,7 @@ async function startApi(app) {
     }
   });
 
-  app.post("/ping/", async function (req, res) {
+  app.post("/api/ping/", async function (req, res) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
@@ -164,7 +164,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/ping/", async function (req, res) {
+  app.put("/api/ping/", async function (req, res) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
@@ -180,7 +180,7 @@ async function startApi(app) {
     }
   });
 
-  app.delete("/ping/", async function (req, res) {
+  app.delete("/api/ping/", async function (req, res) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,

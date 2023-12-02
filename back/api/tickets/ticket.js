@@ -1419,7 +1419,7 @@ async function getHighDemand(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/ticket/highDemand/", async function (req, res) {
+  app.get("/api/ticket/highDemand/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1439,7 +1439,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/ticket/me/", async function (req, res) {
+  app.get("/api/ticket/me/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1459,7 +1459,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/ticket/", async function (req, res) {
+  app.get("/api/ticket/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1479,7 +1479,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/ticket/:id", async function (req, res) {
+  app.get("/api/ticket/:id", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1499,7 +1499,7 @@ async function startApi(app) {
     }
   });
 
-  app.post("/ticket/", async function (req, res) {
+  app.post("/api/ticket/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1519,7 +1519,7 @@ async function startApi(app) {
     }
   });
 
-  app.delete("/ticket/:id", async function (req, res) {
+  app.delete("/api/ticket/:id", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1539,7 +1539,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/ticket/:id/setProjecttype", async function (req, res) {
+  app.put("/api/ticket/:id/setProjecttype", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1559,7 +1559,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/ticket/:id/setStatus", async function (req, res) {
+  app.put("/api/ticket/:id/setStatus", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
@@ -1579,7 +1579,7 @@ async function startApi(app) {
     }
   });
 
-  app.put("/ticket/:id/setCancelStatus", async function (req, res) {
+  app.put("/api/ticket/:id/setCancelStatus", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
