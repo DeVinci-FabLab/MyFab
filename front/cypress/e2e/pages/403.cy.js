@@ -12,6 +12,9 @@ describe("Page 403", () => {
     cy.get(".login-button", {
       timeout: 10000,
     }).should("be.visible");
-    cy.location("href").should("eq", "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth");
+    cy.location("href").should(
+      "eq",
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth"
+    );
   });
 });
