@@ -2,7 +2,10 @@
 
 describe("Page random", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom", { failOnStatusCode: false });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom",
+      { failOnStatusCode: false }
+    );
   });
 
   it("Go back to auth", () => {
