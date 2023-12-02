@@ -2,10 +2,7 @@
 
 describe("Page random", () => {
   beforeEach(() => {
-    cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom",
-      { failOnStatusCode: false }
-    );
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom", { failOnStatusCode: false });
   });
 
   it("Go back to auth", () => {
@@ -13,6 +10,6 @@ describe("Page random", () => {
     cy.get(".login-button", {
       timeout: 10000,
     }).should("be.visible");
-    cy.location("href").should("eq", "http://localhost:3000/auth");
+    cy.location("href").should("eq", "http://localhost:3000/" + Cypress.env().BASE_PATH + "auth");
   });
 });
