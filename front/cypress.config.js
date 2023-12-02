@@ -22,11 +22,7 @@ module.exports = defineConfig({
     },
   },
   env: {
-    API: process.env.API
-      ? process.env.API.split("")[process.env.API.length - 1] === "/"
-        ? process.env.API.substring(0, process.env.API.length - 1)
-        : process.env.API
-      : "http://localhost:5000",
+    API: "http://localhost:5000/",
     BASE_PATH: process.env.BASE_PATH
       ? process.env.BASE_PATH.split("")[0] === "/"
         ? process.env.BASE_PATH.substring(1, process.env.BASE_PATH.length)

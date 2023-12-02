@@ -8,7 +8,7 @@ export function getURL(path = "") {
 
 export async function fetchAPIAuth(path, jwt) {
   const isFetch = typeof path === "string";
-  if (process.env.IS_TEST_MODE) {
+  if (process.env.IS_TEST_MODE == "true") {
     return mockApi(path, jwt);
   } else {
     return await new Promise((resolve, reject) => {

@@ -11,11 +11,10 @@ RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 
-COPY . /home/node/MyFab/
-WORKDIR /home/node/MyFab/agent
-RUN git remote set-url origin https://github.com/DeVinci-FabLab/MyFab.git
+COPY . /home/node/MyFab_Front/
+WORKDIR /home/node/MyFab_Front/
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-ENV IS_LINUX=true
-ENV ENV_NAME=front
 
-CMD ["sh", "start.sh"]
+RUN npm install 
+
+CMD ["npm", "run", "buildStart"]

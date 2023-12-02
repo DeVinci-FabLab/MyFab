@@ -50,6 +50,7 @@ async function runFolder(path, app) {
 module.exports.startApi = async (app) => {
   await runFolder("/api", app);
   app.get("*", async function (req, res) {
+    console.log(`ERROR : Route "${req.path}" not found`);
     res.sendStatus(404);
   });
 };
