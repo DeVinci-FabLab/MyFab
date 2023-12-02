@@ -25,7 +25,7 @@ async function changeOpenMyFab(data) {
 
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/adsfInfo/", async function (req, res) {
+  app.get("/adsfInfo/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

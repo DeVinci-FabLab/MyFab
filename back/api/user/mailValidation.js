@@ -101,7 +101,7 @@ async function putMailValidation(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.put("/api/user/mailValidation/:tocken", async function (req, res) {
+  app.put("/user/mailValidation/:tocken", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

@@ -242,12 +242,12 @@ async function startApi(app) {
       }
     );
   } else {
-    app.get("/api/user/login/adfs/", function (req, res) {
+    app.get("/user/login/adfs/", function (req, res) {
       res.redirect(`${process.env.ADFS_FRONT_URL}/auth/?error=true`);
     });
   }
 
-  app.post("/api/user/login/adfs/", async (req, res) => {
+  app.post("/user/login/adfs/", async (req, res) => {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,

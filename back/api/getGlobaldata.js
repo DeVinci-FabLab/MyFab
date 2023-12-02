@@ -227,7 +227,7 @@ async function getVersion(data) {
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.get("/api/status", async function (req, res) {
+  app.get("/status", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -243,7 +243,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/projectType/", async function (req, res) {
+  app.get("/projectType/", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -259,7 +259,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/printer/", async function (req, res) {
+  app.get("/printer/", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -275,7 +275,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/version/", async function (req, res) {
+  app.get("/version/", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
@@ -291,7 +291,7 @@ async function startApi(app) {
     }
   });
 
-  app.get("/api/myFabOpen/", async function (req, res) {
+  app.get("/myFabOpen/", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
