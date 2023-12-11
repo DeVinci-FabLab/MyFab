@@ -13,8 +13,11 @@ services:
       MARIADB_DATABASE: ${DB_DATABASE}
     volumes:
       - mariaDb:/var/lib/mysql
+    expose:
+      - "3306"
     networks:
-      - MyFab
+      MyFab:
+        ipv4_address: ${MARIA_IP}
 
   back:
     build:
@@ -28,10 +31,11 @@ services:
       - ./back/data/:/home/node/MyFab_Back/data/
       - ./back/logs/:/home/node/MyFab_Back/logs/
       - ./.env:/home/node/MyFab_Back/.env
-    ports:
-      - ${PORT_BACK}:5000
+    expose:
+      - "5000"
     networks:
-      - MyFab
+      MyFab:
+        ipv4_address: ${BACK_IP}
 
   front:
     build:
@@ -43,13 +47,19 @@ services:
       - "back"
     volumes:
       - ./.env:/home/node/MyFab_Front/.env
-    ports:
-      - ${PORT_FRONT}:3000
+    expose:
+      - "3000"
     networks:
-      - MyFab
+      MyFab:
+        ipv4_address: ${FRONT_IP}
 
 volumes:
   mariaDb:
 
 networks:
   MyFab:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: ${SUBNET}
+         gateway: ${GATEWAY}
