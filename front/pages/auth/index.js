@@ -164,70 +164,6 @@ export default function Auth() {
           </div>
 
           <div className="mt-8">
-            <div>
-              <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">
-                  Se connecter avec
-                </p>
-
-                <div className="mt-1">
-                  <div className="">
-                    <div>
-                      <div
-                        className="cursor-pointer w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:bg-black hover:text-white duration-300"
-                        onClick={async () => {
-                          const responseMyFabOpen = await fetchAPIAuth(
-                            "/myFabOpen"
-                          );
-
-                          if (responseMyFabOpen.myFabOpen === true) {
-                            router.push(
-                              process.env.API + "/api/user/login/adfs/"
-                            );
-                          } else {
-                            toast.error(
-                              "MyFab est actuellement fermé merci de réessayer plus tard.",
-                              {
-                                position: "top-right",
-                                autoClose: 3000,
-                                hideProgressBar: true,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                              }
-                            );
-                          }
-                        }}
-                      >
-                        <span className="sr-only">Mon compte LéoID</span>
-                        <img
-                          src={
-                            process.env.BASE_PATH + "/photo/Microsoft_logo.svg"
-                          }
-                          className="h-5 w-5"
-                        />
-                        <p className="ml-2">Mon compte LéoID</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 relative">
-                <div
-                  className="absolute inset-0 flex items-center"
-                  aria-hidden="true"
-                >
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Ou continuer avec
-                  </span>
-                </div>
-              </div>
-            </div>
             <div className="mt-6">
               <div className="space-y-6">
                 <div className="">
@@ -279,22 +215,13 @@ export default function Auth() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="remember-me"
-                      name="remember-me"
-                      type="checkbox"
-                      onChange={() => setChecked(!checked)}
-                      className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
-                    <label
-                      htmlFor="remember-me"
-                      className="ml-2 block text-sm text-gray-900"
-                    >
-                      Se souvenir de moi
-                    </label>
+                  <div className="text-sm">
+                    <Link href="/auth/forget">
+                      <p className="font-medium text-blue-700 hover:text-blue-600">
+                      Créer un compte
+                      </p>
+                    </Link>
                   </div>
-
                   <div className="text-sm">
                     <Link href="/auth/forget">
                       <p className="font-medium text-blue-700 hover:text-blue-600">
@@ -303,7 +230,22 @@ export default function Auth() {
                     </Link>
                   </div>
                 </div>
-
+                
+                <div className="flex items-center justify-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    onChange={() => setChecked(!checked)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 block text-sm text-gray-900"
+                  >
+                    Se souvenir de moi
+                  </label>
+                </div>
                 <div>
                   <button
                     onClick={() => login()}
@@ -313,10 +255,6 @@ export default function Auth() {
                   >
                     Se connecter
                   </button>
-                  <p className="text-sm text-center text-gray-500 p-1">
-                    La connexion par adresse e-mail est réservée aux anciens
-                    comptes MyFab.
-                  </p>
                   {/*<Link href="/auth/register">
                     <p className="text-sm text-center text-gray-500 p-1 hover:cursor-pointer">S'inscrire</p>
                   </Link>
