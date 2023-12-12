@@ -26,7 +26,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
     }
     if (!toastedLoad && router.query.error != null) {
@@ -41,7 +41,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
     }
     if (!toastedLoad && router.query.mail != null) {
@@ -57,7 +57,7 @@ export default function Auth() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
+          },
         );
       } else {
         toast.error(
@@ -70,7 +70,7 @@ export default function Auth() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
+          },
         );
       }
     } else {
@@ -128,7 +128,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
     } else if (responseLogin.error) {
       setError(true);
@@ -143,7 +143,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
     }
   }
@@ -216,9 +216,9 @@ export default function Auth() {
 
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
-                    <Link href="/auth/forget">
+                    <Link href="/auth/register">
                       <p className="font-medium text-blue-700 hover:text-blue-600">
-                      Créer un compte
+                        Créer un compte
                       </p>
                     </Link>
                   </div>
@@ -230,14 +230,14 @@ export default function Auth() {
                     </Link>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-center">
                   <input
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
                     onChange={() => setChecked(!checked)}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                   <label
                     htmlFor="remember-me"
