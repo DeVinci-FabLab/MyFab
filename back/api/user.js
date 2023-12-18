@@ -155,25 +155,28 @@ async function userGetAll(data) {
   const inputText =
     data.query && data.query.inputValue ? data.query.inputValue : "";
   const page = data.query && data.query.page ? data.query.page : 0;
-  const orderCollumn = getOrderCollumnName(
-    data.query && data.query.collumnName ? data.query.collumnName : "i_id"
-  );
+  const orderCollumn =
+    "u." +
+    getOrderCollumnName(
+      data.query && data.query.collumnName ? data.query.collumnName : "i_id"
+    );
   const order = data.query && data.query.order === "false" ? "DESC" : "ASC";
-  const querySelect = `SELECT i_id AS id,
-                v_firstName AS firstName,
-                v_lastName AS lastName,
-                v_email AS email,
-                v_title AS "title",
-                b_isMicrosoft AS "isMicrosoft"
-                FROM users
-                WHERE b_deleted = 0
-                AND b_visible = 1
+  const querySelect = `SELECT u.i_id AS id,
+                u.v_firstName AS firstName,
+                u.v_lastName AS lastName,
+                u.v_email AS email,
+                COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                u.b_isMicrosoft AS "isMicrosoft"
+                FROM users AS u
+                LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                WHERE u.b_deleted = 0
+                AND u.b_visible = 1
                 AND (
                     "" = ?
-                    OR i_id LIKE CONCAT("%", ?, "%")
-                    OR v_firstName LIKE CONCAT("%", ?, "%")
-                    OR v_lastName LIKE CONCAT("%", ?, "%")
-                    OR v_email LIKE CONCAT("%", ?, "%")
+                    OR u.i_id LIKE CONCAT("%", ?, "%")
+                    OR u.v_firstName LIKE CONCAT("%", ?, "%")
+                    OR u.v_lastName LIKE CONCAT("%", ?, "%")
+                    OR u.v_email LIKE CONCAT("%", ?, "%")
                     )
                 ORDER BY ${orderCollumn} ${order}
                 ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
@@ -278,20 +281,22 @@ async function userGetMe(data) {
       code: 401,
     };
   }
-  const querySelect = `SELECT i_id AS id,
-                    v_firstName AS "firstName",
-                    v_lastName AS "lastName",
-                    v_email AS "email",
-                    dt_creationdate AS "creationDate",
-                    v_discordid AS "discordid",
-                    v_language AS "language",
-                    v_title AS "title",
-                    b_isMicrosoft AS "isMicrosoft",
-                    (SELECT CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users WHERE i_id = ?) AS "acceptedRule",
-                    b_mailValidated AS "mailValidated"
-                    FROM users
-                    WHERE i_id = ?
-                    AND b_deleted = 0`;
+  const querySelect = `SELECT u.i_id AS id,
+                      u.v_firstName AS "firstName",
+                      u.v_lastName AS "lastName",
+                      u.v_email AS "email",
+                      u.dt_creationdate AS "creationDate",
+                      u.v_discordid AS "discordid",
+                      u.v_language AS "language",
+                      COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                      u.b_isMicrosoft AS "isMicrosoft",
+                      (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
+                      u.b_mailValidated AS "mailValidated"
+                      FROM users AS u
+                      LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                      WHERE u.i_id = ?
+                      AND b_deleted = 0`;
+
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
     userIdAgent,
     userIdAgent,
@@ -388,20 +393,21 @@ async function userGetById(data) {
       code: 403,
     };
   }
-  const querySelect = `SELECT i_id AS "id",
-                    v_firstName AS "firstName",
-                    v_lastName AS "lastName",
-                    v_email AS "email",
-                    dt_creationdate AS "creationDate",
-                    v_discordid AS "discordid",
-                    v_language AS "language",
-                    v_title AS "title",
-                    b_isMicrosoft AS "isMicrosoft",
-                    (SELECT CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users WHERE i_id = ?) AS "acceptedRule",
-                    b_mailValidated AS "mailValidated"
-                    FROM users
-                    WHERE i_id = ?
-                    AND b_deleted = 0`;
+  const querySelect = `SELECT u.i_id AS "id",
+                    u.v_firstName AS "firstName",
+                    u.v_lastName AS "lastName",
+                    u.v_email AS "email",
+                    u.dt_creationdate AS "creationDate",
+                    u.v_discordid AS "discordid",
+                    u.v_language AS "language",
+                    COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                    u.b_isMicrosoft AS "isMicrosoft",
+                    (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
+                    u.b_mailValidated AS "mailValidated"
+                    FROM users AS u
+                    LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                    WHERE u.i_id = ?
+                    AND u.b_deleted = 0`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
     idUserTarget,
     idUserTarget,

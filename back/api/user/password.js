@@ -1,4 +1,6 @@
 const sha256 = require("sha256");
+const sendMailFunction =
+  require("../../functions/sendMail").sendForgetPasswordMail;
 
 function makeid(length) {
   var result = "";
@@ -275,7 +277,8 @@ async function postForgottenPassword(data) {
   }
   const email = data.body.email;
 
-  const querySelect = `SELECT i_id AS id
+  const querySelect = `SELECT i_id AS id,
+                        v_firstName AS firstName
                         FROM users
                         WHERE v_email = ?
                         AND b_deleted = 0
@@ -299,6 +302,7 @@ async function postForgottenPassword(data) {
     };
   }
   const idNewUser = dbRes[1][0].id;
+  const firstName = dbRes[1][0].firstName;
   const tocken = makeid(10);
 
   const sendMail = data.body.sendMail == null ? true : data.body.sendMail;
@@ -309,6 +313,9 @@ async function postForgottenPassword(data) {
     queryInsert,
     [idNewUser, tocken, sendMail ? "1" : "0"]
   );
+
+  await data.sendMailFunction(email, firstName, tocken);
+
   /* c8 ignore start */
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
@@ -486,7 +493,7 @@ async function startApi(app) {
         req,
         res
       );
-      data.sendMailFunction = require("../../functions/sendMail");
+      data.sendMailFunction = sendMailFunction;
       const result = await postForgottenPassword(data);
       await require("../../functions/apiActions").sendResponse(
         req,
