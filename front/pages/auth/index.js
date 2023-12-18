@@ -26,7 +26,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        },
+        }
       );
     }
     if (!toastedLoad && router.query.error != null) {
@@ -41,7 +41,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        },
+        }
       );
     }
     if (!toastedLoad && router.query.mail != null) {
@@ -57,7 +57,7 @@ export default function Auth() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          },
+          }
         );
       } else {
         toast.error(
@@ -70,7 +70,7 @@ export default function Auth() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          },
+          }
         );
       }
     } else {
@@ -128,7 +128,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        },
+        }
       );
     } else if (responseLogin.error) {
       setError(true);
@@ -143,7 +143,7 @@ export default function Auth() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        },
+        }
       );
     }
   }
