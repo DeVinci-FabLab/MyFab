@@ -1,3 +1,7 @@
+function emptyFunction() {
+  return;
+}
+
 describe("PUT /user/password/", () => {
   test("200", async () => {
     //Execute
@@ -13,6 +17,7 @@ describe("PUT /user/password/", () => {
         actualPassword: "string",
         newPassword: "newPassword",
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
       data
@@ -30,6 +35,7 @@ describe("PUT /user/password/", () => {
       app: {
         cookiesList: {},
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
       data
@@ -50,6 +56,7 @@ describe("PUT /user/password/", () => {
       body: {
         newPassword: "newPassword",
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
       data
@@ -70,6 +77,7 @@ describe("PUT /user/password/", () => {
       body: {
         actualPassword: "string",
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
       data
@@ -90,6 +98,7 @@ describe("PUT /user/password/", () => {
         actualPassword: "string",
         newPassword: "newPassword",
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
       data
@@ -114,6 +123,7 @@ describe("PUT /user/password/", () => {
         actualPassword: "incorrectPassword",
         newPassword: "newPassword",
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
       data
@@ -147,6 +157,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -171,6 +182,7 @@ describe("PUT /user/password/:id", () => {
       body: {
         newPassword: "newPassword",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -196,6 +208,7 @@ describe("PUT /user/password/:id", () => {
         newPassword: "newPassword",
       },
       params: {},
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -223,6 +236,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: "userDataTarget",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -247,6 +261,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -272,6 +287,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -298,6 +314,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -328,6 +345,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -358,6 +376,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -388,6 +407,7 @@ describe("PUT /user/password/:id", () => {
       params: {
         id: 2,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putPasswordUser(data);
@@ -430,6 +450,7 @@ describe("POST /api/user/forgottenPassword/", () => {
       body: {
         email: "test@test.com",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").postForgottenPassword(data);
@@ -471,6 +492,7 @@ describe("POST /api/user/forgottenPassword/", () => {
         email: "test@test.com",
         sendMail: false,
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").postForgottenPassword(data);
@@ -501,6 +523,7 @@ describe("POST /api/user/forgottenPassword/", () => {
       body: {
         email: "user@wrongMail.com",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").postForgottenPassword(data);
@@ -525,6 +548,7 @@ describe("POST /api/user/forgottenPassword/", () => {
       sendMailFunction: {
         sendMail: (email, title, body) => {},
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").postForgottenPassword(data);
@@ -550,6 +574,7 @@ describe("POST /api/user/forgottenPassword/", () => {
         sendMail: (email, title, body) => {},
       },
       body: {},
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").postForgottenPassword(data);
@@ -596,6 +621,7 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
       params: {
         tocken: "token",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putResetPassword(data);
@@ -619,6 +645,7 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
       body: {
         newPassword: "newPassword",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putResetPassword(data);
@@ -643,6 +670,7 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
         newPassword: "newPassword",
       },
       params: {},
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putResetPassword(data);
@@ -666,6 +694,7 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
       params: {
         tocken: "token",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putResetPassword(data);
@@ -690,6 +719,7 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
       params: {
         tocken: "token",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putResetPassword(data);
@@ -720,6 +750,7 @@ describe("PUT /api/user/resetPassword/:tocken", () => {
       params: {
         tocken: "token",
       },
+      sendMailFunction: emptyFunction,
     };
     const response =
       await require("../../../api/user/password").putResetPassword(data);

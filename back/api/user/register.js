@@ -1,4 +1,5 @@
 const sha256 = require("sha256");
+const sendMailFunction = require("../../functions/sendMail").sendRegisterMail;
 const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
@@ -168,6 +169,9 @@ async function postRegister(data) {
     queryInsertTocken,
     [idNewUser, tocken, sendMail ? "1" : "0"]
   );
+
+  await data.sendMailFunction(data.body.email, data.body.firstName, tocken);
+
   /* c8 ignore start */
   if (resInsertTocken[0]) {
     console.log(resInsertTocken[0]);
@@ -195,7 +199,7 @@ async function startApi(app) {
         req,
         res
       );
-      data.sendMailFunction = require("../../functions/sendMail");
+      data.sendMailFunction = sendMailFunction;
       const result = await postRegister(data);
       await require("../../functions/apiActions").sendResponse(
         req,

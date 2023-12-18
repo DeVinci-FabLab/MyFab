@@ -35,9 +35,7 @@ describe("POST /user/register/", () => {
         email: "test@test.fr",
         password: "test",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -78,9 +76,7 @@ describe("POST /user/register/", () => {
         password: "test",
         language: "fr",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -121,9 +117,7 @@ describe("POST /user/register/", () => {
         password: "test",
         sendMail: false,
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -160,9 +154,7 @@ describe("POST /user/register/", () => {
         email: "test@test.fr",
         password: "test",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -182,9 +174,7 @@ describe("POST /user/register/", () => {
         email: "test@test.fr",
         password: "test",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -204,9 +194,7 @@ describe("POST /user/register/", () => {
         lastName: "200",
         password: "test",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -226,9 +214,7 @@ describe("POST /user/register/", () => {
         lastName: "200",
         email: "test@test.fr",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -249,9 +235,7 @@ describe("POST /user/register/", () => {
         email: "test.fr",
         password: "test",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/register").postRegister(
       data
@@ -275,9 +259,7 @@ describe("POST /user/register/", () => {
         email: "test2@test.fr",
         password: "test",
       },
-      sendMailFunction: {
-        sendMail: (email, title, body) => {},
-      },
+      sendMailFunction: emptyFunction,
     };
     await require("../../../api/user/register").postRegister(data);
     const response = await require("../../../api/user/register").postRegister(
