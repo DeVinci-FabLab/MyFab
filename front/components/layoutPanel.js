@@ -23,7 +23,13 @@ let version = null;
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function LayoutPanel({ children, user, role, authorizations, titleMenu }) {
+export default function LayoutPanel({
+  children,
+  user,
+  role,
+  authorizations,
+  titleMenu,
+}) {
   const router = useRouter();
   const pn = router.pathname;
   if (!authorizations) authorizations = {};
@@ -85,7 +91,8 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
   async function validSchool() {
     const cookie = getCookie("jwt");
     let errorMessage = null;
-    if (selectedSchool === 0) errorMessage = "Vous devez sélectionner une école";
+    if (selectedSchool === 0)
+      errorMessage = "Vous devez sélectionner une école";
     if (selectedYear === 0) errorMessage = "Vous devez sélectionner une année";
     if (errorMessage) {
       toast.error(errorMessage, {
@@ -150,7 +157,10 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
     if (!version) {
       setTimeout(async () => {
         const authorizationsResponse = await fetchAPIAuth("/version/");
-        if (!authorizationsResponse.error && authorizationsResponse.status == 200) {
+        if (
+          !authorizationsResponse.error &&
+          authorizationsResponse.status == 200
+        ) {
           version = authorizationsResponse.data.version;
         }
       }, 100);
@@ -170,7 +180,11 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
   return (
     <div className="relative h-screen flex overflow-hidden bg-white">
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setSidebarOpen}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 flex z-40 lg:hidden"
+          onClose={setSidebarOpen}
+        >
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -215,19 +229,26 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
               <div className="flex-shrink-0 flex items-center px-4">
                 <LogoDvfl user={user} />
               </div>
-              <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
+              <Menu
+                as="div"
+                className="px-3 mt-6 relative inline-block text-left"
+              >
                 <div>
                   <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                     <span className="flex w-full justify-between items-center">
                       <span className="flex min-w-0 items-center justify-between space-x-3">
                         <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                          {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
+                          {name[0].toString().toUpperCase() +
+                            " " +
+                            surname[0].toString().toUpperCase()}
                         </div>
                         <span className="flex-1 flex flex-col min-w-0">
                           <span className="text-gray-900 text-sm font-medium truncate">
                             {name + " " + surname.toUpperCase()}
                           </span>
-                          <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
+                          <span className="text-gray-500 text-sm truncate">
+                            {user.title || "Ancien compte"}
+                          </span>
                         </span>
                       </span>
                       <SelectorIcon
@@ -267,7 +288,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                           <a
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
-                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
@@ -282,7 +305,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                               logout(user);
                             }}
                             className={classNames(
-                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
@@ -304,7 +329,8 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             <p
                               className={classNames(
                                 item.className.reduce(
-                                  (accumulator, currentValue) => accumulator + " " + currentValue + "-small",
+                                  (accumulator, currentValue) =>
+                                    accumulator + " " + currentValue + "-small",
                                   ""
                                 ) +
                                   " " +
@@ -317,7 +343,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             >
                               <item.icon
                                 className={classNames(
-                                  item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
+                                  item.current
+                                    ? "text-gray-500"
+                                    : "text-gray-400 group-hover:text-gray-500",
                                   "mr-3 flex-shrink-0 h-6 w-6"
                                 )}
                                 aria-hidden="true"
@@ -358,19 +386,26 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
             <LogoDvfl user={user} />
           </div>
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
-            <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
+            <Menu
+              as="div"
+              className="px-3 mt-6 relative inline-block text-left"
+            >
               <div>
                 <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                        {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
+                        {name[0].toString().toUpperCase() +
+                          " " +
+                          surname[0].toString().toUpperCase()}
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
                         <span className="text-gray-900 text-sm font-medium truncate">
                           {name + " " + surname.toUpperCase()}
                         </span>
-                        <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
+                        <span className="text-gray-500 text-sm truncate">
+                          {user.title || "Ancien compte"}
+                        </span>
                       </span>
                     </span>
                     <SelectorIcon
@@ -410,7 +445,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         <a
                           onClick={() => router.push("/panel/settings")}
                           className={classNames(
-                            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
@@ -425,7 +462,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             logout(user);
                           }}
                           className={classNames(
-                            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
@@ -446,7 +485,8 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         <p
                           className={classNames(
                             item.className.reduce(
-                              (accumulator, currentValue) => accumulator + " " + currentValue + "-large",
+                              (accumulator, currentValue) =>
+                                accumulator + " " + currentValue + "-large",
                               ""
                             ) +
                               " " +
@@ -459,7 +499,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         >
                           <item.icon
                             className={classNames(
-                              item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
+                              item.current
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
                               "mr-3 flex-shrink-0 h-6 w-6"
                             )}
                             aria-hidden="true"
@@ -508,7 +550,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                   <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                     <span className="sr-only">Open user menu</span>
                     <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                      {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
+                      {name[0].toString().toUpperCase() +
+                        " " +
+                        surname[0].toString().toUpperCase()}
                     </div>
                   </Menu.Button>
                 </div>
@@ -528,7 +572,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                           <a
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
-                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
                               "block px-4 py-2 text-sm"
                             )}
                           >
@@ -544,7 +590,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                             }}
                             href="#"
                             className={classNames(
-                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
                               "block px-4 py-2 text-sm"
                             )}
                           >
@@ -562,7 +610,9 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">{title}</h1>
+              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">
+                {title}
+              </h1>
             </div>
             <div className="mt-4 flex sm:mt-0 sm:ml-4">
               <Link href="/panel/new">
@@ -585,7 +635,11 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
         <div></div>
       ) : (
         <Transition.Root show={openStatus} as={Fragment}>
-          <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={() => {}}>
+          <Dialog
+            as="div"
+            className="fixed z-10 inset-0 overflow-y-auto"
+            onClose={() => {}}
+          >
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
               {/* Fond sombre */}
               <Transition.Child
@@ -600,7 +654,10 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                 <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
               </Transition.Child>
               {/* Centré milieu écran */}
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+              <span
+                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true"
+              >
                 &#8203;
               </span>
               <Transition.Child
@@ -614,10 +671,15 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
               >
                 <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6">
                   <div className="flex items-center justify-center">
-                    <h1 class="text-3xl font-bold pb-6">Informations à saisir</h1>
+                    <h1 class="text-3xl font-bold pb-6">
+                      Informations à saisir
+                    </h1>
                   </div>
                   <div className="flex items-center justify-center sm:flex sm:items-start pb-3">
-                    <Dialog.Title as="div" className="text-lg leading-6 font-medium text-gray-900">
+                    <Dialog.Title
+                      as="div"
+                      className="text-lg leading-6 font-medium text-gray-900"
+                    >
                       <p>Sélectionner votre école</p>
                       <select
                         onChange={(e) => {
@@ -625,7 +687,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         }}
                         id="type"
                         name="type"
-                        className="printer-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                        className="school-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                       >
                         <option value={0} defaultValue="">
                           (Sélectionnez votre école)
@@ -642,7 +704,10 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                   </div>
 
                   <div className="flex items-center justify-center sm:flex sm:items-start pb-3">
-                    <Dialog.Title as="div" className="text-lg leading-6 font-medium text-gray-900">
+                    <Dialog.Title
+                      as="div"
+                      className="text-lg leading-6 font-medium text-gray-900"
+                    >
                       <p>Sélectionner votre année</p>
                       <select
                         onChange={(e) => {
@@ -650,7 +715,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
                         }}
                         id="type"
                         name="type"
-                        className="printer-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                        className="year-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
                       >
                         <option value={0} defaultValue="">
                           (Sélectionnez votre année)
@@ -668,7 +733,7 @@ export default function LayoutPanel({ children, user, role, authorizations, titl
 
                   <div className="flex items-center justify-center">
                     <button
-                      className="back-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                      className="approve-button back-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
                       onClick={() => validSchool()}
                     >
                       Valier

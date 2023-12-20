@@ -36,6 +36,12 @@ export function mock(path, jwt, options) {
         data: [],
       };
 
+    case "user_test_school_panel":
+      return {
+        status: 200,
+        data: [],
+      };
+
     default:
       return { error: true };
   }

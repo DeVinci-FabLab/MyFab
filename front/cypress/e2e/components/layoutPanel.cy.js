@@ -97,3 +97,42 @@ describe("Components layoutPanel", () => {
     );
   });
 });
+
+describe("Test change school", () => {
+  it("Test change school and year", () => {
+    cy.setCookie("jwt", "user_test_school_panel");
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/", {
+      failOnStatusCode: false,
+    });
+
+    cy.get(".school-select").select("Ecole1");
+    cy.get(".year-select").select("1");
+    cy.get(".approve-button").first().click();
+
+    cy.contains("Votre école et année ont été enregistrées");
+  });
+
+  it("Test no school", () => {
+    cy.setCookie("jwt", "user_test_school_panel");
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/", {
+      failOnStatusCode: false,
+    });
+
+    cy.get(".year-select").select("1");
+    cy.get(".approve-button").first().click();
+
+    cy.contains("Vous devez sélectionner une école");
+  });
+
+  it("Test no year", () => {
+    cy.setCookie("jwt", "user_test_school_panel");
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/", {
+      failOnStatusCode: false,
+    });
+
+    cy.get(".school-select").select("Ecole1");
+    cy.get(".approve-button").first().click();
+
+    cy.contains("Vous devez sélectionner une année");
+  });
+});
