@@ -289,6 +289,7 @@ async function userGetMe(data) {
                       u.v_discordid AS "discordid",
                       u.v_language AS "language",
                       COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                      CASE WHEN sch.v_name IS NULL OR u.i_schoolyear IS NULL THEN FALSE ELSE TRUE END AS "schoolValid",
                       u.b_isMicrosoft AS "isMicrosoft",
                       (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
                       u.b_mailValidated AS "mailValidated"
@@ -616,6 +617,48 @@ async function userRenamePut(data) {
   };
 }
 
+module.exports.putUserSchool = putUserSchool;
+async function putUserSchool(data) {
+  const userId = data.userId;
+  // Id is not a number
+  if (
+    isNaN(userId) ||
+    !data.body ||
+    isNaN(data.body.idSchool) ||
+    isNaN(data.body.year)
+  ) {
+    return {
+      type: "code",
+      code: 404,
+    };
+  }
+
+  const queryUpdate = `UPDATE users SET i_idschool = ?, i_schoolyear = ? WHERE i_id = ?`;
+  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+    data.body.idSchool,
+    data.body.year,
+    userId,
+  ]);
+  // The sql request has an error
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+
+  data.app.io.emit("event-reload-users"); // reload users menu on client
+  data.app.io.to(`user-${userId}`).emit("reload-user");
+
+  return {
+    type: "code",
+    code: 200,
+  };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
@@ -678,6 +721,22 @@ async function startApi(app) {
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
       console.log("ERROR: DELETE /api/user/:id");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.put("/api/user/school/", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await putUserSchool(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: PUT /api/user/school/");
       console.log(error);
       res.sendStatus(500);
     }

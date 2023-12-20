@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
+import { toast } from "react-toastify";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   HomeIcon,
@@ -12,6 +13,7 @@ import {
   ClipboardListIcon,
 } from "@heroicons/react/outline";
 import { SelectorIcon } from "@heroicons/react/solid";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
 import { logout } from "../lib/function";
@@ -21,16 +23,14 @@ let version = null;
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function LayoutPanel({
-  children,
-  user,
-  role,
-  authorizations,
-  titleMenu,
-}) {
+export default function LayoutPanel({ children, user, role, authorizations, titleMenu }) {
   const router = useRouter();
   const pn = router.pathname;
   if (!authorizations) authorizations = {};
+  const [openStatus, setOpenStatus] = useState(true);
+  const [schools, setSchools] = useState([]);
+  const [selectedSchool, setSelectedSchool] = useState(0);
+  const [selectedYear, setSelectedYear] = useState(0);
 
   //name = le nom qui est affiché
   //href = le lien du bouton
@@ -74,17 +74,83 @@ export default function LayoutPanel({
     //{ name: "Retourner au site", href: "/", icon: CubeIcon, current: false, show: true },
   ];
 
+  const years = [
+    { id: 1, name: "1" },
+    { id: 2, name: "2" },
+    { id: 3, name: "3" },
+    { id: 4, name: "4" },
+    { id: 5, name: "5" },
+  ];
+
+  async function validSchool() {
+    const cookie = getCookie("jwt");
+    let errorMessage = null;
+    if (selectedSchool === 0) errorMessage = "Vous devez sélectionner une école";
+    if (selectedYear === 0) errorMessage = "Vous devez sélectionner une année";
+    if (errorMessage) {
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+    const responseValidSchool = await fetchAPIAuth({
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
+      url: process.env.API + "/api/user/school/",
+      data: {
+        idSchool: selectedSchool,
+        year: selectedYear,
+      },
+    });
+    if (responseValidSchool.status) {
+      toast.success("Votre école et année ont été enregistrées", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      router.push(window.location.href);
+      //setOpenStatus(false);
+    } else {
+      toast.error("Erreur avec le serveur", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
   useEffect(function () {
+    // Get list of valid school if user school is not specified
+    if (!user.schoolValid) {
+      fetchAPIAuth("/school/").then((school) => {
+        setSchools(school.data);
+      });
+    }
     if (role.length == 0 && pn.split("/")[2] == "admin") {
       router.push("/404");
     }
     if (!version) {
       setTimeout(async () => {
         const authorizationsResponse = await fetchAPIAuth("/version/");
-        if (
-          !authorizationsResponse.error &&
-          authorizationsResponse.status == 200
-        ) {
+        if (!authorizationsResponse.error && authorizationsResponse.status == 200) {
           version = authorizationsResponse.data.version;
         }
       }, 100);
@@ -104,11 +170,7 @@ export default function LayoutPanel({
   return (
     <div className="relative h-screen flex overflow-hidden bg-white">
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 flex z-40 lg:hidden"
-          onClose={setSidebarOpen}
-        >
+        <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setSidebarOpen}>
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -153,26 +215,19 @@ export default function LayoutPanel({
               <div className="flex-shrink-0 flex items-center px-4">
                 <LogoDvfl user={user} />
               </div>
-              <Menu
-                as="div"
-                className="px-3 mt-6 relative inline-block text-left"
-              >
+              <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
                 <div>
                   <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                     <span className="flex w-full justify-between items-center">
                       <span className="flex min-w-0 items-center justify-between space-x-3">
                         <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                          {name[0].toString().toUpperCase() +
-                            " " +
-                            surname[0].toString().toUpperCase()}
+                          {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
                         </div>
                         <span className="flex-1 flex flex-col min-w-0">
                           <span className="text-gray-900 text-sm font-medium truncate">
                             {name + " " + surname.toUpperCase()}
                           </span>
-                          <span className="text-gray-500 text-sm truncate">
-                            {user.title || "Ancien compte"}
-                          </span>
+                          <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
                         </span>
                       </span>
                       <SelectorIcon
@@ -212,9 +267,7 @@ export default function LayoutPanel({
                           <a
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
@@ -229,9 +282,7 @@ export default function LayoutPanel({
                               logout(user);
                             }}
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
@@ -253,8 +304,7 @@ export default function LayoutPanel({
                             <p
                               className={classNames(
                                 item.className.reduce(
-                                  (accumulator, currentValue) =>
-                                    accumulator + " " + currentValue + "-small",
+                                  (accumulator, currentValue) => accumulator + " " + currentValue + "-small",
                                   ""
                                 ) +
                                   " " +
@@ -267,9 +317,7 @@ export default function LayoutPanel({
                             >
                               <item.icon
                                 className={classNames(
-                                  item.current
-                                    ? "text-gray-500"
-                                    : "text-gray-400 group-hover:text-gray-500",
+                                  item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
                                   "mr-3 flex-shrink-0 h-6 w-6"
                                 )}
                                 aria-hidden="true"
@@ -310,26 +358,19 @@ export default function LayoutPanel({
             <LogoDvfl user={user} />
           </div>
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
-            <Menu
-              as="div"
-              className="px-3 mt-6 relative inline-block text-left"
-            >
+            <Menu as="div" className="px-3 mt-6 relative inline-block text-left">
               <div>
                 <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                        {name[0].toString().toUpperCase() +
-                          " " +
-                          surname[0].toString().toUpperCase()}
+                        {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
                         <span className="text-gray-900 text-sm font-medium truncate">
                           {name + " " + surname.toUpperCase()}
                         </span>
-                        <span className="text-gray-500 text-sm truncate">
-                          {user.title || "Ancien compte"}
-                        </span>
+                        <span className="text-gray-500 text-sm truncate">{user.title || "Ancien compte"}</span>
                       </span>
                     </span>
                     <SelectorIcon
@@ -369,9 +410,7 @@ export default function LayoutPanel({
                         <a
                           onClick={() => router.push("/panel/settings")}
                           className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
+                            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
@@ -386,9 +425,7 @@ export default function LayoutPanel({
                             logout(user);
                           }}
                           className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
+                            active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
@@ -409,8 +446,7 @@ export default function LayoutPanel({
                         <p
                           className={classNames(
                             item.className.reduce(
-                              (accumulator, currentValue) =>
-                                accumulator + " " + currentValue + "-large",
+                              (accumulator, currentValue) => accumulator + " " + currentValue + "-large",
                               ""
                             ) +
                               " " +
@@ -423,9 +459,7 @@ export default function LayoutPanel({
                         >
                           <item.icon
                             className={classNames(
-                              item.current
-                                ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
+                              item.current ? "text-gray-500" : "text-gray-400 group-hover:text-gray-500",
                               "mr-3 flex-shrink-0 h-6 w-6"
                             )}
                             aria-hidden="true"
@@ -474,9 +508,7 @@ export default function LayoutPanel({
                   <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                     <span className="sr-only">Open user menu</span>
                     <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
-                      {name[0].toString().toUpperCase() +
-                        " " +
-                        surname[0].toString().toUpperCase()}
+                      {name[0].toString().toUpperCase() + " " + surname[0].toString().toUpperCase()}
                     </div>
                   </Menu.Button>
                 </div>
@@ -496,9 +528,7 @@ export default function LayoutPanel({
                           <a
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm"
                             )}
                           >
@@ -514,9 +544,7 @@ export default function LayoutPanel({
                             }}
                             href="#"
                             className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
+                              active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                               "block px-4 py-2 text-sm"
                             )}
                           >
@@ -534,9 +562,7 @@ export default function LayoutPanel({
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">
-                {title}
-              </h1>
+              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">{title}</h1>
             </div>
             <div className="mt-4 flex sm:mt-0 sm:ml-4">
               <Link href="/panel/new">
@@ -555,6 +581,105 @@ export default function LayoutPanel({
           {children}
         </main>
       </div>
+      {user.schoolValid ? (
+        <div></div>
+      ) : (
+        <Transition.Root show={openStatus} as={Fragment}>
+          <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={() => {}}>
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              {/* Fond sombre */}
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+              </Transition.Child>
+              {/* Centré milieu écran */}
+              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+                &#8203;
+              </span>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              >
+                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6">
+                  <div className="flex items-center justify-center">
+                    <h1 class="text-3xl font-bold pb-6">Informations à saisir</h1>
+                  </div>
+                  <div className="flex items-center justify-center sm:flex sm:items-start pb-3">
+                    <Dialog.Title as="div" className="text-lg leading-6 font-medium text-gray-900">
+                      <p>Sélectionner votre école</p>
+                      <select
+                        onChange={(e) => {
+                          setSelectedSchool(e.target.value);
+                        }}
+                        id="type"
+                        name="type"
+                        className="printer-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                      >
+                        <option value={0} defaultValue="">
+                          (Sélectionnez votre école)
+                        </option>
+                        {schools.map((item, index) => {
+                          return (
+                            <option key={`school-${index}`} value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </Dialog.Title>
+                  </div>
+
+                  <div className="flex items-center justify-center sm:flex sm:items-start pb-3">
+                    <Dialog.Title as="div" className="text-lg leading-6 font-medium text-gray-900">
+                      <p>Sélectionner votre année</p>
+                      <select
+                        onChange={(e) => {
+                          setSelectedYear(e.target.value);
+                        }}
+                        id="type"
+                        name="type"
+                        className="printer-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                      >
+                        <option value={0} defaultValue="">
+                          (Sélectionnez votre année)
+                        </option>
+                        {years.map((item, index) => {
+                          return (
+                            <option key={`year-${index}`} value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </Dialog.Title>
+                  </div>
+
+                  <div className="flex items-center justify-center">
+                    <button
+                      className="back-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                      onClick={() => validSchool()}
+                    >
+                      Valier
+                    </button>
+                  </div>
+                </div>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition.Root>
+      )}
     </div>
   );
 }
