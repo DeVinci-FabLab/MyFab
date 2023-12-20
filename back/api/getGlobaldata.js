@@ -177,6 +177,42 @@ async function getPrinter(data) {
 
 /**
  * @swagger
+ * /school/:
+ *   get:
+ *     summary: Get list of schools.
+ *     tags: [GlobalData]
+ *     responses:
+ *       "200":
+ *         description: "Get list of schools."
+ *         content:
+ */
+
+module.exports.getSchool = getSchool;
+async function getSchool(data) {
+  const query = `SELECT i_id AS id,
+            v_name AS name
+            FROM gd_school`;
+
+  const dbRes = await data.app.executeQuery(data.app.db, query, []);
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+
+  return {
+    type: "json",
+    code: 200,
+    json: dbRes[1],
+  };
+}
+
+/**
+ * @swagger
  * /myFabOpen/:
  *   get:
  *     summary: Get myFabOpen variable.
@@ -270,6 +306,22 @@ async function startApi(app) {
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
       console.log("ERROR: GET /api/printer/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/school/", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await getSchool(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: GET /api/school/");
       console.log(error);
       res.sendStatus(500);
     }
