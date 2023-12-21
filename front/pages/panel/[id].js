@@ -266,7 +266,7 @@ const GestionTicket = ({
         dvflCookie: cookie,
       },
       url: process.env.API + "/api/file/" + ticketFile.id,
-      params: {
+      data: {
         comment: ticketFile.comment,
         idprinter: ticketFile.idprinter,
       },
