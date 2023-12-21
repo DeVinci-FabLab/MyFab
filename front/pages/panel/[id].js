@@ -247,9 +247,7 @@ const GestionTicket = ({
       url: process.env.API + "/api/file/" + id + "/getToken",
     });
 
-    setUrlStl(
-      responseGetUrlSTL.env.API + "/api/file/" + responseGetUrlSTL.data
-    );
+    setUrlStl(process.env.API + "/api/file/" + responseGetUrlSTL.data);
   }
 
   async function changeSTLColor() {

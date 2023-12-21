@@ -1,4 +1,4 @@
-import { getCookie, setCookies } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { toast } from "react-toastify";
@@ -15,7 +15,7 @@ export default function Auth() {
   useEffect(() => {
     if (!toastedLoad && router.query.close != null) {
       setToastedLoad(true);
-      setCookies("adfs", false);
+      setCookie("adfs", false);
       toast.error(
         "MyFab est actuellement fermé merci de réessayer plus tard.",
         {
@@ -99,9 +99,9 @@ export default function Auth() {
 
     if (responseLogin.status == 200) {
       if (!checked) {
-        setCookies("jwt", responseLogin.data.dvflCookie, { expires });
+        setCookie("jwt", responseLogin.data.dvflCookie, { expires });
       } else {
-        setCookies("jwt", responseLogin.data.dvflCookie);
+        setCookie("jwt", responseLogin.data.dvflCookie);
       }
 
       const responseAuth = await fetchAPIAuth({
