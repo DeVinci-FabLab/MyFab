@@ -39,7 +39,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
         dvflCookie: cookie,
       },
       url: process.env.API + "/api/file/" + ticketFile.id,
-      params: {
+      data: {
         comment: ticketFile.comment,
         idprinter: ticketFile.idprinter,
       },
