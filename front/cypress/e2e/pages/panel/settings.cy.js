@@ -1,28 +1,23 @@
 /// <reference types="cypress" />
+const path = require("path");
 
 describe("Page panel/admin", () => {
   it("No cookie", () => {
-    cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
-      {
-        failOnStatusCode: false,
-      }
-    );
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings", {
+      failOnStatusCode: false,
+    });
 
     cy.location("href").should(
       "eq",
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth"
+      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
     );
   });
 
   it("Change with good password", () => {
     cy.setCookie("jwt", "admin");
-    cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
-      {
-        failOnStatusCode: false,
-      }
-    );
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings", {
+      failOnStatusCode: false,
+    });
 
     cy.get(".actual-password-input").type("Good-password");
     cy.get(".new-password-input").type("New-password");
@@ -34,12 +29,9 @@ describe("Page panel/admin", () => {
 
   it("Change with wrong password", () => {
     cy.setCookie("jwt", "admin");
-    cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
-      {
-        failOnStatusCode: false,
-      }
-    );
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings", {
+      failOnStatusCode: false,
+    });
 
     cy.get(".actual-password-input").type("Wrong-password");
     cy.get(".new-password-input").type("New-password");
@@ -51,12 +43,9 @@ describe("Page panel/admin", () => {
 
   it("Change with different password", () => {
     cy.setCookie("jwt", "admin");
-    cy.visit(
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
-      {
-        failOnStatusCode: false,
-      }
-    );
+    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings", {
+      failOnStatusCode: false,
+    });
 
     cy.get(".actual-password-input").type("Good-password");
     cy.get(".new-password-input").type("New-password");
