@@ -482,19 +482,19 @@ async function getTicketById(data) {
     };
   }
   const result = dbRes[1][0];
-  // SELECT COUNT(*) AS ticketCreated FROM `printstickets`;
-  // SELECT COUNT(*) FROM `printstickets` WHERE i_idUser = ? AND (dt_creationdate BETWEEN CONCAT((YEAR((SELECT dt_creationdate FROM `printstickets` WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM `printstickets` WHERE i_id = ?)) < 9)), "/09/01") and CONCAT((YEAR((SELECT dt_creationdate FROM `printstickets` WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM `printstickets` WHERE i_id = ?)) > 9)), "/08/31"));
-
-  const querySelectCountUser = `SELECT COUNT(*) AS 'countUser' FROM printstickets
-            INNER JOIN gd_status ON printstickets.i_status = gd_status.i_id
-            WHERE i_idUser = ?
-            AND gd_status.b_printCompleted = 1
-            AND (dt_creationdate BETWEEN CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) < 9)), "/09/01")
-            AND CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) + (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) > 9)), "/08/31"));`;
+  // Ajouter le test
+  const querySelectCountUser = `SELECT COUNT(distinct printstickets.i_id) AS 'countUser'
+                          FROM printstickets
+                          INNER JOIN gd_status ON printstickets.i_status = gd_status.i_id
+                          WHERE i_idUser = ?
+                          AND gd_status.b_printCompleted = 1
+                          AND DATE_FORMAT(DATE_ADD(dt_creationdate, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(
+                            (SELECT dt_creationdate FROM printstickets WHERE i_id = ?), 
+                          INTERVAL 4 MONTH),'%Y')`;
   const dbResSelectCounterUser = await data.app.executeQuery(
     data.app.db,
     querySelectCountUser,
-    [result.idUser, result.id, result.id, result.id, result.id]
+    [result.idUser, result.id]
   );
   /* c8 ignore start */
   if (dbResSelectCounterUser[0]) {
@@ -508,24 +508,19 @@ async function getTicketById(data) {
   result.ticketCountUser = dbResSelectCounterUser[1][0].countUser;
 
   if (result.groupNumber) {
-    const querySelectCountGroup = `SELECT COUNT(*) AS 'countGroup' FROM printstickets
-                INNER JOIN gd_status ON printstickets.i_status = gd_status.i_id
-                WHERE i_groupNumber = ?
-                AND gd_status.b_printCompleted = 1
-                AND i_projecttype = ?
-                AND (dt_creationdate BETWEEN CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) - (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) < 9)), "/09/01")
-                AND CONCAT((YEAR((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) + (MONTH((SELECT dt_creationdate FROM printstickets WHERE i_id = ?)) > 9)), "/08/31"));`;
+    const querySelectCountGroup = `SELECT COUNT(distinct printstickets.i_id) AS 'countGroup'
+    FROM printstickets
+    INNER JOIN gd_status ON printstickets.i_status = gd_status.i_id
+    WHERE i_groupNumber = ?
+    AND i_projecttype = ?
+    AND gd_status.b_printCompleted = 1
+    AND DATE_FORMAT(DATE_ADD(dt_creationdate, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(
+      (SELECT dt_creationdate FROM printstickets WHERE i_id = ?), 
+    INTERVAL 4 MONTH),'%Y');`;
     const dbResSelectCounterGroup = await data.app.executeQuery(
       data.app.db,
       querySelectCountGroup,
-      [
-        result.groupNumber,
-        result.idProjectType,
-        result.id,
-        result.id,
-        result.id,
-        result.id,
-      ]
+      [result.groupNumber, result.idProjectType, result.id]
     );
     /* c8 ignore start */
     if (dbResSelectCounterGroup[0]) {
