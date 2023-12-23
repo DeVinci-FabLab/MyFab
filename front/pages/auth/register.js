@@ -47,7 +47,7 @@ export default function Register() {
       })
         .then((response) => {
           toast.success(
-            "Vous êtes désormais inscrits. Vous pouvez vous connecter.",
+            "Votre compte a été établi avec succès. Veuillez consulter votre adresse mail pour valider votre compte.",
             {
               position: "top-right",
               autoClose: 3000,

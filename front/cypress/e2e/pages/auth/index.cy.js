@@ -16,7 +16,12 @@ describe("Page auth/index", () => {
     cy.contains("Gestion des demandes");
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize(
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+          )
+          .replace(/\\/g, "/")
     );
     cy.getCookie("jwt").should("have.property", "expiry");
   });
@@ -30,7 +35,10 @@ describe("Page auth/index", () => {
     cy.contains("Panel de demande");
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
+          .replace(/\\/g, "/")
     );
     cy.getCookie("jwt").then((cookie) => {
       expect(cookie).to.not.be.null;
@@ -47,25 +55,34 @@ describe("Page auth/index", () => {
   });
 
   it("Toast error", () => {
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?error=true", {
-      failOnStatusCode: false,
-    });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?error=true",
+      {
+        failOnStatusCode: false,
+      }
+    );
 
     cy.contains("Il y a une erreur");
   });
 
   it("Toast mail OK", () => {
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?mail=ok", {
-      failOnStatusCode: false,
-    });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?mail=ok",
+      {
+        failOnStatusCode: false,
+      }
+    );
 
     cy.contains("Votre e-mail a été vérifié");
   });
 
   it("Toast mail KO", () => {
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?mail=ko", {
-      failOnStatusCode: false,
-    });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?mail=ko",
+      {
+        failOnStatusCode: false,
+      }
+    );
 
     cy.contains("vérification de votre e-mail");
   });

@@ -15,7 +15,10 @@ describe("Page 404", () => {
     }).should("be.visible");
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
+          .replace(/\\/g, "/")
     );
   });
 });

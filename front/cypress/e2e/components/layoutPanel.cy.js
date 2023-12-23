@@ -4,31 +4,43 @@ const path = require("path");
 describe("Components layoutPanel", () => {
   it("Test nav-small to panel/", () => {
     cy.setCookie("jwt", "admin");
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/", {
-      failOnStatusCode: false,
-    });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/",
+      {
+        failOnStatusCode: false,
+      }
+    );
 
     cy.get(".open-layout-button").click();
     cy.get(".my-demand-button-small").click();
 
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
+          .replace(/\\/g, "/")
     );
   });
 
   it("Test nav-large to panel/", () => {
     cy.viewport(1920, 1080);
     cy.setCookie("jwt", "admin");
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/", {
-      failOnStatusCode: false,
-    });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/",
+      {
+        failOnStatusCode: false,
+      }
+    );
 
     cy.get(".my-demand-button-large").click();
 
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
+          .replace(/\\/g, "/")
     );
   });
 
@@ -43,7 +55,12 @@ describe("Components layoutPanel", () => {
 
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize(
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+          )
+          .replace(/\\/g, "/")
     );
   });
 
@@ -58,7 +75,12 @@ describe("Components layoutPanel", () => {
 
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize(
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+          )
+          .replace(/\\/g, "/")
     );
   });
 
@@ -73,7 +95,12 @@ describe("Components layoutPanel", () => {
 
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize(
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users"
+          )
+          .replace(/\\/g, "/")
     );
   });
 
@@ -88,7 +115,12 @@ describe("Components layoutPanel", () => {
 
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize(
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users"
+          )
+          .replace(/\\/g, "/")
     );
   });
 });
