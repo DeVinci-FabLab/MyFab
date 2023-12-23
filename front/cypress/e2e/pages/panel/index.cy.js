@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+const path = require("path");
 
 describe("Page panel/admin", () => {
   it("No cookie", () => {
@@ -8,7 +9,7 @@ describe("Page panel/admin", () => {
 
     cy.location("href").should(
       "eq",
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth"
+      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
     );
   });
 
@@ -38,7 +39,7 @@ describe("Page panel/admin", () => {
     cy.get(".ticket-element").first().click();
     cy.location("href").should(
       "eq",
-      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1"
+      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1").replace(/\\/g, "/")
     );
   });
 
