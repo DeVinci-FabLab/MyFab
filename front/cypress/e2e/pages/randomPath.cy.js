@@ -3,7 +3,10 @@ const path = require("path");
 
 describe("Page random", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom", { failOnStatusCode: false });
+    cy.visit(
+      "http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom",
+      { failOnStatusCode: false }
+    );
   });
 
   it("Go back to auth", () => {
@@ -13,7 +16,10 @@ describe("Page random", () => {
     }).should("be.visible");
     cy.location("href").should(
       "eq",
-      "http://" + path.normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
+      "http://" +
+        path
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
+          .replace(/\\/g, "/")
     );
   });
 });
