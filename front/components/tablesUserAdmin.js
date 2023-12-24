@@ -34,19 +34,6 @@ export default function UserTablesAdmin({
             >
               <div
                 className="inline-flex"
-                onClick={() => changeCollumnState("id")}
-              >
-                Id
-                {getChevron(collumnState, "id")}
-              </div>
-            </th>
-            <th
-              className={`p-3 text-gray-700 bg-gray-100 font-medium text-sm tracking-wider uppercase text-center ${
-                changeCollumnDefined ? "cursor-pointer select-none" : ""
-              }`}
-            >
-              <div
-                className="inline-flex"
                 onClick={() => changeCollumnState("firstname")}
               >
                 Prénom
@@ -99,14 +86,11 @@ export default function UserTablesAdmin({
             return (
               <tr
                 key={`user-${index}`}
-                className={`user-${index} border-b border-gray-200 hover:bg-gray-50`}
+                className={`user-${index} border-b border-gray-200 hover:bg-gray-50 cursor-pointer`}
                 onClick={() => {
                   id(r.id);
                 }}
               >
-                <td className="p-3 text-center">
-                  <span className="font-medium">#{setZero(r.id)}</span>
-                </td>
                 <td className="p-3 text-center">
                   <p className="font-medium">{r.firstName}</p>
                 </td>
