@@ -1,0 +1,22 @@
+name: "Create tag"
+run-name: "Create tag : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
+on:
+  push:
+
+jobs:
+  createTag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if version already exist
+        id: define_docker_data
+        run: |
+          json_content=$(cat back/package.json)
+          version_back=$(echo "$json_content" | jq -r '.version')
+          json_content=$(cat front/package.json)
+          version_front=$(echo "$json_content" | jq -r '.version')
+          if [ "$version_front" = "$version_back" ]; then
+              echo "Version $version_front" >> $GITHUB_STEP_SUMMARY
+          else
+              echo "Les versions sont différentes">> $GITHUB_STEP_SUMMARY
+              exit 1
+          fi
