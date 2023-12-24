@@ -16,12 +16,42 @@ export default function Register() {
   const [checked, setChecked] = useState(false);
 
   async function register() {
-    if (
+    if (firstName == null) {
+      toast.warn("Merci de renseigner votre prénom", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (name == null) {
+      toast.warn("Merci de renseigner votre nom", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (email == null) {
+      toast.warn("Merci de renseigner votre email", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (
       confirmPassword == null ||
       password == null ||
       password != confirmPassword
     ) {
-      toast.warn("Vos mots de passes ne correspondent pas.", {
+      toast.warn("Vos mots de passes ne correspondent pas", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: true,
@@ -31,7 +61,7 @@ export default function Register() {
         progress: undefined,
       });
     } else {
-      await axios({
+      const responseRegister = await fetchAPIAuth({
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -44,39 +74,39 @@ export default function Register() {
           email,
           password,
         },
-      })
-        .then((response) => {
-          toast.success(
-            "Votre compte a été établi avec succès. Veuillez consulter votre adresse mail pour valider votre compte.",
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            }
-          );
-          router.push("/auth");
-        })
-        .catch((error) => {
-          console.log(error);
-          setError(true);
-          setTimeout(() => setError(false), 5000);
-          toast.error(
-            "Impossible de vous inscrire. Vérifiez que vous ayez remplis tous les champs.",
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            }
-          );
-        });
+      });
+
+      if (responseRegister.status == 200) {
+        toast.success(
+          "Votre compte a été créé avec succès. Veuillez consulter votre adresse mail pour valider votre compte",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+        router.push("/auth");
+      } else if (responseRegister.error) {
+        console.log(error);
+        setError(true);
+        setTimeout(() => setError(false), 5000);
+        toast.error(
+          "Impossible de vous inscrire. Vérifiez que vous ayez remplis tous les champs.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+      }
     }
   }
 
@@ -114,7 +144,7 @@ export default function Register() {
                       name="name"
                       type="text"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`lastname appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300" : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -136,7 +166,7 @@ export default function Register() {
                       name="firstname"
                       type="text"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`firstname appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300" : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -159,7 +189,7 @@ export default function Register() {
                       type="email"
                       autoComplete="email"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`email appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300 " : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -183,7 +213,7 @@ export default function Register() {
                       type={`${checked ? "text" : "password"}`}
                       autoComplete="current-password"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`password1 appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300" : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -206,7 +236,7 @@ export default function Register() {
                       type={`${checked ? "text" : "password"}`}
                       autoComplete="current-password"
                       required
-                      className={`appearance-none block w-full px-3 py-2 border ${
+                      className={`password2 appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300" : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     />
@@ -236,7 +266,7 @@ export default function Register() {
                     onClick={() => register()}
                     onSubmit={() => register()}
                     type="submit"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="submit-button w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     S'enregistrer
                   </button>
