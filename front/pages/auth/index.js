@@ -16,50 +16,62 @@ export default function Auth() {
     if (!toastedLoad && router.query.close != null) {
       setToastedLoad(true);
       setCookie("adfs", false);
-      toast.error("MyFab est actuellement fermé merci de réessayer plus tard.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "MyFab est actuellement fermé merci de réessayer plus tard.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
     if (!toastedLoad && router.query.error != null) {
       setToastedLoad(true);
-      toast.error("Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "Il y a une erreur avec le système de connexion. Merci de réessayer plus tard.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
     if (!toastedLoad && router.query.mail != null) {
       setToastedLoad(true);
       if (router.query.mail == "ok") {
-        toast.success("Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success(
+          "Votre e-mail a été vérifié. Vous pouvez désormais vous connecter.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
       } else {
-        toast.error("Une erreur est survenue lors de la vérification de votre e-mail.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error(
+          "Une erreur est survenue lors de la vérification de votre e-mail.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
       }
     } else {
       // Connection avec le DVIC
@@ -107,27 +119,33 @@ export default function Auth() {
         router.push("/panel");
       }
     } else if (responseLogin.status == 204) {
-      toast.warning("Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.warning(
+        "Votre adresse e-mail n'est pas validée. Veuillez vérifier vos mails.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     } else if (responseLogin.error) {
       setError(true);
       setTimeout(() => setError(false), 5000);
-      toast.error("Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "Impossible de vous connecter. Vérifiez votre mot de passe ou votre e-mail.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
   }
 
@@ -136,8 +154,14 @@ export default function Auth() {
       <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
-            <img className="h-12 w-auto" src={process.env.BASE_PATH + "/logo.png"} alt="Devinci FabLab" />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Connectez-vous à MyFab</h2>
+            <img
+              className="h-12 w-auto"
+              src={process.env.BASE_PATH + "/logo.png"}
+              alt="Devinci FabLab"
+            />
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Connectez-vous à MyFab
+            </h2>
           </div>
 
           <form className="mt-8" onSubmit={login}>
@@ -146,7 +170,9 @@ export default function Auth() {
                 <div className="">
                   <label
                     htmlFor="email"
-                    className={`block text-sm font-medium ${error ? "text-red-500" : "text-gray-700"}`}
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
                   >
                     Adresse e-mail
                   </label>
@@ -168,7 +194,9 @@ export default function Auth() {
                 <div className="space-y-1">
                   <label
                     htmlFor="password"
-                    className={`block text-sm font-medium ${error ? "text-red-500" : "text-gray-700"}`}
+                    className={`block text-sm font-medium ${
+                      error ? "text-red-500" : "text-gray-700"
+                    }`}
                   >
                     Mot de passe
                   </label>
@@ -190,12 +218,16 @@ export default function Auth() {
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
                     <Link href="/auth/register">
-                      <p className="font-medium text-blue-700 hover:text-blue-600">Créer un compte</p>
+                      <p className="font-medium text-blue-700 hover:text-blue-600">
+                        Créer un compte
+                      </p>
                     </Link>
                   </div>
                   <div className="text-sm">
                     <Link href="/auth/forget">
-                      <p className="font-medium text-blue-700 hover:text-blue-600">Mot de passe oublié ?</p>
+                      <p className="font-medium text-blue-700 hover:text-blue-600">
+                        Mot de passe oublié ?
+                      </p>
                     </Link>
                   </div>
                 </div>
@@ -208,7 +240,10 @@ export default function Auth() {
                     onChange={() => setChecked(!checked)}
                     className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 block text-sm text-gray-900"
+                  >
                     Se souvenir de moi
                   </label>
                 </div>
