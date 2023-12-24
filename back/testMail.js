@@ -1,3 +1,3 @@
 const sendMail = require("./functions/sendMail").sendMail;
 
-sendMail("mathieuman78@gmail.com", "Bonsoir", "Test depuis mon PC");
+sendMail("Test@mail.fr", "Bonsoir", "Ceci est un test");
