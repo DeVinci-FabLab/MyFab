@@ -368,12 +368,13 @@ function writeEmail(body) {
 
 module.exports.sendMail = sendMail;
 async function sendMail(userMail, subject, text) {
-  const info = await transporter.sendMail({
-    from: `DeVinci FabLab<${process.env.MAIL_USER}>`, // sender address
-    to: userMail, // list of receivers
-    subject: subject, // Subject line
-    text: text, // plain text body
-    html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
+  try {
+    const info = await transporter.sendMail({
+      from: `DeVinci FabLab<${process.env.MAIL_USER}>`, // sender address
+      to: userMail, // list of receivers
+      subject: subject, // Subject line
+      text: text, // plain text body
+      html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
     <tr>
         <td>
             <h1>Ceci est un test pour les mails</h1>
@@ -384,20 +385,24 @@ async function sendMail(userMail, subject, text) {
       </tr>
   </table>
   ${text}`), // html body
-  });
+    });
 
-  return true;
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 module.exports.sendRegisterMail = sendRegisterMail;
 async function sendRegisterMail(userMail, firstName, token) {
-  const info = await transporter.sendMail({
-    from: `DeVinci FabLab<${process.env.MAIL_USER}>`,
-    to: userMail,
-    subject: "Insciption DeVinci FabLab",
-    text: `Vous vennez de créer un compte sur de site du ${frontUrl}. Pour utiliser votre compte merci de valider votre mail avec le lien ci-dessous.
+  try {
+    const info = await transporter.sendMail({
+      from: `DeVinci FabLab<${process.env.MAIL_USER}>`,
+      to: userMail,
+      subject: "Insciption DeVinci FabLab",
+      text: `Vous vennez de créer un compte sur de site du ${frontUrl}. Pour utiliser votre compte merci de valider votre mail avec le lien ci-dessous.
       ${frontUrl}/auth/verify/${token}`,
-    html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
+      html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
     <tr>
         <td>
             <h1>Bonjour ${firstName}</h1>
@@ -426,20 +431,24 @@ async function sendRegisterMail(userMail, firstName, token) {
         </table>
         <p>Si vous avez des problèmes avec le lien merci de contacter directement un membre de l'association.</p>
         <p>À très vite,</p>`),
-  });
+    });
 
-  return true;
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 module.exports.sendForgetPasswordMail = sendForgetPasswordMail;
 async function sendForgetPasswordMail(userMail, firstName, token) {
-  const info = await transporter.sendMail({
-    from: `DeVinci FabLab<${process.env.MAIL_USER}>`,
-    to: userMail,
-    subject: "Insciption DeVinci FabLab",
-    text: `Vous vennez de faire une demande pour réinitialiser votre mot de passe pour votre compte sur de site du DeVinci FabLab. Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.
+  try {
+    const info = await transporter.sendMail({
+      from: `DeVinci FabLab<${process.env.MAIL_USER}>`,
+      to: userMail,
+      subject: "Insciption DeVinci FabLab",
+      text: `Vous vennez de faire une demande pour réinitialiser votre mot de passe pour votre compte sur de site du DeVinci FabLab. Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.
       ${frontUrl}/auth/password/${token}`,
-    html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
+      html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
     <tr>
         <td>
             <h1>Bonjour ${firstName}</h1>
@@ -468,7 +477,10 @@ async function sendForgetPasswordMail(userMail, firstName, token) {
         </table>
         <p>Si vous avez des problèmes avec le lien merci de contacter directement un membre de l'association.</p>
         <p>À très vite,</p>`),
-  });
+    });
 
-  return true;
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
