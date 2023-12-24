@@ -94,7 +94,7 @@ const GestionTicket = ({
         "/" +
         (paramType === "status" ? "setStatus" : "setProjecttype") +
         "/",
-      params,
+      params: data,
     });
 
     if (!responseUpdateTicket.error) {
