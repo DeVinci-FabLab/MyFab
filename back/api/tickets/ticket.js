@@ -122,7 +122,8 @@ async function getTicketAllFromUser(data) {
              CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
              tpt.v_name AS 'projectType', u.v_title AS 'title' ,
              pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-             stat.v_name AS 'statusName', stat.v_color AS 'statusColor', tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
+             stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
+             tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor' 
              FROM printstickets AS pt 
              INNER JOIN users AS u ON pt.i_idUser = u.i_id 
              INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
@@ -455,7 +456,7 @@ async function getTicketById(data) {
              u.v_firstName AS 'userFirstName', u.v_lastName AS 'userLastName',
              tpt.v_name AS 'projectType', pt.i_projecttype AS 'idProjectType', u.v_title AS 'title' , u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
              pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-             stat.v_name AS 'statusName', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
+             stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
              tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
              FROM printstickets AS pt 
              INNER JOIN users AS u ON pt.i_idUser = u.i_id 
