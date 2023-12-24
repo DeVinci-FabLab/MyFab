@@ -957,23 +957,16 @@ const GestionTicket = ({
                           id="type"
                           name="type"
                           className="statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                          defaultValue={
+                            paramType === "status"
+                              ? ticket.idStatus
+                              : ticket.idProjectType
+                          }
                         >
                           {(paramType === "status" ? status : projectType).map(
                             (item, index) => {
-                              const elementSelected =
-                                paramType === "status"
-                                  ? ticket.statusName
-                                  : ticket.projectType;
                               return (
-                                <option
-                                  key={`param-${index}`}
-                                  defaultValue={
-                                    item.name === elementSelected
-                                      ? "'selected'"
-                                      : ""
-                                  }
-                                  value={item.id}
-                                >
+                                <option key={`param-${index}`} value={item.id}>
                                   {item.name}
                                 </option>
                               );
