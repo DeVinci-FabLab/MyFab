@@ -1,6 +1,16 @@
 const nodemailer = require("nodemailer");
+const fs = require("fs");
 require("dotenv").config();
 const frontUrl = process.env.FRONT_URL;
+
+const pathToDkim = __dirname + "/../data/dkim_private.pem";
+const dkim = fs.existsSync(pathToDkim)
+  ? {
+      domainName: process.env.MAIL_USER.split("@")[1],
+      selector: process.env.MAIL_USER.split("@")[0],
+      privateKey: require(pathToDkim),
+    }
+  : null;
 
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
@@ -10,6 +20,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASSWORD,
   },
+  dkim,
 });
 
 function writeEmail(body) {
