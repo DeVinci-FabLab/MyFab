@@ -8,7 +8,7 @@ const dkim = fs.existsSync(pathToDkim)
   ? {
       domainName: process.env.MAIL_USER.split("@")[1],
       selector: process.env.MAIL_USER.split("@")[0],
-      privateKey: require(pathToDkim),
+      privateKey: fs.readFileSync(pathToDkim, "utf-8"),
     }
   : null;
 
