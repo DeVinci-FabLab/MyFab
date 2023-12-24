@@ -518,7 +518,7 @@ const GestionTicket = ({
                                 Cet utilisateur a {ticket.ticketCountUser}{" "}
                                 ticket{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
                                 réalisé{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
-                                cette année
+                                cette année (demandes terminées)
                               </div>
                             </dd>
                           ) : (
@@ -539,7 +539,7 @@ const GestionTicket = ({
                                 Ce groupe a {ticket.ticketCountGroup} ticket
                                 {ticket.ticketCountGroup > 1 ? "s" : ""} réalisé
                                 {ticket.ticketCountGroup > 1 ? "s" : ""} cette
-                                année
+                                année (demandes terminées)
                               </div>
                             </dd>
                           ) : (
