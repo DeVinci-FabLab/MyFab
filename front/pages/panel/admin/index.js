@@ -115,9 +115,11 @@ export default function Admin({ user, role, authorizations }) {
                 Bonjour, {user.firstName} 👋{" "}
               </h2>
               <h3 className="text-md font-medium text-white">
-                Il y a {ticketResult.length} impression
-                {ticketResult.length > 1 ? "s" : ""} à traiter. N'hésite pas à
-                t'en occuper !
+                {ticketResult.length === 0
+                  ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
+                  : `Il y a ${ticketResult.length} impression
+                ${ticketResult.length > 1 ? "s" : ""} à traiter. N'hésite pas à
+                t'en occuper !`}
               </h3>
             </div>
           </div>
