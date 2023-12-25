@@ -29,6 +29,7 @@ module.exports = defineConfig({
         : process.env.BASE_PATH
       : "",
     IS_TEST_MODE: process.env.IS_TEST_MODE ? process.env.IS_TEST_MODE : false,
+    VERSION: require("./package.json").version,
   },
   videoCompression: process.env.VIDEO_COMPRESSION ? false : 15,
 });

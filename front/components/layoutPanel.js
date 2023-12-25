@@ -18,7 +18,6 @@ import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
 import { logout } from "../lib/function";
 import { fetchAPIAuth } from "../lib/api";
-let version = require("../../package.json").version;
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -37,6 +36,7 @@ export default function LayoutPanel({
   const [schools, setSchools] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState(0);
   const [selectedYear, setSelectedYear] = useState(0);
+  const [version] = useState(process.env.VERSION);
 
   //name = le nom qui est affiché
   //href = le lien du bouton
