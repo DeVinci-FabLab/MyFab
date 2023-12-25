@@ -4,6 +4,7 @@ import router from "next/router";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+const sha256 = require("sha256");
 
 export default function Auth() {
   const [email, setEmail] = useState(null);
@@ -92,7 +93,7 @@ export default function Auth() {
       url: process.env.API + "/api/user/login",
       data: {
         email,
-        password,
+        password: sha256(password),
         rememberMe: checked,
         expires: !checked ? expires : null,
       },

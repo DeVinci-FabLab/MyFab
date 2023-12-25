@@ -8,6 +8,7 @@ import { getCookie } from "cookies-next";
 import Seo from "../../components/seo";
 import router from "next/router";
 import WebSocket from "../../components/webSocket";
+const sha256 = require("sha256");
 
 export default function Settings({ user, role, authorizations }) {
   const [newPassword, setNewPassword] = useState(null);
@@ -45,8 +46,8 @@ export default function Settings({ user, role, authorizations }) {
         },
         url: process.env.API + "/api/user/password/",
         data: {
-          actualPassword,
-          newPassword,
+          actualPassword: sha256(actualPassword),
+          newPassword: sha256(newPassword),
         },
       });
       console.log(responseUpdatePassword);

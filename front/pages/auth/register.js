@@ -1,10 +1,8 @@
-import axios from "axios";
-import { setCookies } from "cookies-next";
 import { useState } from "react";
-import { ExclamationIcon } from "@heroicons/react/solid";
 import router from "next/router";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+const sha256 = require("sha256");
 
 export default function Register() {
   const [email, setEmail] = useState(null);
@@ -73,7 +71,7 @@ export default function Register() {
           firstName,
           lastName: name,
           email,
-          password,
+          password: sha256(password),
         },
       });
 
