@@ -10,7 +10,7 @@
     "linter": "npx prettier -w .",
     "prepareDb": "node importSqlTables.js",
     "prepareFolders": "node createIgnoredFolders.js",
-    "startOnServer": "node importSqlTables.js && node index.js"
+    "startOnServer": "npm run prepareFolders && npm run prepareDb && npm run start"
   },
   "repository": {
     "type": "git",
