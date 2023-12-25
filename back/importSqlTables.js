@@ -44,7 +44,7 @@ async function addRootUser() {
                             VALUES
                             ('root', 'root', 'root@root.com', ?, current_timestamp(), 'fr', current_timestamp(), '0', '0', '1', '0', 'Root');`;
   const res = await executeQuery(db, queryInsertRootUser, [
-    sha256(rootPassword),
+    sha256(sha256(rootPassword)),
   ]);
   if (res[0]) {
     await require("./functions/dataBase/createConnection").close(db);
@@ -60,7 +60,7 @@ async function addRootUser() {
   }
   await fs.writeFileSync("./data/defaultRootPassword", rootPassword + "\n");
 
-  const systemPassword = require("./functions/makeid").makeid(64);
+  const systemPassword = require("./functions/makeid").makeid(60);
   const queryInsertSystemUser = `INSERT INTO users
                             (v_firstName, v_lastName, v_email, v_password, dt_creationdate, v_language, dt_ruleSignature, b_deleted, b_visible, b_mailValidated, b_isMicrosoft, v_title)
                             VALUES
