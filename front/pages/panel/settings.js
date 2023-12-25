@@ -8,7 +8,7 @@ import { getCookie } from "cookies-next";
 import Seo from "../../components/seo";
 import router from "next/router";
 import WebSocket from "../../components/webSocket";
-const sha256 = require("sha256");
+import sha256 from "sha256";
 
 export default function Settings({ user, role, authorizations }) {
   const [newPassword, setNewPassword] = useState(null);
