@@ -289,7 +289,7 @@ async function userGetMe(data) {
                       u.v_discordid AS "discordid",
                       u.v_language AS "language",
                       COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
-                      CASE WHEN sch.v_name IS NULL OR u.i_schoolyear IS NULL THEN FALSE ELSE TRUE END AS "schoolValid",
+                      CASE WHEN u.v_title IS NULL AND (sch.v_name IS NULL OR u.i_schoolyear IS NULL) THEN FALSE ELSE TRUE END AS "schoolValid",
                       u.b_isMicrosoft AS "isMicrosoft",
                       (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
                       u.b_mailValidated AS "mailValidated"
