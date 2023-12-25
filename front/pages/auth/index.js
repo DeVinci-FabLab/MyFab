@@ -4,7 +4,7 @@ import router from "next/router";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
-const sha256 = require("sha256");
+import sha256 from "sha256";
 
 export default function Auth() {
   const [email, setEmail] = useState(null);
