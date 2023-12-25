@@ -6,6 +6,7 @@ on:
 jobs:
   CreateTag:
     runs-on: ubuntu-latest
+    permissions: write-all
     env:
       version: "1.0.0"
     steps:
