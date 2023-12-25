@@ -31,30 +31,7 @@ describe("Page auth/index", () => {
     cy.get(".submit-button").click();
     cy.contains("Vos mots de passes ne correspondent pas");
 
-    cy.get(".password2").type("{selectAll}test");
-    cy.get(".submit-button").click();
-    cy.contains("Votre compte a été créé avec succès");
-  });
-
-  it("Empty user", () => {
-    cy.get(".submit-button").click();
-    cy.contains("Merci de renseigner votre prénom");
-
-    cy.get(".firstname").type("test");
-    cy.get(".submit-button").click();
-    cy.contains("Merci de renseigner votre nom");
-
-    cy.get(".lastname").type("test");
-    cy.get(".submit-button").click();
-    cy.contains("Merci de renseigner votre email");
-
-    cy.get(".email").type("test@test.com");
-    cy.get(".submit-button").click();
-    cy.contains("Vos mots de passes ne correspondent pas");
-
-    cy.get(".password1").type("test");
-    cy.get(".password2").type("test");
-    cy.get(".submit-button").click();
+    cy.get(".password2").type("{selectAll}test{enter}");
     cy.contains("Votre compte a été créé avec succès");
   });
 });

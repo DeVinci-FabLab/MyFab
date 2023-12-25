@@ -15,7 +15,8 @@ export default function Register() {
   const [firstName, setFirstName] = useState(null);
   const [checked, setChecked] = useState(false);
 
-  async function register() {
+  async function register(e) {
+    e.preventDefault(); // Don't reload page on form submit
     if (firstName == null) {
       toast.warn("Merci de renseigner votre prénom", {
         position: "top-right",
@@ -127,151 +128,151 @@ export default function Register() {
 
           <div className="mt-8">
             <div className="mt-6">
-              <div className="space-y-6">
-                <div className="space-y-1">
-                  <label
-                    htmlFor="name"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
-                  >
-                    Nom
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      onChange={(e) => setName(e.target.value)}
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      className={`lastname appearance-none block w-full px-3 py-2 border ${
-                        error ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label
-                    htmlFor="firstname"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
-                  >
-                    Prénom
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      onChange={(e) => setFirstName(e.target.value)}
-                      id="firstname"
-                      name="firstname"
-                      type="text"
-                      required
-                      className={`firstname appearance-none block w-full px-3 py-2 border ${
-                        error ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    />
-                  </div>
-                </div>
-                <div className="">
-                  <label
-                    htmlFor="email"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
-                  >
-                    Adresse e-mail
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      onChange={(e) => setEmail(e.target.value)}
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      className={`email appearance-none block w-full px-3 py-2 border ${
-                        error ? "border-red-300 " : "border-gray-300"
-                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label
-                    htmlFor="password"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
-                  >
-                    Mot de passe
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      onChange={(e) => setPassword(e.target.value)}
-                      id="password"
-                      name="password"
-                      type={`${checked ? "text" : "password"}`}
-                      autoComplete="current-password"
-                      required
-                      className={`password1 appearance-none block w-full px-3 py-2 border ${
-                        error ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label
-                    htmlFor="confirmPassword"
-                    className={`block text-sm font-medium ${
-                      error ? "text-red-500" : "text-gray-700"
-                    }`}
-                  >
-                    Confirmer mon mot de passe
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={`${checked ? "text" : "password"}`}
-                      autoComplete="current-password"
-                      required
-                      className={`password2 appearance-none block w-full px-3 py-2 border ${
-                        error ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="show-password"
-                      name="show-password"
-                      type="checkbox"
-                      onChange={() => setChecked(!checked)}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
+              <form className="mt-8" onSubmit={register}>
+                <div className="space-y-6">
+                  <div className="space-y-1">
                     <label
-                      htmlFor="show-password"
-                      className="ml-2 block text-sm text-gray-900"
+                      htmlFor="name"
+                      className={`block text-sm font-medium ${
+                        error ? "text-red-500" : "text-gray-700"
+                      }`}
                     >
-                      Afficher mon mot de passe
+                      Nom
                     </label>
+                    <div className="mt-1">
+                      <input
+                        onChange={(e) => setName(e.target.value)}
+                        id="name"
+                        name="name"
+                        type="text"
+                        required
+                        className={`lastname appearance-none block w-full px-3 py-2 border ${
+                          error ? "border-red-300" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="firstname"
+                      className={`block text-sm font-medium ${
+                        error ? "text-red-500" : "text-gray-700"
+                      }`}
+                    >
+                      Prénom
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        onChange={(e) => setFirstName(e.target.value)}
+                        id="firstname"
+                        name="firstname"
+                        type="text"
+                        required
+                        className={`firstname appearance-none block w-full px-3 py-2 border ${
+                          error ? "border-red-300" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                    </div>
+                  </div>
+                  <div className="">
+                    <label
+                      htmlFor="email"
+                      className={`block text-sm font-medium ${
+                        error ? "text-red-500" : "text-gray-700"
+                      }`}
+                    >
+                      Adresse e-mail
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        onChange={(e) => setEmail(e.target.value)}
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        className={`email appearance-none block w-full px-3 py-2 border ${
+                          error ? "border-red-300 " : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="password"
+                      className={`block text-sm font-medium ${
+                        error ? "text-red-500" : "text-gray-700"
+                      }`}
+                    >
+                      Mot de passe
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        onChange={(e) => setPassword(e.target.value)}
+                        id="password"
+                        name="password"
+                        type={`${checked ? "text" : "password"}`}
+                        autoComplete="current-password"
+                        required
+                        className={`password1 appearance-none block w-full px-3 py-2 border ${
+                          error ? "border-red-300" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="confirmPassword"
+                      className={`block text-sm font-medium ${
+                        error ? "text-red-500" : "text-gray-700"
+                      }`}
+                    >
+                      Confirmer mon mot de passe
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={`${checked ? "text" : "password"}`}
+                        autoComplete="current-password"
+                        required
+                        className={`password2 appearance-none block w-full px-3 py-2 border ${
+                          error ? "border-red-300" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <input
+                        id="show-password"
+                        name="show-password"
+                        type="checkbox"
+                        onChange={() => setChecked(!checked)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor="show-password"
+                        className="ml-2 block text-sm text-gray-900"
+                      >
+                        Afficher mon mot de passe
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      type="submit"
+                      className="submit-button w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      S'enregistrer
+                    </button>
                   </div>
                 </div>
-
-                <div>
-                  <button
-                    onClick={() => register()}
-                    onSubmit={() => register()}
-                    type="submit"
-                    className="submit-button w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    S'enregistrer
-                  </button>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
