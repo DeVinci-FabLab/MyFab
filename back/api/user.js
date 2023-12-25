@@ -288,6 +288,7 @@ async function userGetMe(data) {
                       u.dt_creationdate AS "creationDate",
                       u.v_discordid AS "discordid",
                       u.v_language AS "language",
+                      u.b_darkMode AS "darkMode",
                       COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
                       CASE WHEN u.v_title IS NULL AND (sch.v_name IS NULL OR u.i_schoolyear IS NULL) THEN FALSE ELSE TRUE END AS "schoolValid",
                       u.b_isMicrosoft AS "isMicrosoft",
