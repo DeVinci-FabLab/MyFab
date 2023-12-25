@@ -1,5 +1,4 @@
 export function mock(path, jwt, options) {
-  console.log(options.data);
   if (
     !options.data.email ||
     !options.data.firstName ||
