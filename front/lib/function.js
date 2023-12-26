@@ -1,6 +1,5 @@
-import { removeCookies } from "cookies-next";
+import { getCookie, deleteCookie } from "cookies-next";
 import axios from "axios";
-import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
 export function setZero(number) {
@@ -41,11 +40,11 @@ export function logout(user) {
         draggable: true,
         progress: undefined,
       });
-      removeCookies("jwt");
+      deleteCookie("jwt");
       window.location.href = process.env.BASE_PATH + "/";
     })
     .catch((error) => {
-      removeCookies("jwt");
+      deleteCookie("jwt");
       window.location.href = process.env.BASE_PATH + "/";
     });
 }
