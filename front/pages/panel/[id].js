@@ -495,7 +495,7 @@ const GestionTicket = ({
                                   .toString()
                                   .toUpperCase()}
                               <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                                {user.title || "Ancien compte"}
+                                {ticket.title || "Ancien compte"}
                               </p>
                             </div>
                             {authorizations.myFabAgent ? (
