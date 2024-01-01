@@ -75,7 +75,7 @@ export default function Admin({ user, role, authorizations }) {
         dvflCookie: jwt,
       },
       url: process.env.API + "/api/ticket",
-      data: params,
+      params,
     });
     if (!responseTickets.error) {
       setMaxPage(responseTickets.data.maxPage);
@@ -93,6 +93,8 @@ export default function Admin({ user, role, authorizations }) {
     }
   }
 
+  const darkMode = false; //user.darkMode;
+
   return (
     <div>
       <WebSocket
@@ -108,7 +110,7 @@ export default function Admin({ user, role, authorizations }) {
           titleMenu="Gestion des demandes"
         >
           <Seo title={"Administration"} />
-          <NavbarAdmin role={role} />
+          <NavbarAdmin role={role} darkMode={darkMode} />
           <div className="md:py-8 md:px-6">
             <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
               <h2 className="text-2xl font-bold text-white">
