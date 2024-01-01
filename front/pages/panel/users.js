@@ -68,7 +68,7 @@ export default function Settings({ role, me, authorizations }) {
       },
 
       url: process.env.API + "/api/user",
-      data: params,
+      params,
     });
 
     if (!responseGetUsers.error) {

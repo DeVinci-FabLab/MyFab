@@ -83,7 +83,7 @@ export default function OverviewAdmin({ user, role, authorizations }) {
         dvflCookie: jwt,
       },
       url: process.env.API + "/api/ticket",
-      data: params,
+      params,
     });
 
     if (!responseTickets.error) {
