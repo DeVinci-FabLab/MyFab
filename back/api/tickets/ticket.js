@@ -119,20 +119,22 @@ async function getTicketAllFromUser(data) {
 
   const page = data.query && data.query.page ? data.query.page : 0;
   const query = `SELECT pt.i_id AS 'id',
-             CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
-             tpt.v_name AS 'projectType', u.v_title AS 'title' ,
-             pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-             stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
-             tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor' 
-             FROM printstickets AS pt 
-             INNER JOIN users AS u ON pt.i_idUser = u.i_id 
-             INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
-             INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-             LEFT OUTER JOIN gd_status AS stat ON pt.i_status = stat.i_id
-             WHERE pt.i_idUser = ? 
-             AND pt.b_isDeleted = 0 
-             ORDER BY pt.i_id DESC
-             ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
+            CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
+            tpt.v_name AS 'projectType', 
+            COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+            pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
+            stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
+            tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor' 
+            FROM printstickets AS pt 
+            INNER JOIN users AS u ON pt.i_idUser = u.i_id 
+            INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
+            INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+            LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+            LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
+            WHERE pt.i_idUser = ? 
+            AND pt.b_isDeleted = 0 
+            ORDER BY pt.i_id DESC
+            ${data.query && data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
 
   const dbRes = await data.app.executeQuery(data.app.db, query, [
     userIdAgent,
@@ -263,18 +265,21 @@ async function getTicketAll(data) {
   const orderCollumn = getOrderCollumnName(data.query.collumnName);
   const order = data.query.order === "false" ? "DESC" : "ASC";
   const query = `SELECT pt.i_id AS 'id',
-             CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
-             tpt.v_name AS 'projectType', u.v_title AS 'title' , pt.i_groupNumber AS 'groupNumber' ,
-             pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-             stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
-             stat.b_isOpen AS 'isOpen',
-             tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
-             FROM printstickets AS pt 
-             INNER JOIN users AS u ON pt.i_idUser = u.i_id 
-             INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
-             INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-             LEFT OUTER JOIN gd_status AS stat ON pt.i_status = stat.i_id
-             WHERE pt.b_isDeleted = 0
+              CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
+              tpt.v_name AS 'projectType',
+              COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+              pt.i_groupNumber AS 'groupNumber',
+              pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
+              stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
+              stat.b_isOpen AS 'isOpen',
+              tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
+              FROM printstickets AS pt 
+              INNER JOIN users AS u ON pt.i_idUser = u.i_id 
+              INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
+              INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+              LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+              LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
+              WHERE pt.b_isDeleted = 0
              ${selectOpenOnly ? "AND stat.b_isOpen = 1" : ""}
              AND (
                 "" = ?
@@ -453,17 +458,20 @@ async function getTicketById(data) {
     }
   }
   const querySelect = `SELECT pt.i_id AS 'id', pt.i_idUser AS 'idUser',CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS 'userName',
-             u.v_firstName AS 'userFirstName', u.v_lastName AS 'userLastName',
-             tpt.v_name AS 'projectType', pt.i_projecttype AS 'idProjectType', u.v_title AS 'title' , u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
-             pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-             stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
-             tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
-             FROM printstickets AS pt 
-             INNER JOIN users AS u ON pt.i_idUser = u.i_id 
-             INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
-             INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-             LEFT OUTER JOIN gd_status AS stat ON pt.i_status = stat.i_id
-             WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
+                u.v_firstName AS 'userFirstName', u.v_lastName AS 'userLastName',
+                tpt.v_name AS 'projectType', pt.i_projecttype AS 'idProjectType', 
+                COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
+                pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
+                stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
+                tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
+                FROM printstickets AS pt 
+                INNER JOIN users AS u ON pt.i_idUser = u.i_id 
+                INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
+                INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+                LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
+                WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
     data.params.id,
   ]);
