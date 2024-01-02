@@ -9,25 +9,34 @@ const colors = {
 };
 
 function dateDiff(date1, date2) {
-  const diffYears = date2.getFullYear() - date1.getFullYear();
-  if (diffYears !== 0) return `${diffYears} année${diffYears > 1 ? "s" : ""}`;
+  const diffInMilliseconds = Math.abs(date2 - date1);
 
-  const diffMonth = date2.getMonth() - date1.getMonth();
-  if (diffMonth !== 0) return `${diffMonth} mois`;
+  const seconds = Math.floor(diffInMilliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(months / 12);
 
-  const diffDate = date2.getDate() - date1.getDate();
-  if (diffDate !== 0) return `${diffDate} jour${diffDate > 1 ? "s" : ""}`;
+  const remainingSeconds = seconds % 60;
+  const remainingMinutes = minutes % 60;
+  const remainingHours = hours % 24;
+  const remainingDays = days % 30;
+  const remainingMonths = months % 12;
 
-  const diffHour = date2.getHours() - date1.getHours();
-  if (diffHour !== 0) return `${diffHour} heure${diffHour > 1 ? "s" : ""}`;
-
-  const diffMinute = date2.getMinutes() - date1.getMinutes();
-  if (diffMinute !== 0)
-    return `${diffMinute} minute${diffMinute > 1 ? "s" : ""}`;
-
-  const diffSecond = date2.getSeconds() - date1.getSeconds();
-  if (diffSecond !== 0)
-    return `${diffSecond} seconde${diffSecond > 1 ? "s" : ""}`;
+  if (years !== 0) return `${years} année${years > 1 ? "s" : ""}`;
+  if (remainingMonths !== 0) return `${remainingMonths} mois`;
+  if (remainingDays !== 0)
+    return `${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
+  if (remainingHours !== 0)
+    return `${remainingHours} heure${remainingHours > 1 ? "s" : ""}`;
+  if (remainingMinutes !== 0)
+    return `${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""}`;
+  if (remainingSeconds !== 0)
+    return `${remainingSeconds} seconde${remainingSeconds > 1 ? "s" : ""}`;
+  return `${diffInMilliseconds} milliseconde${
+    diffInMilliseconds > 1 ? "s" : ""
+  }`;
 }
 
 function getChevron(collumnState, type) {
