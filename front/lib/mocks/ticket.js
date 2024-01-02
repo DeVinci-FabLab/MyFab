@@ -5,7 +5,7 @@ export function mock(path, jwt, options) {
       data: { id: 212 },
     };
   }
-  const page = options?.data?.page;
+  const page = options?.params?.page;
   const date = new Date();
   switch (jwt) {
     case "admin":
