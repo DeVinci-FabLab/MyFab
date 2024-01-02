@@ -31,4 +31,4 @@ jobs:
         uses: rickstaa/action-create-tag@v1
         with:
           tag: "${{ env.version }}"
-          tag_exists_error: false
+        continue-on-error: true
