@@ -1,43 +1,13 @@
 import router from "next/router";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { setZero } from "../lib/function";
+import { dateDiff } from "../lib/date";
 
 const colors = {
   "2274e0": "text-gray-700 bg-gray-200",
   e9d41d: "text-amber-700 bg-amber-200",
   f30b0b: "text-white bg-gradient-to-r from-amber-400 to-red-500",
 };
-
-function dateDiff(date1, date2) {
-  const diffInMilliseconds = Math.abs(date2 - date1);
-
-  const seconds = Math.floor(diffInMilliseconds / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  const months = Math.floor(days / 30);
-  const years = Math.floor(months / 12);
-
-  const remainingSeconds = seconds % 60;
-  const remainingMinutes = minutes % 60;
-  const remainingHours = hours % 24;
-  const remainingDays = days % 30;
-  const remainingMonths = months % 12;
-
-  if (years !== 0) return `${years} année${years > 1 ? "s" : ""}`;
-  if (remainingMonths !== 0) return `${remainingMonths} mois`;
-  if (remainingDays !== 0)
-    return `${remainingDays} jour${remainingDays > 1 ? "s" : ""}`;
-  if (remainingHours !== 0)
-    return `${remainingHours} heure${remainingHours > 1 ? "s" : ""}`;
-  if (remainingMinutes !== 0)
-    return `${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""}`;
-  if (remainingSeconds !== 0)
-    return `${remainingSeconds} seconde${remainingSeconds > 1 ? "s" : ""}`;
-  return `${diffInMilliseconds} milliseconde${
-    diffInMilliseconds > 1 ? "s" : ""
-  }`;
-}
 
 function getChevron(collumnState, type) {
   if (!collumnState) return null;
