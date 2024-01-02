@@ -38,36 +38,53 @@ async function addRootUser() {
   await executeQuery(db, "CREATE DATABASE IF NOT EXISTS ??", [dbName]);
   await executeQuery(db, "USE ??", [dbName]);
 
-  const rootPassword = require("./functions/makeid").makeid(30);
-  const queryInsertRootUser = `INSERT INTO users
+  //Insert Root
+  const selectRoot = await executeQuery(
+    db,
+    `SELECT 1 FROM users WHERE v_email = "root@root.com"`,
+    []
+  );
+  if (selectRoot[1].length === 0) {
+    const rootPassword = require("./functions/makeid").makeid(30);
+    const queryInsertRootUser = `INSERT INTO users
                             (v_firstName, v_lastName, v_email, v_password, dt_creationdate, v_language, dt_ruleSignature, b_deleted, b_visible, b_mailValidated, b_isMicrosoft, v_title)
                             VALUES
                             ('root', 'root', 'root@root.com', ?, current_timestamp(), 'fr', current_timestamp(), '0', '0', '1', '0', 'Root');`;
-  const res = await executeQuery(db, queryInsertRootUser, [
-    sha256(sha256(rootPassword)),
-  ]);
-  if (res[0]) {
-    await require("./functions/dataBase/createConnection").close(db);
-    return;
-  }
-  const queryInsertRoolRole = `INSERT INTO rolescorrelation (i_idUser, i_idRole)
+    const res = await executeQuery(db, queryInsertRootUser, [
+      sha256(sha256(rootPassword)),
+    ]);
+    if (res[0]) {
+      await require("./functions/dataBase/createConnection").close(db);
+      return;
+    }
+    const queryInsertRoolRole = `INSERT INTO rolescorrelation (i_idUser, i_idRole)
                                 VALUES ((SELECT i_id FROM users WHERE v_email = 'root@root.com'),
                                 (SELECT i_id FROM gd_roles WHERE v_name = 'Administrateur'))`;
-  const resInserRoleRootUser = await executeQuery(db, queryInsertRoolRole, []);
-  if (resInserRoleRootUser[0]) {
-    await require("./functions/dataBase/createConnection").close(db);
-    return;
+    const resInserRoleRootUser = await executeQuery(
+      db,
+      queryInsertRoolRole,
+      []
+    );
+    if (!resInserRoleRootUser[0])
+      await fs.writeFileSync("./data/defaultRootPassword", rootPassword + "\n");
   }
-  await fs.writeFileSync("./data/defaultRootPassword", rootPassword + "\n");
 
-  const systemPassword = require("./functions/makeid").makeid(60);
-  const queryInsertSystemUser = `INSERT INTO users
+  //Insert system
+  const selectSystem = await executeQuery(
+    db,
+    `SELECT 1 FROM users WHERE v_email = "system@system.com"`,
+    []
+  );
+  if (selectSystem[1].length === 0) {
+    const systemPassword = require("./functions/makeid").makeid(60);
+    const queryInsertSystemUser = `INSERT INTO users
                             (v_firstName, v_lastName, v_email, v_password, dt_creationdate, v_language, dt_ruleSignature, b_deleted, b_visible, b_mailValidated, b_isMicrosoft, v_title)
                             VALUES
                             ('Système', '', 'system@system.com', ?, current_timestamp(), 'fr', current_timestamp(), '0', '0', '1', '0', 'Système');`;
-  const resInsertSystemUser = await executeQuery(db, queryInsertSystemUser, [
-    systemPassword,
-  ]);
+    const resInsertSystemUser = await executeQuery(db, queryInsertSystemUser, [
+      systemPassword,
+    ]);
+  }
   await require("./functions/dataBase/createConnection").close(db);
   return;
 }
