@@ -17,6 +17,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { setZero, isUserConnected } from "../../lib/function";
+import { format } from "../../lib/date";
 
 const colors = {
   "2274e0": "text-gray-700 bg-gray-200",
@@ -476,6 +477,9 @@ const GestionTicket = ({
                       </h3>
                       <p className="mt-1 max-w-2xl text-sm text-gray-500">
                         Ticket n° {ticket.id}
+                      </p>
+                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                        Créé le {format(ticket.creationDate, "frAt")}
                       </p>
                     </div>
                     <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
