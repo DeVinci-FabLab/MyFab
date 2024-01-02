@@ -660,6 +660,50 @@ async function putUserSchool(data) {
   };
 }
 
+module.exports.putUserDarkMode = putUserDarkMode;
+async function putUserDarkMode(data) {
+  const userId = data.userId;
+  // Id is not a number
+  if (isNaN(userId) || !data.query || !data.query.darkmode) {
+    return {
+      type: "code",
+      code: 404,
+    };
+  }
+  const darkmode =
+    data.query.darkmode === "true"
+      ? "1"
+      : data.query.darkmode === "false"
+      ? "0"
+      : null;
+  if (darkmode === null)
+    return {
+      type: "code",
+      code: 404,
+    };
+
+  const queryUpdate = `UPDATE users SET b_darkMode = ? WHERE i_id = ?`;
+  const dbRes = await data.app.executeQuery(data.app.db, queryUpdate, [
+    darkmode,
+    userId,
+  ]);
+  // The sql request has an error
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+
+  return {
+    type: "code",
+    code: 200,
+  };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
@@ -738,6 +782,22 @@ async function startApi(app) {
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
       console.log("ERROR: PUT /api/user/school/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.put("/api/user/darkmode/", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await putUserDarkMode(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: PUT /api/user/darkmode/");
       console.log(error);
       res.sendStatus(500);
     }
