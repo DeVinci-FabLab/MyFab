@@ -90,6 +90,8 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
     });
   }
 
+  const darkMode = user.darkMode;
+
   return (
     <LayoutPanel
       user={user}
@@ -105,53 +107,35 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
           <main className="col-span-9">
             <div className="container px-4 mx-auto">
               <div className="flex flex-wrap -mx-4">
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4">
+                <div
+                  className={`shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 ${
+                    darkMode ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
                   <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3
+                      className={`text-lg leading-6 font-medium ${
+                        darkMode ? "text-gray-200" : "text-gray-900"
+                      }`}
+                    >
                       La demande {"#" + setZero(ticket.id)} à été créé
                     </h3>
                   </div>
-                  <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                    <p className="p-5">
+                  <div
+                    className={`border-t px-4 py-5 sm:p-0 ${
+                      darkMode ? "border-gray-600" : "border-gray-200"
+                    }`}
+                  >
+                    <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
                       Les membres du DeVinci FabLab traiteons la demande le dès
                       que possible. Vous pouvez suivre l'avancée de la demande
                       sur cette plateforme.
                     </p>
-                    <p className="p-5">
+                    <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
                       Vous pouvez rajouter des notes sur les fichiers stl pour
                       par exemple demander plusieurs impression pour un même
                       fichier, une couleur d'impression spécifique, ...
                     </p>
-                    {/*
-                    <div className="flex justify-center">
-                      { inviteAvaible ? (<Link href={inviteLink.result ? inviteLink.result : ""} passHref rel="noopener noreferrer">
-                        <a target="_blank">
-                          <button
-                            type="button"
-                            className={`order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}>
-                            Rejoindre le serveur discord
-                          </button>
-                        </a>
-                      </Link>):(<button
-                          type="button"
-                          onClick={()=>{
-                            toast.error("L'invitation à discord n'est pas disponible pour le moment. Veillez réessayer plus tard.", {
-                              position: "top-right",
-                              autoClose: 3000,
-                              hideProgressBar: true,
-                              closeOnClick: true,
-                              pauseOnHover: true,
-                              draggable: true,
-                              progress: undefined,
-                            });
-                          }}
-                          className={`order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}>
-                          Rejoindre le serveur discord
-                        </button>)}
-                    </div>
-                    <p className="p-5">Après avoir rejoint le discord, n'oubliez pas de lier votre compte MyFab à Discord, pour avoir accès au demande sur le serveur. 😉</p>
-                    */}
-
                     <div className="flex justify-center mb-4">
                       <Link href={ticketLink}>
                         <button
@@ -168,14 +152,26 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                         return (
                           <div
                             key={`file-${index}`}
-                            className="col-span-6 mt-5 bg-opacity-50 border border-gray-100 rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3"
+                            className={`col-span-6 mt-5 bg-opacity-50 border rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3 ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-600"
+                                : "border-gray-100"
+                            }`}
                           >
                             <div className="w-0 flex-1 flex items-center">
                               <CubeIcon
-                                className="flex-shrink-0 h-5 w-5 text-gray-400"
+                                className={`flex-shrink-0 h-5 w-5 ${
+                                  darkMode ? "text-gray-200" : "text-gray-400"
+                                }`}
                                 aria-hidden="true"
                               />
-                              <span className="ml-2 flex-1">{r.filename}</span>
+                              <span
+                                className={`ml-2 flex-1 ${
+                                  darkMode ? "text-gray-100" : ""
+                                }`}
+                              >
+                                {r.filename}
+                              </span>
                             </div>
                             <div className="flex justify-center mt-4">
                               <button
@@ -211,77 +207,123 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                 </div>
 
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
-                  <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                  <div
+                    className={`shadow overflow-hidden sm:rounded-lg ${
+                      darkMode ? "bg-gray-800" : "bg-white"
+                    }`}
+                  >
                     <div className="px-4 py-5 sm:px-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      <h3
+                        className={`text-lg leading-6 font-medium ${
+                          darkMode ? "text-white" : "text-gray-900"
+                        }`}
+                      >
                         Détails de la demande d'impression
                       </h3>
-                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                      <p
+                        className={`mt-1 max-w-2xl text-sm ${
+                          darkMode ? "text-gray-200" : "text-gray-500"
+                        }`}
+                      >
                         Ticket n° {ticket.id}
                       </p>
                     </div>
-                    <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                      <dl className="sm:divide-y sm:divide-gray-200">
+                    <div
+                      className={`border-t px-4 py-5 sm:p-0 ${
+                        darkMode ? "border-gray-700" : "border-gray-200"
+                      }`}
+                    >
+                      <dl
+                        className={`sm:divide-y ${
+                          darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
+                        }`}
+                      >
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Utilisateur
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             <div>
-                              {user.firstName +
-                                " " +
-                                user.lastName.toString().toUpperCase()}
-                              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                                {user.title || "Ancien compte"}
+                              {ticket.userName}
+                              <p
+                                className={`mt-1 max-w-2xl text-sm ${
+                                  darkMode ? "text-gray-200" : "text-gray-500"
+                                }`}
+                              >
+                                {ticket.title || "Ancien compte"}
                               </p>
                             </div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Numéro de groupe
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             {ticket.groupNumber}
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Type
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             <div>{ticket.projectType}</div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Status
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             <div>{ticket.statusName}</div>
                           </dd>
                         </div>
-                        {authorizations.myFabAgent ? (
-                          <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Priorité
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <div
-                                className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full`}
-                              >
-                                {ticket.priorityName}
-                              </div>
-                            </dd>
-                          </div>
-                        ) : (
-                          ""
-                        )}
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Fichiers
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             <div>
                               Ce ticket comporte {file.length} fichier
                               {file.length > 1 ? "s" : ""} :
@@ -289,7 +331,11 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                                 return (
                                   <p
                                     key={`fileName-${index}`}
-                                    className="mt-1 max-w-2xl text-sm text-gray-500"
+                                    className={`mt-1 max-w-2xl text-sm ${
+                                      darkMode
+                                        ? "text-gray-200"
+                                        : "text-gray-500"
+                                    }`}
                                   >
                                     - {r.filename}
                                   </p>
@@ -406,6 +452,15 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
   );
 }
 
+const defaultTicket = {
+  id: 1,
+  userName: "Ticket inconnu",
+  title: "Ticket inconnu",
+  groupNumber: 0,
+  projectType: "Inconnu",
+  statusName: "Inconnu",
+};
+
 export async function getServerSideProps({ req, query }) {
   const cookies = parseCookies(req);
   const user = await fetchAPIAuth("/user/me", cookies.jwt);
@@ -433,8 +488,8 @@ export async function getServerSideProps({ req, query }) {
     props: {
       user: user.data,
       role: role.data,
-      ticket: ticket.data,
-      file: file.data,
+      ticket: ticket.data ? ticket.data : defaultTicket,
+      file: file.data ? file.data : [],
       authorizations: authorizations.data,
     }, // will be passed to the page component as props
   };

@@ -50,7 +50,6 @@ export default function Settings({ user, role, authorizations }) {
           newPassword: sha256(newPassword),
         },
       });
-      console.log(responseUpdatePassword);
 
       if (responseUpdatePassword.error) {
         toast.error(
@@ -92,6 +91,8 @@ export default function Settings({ user, role, authorizations }) {
     }
   }
 
+  const darkMode = user.darkMode;
+
   return (
     <LayoutPanel
       user={user}
@@ -106,10 +107,18 @@ export default function Settings({ user, role, authorizations }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3
+                  className={`text-lg font-medium leading-6 ${
+                    darkMode ? "text-gray-200" : "text-gray-900"
+                  }`}
+                >
                   Mes informations
                 </h3>
-                <p className="mt-1 text-sm text-gray-600">
+                <p
+                  className={`mt-1 text-sm ${
+                    darkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   Vous pouvez éditer sur cette page votre mot de passe. Si vous
                   souhaitez modifier un autre paramètre, merci de nous contacter
                   directement par mail à fablab@devinci.fr.
@@ -119,11 +128,17 @@ export default function Settings({ user, role, authorizations }) {
             <div className="mt-5 md:mt-0 md:col-span-2">
               <div>
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
-                  <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                  <div
+                    className={`px-4 py-5 space-y-6 sm:p-6 ${
+                      darkMode ? "bg-gray-800" : "bg-white"
+                    }`}
+                  >
                     <div>
                       <label
                         htmlFor="lastName"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         Nom
                       </label>
@@ -133,7 +148,7 @@ export default function Settings({ user, role, authorizations }) {
                           type="text"
                           name="lastName"
                           id="lastName"
-                          className="text-gray-500 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md text-gray-500 border-gray-300`}
                           value={user.lastName}
                         />
                       </div>
@@ -141,7 +156,9 @@ export default function Settings({ user, role, authorizations }) {
                     <div>
                       <label
                         htmlFor="firstName"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         Prénom
                       </label>
@@ -159,7 +176,9 @@ export default function Settings({ user, role, authorizations }) {
                     <div>
                       <label
                         htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         E-mail
                       </label>
@@ -176,13 +195,19 @@ export default function Settings({ user, role, authorizations }) {
                     </div>
                     {user.isMicrosoft == 0 ? (
                       <div>
-                        <h1 className="text-lg font-medium leading-6 text-gray-900">
+                        <h1
+                          className={`text-lg font-medium leading-6 ${
+                            darkMode ? "text-gray-200" : "text-gray-900"
+                          }`}
+                        >
                           Changer mon mot de passe
                         </h1>
                         <div>
                           <label
                             htmlFor="actualPassword"
-                            className="block text-sm font-medium text-gray-700"
+                            className={`block text-sm font-medium ${
+                              darkMode ? "text-gray-300" : "text-gray-700"
+                            }`}
                           >
                             Mot de passe actuel
                           </label>
@@ -201,7 +226,9 @@ export default function Settings({ user, role, authorizations }) {
                         <div>
                           <label
                             htmlFor="password"
-                            className="block text-sm font-medium text-gray-700"
+                            className={`block text-sm font-medium ${
+                              darkMode ? "text-white" : "text-gray-700"
+                            }`}
                           >
                             Mot de passe
                           </label>
@@ -218,7 +245,9 @@ export default function Settings({ user, role, authorizations }) {
                         <div>
                           <label
                             htmlFor="confirmPassword"
-                            className="block text-sm font-medium text-gray-700"
+                            className={`block text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-700"
+                            }`}
                           >
                             Confirmer votre mot de passe
                           </label>
@@ -241,7 +270,11 @@ export default function Settings({ user, role, authorizations }) {
                   </div>
                 </div>
                 {user.isMicrosoft == 0 ? (
-                  <div className={`px-4 py-3 bg-gray-50 text-right sm:px-6`}>
+                  <div
+                    className={`px-4 py-3 text-right sm:px-6 ${
+                      darkMode ? "border-gray-600" : "bg-gray-50"
+                    }`}
+                  >
                     <button
                       onClick={() => changePassword()}
                       type="submit"
@@ -260,7 +293,11 @@ export default function Settings({ user, role, authorizations }) {
 
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
-            <div className="border-t border-gray-200" />
+            <div
+              className={`border-t ${
+                darkMode ? "border-gray-600" : "border-gray-200"
+              }`}
+            />
           </div>
         </div>
       </div>

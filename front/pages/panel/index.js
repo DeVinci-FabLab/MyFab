@@ -1,24 +1,21 @@
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  ChevronRightIcon,
-  DotsVerticalIcon,
-  TrashIcon,
-} from "@heroicons/react/solid";
+import { Menu, Transition } from "@headlessui/react";
+import { DotsVerticalIcon, TrashIcon } from "@heroicons/react/solid";
 import "moment/locale/fr";
 
 import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { useRouter } from "next/router";
 import Moment from "react-moment";
-import { getColor, isUserConnected, setZero } from "../../lib/function";
+import { isUserConnected, setZero } from "../../lib/function";
 import { getCookie } from "cookies-next";
-import axios from "axios";
-import { ChevronDownIcon } from "@heroicons/react/outline";
 import { toast } from "react-toastify";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
+import Faq from "../../components/faq";
+
+import { UserUse } from "../../context/provider";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -26,11 +23,13 @@ function classNames(...classes) {
 
 export default function NewPanel({
   data,
-  user,
+  jwt,
   role,
   authorizations,
   highDemand,
 }) {
+  const { user, setUser } = UserUse(jwt);
+
   const [maxPage, setMaxPage] = useState(1);
   const [actualPage, setActualPage] = useState(0);
   let newActualPage = 0;
@@ -85,7 +84,7 @@ export default function NewPanel({
       },
 
       url: process.env.API + "/api/ticket/me",
-      data: { page: newActualPage },
+      params: { page: newActualPage },
     });
 
     if (!responseGetTicket.error) {
@@ -148,12 +147,14 @@ export default function NewPanel({
   };
 
   if (user.error == undefined) {
+    const darkMode = user.darkMode;
     return (
       <LayoutPanel
         user={user}
+        setUser={setUser}
         role={role}
         authorizations={authorizations}
-        titleMenu="Panel de demande d'impression 3D"
+        titleMenu={"Panel de demande d'impression 3D"}
       >
         <Seo title={"Panel"} />
         <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
@@ -166,57 +167,14 @@ export default function NewPanel({
                 aria-label="Sidebar"
                 className="sticky top-6 divide-y divide-gray-300"
               >
-                {/* FAQ */}
-                <div className="w-full">
-                  <div className="relative pb-6 bg-white rounded">
-                    <div className="">
-                      <h3 className="text-xl font-bold">FAQ</h3>
-                      <p className="text-sm text-gray-500 text-justify">
-                        Un trou de mémoire ? Vous n'êtes pas sûr de ce que vous
-                        allez faire ? Consultez d'abord cette mini FAQ avant de
-                        demander à un membre de l'association.
-                      </p>
-                    </div>
-                    <dl className="divide-y divide-gray-200">
-                      {faq.map((faq, index) => (
-                        <Disclosure
-                          as="div"
-                          key={`faq-${index}`}
-                          className="pt-6"
-                        >
-                          {({ open }) => (
-                            <>
-                              <dt className="text-sm">
-                                <Disclosure.Button className="faq-button text-left w-full flex justify-between items-start text-gray-400">
-                                  <span className="font-medium text-gray-900">
-                                    {faq.question}
-                                  </span>
-                                  <span className="ml-6 h-7 flex items-center">
-                                    <ChevronDownIcon
-                                      className={classNames(
-                                        open ? "-rotate-180" : "rotate-0",
-                                        "h-6 w-6 transform"
-                                      )}
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                </Disclosure.Button>
-                              </dt>
-                              <Disclosure.Panel as="dd" className="mt-2 pr-12">
-                                <p className="text-sm text-gray-500 text-justify">
-                                  {faq.answer}
-                                </p>
-                              </Disclosure.Panel>
-                            </>
-                          )}
-                        </Disclosure>
-                      ))}
-                    </dl>
-                  </div>
-                </div>
+                <Faq className="w-full" darkMode={darkMode} questions={faq} />
               </nav>
             </div>
-            <hr className="mb-5 mt-5 block lg:hidden" />
+            <hr
+              className={`mb-5 mt-5 block lg:hidden ${
+                darkMode ? "border-gray-600" : ""
+              }`}
+            />
             <main className="col-span-9">
               {highDemand ? (
                 <div
@@ -232,31 +190,77 @@ export default function NewPanel({
               ) : (
                 <div></div>
               )}
-              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate mt-5">
+              <h1
+                className={`text-lg font-medium leading-6 sm:truncate mt-5 ${
+                  darkMode ? "text-white" : "text-gray-900"
+                }`}
+              >
                 Vos demandes d'impressions 3D
               </h1>
               <div className="block mt-5">
                 {/* big projects */}
-                <div className="align-middle inline-block min-w-full border-b border-gray-200 hidden sm:block">
+                <div
+                  className={`align-middle inline-block min-w-full border-b hidden sm:block ${
+                    darkMode ? "border-gray-800" : "border-gray-200"
+                  }`}
+                >
                   {userTicketResult.length > 0 ? (
                     <div>
-                      <div className="border border-gray-200 rounded overflow-x-auto min-w-full bg-white">
+                      <div
+                        className={`border rounded overflow-x-auto min-w-full ${
+                          darkMode ? "border-gray-600" : "border-gray-200"
+                        }`}
+                      >
                         <table className="min-w-full text-sm align-middle whitespace-nowrap">
                           <thead>
-                            <tr className="border-b border-gray-200">
-                              <th className="p-3 text-gray-700 bg-gray-100 font-medium text-sm tracking-wider uppercase text-center">
+                            <tr
+                              className={`border-b ${
+                                darkMode ? "border-gray-700" : "border-gray-200"
+                              }`}
+                            >
+                              <th
+                                className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
+                                  darkMode
+                                    ? "text-white bg-gray-600"
+                                    : "text-gray-700 bg-gray-100"
+                                }`}
+                              >
                                 Id
                               </th>
-                              <th className="p-3 text-gray-700 bg-gray-100 font-medium text-sm tracking-wider uppercase text-center">
+                              <th
+                                className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
+                                  darkMode
+                                    ? "text-white bg-gray-600"
+                                    : "text-gray-700 bg-gray-100"
+                                }`}
+                              >
                                 Dernière mise à jour
                               </th>
-                              <th className="p-3 text-gray-700 bg-gray-100 font-medium text-sm tracking-wider uppercase text-center">
+                              <th
+                                className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
+                                  darkMode
+                                    ? "text-white bg-gray-600"
+                                    : "text-gray-700 bg-gray-100"
+                                }`}
+                              >
                                 Type
                               </th>
-                              <th className="p-3 text-gray-700 bg-gray-100 font-medium text-sm tracking-wider uppercase text-center">
+                              <th
+                                className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
+                                  darkMode
+                                    ? "text-white bg-gray-600"
+                                    : "text-gray-700 bg-gray-100"
+                                }`}
+                              >
                                 Etat
                               </th>
-                              <th className="p-3 text-gray-700 bg-gray-100 font-medium text-sm tracking-wider uppercase text-center"></th>
+                              <th
+                                className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
+                                  darkMode
+                                    ? "text-white bg-gray-600"
+                                    : "text-gray-700 bg-gray-100"
+                                }`}
+                              ></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -264,10 +268,14 @@ export default function NewPanel({
                               return (
                                 <tr
                                   key={`ticket-${index}`}
-                                  className="ticket-element border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                                  className={`ticket-element border-b cursor-pointer ${
+                                    darkMode
+                                      ? "border-gray-700 hover:bg-gray-700 bg-gray-800 text-white"
+                                      : "border-gray-200 hover:bg-gray-50"
+                                  }`}
                                 >
                                   <td
-                                    className="p-3 text-center"
+                                    className={`p-3 text-center`}
                                     onClick={() =>
                                       router.push(`/panel/${r.id}`)
                                     }
@@ -277,7 +285,7 @@ export default function NewPanel({
                                     </span>
                                   </td>
                                   <td
-                                    className="p-3 text-center"
+                                    className={`p-3 text-center`}
                                     onClick={() =>
                                       router.push(`/panel/${r.id}`)
                                     }
@@ -294,7 +302,7 @@ export default function NewPanel({
                                     </div>
                                   </td>
                                   <td
-                                    className="p-3 text-center"
+                                    className={`p-3 text-center`}
                                     onClick={() =>
                                       router.push(`/panel/${r.id}`)
                                     }
@@ -306,7 +314,7 @@ export default function NewPanel({
                                     </div>
                                   </td>
                                   <td
-                                    className="p-3 text-center"
+                                    className={`p-3 text-center`}
                                     onClick={() =>
                                       router.push(`/panel/${r.id}`)
                                     }
@@ -317,12 +325,18 @@ export default function NewPanel({
                                       {r.statusName}
                                     </div>
                                   </td>
-                                  <td className="p-3 text-center">
+                                  <td className={`p-3 text-center`}>
                                     <Menu
                                       as="div"
                                       className="relative flex justify-end items-center"
                                     >
-                                      <Menu.Button className="open-delete-button w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                                      <Menu.Button
+                                        className={`open-delete-button w-8 h-8 inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 ${
+                                          darkMode
+                                            ? "bg-gray-600 hover:bg-gray-500 text-gray-200 hover:text-gray-100"
+                                            : "bg-white text-gray-400 hover:text-gray-500"
+                                        }`}
+                                      >
                                         <span className="sr-only">
                                           Open options
                                         </span>
@@ -377,12 +391,20 @@ export default function NewPanel({
                       <div className="grid place-items-center mb-10">
                         <div className="inline-flex mt-3">
                           <button
-                            className="prev-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r mr-2"
+                            className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 text-gray-800 ${
+                              darkMode
+                                ? "bg-gray-200 hover:bg-gray-100"
+                                : "bg-gray-300 hover:bg-gray-400"
+                            }`}
                             onClick={() => nextPrevPage(-1)}
                           >
                             &lt;
                           </button>
-                          <div className="inline-flex py-2 px-4">
+                          <div
+                            className={`inline-flex py-2 px-4 ${
+                              darkMode ? "text-gray-200" : ""
+                            }`}
+                          >
                             Pages&nbsp;
                             <p className="font-bold">{actualPage + 1}</p>
                             &nbsp;sur&nbsp;
@@ -391,7 +413,11 @@ export default function NewPanel({
                             </p>
                           </div>
                           <button
-                            className="next-page-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6"
+                            className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 text-gray-800 ${
+                              darkMode
+                                ? "bg-gray-200 hover:bg-gray-100"
+                                : "bg-gray-300 hover:bg-gray-400"
+                            }`}
                             onClick={() => nextPrevPage(1)}
                           >
                             &gt;
@@ -400,16 +426,30 @@ export default function NewPanel({
                       </div>
                     </div>
                   ) : (
-                    <div className="p-4 md:p-5 rounded flex justify-between text-gray-700 bg-gray-100">
+                    <div
+                      className={`p-4 md:p-5 rounded flex justify-between ${
+                        darkMode
+                          ? "text-white bg-gray-700"
+                          : "text-gray-700 bg-gray-100"
+                      }`}
+                    >
                       <p>
                         Les demandes d'impressions apparaîteront ici. Pour en
                         créer une, cliquez sur le bouton suivant.
                       </p>
                       <Link href="/panel/new/">
-                        <div className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
+                        <div
+                          className={`inline-flex items-center space-x-1 font-semibold ml-2 ${
+                            darkMode
+                              ? "text-indigo-500 hover:text-indigo-300"
+                              : "text-indigo-600 hover:text-indigo-400"
+                          }`}
+                        >
                           <span>Créer une demande</span>
                           <svg
-                            className="hi-solid hi-arrow-right inline-block w-4 h-4"
+                            className={`hi-solid hi-arrow-right inline-block w-4 h-4 ${
+                              darkMode ? "fill-white" : ""
+                            }`}
                             fillname="currentColor"
                             viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg"
@@ -450,10 +490,11 @@ export async function getServerSideProps({ req }) {
 
   return {
     props: {
+      jwt: cookies.jwt,
       user: user.data,
       role: role.data,
       authorizations: authorizations.data,
-      highDemand: highDemand.data.result ? highDemand.data.result : false,
+      highDemand: highDemand.data?.result ? highDemand.data.result : false,
     }, // will be passed to the page component as props
   };
 }

@@ -3,7 +3,6 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon, CubeIcon, LoginIcon } from "@heroicons/react/outline";
 import { withRouter } from "next/router";
-import { removeCookies } from "cookies-next";
 import { logout } from "../lib/function";
 
 function classNames(...classes) {

@@ -1,6 +1,5 @@
-import { Disclosure } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/outline";
 import TablesAdmin from "./tablesAdmin";
+import Faq from "./faq";
 import Link from "next/link";
 
 const faqs = [
@@ -27,10 +26,6 @@ const faqs = [
   // More questions...
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function OverviewAdmin({
   tickets,
   maxPage,
@@ -38,6 +33,7 @@ export default function OverviewAdmin({
   nextPrevPage,
   collumnState,
   changeCollumnState,
+  darkMode,
 }) {
   return (
     <section className="">
@@ -54,6 +50,7 @@ export default function OverviewAdmin({
                 isDone={true}
                 collumnState={collumnState}
                 changeCollumnState={changeCollumnState}
+                darkMode={darkMode}
               />
             ) : (
               <div className="p-4 md:p-5 rounded flex justify-between text-gray-700 bg-gray-100">
@@ -84,49 +81,11 @@ export default function OverviewAdmin({
           </div>
 
           {/* FAQ */}
-          <div className="w-full lg:w-1/3 px-4">
-            <div className="relative px-6 pb-6 py-4 bg-white rounded">
-              <div className="">
-                <h3 className="text-xl font-bold">FAQ</h3>
-                <p className="text-sm text-gray-500 text-justify">
-                  Un trou de mémoire ? Vous n'êtes pas sûr de ce que vous allez
-                  faire ? Consultez d'abord cette mini FAQ avant de demander à
-                  un membre de l'association.
-                </p>
-              </div>
-              <dl className="divide-y divide-gray-200">
-                {faqs.map((faq, index) => (
-                  <Disclosure as="div" key={`faq-${index}`} className="pt-6">
-                    {({ open }) => (
-                      <>
-                        <dt className="text-sm">
-                          <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
-                            <span className="font-medium text-gray-900">
-                              {faq.question}
-                            </span>
-                            <span className="ml-6 h-7 flex items-center">
-                              <ChevronDownIcon
-                                className={classNames(
-                                  open ? "-rotate-180" : "rotate-0",
-                                  "faq-button h-6 w-6 transform"
-                                )}
-                                aria-hidden="true"
-                              />
-                            </span>
-                          </Disclosure.Button>
-                        </dt>
-                        <Disclosure.Panel as="dd" className="mt-2 pr-12">
-                          <p className="text-sm text-gray-500 text-justify">
-                            {faq.answer}
-                          </p>
-                        </Disclosure.Panel>
-                      </>
-                    )}
-                  </Disclosure>
-                ))}
-              </dl>
-            </div>
-          </div>
+          <Faq
+            className="w-full lg:w-1/3 px-4"
+            darkMode={darkMode}
+            questions={faqs}
+          />
         </div>
       </div>
     </section>

@@ -18,6 +18,8 @@ export default function Settings({ role, me, authorizations, token }) {
     }
   }, []);
 
+  const darkMode = me.darkMode;
+
   return (
     <>
       <LayoutPanel
@@ -33,22 +35,7 @@ export default function Settings({ role, me, authorizations, token }) {
             <div className="flex flex-wrap -mx-4">
               {/* Tickets à traiter */}
               <div className="w-full md:px-6 mt-5 mb-8 lg:mb-0">
-                <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
-                  <div className="mb-3 grow">
-                    <div className="space-x-2">
-                      <div className="relative grow">
-                        <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
-                          <path
-                            fillRule="evenodd"
-                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                            clipRule="evenodd"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <TableTokensAdmin token={token} />
+                <TableTokensAdmin token={token} darkMode={darkMode} />
               </div>
             </div>
           </div>
@@ -56,6 +43,26 @@ export default function Settings({ role, me, authorizations, token }) {
       </LayoutPanel>
     </>
   );
+}
+
+{
+  /*
+<div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
+  <div className="mb-3 grow">
+    <div className="space-x-2">
+      <div className="relative grow">
+        <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
+          <path
+            fillRule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clipRule="evenodd"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+*/
 }
 
 export async function getServerSideProps({ req }) {

@@ -16,6 +16,7 @@ export function mock(path, jwt, options) {
           isMicrosoft: 0,
           acceptedRule: 1,
           mailValidated: 1,
+          darkMode: 1,
         },
       };
     case "modo":

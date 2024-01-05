@@ -11,12 +11,15 @@ import {
   CubeIcon,
   UsersIcon,
   ClipboardListIcon,
+  MoonIcon,
 } from "@heroicons/react/outline";
+import ButtonLayoutPanel from "./buttonLayoutPanel";
 import { SelectorIcon } from "@heroicons/react/solid";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
 import { logout } from "../lib/function";
+import { getTextForClick } from "../lib/layoutClickText";
 import { fetchAPIAuth } from "../lib/api";
 
 function classNames(...classes) {
@@ -25,6 +28,7 @@ function classNames(...classes) {
 export default function LayoutPanel({
   children,
   user,
+  setUser,
   role,
   authorizations,
   titleMenu,
@@ -87,6 +91,33 @@ export default function LayoutPanel({
     { id: 4, name: "4" },
     { id: 5, name: "5" },
   ];
+
+  let currentClicked = 0;
+  async function clickCurrent() {
+    currentClicked++;
+    const results = getTextForClick(currentClicked);
+    for (const result of results) {
+      switch (result.type) {
+        case "success":
+          toast.success(result.text, result.options);
+          break;
+        case "warn":
+          toast.warn(result.text, result.options);
+          break;
+        case "error":
+          toast.error(result.text, result.options);
+          break;
+        case "wait":
+          await new Promise((resolve, reject) => {
+            setTimeout(resolve, result.time ? result.time : 2500);
+          });
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
 
   async function validSchool() {
     const cookie = getCookie("jwt");
@@ -165,9 +196,14 @@ export default function LayoutPanel({
   const surname = user.lastName;
 
   const title = titleMenu ? titleMenu : "Panel de demande d'impression 3D";
+  const darkMode = user.darkMode;
 
   return (
-    <div className="relative h-screen flex overflow-hidden bg-white">
+    <div
+      className={`relative h-screen flex overflow-hidden ${
+        darkMode ? "bg-gray-800" : "bg-white"
+      }`}
+    >
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -194,7 +230,11 @@ export default function LayoutPanel({
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-gray-100">
+            <div
+              className={`relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 ${
+                darkMode ? "bg-gray-700" : "bg-gray-100"
+              }`}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-in-out duration-300"
@@ -223,19 +263,39 @@ export default function LayoutPanel({
                 className="px-3 mt-6 relative inline-block text-left"
               >
                 <div>
-                  <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                  <Menu.Button
+                    className={`group w-full rounded-md px-3.5 py-2 text-sm text-left font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 ${
+                      darkMode
+                        ? "bg-gray-700 hover:bg-gray-800"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                  >
                     <span className="flex w-full justify-between items-center">
                       <span className="flex min-w-0 items-center justify-between space-x-3">
-                        <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
+                        <div
+                          className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${
+                            darkMode
+                              ? "bg-gray-500 text-gray-100"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
                           {name[0].toString().toUpperCase() +
                             " " +
                             surname[0].toString().toUpperCase()}
                         </div>
                         <span className="flex-1 flex flex-col min-w-0">
-                          <span className="text-gray-900 text-sm font-medium truncate">
+                          <span
+                            className={`text-sm font-medium truncate ${
+                              darkMode ? "text-gray-100" : "text-gray-900"
+                            }`}
+                          >
                             {name + " " + surname.toUpperCase()}
                           </span>
-                          <span className="text-gray-500 text-sm truncate">
+                          <span
+                            className={`text-sm truncate ${
+                              darkMode ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
                             {user.title || "Ancien compte"}
                           </span>
                         </span>
@@ -313,36 +373,29 @@ export default function LayoutPanel({
                   <div className="space-y-1">
                     {navigation.map((item, index) => {
                       if (item.show == true) {
-                        return (
-                          <Link key={`nav-small-${index}`} href={item.href}>
-                            <p
-                              className={classNames(
-                                item.className.reduce(
-                                  (accumulator, currentValue) =>
-                                    accumulator + " " + currentValue + "-small",
-                                  ""
-                                ) +
-                                  " " +
-                                  (item.current
-                                    ? "bg-gray-100 text-gray-900"
-                                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-                                  "group flex items-center px-2 py-2 text-base leading-5 font-medium rounded-md")
-                              )}
-                              aria-current={item.current ? "page" : undefined}
+                        if (item.current) {
+                          return (
+                            <a
+                              key={`nav-large-${index}`}
+                              className={`cursor-pointer`}
+                              onClick={() => clickCurrent()}
                             >
-                              <item.icon
-                                className={classNames(
-                                  item.current
-                                    ? "text-gray-500"
-                                    : "text-gray-400 group-hover:text-gray-500",
-                                  "mr-3 flex-shrink-0 h-6 w-6"
-                                )}
-                                aria-hidden="true"
+                              <ButtonLayoutPanel
+                                item={item}
+                                darkMode={darkMode}
                               />
-                              {item.name}
-                            </p>
-                          </Link>
-                        );
+                            </a>
+                          );
+                        } else {
+                          return (
+                            <Link key={`nav-large-${index}`} href={item.href}>
+                              <ButtonLayoutPanel
+                                item={item}
+                                darkMode={darkMode}
+                              />
+                            </Link>
+                          );
+                        }
                       }
                     })}
                   </div>
@@ -370,9 +423,32 @@ export default function LayoutPanel({
       </Transition.Root>
 
       <div className="hidden lg:flex lg:flex-shrink-0">
-        <div className="flex flex-col w-64 border-r border-gray-200 pt-5 pb-4 bg-gray-100">
-          <div className="flex items-center flex-shrink-0 px-6">
+        <div
+          className={`flex flex-col w-64 border-r pt-5 pb-4 ${
+            darkMode
+              ? "bg-gray-700 border-gray-600"
+              : "bg-gray-100 border-gray-200"
+          }`}
+        >
+          <div className="flex items-center flex-shrink-0 px-6 justify-between">
             <LogoDvfl user={user} />
+
+            <label className="relative inline-flex items-center cursor-pointer pr-0">
+              <input
+                type="checkbox"
+                value=""
+                className="sr-only peer"
+                onChange={() => {
+                  user.darkMode = !user.darkMode;
+                  user.firstName = user.darkMode;
+                  console.log(user.darkMode);
+                  setUser(user);
+                }}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              <div className="pl-2" />
+              <MoonIcon className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+            </label>
           </div>
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
             <Menu
@@ -380,19 +456,39 @@ export default function LayoutPanel({
               className="px-3 mt-6 relative inline-block text-left"
             >
               <div>
-                <Menu.Button className="group w-full bg-gray-100 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                <Menu.Button
+                  className={`group w-full rounded-md px-3.5 py-2 text-sm text-left font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 ${
+                    darkMode
+                      ? "bg-gray-700 hover:bg-gray-800"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
-                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
+                      <div
+                        className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${
+                          darkMode
+                            ? "bg-gray-500 text-gray-100"
+                            : "bg-gray-200 text-gray-500"
+                        }`}
+                      >
                         {name[0].toString().toUpperCase() +
                           " " +
                           surname[0].toString().toUpperCase()}
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
-                        <span className="text-gray-900 text-sm font-medium truncate">
+                        <span
+                          className={`text-sm font-medium truncate ${
+                            darkMode ? "text-gray-100" : "text-gray-900"
+                          }`}
+                        >
                           {name + " " + surname.toUpperCase()}
                         </span>
-                        <span className="text-gray-500 text-sm truncate">
+                        <span
+                          className={`text-sm truncate ${
+                            darkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
                           {user.title || "Ancien compte"}
                         </span>
                       </span>
@@ -469,36 +565,23 @@ export default function LayoutPanel({
               <div className="space-y-1">
                 {navigation.map((item, index) => {
                   if (item.show == true) {
-                    return (
-                      <Link key={`nav-large-${index}`} href={item.href}>
-                        <p
-                          className={classNames(
-                            item.className.reduce(
-                              (accumulator, currentValue) =>
-                                accumulator + " " + currentValue + "-large",
-                              ""
-                            ) +
-                              " " +
-                              (item.current
-                                ? "bg-gray-200 text-gray-900"
-                                : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
-                              "group flex items-center px-2 py-2 text-sm font-medium rounded-md")
-                          )}
-                          aria-current={item.current ? "page" : undefined}
+                    if (item.current) {
+                      return (
+                        <a
+                          key={`nav-large-${index}`}
+                          className={`cursor-pointer`}
+                          onClick={() => clickCurrent()}
                         >
-                          <item.icon
-                            className={classNames(
-                              item.current
-                                ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
-                              "mr-3 flex-shrink-0 h-6 w-6"
-                            )}
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </p>
-                      </Link>
-                    );
+                          <ButtonLayoutPanel item={item} darkMode={darkMode} />
+                        </a>
+                      );
+                    } else {
+                      return (
+                        <Link key={`nav-large-${index}`} href={item.href}>
+                          <ButtonLayoutPanel item={item} darkMode={darkMode} />
+                        </Link>
+                      );
+                    }
                   }
                 })}
               </div>
@@ -522,23 +605,37 @@ export default function LayoutPanel({
         </div>
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="relative flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:hidden">
+        <div
+          className={`relative flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:hidden ${
+            darkMode ? "bg-gray-700 border-gray-500" : ""
+          }`}
+        >
           <button
             type="button"
-            className="open-layout-button px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden"
+            className={`open-layout-button px-4 border-r  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden ${
+              darkMode
+                ? "text-gray-100 border-gray-600"
+                : "text-gray-500 border-gray-200"
+            }`}
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
             <MenuAlt1Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 flex justify-between px-4 sm:px-6 lg:px-8">
-            <div className="flex-1 flex"></div>
+          <div className={`flex-1 flex justify-between px-4 sm:px-6 lg:px-8`}>
+            <div className={`flex-1 flex `}></div>
             <div className="flex items-center">
               <Menu as="div" className="ml-3 relative">
                 <div>
                   <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                     <span className="sr-only">Open user menu</span>
-                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500">
+                    <div
+                      className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${
+                        darkMode
+                          ? "bg-gray-500 text-gray-100"
+                          : "bg-gray-200 text-gray-500"
+                      }`}
+                    >
                       {name[0].toString().toUpperCase() +
                         " " +
                         surname[0].toString().toUpperCase()}
@@ -597,9 +694,17 @@ export default function LayoutPanel({
           </div>
         </div>
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
-          <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+          <div
+            className={`border-b px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8  ${
+              darkMode ? "border-gray-600" : "border-gray-200"
+            }`}
+          >
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">
+              <h1
+                className={`text-lg font-medium leading-6 sm:truncate ${
+                  darkMode ? "text-white" : "text-gray-900"
+                }`}
+              >
                 {title}
               </h1>
             </div>
@@ -660,7 +765,7 @@ export default function LayoutPanel({
               >
                 <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6">
                   <div className="flex items-center justify-center">
-                    <h1 class="text-3xl font-bold pb-6">
+                    <h1 className="text-3xl font-bold pb-6">
                       Informations à saisir
                     </h1>
                   </div>

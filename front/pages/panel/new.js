@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { CubeIcon } from "@heroicons/react/solid";
 import LayoutPanel from "../../components/layoutPanel";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
@@ -129,6 +128,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
     setFile((oldArray) => [...oldArray, e.target.files]);
   };
 
+  const darkMode = user.darkMode;
+
   return (
     <LayoutPanel
       user={user}
@@ -144,10 +145,18 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3
+                  className={`text-lg font-medium leading-6 ${
+                    darkMode ? "text-gray-200" : "text-gray-900"
+                  }`}
+                >
                   Informations
                 </h3>
-                <p className="mt-1 text-sm text-gray-600">
+                <p
+                  className={`mt-1 text-sm ${
+                    darkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   Ces informations permettront de traiter aux mieux votre
                   impression. Merci de les remplir correctement.
                 </p>
@@ -156,11 +165,17 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
             <div className="mt-5 md:mt-0 md:col-span-2">
               <div onSubmit={handleSubmit}>
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
-                  <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                  <div
+                    className={`px-4 py-5 space-y-6 sm:p-6 ${
+                      darkMode ? "bg-gray-800" : "bg-white"
+                    }`}
+                  >
                     <div>
                       <label
                         htmlFor="about"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         Commentaires
                       </label>
@@ -174,7 +189,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
-                      <p className="mt-2 text-sm text-gray-500">
+                      <p
+                        className={`mt-2 text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Description détaillée de la demande d'impression du
                         fichier.
                       </p>
@@ -183,7 +202,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     <div>
                       <label
                         htmlFor="type"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         Type de projet
                       </label>
@@ -213,7 +234,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     <div>
                       <label
                         htmlFor="group"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         N° de groupe
                       </label>
@@ -232,7 +255,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
                         Fichier STL
                       </label>
                       <div
@@ -251,13 +278,25 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           <div className="space-y-1 text-center">
                             <CubeIcon
                               className={`mx-auto h-12 w-12 ${
-                                status ? "text-indigo-700" : "text-gray-400"
+                                status
+                                  ? "text-indigo-700"
+                                  : darkMode
+                                  ? "text-gray-200"
+                                  : "text-gray-400"
                               }`}
                             />
-                            <div className="flex text-sm text-gray-600">
+                            <div
+                              className={`flex text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
                               <label
                                 htmlFor="file-upload"
-                                className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                                className={`relative cursor-pointer rounded-md font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 ${
+                                  darkMode
+                                    ? "text-indigo-500 hover:text-indigo-400"
+                                    : "text-indigo-600 hover:text-indigo-500"
+                                }`}
                               >
                                 <span>Choisir un fichier</span>
                                 <input
@@ -273,7 +312,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                                 ou déposez-le
                               </p>
                             </div>
-                            <p className="text-xs text-gray-500">
+                            <p
+                              className={`text-xs ${
+                                darkMode ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
                               STL jusqu'à 64MB
                             </p>
                           </div>
@@ -281,14 +324,14 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                       </div>
 
                       {/* progress bar */}
-                      {file.length > 0 ? (
+                      {file.length && userClick > 0 ? (
                         <div className="flex items-center w-full h-5 bg-indigo-100 rounded-lg overflow-hidden mt-5">
                           <div
                             role="progressbar"
                             aria-valuenow={percent}
                             aria-valuemin={0}
                             aria-valuemax={100}
-                            className="flex items-center justify-center self-stretch transition-all duration-500 ease-out bg-indigo-500 text-white text-sm font-semibold"
+                            className={`flex items-center justify-center self-stretch transition-all duration-500 ease-out bg-indigo-500 text-white text-sm font-semibold`}
                             style={{ width: `${percent}%` }}
                           >
                             {percent}%
@@ -302,7 +345,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                             if (r[0] == null) return null;
                             return (
                               <div key={`file-${index}`} className="block mt-3">
-                                <p className="text-md font-semibold text-gray-700">
+                                <p
+                                  className={`text-md font-semibold ${
+                                    darkMode ? "text-white" : "text-gray-700"
+                                  }`}
+                                >
                                   {r[0].name}
                                 </p>
                                 <button
@@ -314,7 +361,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                                       })
                                     );
                                   }}
-                                  className="mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-5 text-sm rounded border-indigo-200 bg-indigo-200 text-indigo-700 hover:text-indigo-700 hover:bg-indigo-300 hover:border-indigo-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-200 active:border-indigo-200"
+                                  className={`mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-5 text-sm rounded border-indigo-200 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 ${
+                                    darkMode
+                                      ? "text-indigo-800 bg-indigo-300 hover:bg-indigo-400 hover:border-indigo-400 active:bg-indigo-300 active:border-indigo-300"
+                                      : "text-indigo-700 bg-indigo-200 hover:bg-indigo-300 hover:border-indigo-300 active:bg-indigo-200 active:border-indigo-200"
+                                  }`}
                                 >
                                   Supprimer le fichier
                                 </button>
@@ -327,7 +378,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     </div>
                   </div>
                 </div>
-                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <div
+                  className={`px-4 py-3 text-right sm:px-6 ${
+                    darkMode ? "bg-gray-800" : "bg-gray-50"
+                  }`}
+                >
                   <button
                     onClick={(e) => {
                       setUserClick(true);
@@ -347,7 +402,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
-            <div className="border-t border-gray-200" />
+            <div
+              className={`border-t ${
+                darkMode ? "border-gray-700" : " border-gray-200"
+              }`}
+            />
           </div>
         </div>
       </div>

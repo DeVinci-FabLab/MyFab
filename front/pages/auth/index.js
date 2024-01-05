@@ -12,6 +12,7 @@ export default function Auth() {
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(false);
   const [toastedLoad, setToastedLoad] = useState(false);
+  const [capsLockActive, setCapsLockActive] = useState(false);
 
   useEffect(() => {
     if (!toastedLoad && router.query.close != null) {
@@ -79,6 +80,22 @@ export default function Auth() {
       const adfs = getCookie("adfs");
       if (adfs) router.push(process.env.API + "/api/user/login/adfs/");
     }
+
+    const handleKeyPress = (e) => {
+      try {
+        const isCapsLockActive = e.getModifierState("CapsLock");
+
+        setCapsLockActive(isCapsLockActive);
+      } catch (error) {}
+    };
+
+    // Ajoutez un écouteur d'événements pour la touche pressée
+    window.addEventListener("keydown", handleKeyPress);
+
+    // Retirez l'écouteur d'événements lors du démontage du composant
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
   });
 
   async function login(e) {
@@ -215,6 +232,11 @@ export default function Auth() {
                     />
                   </div>
                 </div>
+                {capsLockActive && (
+                  <p className="text-red-500">
+                    <strong>La touche Ver Maj est active !</strong>
+                  </p>
+                )}
 
                 <div className="flex items-center justify-between">
                   <div className="text-sm">

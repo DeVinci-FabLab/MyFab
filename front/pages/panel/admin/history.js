@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LayoutPanel from "../../../components/layoutPanel";
-import NavbarAdmin from "../../../components/navbarAdmin";
+import NavbarAdmin from "../../../components/panel/navbarAdmin";
 import WebSocket from "../../../components/webSocket";
 import Error from "../../404";
 import Seo from "../../../components/seo";
@@ -102,6 +102,8 @@ export default function OverviewAdmin({ user, role, authorizations }) {
     }
   }
 
+  const darkMode = user.darkMode;
+
   return (
     <div>
       <WebSocket
@@ -119,14 +121,18 @@ export default function OverviewAdmin({ user, role, authorizations }) {
           >
             <Seo title={"Historique"} />
 
-            <NavbarAdmin role={role} />
+            <NavbarAdmin role={role} darkMode={darkMode} />
 
             <section className="">
               <div className="container px-4 mx-auto">
                 <div className="flex flex-wrap -mx-4">
                   {/* Tickets à traiter */}
                   <div className="w-full md:px-6 mt-5 mb-8 lg:mb-0">
-                    <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
+                    <div
+                      className={`flex flex-col rounded shadow-sm bg-white overflow-hidden ${
+                        darkMode ? "bg-gray-800" : ""
+                      }`}
+                    >
                       <div className="mb-3 grow">
                         <div className="space-x-2">
                           <form
@@ -176,6 +182,7 @@ export default function OverviewAdmin({ user, role, authorizations }) {
                       nextPrevPage={nextPrevPage}
                       collumnState={collumnState}
                       changeCollumnState={changeCollumnState}
+                      darkMode={darkMode}
                     />
                   </div>
                 </div>

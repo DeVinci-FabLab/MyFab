@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LayoutPanel from "../../../components/layoutPanel";
-import NavbarAdmin from "../../../components/navbarAdmin";
+import NavbarAdmin from "../../../components/panel/navbarAdmin";
 import OverviewAdmin from "../../../components/overviewAdmin";
 import WebSocket from "../../../components/webSocket";
 import Seo from "../../../components/seo";
@@ -93,7 +93,7 @@ export default function Admin({ user, role, authorizations }) {
     }
   }
 
-  const darkMode = false; //user.darkMode;
+  const darkMode = user.darkMode;
 
   return (
     <div>
@@ -132,6 +132,7 @@ export default function Admin({ user, role, authorizations }) {
             nextPrevPage={nextPrevPage}
             collumnState={collumnState}
             changeCollumnState={changeCollumnState}
+            darkMode={darkMode}
           />
         </LayoutPanel>
       ) : (
