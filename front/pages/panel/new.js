@@ -17,7 +17,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
   const [status, setStatus] = useState(false);
   const [userClick, setUserClick] = useState(false);
   const [file, setFile] = useState([]);
-  const [description, setDescription] = useState("Aucune déscription fournie.");
+  const [description, setDescription] = useState("Aucune description fournie.");
   const [type, setType] = useState(Object.keys(projectType)[0]);
   const [group, setGroup] = useState(null);
   const [percent, setPercent] = useState(0);
@@ -274,7 +274,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                               </p>
                             </div>
                             <p className="text-xs text-gray-500">
-                              STL jusqu'à 64MB
+                              STL jusqu'à 20MB
                             </p>
                           </div>
                         </div>
