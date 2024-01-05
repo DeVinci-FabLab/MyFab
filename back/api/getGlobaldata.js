@@ -116,9 +116,11 @@ async function getStatus(data) {
 module.exports.getProjectType = getProjectType;
 async function getProjectType(data) {
   const query = `SELECT projType.i_id as id,
-             projType.v_name as name
+             projType.v_name as name,
+             projType.b_groupCanBeNull as groupCanBeNull
              FROM gd_ticketprojecttype AS projType
-             ORDER BY id;`;
+             WHERE b_isAvailable = 1
+             ORDER BY i_order;`;
 
   const dbRes = await data.app.executeQuery(data.app.db, query, []);
   /* c8 ignore start */

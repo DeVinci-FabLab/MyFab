@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `gd_status` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v
 
 CREATE TABLE IF NOT EXISTS `gd_ticketpriority` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(50) NOT NULL , `v_color` VARCHAR(6) NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `gd_ticketprojecttype` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(50) NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `gd_ticketprojecttype` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(50) NOT NULL , `i_order` INT(2) NOT NULL DEFAULT '20' , `b_groupCanBeNull` BOOLEAN NOT NULL DEFAULT FALSE , `b_isAvailable` BOOLEAN NOT NULL DEFAULT TRUE , PRIMARY KEY (`i_id`) , CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `gd_printer` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(25) NOT NULL , `b_isAvailable` BOOLEAN NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
