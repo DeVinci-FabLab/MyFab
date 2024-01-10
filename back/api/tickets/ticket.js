@@ -736,7 +736,7 @@ async function postTicket(data) {
   const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [
     userId,
     data.body.projectType,
-    data.body.groupNumber,
+    data.body.groupNumber === "" ? null : data.body.groupNumber,
   ]);
   /* c8 ignore start */
   if (dbRes[0]) {
