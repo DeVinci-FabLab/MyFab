@@ -14,12 +14,14 @@ import WebSocket from "../../components/webSocket";
 const percents = (value, total) => Math.round(value / total) * 100;
 
 export default function NewPanel({ user, role, authorizations, projectType }) {
+  const [showMissingField, setShowMissingField] = useState(false);
   const [status, setStatus] = useState(false);
   const [userClick, setUserClick] = useState(false);
   const [file, setFile] = useState([]);
-  const [description, setDescription] = useState("Aucune description fournie.");
-  const [type, setType] = useState(Object.keys(projectType)[0]);
-  const [group, setGroup] = useState(null);
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState(0);
+  const [group, setGroup] = useState("");
+  const [noGroup, setNoGroup] = useState(false);
   const [percent, setPercent] = useState(0);
 
   function realodPage() {
@@ -48,11 +50,12 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
   };
 
   const handleSubmit = async (e) => {
-    if (
-      description == "Aucune description fournie." ||
-      group == null ||
-      file.length < 1
-    ) {
+    const validGroup = noGroup
+      ? projectType[type].groupCanBeNull === 1
+      : !isNaN(parseInt(group));
+    if (description == "" || !validGroup || file.length < 1) {
+      setShowMissingField(true);
+      setTimeout(() => setShowMissingField(false), 5000);
       toast.error("Tous les champs ne sont pas complétés.", {
         position: "top-right",
         autoClose: 3000,
@@ -74,7 +77,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
       data.append(`filedata`, file[i][0]);
     }
     data.append("comment", description);
-    data.append("groupNumber", group);
+    data.append("groupNumber", "group");
     data.append("projectType", projectType[type].id);
     const responsePostTicket = await fetchAPIAuth({
       method: "POST",
@@ -106,8 +109,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
     } else {
       document.getElementById("status").scrollIntoView();
       setFile([]);
-      setDescription("Aucune description fournie.");
-      setType(Object.keys(projectType)[0]);
+      setDescription("");
+      setType(0);
       setGroup(null);
       toast.success(
         "Le ticket #" + setZero(responsePostTicket.data.id) + " a été créé !",
@@ -160,7 +163,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     <div>
                       <label
                         htmlFor="about"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          showMissingField && description == ""
+                            ? "text-red-500"
+                            : "text-gray-700"
+                        }`}
                       >
                         Commentaires
                       </label>
@@ -170,11 +177,15 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           id="about"
                           name="about"
                           rows={3}
-                          className="description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                          className={`description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md ${
+                            showMissingField && description == ""
+                              ? "border-red-300 placeholder-red-300"
+                              : "border-gray-300 placeholder-gray-300"
+                          }`}
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
-                      <p className="mt-2 text-sm text-gray-500">
+                      <p className={`mt-2 text-sm text-gray-500`}>
                         Description détaillée de la demande d'impression du
                         fichier.
                       </p>
@@ -191,19 +202,12 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         onChange={(e) => setType(e.target.value)}
                         id="type"
                         name="type"
-                        className="projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className={`projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border-gray-300`}
                       >
-                        {Object.keys(projectType).map((item, index) => {
-                          const elementSelected = Object.keys(projectType)[0];
+                        {projectType.map((item, index) => {
                           return (
-                            <option
-                              key={`projectType-${index}`}
-                              defaultValue={
-                                item === elementSelected ? "'selected'" : ""
-                              }
-                              value={item}
-                            >
-                              {item}
+                            <option key={`projectType-${index}`} value={index}>
+                              {item.name}
                             </option>
                           );
                         })}
@@ -213,26 +217,71 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     <div>
                       <label
                         htmlFor="group"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          showMissingField &&
+                          !(noGroup
+                            ? projectType[type].groupCanBeNull === 1
+                            : !isNaN(parseInt(group)))
+                            ? "text-red-500"
+                            : "text-gray-700"
+                        }`}
                       >
                         N° de groupe
                       </label>
                       <div className="mt-1">
                         <input
-                          onChange={(e) => setGroup(e.target.value)}
+                          onChange={(e) => {
+                            setGroup(e.target.value);
+                            setNoGroup(false);
+                          }}
                           type="number"
                           name="group"
+                          value={group}
                           id="group"
                           min="0"
                           max="1000"
-                          className="group-number-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                          placeholder="64"
+                          className={`group-number-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md ${
+                            showMissingField &&
+                            !(noGroup
+                              ? projectType[type].groupCanBeNull === 1
+                              : !isNaN(parseInt(group)))
+                              ? "border-red-300 placeholder-red-300"
+                              : "border-gray-300 placeholder-gray-300"
+                          }`}
+                          placeholder="212"
                         />
                       </div>
+                      {type && projectType[type].groupCanBeNull ? (
+                        <div className="flex items-center justify-center pt-2">
+                          <input
+                            id="no-group"
+                            name="no-group"
+                            type="checkbox"
+                            checked={noGroup}
+                            onChange={(e) => {
+                              setNoGroup(e.target.checked);
+                              setGroup("");
+                            }}
+                            className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <label
+                            htmlFor="remember-me"
+                            className="ml-2 block text-sm text-gray-900"
+                          >
+                            Je n'ai pas de numéro de groupe pour ce projet
+                          </label>
+                        </div>
+                      ) : null}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label
+                        className={`block text-sm font-medium ${
+                          showMissingField && file.length < 1
+                            ? "text-red-500"
+                            : "text-gray-700"
+                        }`}
+                      >
                         Fichier STL
                       </label>
                       <div
@@ -243,7 +292,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                       >
                         <div
                           className={`${
-                            status ? "border-gray-800" : "border-gray-300"
+                            status
+                              ? "border-gray-800"
+                              : showMissingField && file.length < 1
+                              ? "border-red-300"
+                              : "border-gray-300"
                           } ${
                             percent != 0 ? "hidden" : "block"
                           } dropzone mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md`}
@@ -251,7 +304,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           <div className="space-y-1 text-center">
                             <CubeIcon
                               className={`mx-auto h-12 w-12 ${
-                                status ? "text-indigo-700" : "text-gray-400"
+                                status
+                                  ? "text-indigo-700"
+                                  : showMissingField && file.length < 1
+                                  ? "text-red-500"
+                                  : "text-gray-400"
                               }`}
                             />
                             <div className="flex text-sm text-gray-600">
@@ -369,17 +426,12 @@ export async function getServerSideProps({ req }) {
 
   const projectTypeList = await fetchAPIAuth("/projectType/");
 
-  const projectType = {};
-  for (const element of projectTypeList.data) {
-    projectType[element.name] = { id: element.id };
-  }
-
   return {
     props: {
       user: user.data,
       role: role.data,
       authorizations: authorizations.data,
-      projectType,
+      projectType: projectTypeList.data,
     }, // will be passed to the page component as props
   };
 }
