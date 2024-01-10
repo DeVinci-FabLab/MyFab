@@ -77,7 +77,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
       data.append(`filedata`, file[i][0]);
     }
     data.append("comment", description);
-    data.append("groupNumber", "group");
+    data.append("groupNumber", group);
     data.append("projectType", projectType[type].id);
     const responsePostTicket = await fetchAPIAuth({
       method: "POST",

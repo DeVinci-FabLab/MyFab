@@ -242,7 +242,9 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                             Numéro de groupe
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
-                            {ticket.groupNumber}
+                            {ticket.groupNumber
+                              ? ticket.groupNumber
+                              : "Ce projet n'est pas en groupe"}
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

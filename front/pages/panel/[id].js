@@ -534,7 +534,9 @@ const GestionTicket = ({
                             Numéro de groupe
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
-                            {ticket.groupNumber}
+                            {ticket.groupNumber
+                              ? ticket.groupNumber
+                              : "Ce projet n'est pas en groupe"}
                           </dd>
 
                           {authorizations.myFabAgent ? (
