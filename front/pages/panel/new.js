@@ -129,7 +129,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
   };
 
   const handleChange = (e) => {
-    setFile((oldArray) => [...oldArray, e.target.files]);
+    const files = { ...e.target.files };
+    setFile((oldArray) => [...oldArray, files]);
+    e.target.value = "";
   };
 
   return (
