@@ -422,7 +422,7 @@ export async function getServerSideProps({ req, query }) {
     "/user/authorization/",
     cookies.jwt
   );
-  if (ticket.error)
+  if (ticket.error || idTicket == "" || !ticket.data)
     return {
       redirect: {
         permanent: false,
