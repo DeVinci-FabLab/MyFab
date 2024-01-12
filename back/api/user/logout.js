@@ -30,7 +30,13 @@ async function deleteLogout(data) {
       code: 401,
     };
   }
-  delete data.app.cookiesList[data.dvflcookie];
+
+  // DELETE the cookie
+  const queryDeleteAllCookies = `DELETE FROM usercookies WHERE v_value = ?`;
+  await data.app.executeQuery(data.app.db, queryDeleteAllCookies, [
+    data.dvflcookie,
+  ]);
+
   return {
     type: "code",
     code: 200,

@@ -4,8 +4,8 @@ describe("DELETE /api/user/logout/", () => {
       userId: 1,
       userAuthorization: require("../../../functions/userAuthorization"),
       app: {
-        cookiesList: {
-          dvflcookieTest: "test",
+        executeQuery: async (db, query, options) => {
+          return [null];
         },
       },
       dvflcookie: "dvflcookieTest",
@@ -16,7 +16,6 @@ describe("DELETE /api/user/logout/", () => {
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    expect(data.app.cookiesList["dvflcookieTest"] == null).toBe(true);
   });
 
   test("401_noIdUser", async () => {

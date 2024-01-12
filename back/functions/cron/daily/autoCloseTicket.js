@@ -1,5 +1,3 @@
-const CronJob = require("cron").CronJob;
-
 module.exports.action = action;
 async function action(app) {
   const queryOneWeek = `SELECT i_id AS id FROM printstickets WHERE i_status = (SELECT i_id FROM gd_status WHERE v_name = 'En attente de réponse') AND NOW() > DATE_ADD(dt_modificationdate, INTERVAL 1 WEEK);`;
@@ -20,15 +18,3 @@ async function action(app) {
     }
   }
 }
-
-module.exports.run = async (app) => {
-  action(app);
-  new CronJob(
-    "10 24 08 * * *",
-    async function () {
-      action(app);
-    },
-    null,
-    true
-  );
-};
