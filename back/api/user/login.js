@@ -96,6 +96,7 @@ async function postLogin(data) {
     };
   }
   const id = dbRes[1][0].id;
+
   const cookie = await require("../../functions/apiActions").saveNewCookie(
     data.app,
     {
@@ -104,6 +105,9 @@ async function postLogin(data) {
       expireIn: data.body.expires
         ? new Date(data.body.expires).toISOString()
         : null,
+      userAgent: data.userAgent,
+      browser: data.browser,
+      ip: data.ip,
     }
   );
 

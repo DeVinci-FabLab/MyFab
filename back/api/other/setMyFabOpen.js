@@ -11,7 +11,12 @@ async function changeOpenMyFab(data) {
       code: 404,
     };
   }
-  if (!data.body.status) data.app.cookiesList = {};
+  if (!data.body.status) {
+    // DELETE all cookies
+    const queryDeleteAllCookies = `DELETE FROM usercookies`;
+    await app.executeQuery(app.db, queryDeleteAllCookies, []);
+  }
+
   const serviceData = JSON.parse(
     fs.readFileSync(__dirname + "/../../data/serviceData.json")
   );
