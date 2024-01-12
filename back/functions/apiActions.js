@@ -130,11 +130,6 @@ module.exports.saveNewCookie = async (app, userData) => {
     userData.browser,
     userData.ip,
   ]);
-
-  app.cookiesList[jwt] = {
-    id: userData.id,
-    expire: userData.expireIn ? new Date(userData.expireIn) : null,
-  };
   return jwt;
 };
 
