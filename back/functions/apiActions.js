@@ -7,6 +7,13 @@ require("dotenv").config();
 const activeLogs = process.env.activeLogs === "true";
 const jwtSecret = process.env.SPECIALTOKEN;
 
+const reIpAddress = new RegExp("(?:[0-9]{1,3}.){3}[0-9]{1,3}");
+function getIpAddress(remoteAddress) {
+  const result = remoteAddress.match(reIpAddress);
+  if (result) return result[0];
+  return "127.0.0.1";
+}
+
 async function runFolder(path, app) {
   return await new Promise(async (resolve) => {
     fs.readdirSync(__dirname + "/.." + path).forEach(async (file) => {
@@ -86,7 +93,7 @@ module.exports.prepareData = async (app, req, res) => {
 
   const userAgent = req.headers["user-agent"];
   const browser = req.headers["sec-ch-ua"];
-  const ip = req.ip;
+  const ip = getIpAddress(req.ip);
 
   const data = {
     app,
