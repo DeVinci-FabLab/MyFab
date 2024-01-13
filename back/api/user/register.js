@@ -1,5 +1,6 @@
 const sha256 = require("sha256");
-const sendMailFunction = require("../../functions/sendMail").sendRegisterMail;
+const sendMailFunction =
+  require("../../functions/sendMail/register").sendRegisterMail;
 const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
@@ -138,43 +139,47 @@ async function postRegister(data) {
   /* c8 ignore stop */
   const idNewUser = resGetIdUserInserted[1][0].id;
 
-  let tocken = null;
-  while (tocken == null) {
-    const testTocken = makeid(10);
-    const querySelectTocken = `SELECT 1 FROM mailtocken
+  let token = null;
+  while (token == null) {
+    const testToken = makeid(10);
+    const querySelectToken = `SELECT 1 FROM mailtocken
                                 WHERE v_value = ?`;
-    const resTestTocken = await data.app.executeQuery(
+    const resTestToken = await data.app.executeQuery(
       data.app.db,
-      querySelectTocken,
-      [testTocken]
+      querySelectToken,
+      [testToken]
     );
     /* c8 ignore start */
-    if (resTestTocken[0]) {
-      console.log(resTestTocken[0]);
+    if (resTestToken[0]) {
+      console.log(resTestToken[0]);
       return {
         type: "code",
         code: 500,
       };
     }
     /* c8 ignore stop */
-    if (resTestTocken[1]) tocken = testTocken;
+    if (resTestToken[1]) token = testToken;
   }
 
   const sendMail = data.body.sendMail == null ? true : data.body.sendMail;
 
-  const queryInsertTocken = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
+  const queryInsertToken = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
                             VALUES (?, ?, ?);`;
-  const resInsertTocken = await data.app.executeQuery(
+  const resInsertToken = await data.app.executeQuery(
     data.app.db,
-    queryInsertTocken,
-    [idNewUser, tocken, sendMail ? "1" : "0"]
+    queryInsertToken,
+    [idNewUser, token, sendMail ? "1" : "0"]
   );
 
-  await data.sendMailFunction(data.body.email, data.body.firstName, tocken);
+  await data.sendMailFunction({
+    userMail: data.body.email,
+    firstName: data.body.firstName,
+    token,
+  });
 
   /* c8 ignore start */
-  if (resInsertTocken[0]) {
-    console.log(resInsertTocken[0]);
+  if (resInsertToken[0]) {
+    console.log(resInsertToken[0]);
     return {
       type: "code",
       code: 500,

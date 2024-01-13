@@ -1,6 +1,6 @@
 const sha256 = require("sha256");
 const sendMailFunction =
-  require("../../functions/sendMail").sendForgetPasswordMail;
+  require("../../functions/sendMail/forgotPassword").sendForgetPasswordMail;
 
 function makeid(length) {
   var result = "";
@@ -303,22 +303,22 @@ async function postForgottenPassword(data) {
   }
   const idNewUser = dbRes[1][0].id;
   const firstName = dbRes[1][0].firstName;
-  const tocken = makeid(10);
+  const token = makeid(10);
 
   const sendMail = data.body.sendMail == null ? true : data.body.sendMail;
   const queryInsert = `INSERT INTO mailtocken (i_idUser, v_value, b_mailSend)
                         VALUES (?, ?, ?);`;
-  const resInsertTocken = await data.app.executeQuery(
-    data.app.db,
-    queryInsert,
-    [idNewUser, tocken, sendMail ? "1" : "0"]
-  );
+  const resInsertToken = await data.app.executeQuery(data.app.db, queryInsert, [
+    idNewUser,
+    token,
+    sendMail ? "1" : "0",
+  ]);
 
-  await data.sendMailFunction(email, firstName, tocken);
+  await data.sendMailFunction({ userMail: email, firstName, token });
 
   /* c8 ignore start */
-  if (resInsertTocken[0]) {
-    console.log(resInsertTocken[0]);
+  if (resInsertToken[0]) {
+    console.log(resInsertToken[0]);
     return {
       type: "code",
       code: 500,
