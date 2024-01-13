@@ -268,6 +268,10 @@ async function postTicketMessage(data) {
   //Update bot channels
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
 
+  // Send mail to user
+  if (idTicketUser != userIdAgent) {
+  }
+
   return {
     type: "code",
     code: 200,
