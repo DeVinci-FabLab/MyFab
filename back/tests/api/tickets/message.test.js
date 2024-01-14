@@ -258,14 +258,28 @@ describe("POST /api/ticket/:id/message/", () => {
           return true;
         },
       },
+      sendMailFunction: async () => {
+        return true;
+      },
       app: {
         executeQuery: async (db, query, options) => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ id: 3 }]];
+              return [null, [{ id: 3, email: "test@example.com" }]];
             case 2:
               return [null, {}];
+            case 3:
+              return [
+                null,
+                {
+                  userName: "Cody",
+                  content:
+                    "Bonjour Émile, est-ce que tu trouves que mon mail pour notifier les étudiants, qu'ils ont un nouveau message, est bien ?",
+                  creationDate: new Date(2002, 2, 16, 2, 45),
+                  isApplicant: 0,
+                },
+              ];
 
             default:
               return null;

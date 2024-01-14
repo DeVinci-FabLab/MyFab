@@ -1,3 +1,6 @@
+const sendTicketMessageMail =
+  require("../../functions/sendMail/ticketMessage").sendTicketMessageMail;
+
 /**
  * @swagger
  * components:
@@ -200,9 +203,11 @@ async function postTicketMessage(data) {
       code: 401,
     };
   }
-  const querySelect = `SELECT i_idUser AS 'id'
-                    FROM printstickets
-                    WHERE i_id = ?`;
+  const querySelect = `SELECT pt.i_idUser AS 'id',
+                      u.v_email AS email
+                      FROM printstickets AS pt
+                      INNER JOIN users AS u ON pt.i_idUser = u.i_id
+                      WHERE pt.i_id = 1;`;
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
@@ -270,6 +275,23 @@ async function postTicketMessage(data) {
 
   // Send mail to user
   if (idTicketUser != userIdAgent) {
+    const querySelectMessages = `SELECT CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS 'userName', tm.v_content AS 'content', tm.dt_creationDate AS 'creationDate', pt.i_idUser = ? AS 'isApplicant' FROM ticketmessages AS tm INNER JOIN users AS u ON tm.i_idUser = u.i_id INNER JOIN printstickets AS pt ON tm.i_idTicket = pt.i_id WHERE i_idTicket = ?`;
+    const resGetMessagesTicket = await data.app.executeQuery(
+      data.app.db,
+      querySelectMessages,
+      [idTicketUser, data.params.id]
+    );
+    /* c8 ignore start */
+    if (resGetMessagesTicket[0]) {
+      console.log(resGetUserTicket[0]);
+      /* c8 ignore stop */
+    } else {
+      data.sendMailFunction({
+        userMail: resGetUserTicket[1][0].email,
+        ticketId: data.params.id,
+        messages: resGetMessagesTicket[1],
+      });
+    }
   }
 
   return {
@@ -308,6 +330,8 @@ async function startApi(app) {
         req,
         res
       );
+
+      data.sendMailFunction = sendTicketMessageMail;
       const result = await postTicketMessage(data);
       await require("../../functions/apiActions").sendResponse(
         req,
