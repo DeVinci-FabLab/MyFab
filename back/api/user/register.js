@@ -1,6 +1,7 @@
 const sha256 = require("sha256");
 const sendMailFunction =
   require("../../functions/sendMail/register").sendRegisterMail;
+const statsIncrement = require("../../functions/stats").increment;
 const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
@@ -176,6 +177,7 @@ async function postRegister(data) {
     firstName: data.body.firstName,
     token,
   });
+  statsIncrement(data.app.db, "mailSent");
 
   /* c8 ignore start */
   if (resInsertToken[0]) {
