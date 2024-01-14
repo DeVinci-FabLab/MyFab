@@ -1,5 +1,6 @@
 const sendTicketMessageMail =
   require("../../functions/sendMail/ticketMessage").sendTicketMessageMail;
+const statsIncrement = require("../../functions/stats").increment;
 
 /**
  * @swagger
@@ -291,6 +292,7 @@ async function postTicketMessage(data) {
         ticketId: data.params.id,
         messages: resGetMessagesTicket[1],
       });
+      statsIncrement(data.app.db, "mailSent");
     }
   }
 

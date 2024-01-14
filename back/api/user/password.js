@@ -1,6 +1,7 @@
 const sha256 = require("sha256");
 const sendMailFunction =
   require("../../functions/sendMail/forgotPassword").sendForgetPasswordMail;
+const statsIncrement = require("../../functions/stats").increment;
 
 function makeid(length) {
   var result = "";
@@ -315,6 +316,7 @@ async function postForgottenPassword(data) {
   ]);
 
   await data.sendMailFunction({ userMail: email, firstName, token });
+  statsIncrement(data.app.db, "mailSent");
 
   /* c8 ignore start */
   if (resInsertToken[0]) {
