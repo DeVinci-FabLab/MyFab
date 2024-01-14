@@ -32,7 +32,7 @@ function writeEmail(body) {
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	    <title>DeVinci FabLab Email Template</title>
 	    <style media="all" type="text/css">
-      /* -------------------------------------
+  /* -------------------------------------
 	    GLOBAL RESETS
 	------------------------------------- */
 
@@ -57,7 +57,7 @@ function writeEmail(body) {
         font-size: 16px;
         vertical-align: top;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    BODY & CONTAINER
 	------------------------------------- */
 
@@ -87,7 +87,7 @@ function writeEmail(body) {
         max-width: 600px;
         padding: 0;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    HEADER, FOOTER, MAIN
 	------------------------------------- */
 
@@ -118,7 +118,7 @@ function writeEmail(body) {
         font-size: 16px;
         text-align: center;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    TYPOGRAPHY
 	------------------------------------- */
 
@@ -134,7 +134,7 @@ function writeEmail(body) {
         color: #0867ec;
         text-decoration: underline;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    BUTTONS
 	------------------------------------- */
 
@@ -193,8 +193,53 @@ function writeEmail(body) {
           border-color: rgb(212, 26, 95) !important;
         }
       }
+  /* -------------------------------------
+      CHAT
+  ------------------------------------- */
 
-      /* -------------------------------------
+      .chat-bubble {
+        max-width: 300px;
+        text-align: justify;
+        padding: 10px;
+        border-radius: 10px;
+        position: relative;
+      }
+
+      .chat-bubble>div.metadata {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      
+      .chat-bubble>div>strong.user {
+        text-align: left;
+      }
+
+      .chat-bubble>div>p.date {
+        margin-bottom: 0px;
+        color: rgb(150 150 150);
+      }
+
+      .chat-agent {
+        background-color: rgb(220 220 220);
+      }
+
+      .chat-applicant {
+        background-color: rgb(222 231 253);
+      }
+
+      .chat-new {
+        border: solid;
+        border-width: 3px;
+        border-color: rgb(253 224 71);
+      }
+
+      .chat-bubble>p {
+        margin-bottom: 0px;
+      }
+
+  /* -------------------------------------
 	    OTHER STYLES THAT MIGHT BE USEFUL
 	------------------------------------- */
 
@@ -252,7 +297,7 @@ function writeEmail(body) {
         text-decoration: none;
       }
 
-      /* -------------------------------------
+  /* -------------------------------------
 	    RESPONSIVE AND MOBILE FRIENDLY STYLES
 	------------------------------------- */
 
@@ -288,7 +333,7 @@ function writeEmail(body) {
           width: 100% !important;
         }
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    PRESERVE THESE STYLES IN THE HEAD
 	------------------------------------- */
 
