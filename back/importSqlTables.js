@@ -19,9 +19,43 @@ async function importSqlTables(file) {
       const lineData = data.split("\n");
       for (const line of lineData) {
         if ((line !== "\r" || line !== "") && !line.startsWith("--")) {
-          const res = await executeQuery(db, line, []);
-          if (res[0] && res[0].code !== "ER_DUP_ENTRY" && res[0].sql.length > 5)
-            console.log(res[0]);
+          if (line.startsWith("INSERT")) {
+            const regexTable = /INSERT INTO `([^`]+)`/;
+            const matchTable = line.match(regexTable);
+            const table = matchTable[1];
+
+            const regexValues = /\(([^)]+)\)/g;
+            const matchesValues = line.match(regexValues);
+
+            for (let index = 1; index < matchesValues.length; index++) {
+              const getAutoIncrement =
+                "SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = ?;";
+              const resAutoIncrement = await executeQuery(
+                db,
+                getAutoIncrement,
+                [table]
+              );
+              const autoIncrement = resAutoIncrement[1][0].AUTO_INCREMENT;
+
+              const value = matchesValues[index];
+              const querryInsert = `INSERT INTO \`${table}\` ${matchesValues[0]} VALUES ${value}`;
+              const resInsert = await executeQuery(db, querryInsert, []);
+              if (resInsert[0].code === "ER_DUP_ENTRY") {
+                const queryResetAutoIncrement = `ALTER TABLE \`${table}\` AUTO_INCREMENT = ?;`;
+                await executeQuery(db, queryResetAutoIncrement, [
+                  autoIncrement,
+                ]);
+              }
+            }
+          } else {
+            const res = await executeQuery(db, line, []);
+            if (
+              res[0] &&
+              res[0].code !== "ER_DUP_ENTRY" &&
+              res[0].sql.length > 5
+            )
+              console.log(res[0]);
+          }
         }
       }
 
