@@ -1,7 +1,7 @@
 {
   "name": "myfabultimate_back",
   "description": "The BackEnd for MyFab",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
