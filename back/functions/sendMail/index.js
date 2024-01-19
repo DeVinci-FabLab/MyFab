@@ -204,35 +204,29 @@ function writeEmail(body) {
         border-radius: 10px;
         position: relative;
       }
-
-      .chat-bubble>div.metadata {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
       
       .chat-bubble>div>strong.user {
         text-align: left;
       }
 
       .chat-bubble>div>p.date {
-        margin-bottom: 0px;
-        color: rgb(150 150 150);
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: rgb(150, 150, 150);
       }
 
       .chat-agent {
-        background-color: rgb(220 220 220);
+        background-color: rgb(220, 220, 220);
       }
 
       .chat-applicant {
-        background-color: rgb(222 231 253);
+        background-color: rgb(222, 231, 253);
       }
 
       .chat-new {
         border: solid;
         border-width: 3px;
-        border-color: rgb(253 224 71);
+        border-color: rgb(253, 224, 71);
       }
 
       .chat-bubble>p {

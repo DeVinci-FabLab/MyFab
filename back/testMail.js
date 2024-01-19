@@ -1,8 +1,9 @@
 // Sample mail
 const sendSampleMail = require("./functions/sendMail/sample").sendSampleMail;
+const email = "test@test.com";
 
 sendSampleMail({
-  userMail: "Test@mail.fr",
+  userMail: email,
   text: "Bonjour ceci est un test de mail",
   testFile: "sampleMail.html",
 });
@@ -12,7 +13,7 @@ const sendRegisterMail =
   require("./functions/sendMail/register").sendRegisterMail;
 
 sendRegisterMail({
-  userMail: "Test@mail.fr",
+  userMail: email,
   firstName: "TestUser",
   token: "token",
   testFile: "registerPasswordMail.html",
@@ -23,7 +24,7 @@ const sendForgetPasswordMail =
   require("./functions/sendMail/forgotPassword").sendForgetPasswordMail;
 
 sendForgetPasswordMail({
-  userMail: "Test@mail.fr",
+  userMail: email,
   firstName: "TestUser",
   token: "token",
   testFile: "forgotPasswordMail.html",
@@ -68,7 +69,7 @@ const messages = [
   },
 ];
 sendTicketMessageMail({
-  userMail: "Test@mail.fr",
+  userMail: email,
   ticketId: 212,
   messages,
   testFile: "ticketMessageMail.html",
