@@ -539,7 +539,7 @@ const GestionTicket = ({
                               : "Ce projet n'est pas en groupe"}
                           </dd>
 
-                          {authorizations.myFabAgent ? (
+                          {authorizations.myFabAgent && ticket.groupNumber ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
                                 Ce groupe a {ticket.ticketCountGroup} ticket
