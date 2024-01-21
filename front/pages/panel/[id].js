@@ -1042,6 +1042,15 @@ export async function getServerSideProps({ req, params }) {
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
   const id = params.id;
   const ticket = await fetchAPIAuth("/ticket/" + id, cookies.jwt);
+  if (ticket.status === 204) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/panel/",
+      },
+      props: {},
+    };
+  }
   const file = await fetchAPIAuth("/ticket/" + id + "/file", cookies.jwt);
   const message = await fetchAPIAuth("/ticket/" + id + "/message", cookies.jwt);
   const authorizations = await fetchAPIAuth(
