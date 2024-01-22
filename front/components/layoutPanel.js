@@ -352,16 +352,28 @@ export default function LayoutPanel({
                 className="text-xs text-gray-400 text-center"
                 onClick={() => router.push("https://github.com/MathieuSchl/")}
               >
-                MyFab by Cody
+                MyFab by{" "}
+                <p className="underline underline-offset-2 inline cursor-pointer">
+                  Cody
+                </p>
               </span>
               <span
                 className="text-xs text-gray-400 text-center"
                 onClick={() => router.push("https://github.com/eliasto/")}
               >
-                Front-End by Eliasto
+                Front-End by{" "}
+                <p className="underline underline-offset-2 inline cursor-pointer">
+                  Eliasto
+                </p>
               </span>
               <span className="text-xs text-gray-400 text-center">
-                version {version} - fablab@devinci.fr
+                <p
+                  className="underline underline-offset-2 inline cursor-pointer"
+                  onClick={() => router.push("/versions/")}
+                >
+                  version {version}
+                </p>{" "}
+                - fablab@devinci.fr
               </span>
             </div>
           </Transition.Child>
@@ -508,16 +520,28 @@ export default function LayoutPanel({
             className="text-xs text-gray-400 text-center"
             onClick={() => router.push("https://github.com/MathieuSchl/")}
           >
-            MyFab by Cody
+            MyFab by{" "}
+            <p className="underline underline-offset-2 inline cursor-pointer">
+              Cody
+            </p>
           </span>
           <span
             className="text-xs text-gray-400 text-center"
             onClick={() => router.push("https://github.com/eliasto/")}
           >
-            Front-End by Eliasto
+            Front-End by{" "}
+            <p className="underline underline-offset-2 inline cursor-pointer">
+              Eliasto
+            </p>
           </span>
           <span className="text-xs text-gray-400 text-center">
-            version {version} - fablab@devinci.fr
+            <p
+              className="underline underline-offset-2 inline cursor-pointer"
+              onClick={() => router.push("/versions/")}
+            >
+              version {version}
+            </p>{" "}
+            - fablab@devinci.fr
           </span>
         </div>
       </div>
