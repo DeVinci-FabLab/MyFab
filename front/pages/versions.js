@@ -56,7 +56,7 @@ const versions = [
   },
   {
     version: "1.0.6",
-    date: "NOT AVAILABLE",
+    date: "23-01-2024",
     changes: [
       "Fix du CSS dans les mails",
       "Retrait du message du nombre de tickets terminés pour un groupe, si le groupe est NULL",
