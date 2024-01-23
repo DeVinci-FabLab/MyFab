@@ -62,6 +62,7 @@ const versions = [
       "Retrait du message du nombre de tickets terminés pour un groupe, si le groupe est NULL",
       "Si la page `/panel/[Ticket_inconnu]` est accédé, le client est redirigé vers `/panel/`",
       "Création de la page `/versions`",
+      "Ajout du status 'En attente de récupération' pour les tickets",
     ],
   },
 ];
