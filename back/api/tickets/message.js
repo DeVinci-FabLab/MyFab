@@ -208,7 +208,7 @@ async function postTicketMessage(data) {
                       u.v_email AS email
                       FROM printstickets AS pt
                       INNER JOIN users AS u ON pt.i_idUser = u.i_id
-                      WHERE pt.i_id = 1;`;
+                      WHERE pt.i_id = ?;`;
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
