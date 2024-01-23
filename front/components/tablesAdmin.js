@@ -70,7 +70,7 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("createAt")}
                 >
-                  Créé il y a{getChevron(collumnState, "createAt")}
+                  Modifié il y a{getChevron(collumnState, "createAt")}
                 </div>
               </th>
               <th
@@ -135,7 +135,7 @@ export default function TablesAdmin({
                     <div
                       className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
                     >
-                      {dateDiff(new Date(r.creationDate), dateNow)}
+                      {dateDiff(new Date(r.modificationDate), dateNow)}
                     </div>
                   </td>
                   <td className="p-3 text-center">
