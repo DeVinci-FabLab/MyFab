@@ -66,6 +66,15 @@ const versions = [
       "Mise à jour de la date de dernière modification d'un ticket si un message/satuts/fichier a été ajouté ou modifié",
     ],
   },
+  ,
+  {
+    version: "1.0.7",
+    date: "VERSION-NOT-CREATED",
+    changes: [
+      "Ajout d'animations pour l'ouverture/fermeture de la FAQ",
+      "Ajout d'une FAQ pour les rôles",
+    ],
+  },
 ];
 
 const versionsToShow = versions.reverse();

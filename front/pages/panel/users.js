@@ -1,4 +1,7 @@
-import { InformationCircleIcon } from "@heroicons/react/outline";
+import {
+  InformationCircleIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/outline";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import LayoutPanel from "../../components/layoutPanel";
@@ -7,14 +10,18 @@ import WebSocket from "../../components/webSocket";
 import Error from "../404";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, Disclosure } from "@headlessui/react";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
 import { toast } from "react-toastify";
 import Seo from "../../components/seo";
 import { PlusIcon } from "@heroicons/react/solid";
 
-export default function Settings({ role, me, authorizations }) {
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function Settings({ role, me, authorizations, rolesList }) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState("");
 
@@ -159,42 +166,104 @@ export default function Settings({ role, me, authorizations }) {
                     <div className="mb-3 grow">
                       <div className="space-x-2">
                         <div className="relative grow">
-                          <form
-                            onSubmit={handleSubmit}
-                            className="relative grow"
-                          >
-                            <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
-                              <svg
-                                className="hi-solid hi-search inline-block w-5 h-5"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </div>
+                          <form onSubmit={handleSubmit}>
+                            <Disclosure as="div">
+                              {({ open }) => (
+                                <>
+                                  <div className="relative grow">
+                                    <div className="absolute inset-y-5 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
+                                      <svg
+                                        className="hi-solid hi-search inline-block w-5 h-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
 
-                            <div className="w-full inline-flex">
-                              <input
-                                onChange={(e) => {
-                                  setInputValue(e.target.value);
-                                }}
-                                className="search-input filterInput block border placeholder-gray-400 pr-3 py-2 leading-6 w-full rounded border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 pl-10 mr-2"
-                                type="text"
-                                placeholder="Rechercher un étudiant"
-                              />
-                              <button
-                                type="submit"
-                                className="search-validation-button w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={() => update(true)}
-                              >
-                                Rechercher
-                              </button>
-                            </div>
+                                  <div className="w-full inline-flex">
+                                    <input
+                                      onChange={(e) => {
+                                        setInputValue(e.target.value);
+                                      }}
+                                      className="search-input filterInput block border placeholder-gray-400 pr-3 py-2 leading-6 w-full rounded border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 pl-10 mr-2"
+                                      type="text"
+                                      placeholder="Rechercher un étudiant"
+                                    />
+                                    <button
+                                      type="submit"
+                                      className="search-validation-button w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                      onClick={() => update(true)}
+                                    >
+                                      Rechercher
+                                    </button>
+                                    <div className="w-2/12 flex items-center">
+                                      <>
+                                        <Disclosure.Button className="faq-button text-left w-full flex justify-between items-start px-4">
+                                          <h3 className="text-xl font-bold">
+                                            Roles
+                                          </h3>
+                                          <span className="ml-6 h-7 flex items-center">
+                                            <ChevronDownIcon
+                                              className={classNames(
+                                                open
+                                                  ? "-rotate-180"
+                                                  : "rotate-0",
+                                                "h-6 w-6 transform duration-300 text-gray-400"
+                                              )}
+                                              aria-hidden="true"
+                                            />
+                                          </span>
+                                        </Disclosure.Button>
+                                      </>
+                                    </div>
+                                  </div>
+                                  <Transition
+                                    enter="transition duration-150 ease-out"
+                                    enterFrom="transform scale-75 opacity-0"
+                                    enterTo="transform scale-100 opacity-100"
+                                    leave="transition duration-150 ease-out"
+                                    leaveFrom="transform scale-100 opacity-100"
+                                    leaveTo="transform scale-75 opacity-0"
+                                  >
+                                    <Disclosure.Panel as="div" className="mt-2">
+                                      <div className="grid grid-cols-3 gap-4">
+                                        {rolesList.map((role, index) => {
+                                          return (
+                                            <div
+                                              key={`role-${index}`}
+                                              className="border rounded"
+                                              style={{
+                                                borderColor: "#" + role.color,
+                                              }}
+                                            >
+                                              <p
+                                                className="text-center bg-gray-200"
+                                                style={{
+                                                  backgroundColor:
+                                                    "#" + role.color,
+                                                }}
+                                              >
+                                                {role.name}
+                                              </p>
+                                              <p className="p-2 text-justify">
+                                                {role.description}
+                                              </p>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </Disclosure.Panel>
+                                  </Transition>
+                                </>
+                              )}
+                            </Disclosure>
                           </form>
                         </div>
                       </div>
@@ -573,6 +642,7 @@ export async function getServerSideProps({ req }) {
     "/user/authorization/",
     cookies.jwt
   );
+  const rolesList = await fetchAPIAuth("/role", cookies.jwt);
 
   // Pass the data to our page via props
   return {
@@ -580,6 +650,7 @@ export async function getServerSideProps({ req }) {
       role: role.data,
       me: me.data,
       authorizations: authorizations.data,
+      rolesList: rolesList.data,
     }, // will be passed to the page component as props
   };
 }
