@@ -1,6 +1,7 @@
 const sendTicketMessageMail =
   require("../../functions/sendMail/ticketMessage").sendTicketMessageMail;
 const statsIncrement = require("../../functions/stats").increment;
+const updateTicketDate = require("../../functions/stats").updateTicketDate;
 
 /**
  * @swagger
@@ -273,6 +274,7 @@ async function postTicketMessage(data) {
 
   //Update bot channels
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, data.params.id);
 
   // Send mail to user
   if (idTicketUser != userIdAgent) {

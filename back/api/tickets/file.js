@@ -1,4 +1,5 @@
 const fs = require("fs");
+const updateTicketDate = require("../../functions/stats").updateTicketDate;
 
 function makeid(length, filename) {
   var result = "";
@@ -674,15 +675,16 @@ async function ticketFilePut(data) {
       code: 400,
     };
   }
-  const idTicket = data.params.id;
+  const idTicketFile = data.params.id;
 
-  const queryGetUserTicket = `SELECT i_idUser AS 'id'
+  const queryGetUserTicket = `SELECT i_idUser AS 'idUser',
+                            i_idTicket AS 'idTicket'
                             FROM ticketfiles 
                             WHERE i_id = ?`;
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     queryGetUserTicket,
-    [idTicket]
+    [idTicketFile]
   );
   /* c8 ignore start */
   if (resGetUserTicket[0]) {
@@ -699,7 +701,8 @@ async function ticketFilePut(data) {
     };
   }
 
-  const idTicketUser = resGetUserTicket[1][0].id;
+  const idTicketUser = resGetUserTicket[1][0].idUser;
+  const idTicket = resGetUserTicket[1][0].idTicket;
   if (idTicketUser != userIdAgent) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
@@ -724,8 +727,8 @@ async function ticketFilePut(data) {
                         WHERE i_id = ?`;
   const options =
     data.body.idprinter !== undefined
-      ? [data.body.comment, data.body.idprinter, idTicket]
-      : [data.body.comment, idTicket];
+      ? [data.body.comment, data.body.idprinter, idTicketFile]
+      : [data.body.comment, idTicketFile];
   const resUpdateFile = await data.app.executeQuery(
     data.app.db,
     queryUpdate,
@@ -743,6 +746,7 @@ async function ticketFilePut(data) {
 
   //Update web clients
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery);
 
   //return response
   return {
