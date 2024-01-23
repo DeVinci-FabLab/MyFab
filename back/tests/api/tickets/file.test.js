@@ -1,5 +1,10 @@
 const fs = require("fs");
 
+//Mock updateTicketDate
+const updateTicketDate = require("../../../functions/stats").updateTicketDate;
+jest.mock("../../../functions/stats");
+const updateTicketDateMock = jest.fn().mockResolvedValue(true);
+
 function emptyFunction() {
   return io;
 }
@@ -10,6 +15,10 @@ beforeAll(async () => {
     __dirname + "/../../pyramid.stl",
     __dirname + "/../../../data/files/stl/token-test.STL"
   );
+});
+
+beforeEach(() => {
+  jest.clearAllMocks(); // Reset all mock function calls before each test
 });
 
 describe("GET /api/ticket/:id/file/", () => {
@@ -1510,6 +1519,9 @@ describe("POST /api/ticket/:id/file/", () => {
 
 describe("PUT /api/file/:id/", () => {
   test("200validAndComment", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     let requestNumber = 0;
     const data = {
@@ -1550,9 +1562,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).toHaveBeenCalledTimes(1);
   });
 
   test("200valid", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     let requestNumber = 0;
     const data = {
@@ -1591,9 +1607,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).toHaveBeenCalledTimes(1);
   });
 
   test("200comment", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     let requestNumber = 0;
     const data = {
@@ -1632,9 +1652,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).toHaveBeenCalledTimes(1);
   });
 
   test("200noModification", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     let requestNumber = 0;
     const data = {
@@ -1672,6 +1696,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     await require("../../../api/tickets/file").ticketFilePut(data);
+    expect(updateTicketDateMock).toHaveBeenCalledTimes(1);
     const response = await require("../../../api/tickets/file").ticketFilePut(
       data
     );
@@ -1679,9 +1704,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).toHaveBeenCalledTimes(2);
   });
 
   test("400noParams", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1705,9 +1734,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("400noId", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1732,9 +1765,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("400idIsNan", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1761,9 +1798,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("400noBody", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1786,9 +1827,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("400noValidAndComment", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1812,9 +1857,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("400InvalidValid", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1840,9 +1889,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(400);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("401noUser", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userAuthorization: {
@@ -1868,9 +1921,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(401);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("403unauthorizedUser", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1900,9 +1957,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(403);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("204unknownFile", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1932,9 +1993,13 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(204);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
   test("204noFileMatch", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
     //Execute
     const data = {
       userId: 1,
@@ -1963,5 +2028,6 @@ describe("PUT /api/file/:id/", () => {
     //Tests
     expect(response.code).toBe(204);
     expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 });

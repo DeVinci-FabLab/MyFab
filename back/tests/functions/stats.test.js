@@ -68,3 +68,27 @@ describe("Stats increment", () => {
     );
   });
 });
+
+describe("Update ticket date", () => {
+  it("Update valid", async () => {
+    //Prepare
+    const db = {};
+    const executeQuery = jest.fn().mockResolvedValue(true);
+    const idTicket = 1;
+
+    //Execute
+    await require("../../functions/stats").updateTicketDate(
+      db,
+      executeQuery,
+      idTicket
+    );
+
+    //Tests
+    expect(executeQuery).toHaveBeenCalledTimes(1);
+    expect(executeQuery).toHaveBeenCalledWith(
+      db,
+      expect.any(String),
+      expect.any(Array)
+    );
+  });
+});

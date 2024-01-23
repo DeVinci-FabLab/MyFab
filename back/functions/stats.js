@@ -24,3 +24,11 @@ module.exports.increment = async (db, name, incrementation = 1) => {
     await executeQuery(db, queryInsert, [name, incrementation, year]);
   }
 };
+
+module.exports.updateTicketDate = async (db, executeQuery, idTicket) => {
+  const queryUpdateDate = `UPDATE printstickets 
+                        SET dt_modificationdate = CURRENT_TIMESTAMP
+                        WHERE i_id = ?;`;
+  await executeQuery(db, queryUpdateDate, [idTicket]);
+  return;
+};

@@ -8,7 +8,7 @@ jest.mock("../../../functions/sendMail/index");
 const sendMailMock = jest.fn().mockResolvedValue(true);
 
 beforeEach(() => {
-  jest.clearAllMocks(); // Réinitialiser les appels de toutes les fonctions mocks avant chaque test
+  jest.clearAllMocks(); // Reset all mock function calls before each test
 });
 
 describe("sendForgetPasswordMail function", () => {

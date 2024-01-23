@@ -63,6 +63,7 @@ const versions = [
       "Si la page `/panel/[Ticket_inconnu]` est accédé, le client est redirigé vers `/panel/`",
       "Création de la page `/versions`",
       "Ajout du status 'En attente de récupération' pour les tickets",
+      "Mise à jour de la date de dernière modification d'un ticket si un message/satuts/fichier a été ajouté ou modifié",
     ],
   },
 ];

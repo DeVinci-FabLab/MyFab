@@ -1,4 +1,5 @@
 const fs = require("fs");
+const updateTicketDate = require("../../functions/stats").updateTicketDate;
 const maxTicket = 30;
 module.exports.maxTicket = maxTicket;
 
@@ -823,7 +824,8 @@ async function postTicket(data) {
   }
   /* c8 ignore stop */
 
-  data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
+  data.app.io.emit("event-reload-tickets"); // Reload ticket menu on client
+
   return {
     type: "json",
     code: 200,
@@ -1086,6 +1088,7 @@ async function putTicketNewProjectType(data) {
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, data.params.id); // Update last modified for ticket
 
   return {
     type: "code",
@@ -1214,6 +1217,7 @@ async function putTicketNewStatus(data) {
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, idTicket); // Update last modified for ticket
 
   return {
     type: "code",
@@ -1349,6 +1353,7 @@ async function putTicketCancelStatus(data) {
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, idTicket); // Update last modified for ticket
 
   return {
     type: "code",
