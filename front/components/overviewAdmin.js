@@ -1,4 +1,4 @@
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import TablesAdmin from "./tablesAdmin";
 import Link from "next/link";
@@ -108,18 +108,27 @@ export default function OverviewAdmin({
                               <ChevronDownIcon
                                 className={classNames(
                                   open ? "-rotate-180" : "rotate-0",
-                                  "faq-button h-6 w-6 transform"
+                                  "faq-button h-6 w-6 transform duration-300"
                                 )}
                                 aria-hidden="true"
                               />
                             </span>
                           </Disclosure.Button>
                         </dt>
-                        <Disclosure.Panel as="dd" className="mt-2 pr-12">
-                          <p className="text-sm text-gray-500 text-justify">
-                            {faq.answer}
-                          </p>
-                        </Disclosure.Panel>
+                        <Transition
+                          enter="transition duration-150 ease-out"
+                          enterFrom="transform scale-75 opacity-0"
+                          enterTo="transform scale-100 opacity-100"
+                          leave="transition duration-150 ease-out"
+                          leaveFrom="transform scale-100 opacity-100"
+                          leaveTo="transform scale-75 opacity-0"
+                        >
+                          <Disclosure.Panel as="dd" className="mt-2 pr-12">
+                            <p className="text-sm text-gray-500 text-justify">
+                              {faq.answer}
+                            </p>
+                          </Disclosure.Panel>
+                        </Transition>
                       </>
                     )}
                   </Disclosure>
