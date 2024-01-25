@@ -80,8 +80,9 @@ export default function Rules({ userNeedToAccept }) {
           Avant d'accéder à MyFab, vous devez accepter notre règlement.
         </h1>
         <p className="font-light text-md text-gray-500">
-          L'utilisation de MyFab étant réglementé, l'acceptation de ces règles
-          est obligatoire. Vous pouvez à tout moment nous contacter à
+          Les présentes conditions générales d'utilisation (dites « CGU ») ont pour objet l'encadrement juridique des
+          modalités de mise à disposition du site et des services par le DeVinci FabLab et de définir les conditions
+          d’accès et d’utilisation des services par « l'Utilisateur ». Vous pouvez à tout moment nous contacter à
           fablab@devinci.fr si vous souhaitez faire valoir vos droits.
         </p>
 
