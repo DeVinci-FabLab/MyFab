@@ -205,7 +205,7 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                     </button>
                                     <div className="w-2/12 flex items-center">
                                       <>
-                                        <Disclosure.Button className="faq-button text-left w-full flex justify-between items-start px-4">
+                                        <Disclosure.Button className="roles-list-button text-left w-full flex justify-between items-start px-4">
                                           <h3 className="text-xl font-bold">
                                             Roles
                                           </h3>
@@ -252,7 +252,7 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                               >
                                                 {role.name}
                                               </p>
-                                              <p className="p-2 text-justify">
+                                              <p className="role-description-p p-2 text-justify">
                                                 {role.description}
                                               </p>
                                             </div>
