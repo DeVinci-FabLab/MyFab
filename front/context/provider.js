@@ -20,32 +20,63 @@ const loadingUser = {
 
 export function Provider({ children }) {
   const [user, setUser] = useState(loadingUser);
-  const value = { user, setUser };
+  const [darkMode, setDarkMode] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const value = { user, setUser, darkMode, setDarkMode, roles, setRoles };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
 export const UserUse = (cookies) => {
-  const { user, setUser } = useContext(UserContext);
-  if (cookies === undefined) {
-    return { user: { error: 404 } };
+  const { user, setUser, darkMode, setDarkMode, roles, setRoles } =
+    useContext(UserContext);
+
+  function resetUser() {
+    setUser(loadingUser);
+    setRoles([]);
   }
 
   function updateUser() {
     if (!cookies) cookies = user?.cookies;
-    if (user.id !== loadingUser.id) setUser(loadingUser);
+    if (user.id !== loadingUser.id) {
+      resetUser();
+    }
     fetchAPIAuth("/user/me", cookies).then((apiUser) => {
       if (apiUser.error) return;
       apiUser.data.cookies = cookies;
+      setDarkMode(user.darkMode);
       setUser(apiUser.data);
+
+      fetchAPIAuth("/user/role", cookies).then((apiRoles) => {
+        if (apiRoles.error) return;
+        setRoles(apiRoles.data);
+      });
     });
   }
 
-  if (user.cookies !== cookies) {
+  function setCookies(newCookies) {
+    cookies = newCookies;
+    if (!cookies) {
+      resetUser();
+    } else {
+      updateUser(cookies);
+    }
+  }
+
+  if (cookies !== undefined && user.cookies !== cookies) {
     updateUser(cookies);
   }
 
-  return { user, setUser, updateUser };
+  return {
+    user,
+    setUser,
+    darkMode,
+    setDarkMode,
+    roles,
+    setRoles,
+    updateUser,
+    setCookies,
+  };
 };
 
 export default UserContext;

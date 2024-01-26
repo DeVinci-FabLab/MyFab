@@ -6,7 +6,11 @@ import Link from "next/link";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import sha256 from "sha256";
 
+import { UserUse } from "../../context/provider";
+
 export default function Auth() {
+  const { setCookies } = UserUse();
+
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [error, setError] = useState(false);
@@ -117,6 +121,7 @@ export default function Auth() {
     });
 
     if (responseLogin.status == 200) {
+      setCookies(responseLogin.data.dvflCookie);
       if (!checked) {
         setCookie("jwt", responseLogin.data.dvflCookie, { expires });
       } else {

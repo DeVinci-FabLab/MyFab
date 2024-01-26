@@ -22,17 +22,15 @@ import { logout } from "../lib/function";
 import { getTextForClick } from "../lib/layoutClickText";
 import { fetchAPIAuth } from "../lib/api";
 
+import { UserUse } from "../context/provider";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function LayoutPanel({
-  children,
-  user,
-  setUser,
-  role,
-  authorizations,
-  titleMenu,
-}) {
+export default function LayoutPanel({ children, authorizations, titleMenu }) {
+  const jwt = getCookie("jwt");
+  const { user, setUser, darkMode, setDarkMode, roles } = UserUse(jwt);
+
   const router = useRouter();
   const pn = router.pathname;
   if (!authorizations) authorizations = {};
@@ -182,11 +180,11 @@ export default function LayoutPanel({
         setSchools(school.data);
       });
     }
-    if (role.length == 0 && pn.split("/")[2] == "admin") {
+    if (roles.length == 0 && pn.split("/")[2] == "admin") {
       router.push("/404");
     }
   }, []);
-  if (role.length == 0 && pn.split("/")[2] == "admin") {
+  if (roles.length == 0 && pn.split("/")[2] == "admin") {
     return "";
   }
 
@@ -196,7 +194,6 @@ export default function LayoutPanel({
   const surname = user.lastName;
 
   const title = titleMenu ? titleMenu : "Panel de demande d'impression 3D";
-  const darkMode = user.darkMode;
 
   return (
     <div
@@ -255,8 +252,25 @@ export default function LayoutPanel({
                   </button>
                 </div>
               </Transition.Child>
-              <div className="flex-shrink-0 flex items-center px-4">
+              <div className="flex items-center flex-shrink-0 px-6 justify-between">
                 <LogoDvfl user={user} />
+
+                <label className="relative inline-flex items-center cursor-pointer pr-0">
+                  <input
+                    type="checkbox"
+                    value=""
+                    className="sr-only peer"
+                    onChange={() => {
+                      user.darkMode = !user.darkMode;
+                      setUser(user);
+                      setDarkMode(user.darkMode);
+                    }}
+                    checked={user.darkMode}
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                  <div className="pl-2" />
+                  <MoonIcon className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                </label>
               </div>
               <Menu
                 as="div"
@@ -306,7 +320,7 @@ export default function LayoutPanel({
                       />
                     </span>
                     <div className="mt-3 space-x-1 space-y-1 text-center">
-                      {role.map((r, index) => {
+                      {roles.map((r, index) => {
                         return (
                           <span
                             key={`role-small-${index}`}
@@ -440,12 +454,12 @@ export default function LayoutPanel({
                 className="sr-only peer"
                 onChange={() => {
                   user.darkMode = !user.darkMode;
-                  user.firstName = user.darkMode;
-                  console.log(user.darkMode);
                   setUser(user);
+                  setDarkMode(user.darkMode);
                 }}
+                checked={user.darkMode}
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
               <div className="pl-2" />
               <MoonIcon className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
             </label>
@@ -499,7 +513,7 @@ export default function LayoutPanel({
                     />
                   </span>
                   <div className="mt-3 space-x-1 space-y-1 text-center">
-                    {role.map((r, index) => {
+                    {roles.map((r, index) => {
                       return (
                         <span
                           key={`role-large-${index}`}
