@@ -27,7 +27,7 @@ export default function Rules() {
         <strong>Numéro RNA : </strong>W922009573
       </p>
       <p className="m-0">
-        <strong>SIÈGE SOCIAL : </strong>12, avenue Léonard de Vinci, 92400
+        <strong>Siège Social : </strong>12, avenue Léonard de Vinci, 92400
         Courbevoie
       </p>
       <p className="m-0">
@@ -53,7 +53,7 @@ export default function Rules() {
         </a>
         , a comme objectif de fournir un service de demande d'impression 3d aux
         étudiants et au personnel des écoles ESILV, EMLV et IIM. Ces impressions
-        3D sont réalisé par les membres de l'association.
+        3D sont réalisées par les membres de l'association du DeVinci FabLab.
       </p>
       <h3>Qui peut utiliser le service ?</h3>
       <p>
@@ -85,13 +85,13 @@ export default function Rules() {
       <ul className="m-0">
         <li className="m-0">Tickets</li>
         <li className="m-0">Messages</li>
-        <li className="m-0">Fichier 3D</li>
+        <li className="m-0">Fichiers 3D</li>
       </ul>
       <h4 className="mt-2 mb-0">Données hardware</h4>
       <ul className="m-0">
-        <li className="m-0">Adresse IP</li>
-        <li className="m-0">Navigateur</li>
-        <li className="m-0">Système d'exploitation</li>
+        <li className="m-0">Adresse(s) IP</li>
+        <li className="m-0">Navigateur(s)</li>
+        <li className="m-0">Système(s) d'exploitation</li>
       </ul>
       <p>
         Il est possible de demander l'anonymisation ou la modification des
@@ -105,14 +105,14 @@ export default function Rules() {
         tiers ou que vous bénéficiez d'une autre autorisation légale conforme
         aux exceptions ou limitations prévues par le droit de l'Union européenne
         en matière de droit d'auteur ou de droits voisins. De plus,
-        l'utilisation du service pour diffuser des contenus illégaux est
+        l'utilisation du service pour diffuser des contenus illégaux ou inappropriés est
         strictement interdite, notamment ceux qui:
       </p>
       <ul className="m-0">
         <li className="m-0">
-          Incitent à la haine, à la violence ou à la discrimination en raison de
+          Incitent à la haine, à la violence ou à la discrimination, notamment en raison de
           l'origine des personnes, de leur race, de leur religion, de leur
-          genre, de leur orientation sexuelle.
+          genre ou de leur orientation sexuelle.
         </li>
         <li className="m-0">Sont constitutifs de harcèlement sexuel.</li>
         <li className="m-0">
@@ -125,20 +125,19 @@ export default function Rules() {
         <li className="m-0">Font la promotion du terrorisme.</li>
         <li className="m-0">
           Font l'apologie de crimes très graves contre les personnes, tels que
-          le meurtre et les agressions sexuelles.
+          le meurtre et l'agression sexuelle.
         </li>
         <li className="m-0">
           Font l'apologie du vol, de l'extorsion et des atteintes aux biens,
           mettant ainsi en danger les personnes.
         </li>
-        <li className="m-0">Sont constitutifs de pédopornographie.</li>
+        <li className="m-0">Sont constitutifs de pornographie ou pédopornographie, explicite ou non.</li>
       </ul>
       <p>
         Vous êtes légalement responsable des Contenus que vous soumettez au
-        service. Lorsqu’un Contenu est identifié par nos algorithmes comme étant
-        illégal, il peut être supprimé en tout ou partie et votre accès à nos
-        services pourrait être suspendu ou bloqué. Pour en savoir plus,
-        consultez la section "Suspension et clôture de compte" ci-dessous.{" "}
+        service. Lorsqu’un Contenu est identifié comme étant
+        illégal, il peut être supprimé totalement ou partie et votre accès à nos
+        services pourrait être suspendu ou bloqué.{" "}
       </p>
       <h3>Limitation de responsabilité</h3>
       <p>
