@@ -105,14 +105,14 @@ export default function Rules() {
         tiers ou que vous bénéficiez d'une autre autorisation légale conforme
         aux exceptions ou limitations prévues par le droit de l'Union européenne
         en matière de droit d'auteur ou de droits voisins. De plus,
-        l'utilisation du service pour diffuser des contenus illégaux ou inappropriés est
-        strictement interdite, notamment ceux qui:
+        l'utilisation du service pour diffuser des contenus illégaux ou
+        inappropriés est strictement interdite, notamment ceux qui:
       </p>
       <ul className="m-0">
         <li className="m-0">
-          Incitent à la haine, à la violence ou à la discrimination, notamment en raison de
-          l'origine des personnes, de leur race, de leur religion, de leur
-          genre ou de leur orientation sexuelle.
+          Incitent à la haine, à la violence ou à la discrimination, notamment
+          en raison de l'origine des personnes, de leur race, de leur religion,
+          de leur genre ou de leur orientation sexuelle.
         </li>
         <li className="m-0">Sont constitutifs de harcèlement sexuel.</li>
         <li className="m-0">
@@ -131,13 +131,16 @@ export default function Rules() {
           Font l'apologie du vol, de l'extorsion et des atteintes aux biens,
           mettant ainsi en danger les personnes.
         </li>
-        <li className="m-0">Sont constitutifs de pornographie ou pédopornographie, explicite ou non.</li>
+        <li className="m-0">
+          Sont constitutifs de pornographie ou pédopornographie, explicite ou
+          non.
+        </li>
       </ul>
       <p>
         Vous êtes légalement responsable des Contenus que vous soumettez au
-        service. Lorsqu’un Contenu est identifié comme étant
-        illégal, il peut être supprimé totalement ou partie et votre accès à nos
-        services pourrait être suspendu ou bloqué.{" "}
+        service. Lorsqu’un Contenu est identifié comme étant illégal, il peut
+        être supprimé totalement ou partie et votre accès à nos services
+        pourrait être suspendu ou bloqué.{" "}
       </p>
       <h3>Limitation de responsabilité</h3>
       <p>

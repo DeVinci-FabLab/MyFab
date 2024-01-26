@@ -20,13 +20,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function NewPanel({
-  data,
-  user,
-  role,
-  authorizations,
-  highDemand,
-}) {
+export default function NewPanel({ user, role, authorizations, highDemand }) {
   const [maxPage, setMaxPage] = useState(1);
   const [actualPage, setActualPage] = useState(0);
   let newActualPage = 0;
@@ -58,6 +52,8 @@ export default function NewPanel({
   useEffect(function () {
     if (user.error != undefined) {
       router.push("/404");
+    } else if (!user.acceptedRule) {
+      router.push("/rules");
     }
     update();
   }, []);
