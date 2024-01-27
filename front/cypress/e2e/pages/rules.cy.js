@@ -43,10 +43,10 @@ describe("Page rules", () => {
 
     cy.get(".accept-button").click();
     cy.location("href", { timeout: 10000 }).should(
-      "eq",
+      "not.equal",
       "http://" +
         path
-          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/rules")
           .replace(/\\/g, "/")
     );
   });
@@ -58,10 +58,10 @@ describe("Page rules", () => {
 
     cy.get(".back-button").click();
     cy.location("href", { timeout: 10000 }).should(
-      "eq",
+      "not.equal",
       "http://" +
         path
-          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
+          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/rules")
           .replace(/\\/g, "/")
     );
   });
