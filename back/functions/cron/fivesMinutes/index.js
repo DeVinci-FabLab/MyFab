@@ -1,17 +1,13 @@
 const CronJob = require("cron").CronJob;
+const removeExpiredJWT = require("./removeExpiredCookies").action;
 
 module.exports.action = action;
 async function action(app) {
-  const keys = Object.keys(app.cookiesList);
-  for (const key of keys) {
-    const expire = app.cookiesList[key].expire;
-    if (expire && new Date() > expire) {
-      delete app.cookiesList[key];
-    }
-  }
+  await removeExpiredJWT(app);
 }
 
 module.exports.run = async (app) => {
+  action(app);
   new CronJob(
     "10 */5 * * * *",
     async function () {

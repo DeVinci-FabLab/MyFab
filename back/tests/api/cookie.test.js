@@ -46,8 +46,8 @@ describe("DELETE /api/cookie/", () => {
         },
       },
       app: {
-        cookiesList: {
-          value: "test",
+        executeQuery: async (db, query, options) => {
+          return [null, null];
         },
       },
     };
@@ -55,7 +55,6 @@ describe("DELETE /api/cookie/", () => {
 
     expect(response.code).toBe(200);
     expect(response.type).toBe("code");
-    expect(Object.keys(data.app.cookiesList).length).toBe(0);
   });
 
   test("404-invalidCode", async () => {

@@ -203,7 +203,7 @@ const GestionTicket = ({
         dvflCookie: cookie,
       },
       url: process.env.API + "/api/ticket/" + params.id + "/message",
-      params: {
+      data: {
         content: comment,
       },
     });
@@ -455,7 +455,7 @@ const GestionTicket = ({
                                 }}
                                 className="send-message-button mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
                               >
-                                Envoyer mon commentaire
+                                Envoyer le message
                               </button>
                               <p className="mt-2 text-sm text-gray-500">
                                 Vous pouvez communiquer avec les membres du
@@ -534,10 +534,12 @@ const GestionTicket = ({
                             Numéro de groupe
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
-                            {ticket.groupNumber}
+                            {ticket.groupNumber
+                              ? ticket.groupNumber
+                              : "Ce projet n'est pas en groupe"}
                           </dd>
 
-                          {authorizations.myFabAgent ? (
+                          {authorizations.myFabAgent && ticket.groupNumber ? (
                             <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
                               <div>
                                 Ce groupe a {ticket.ticketCountGroup} ticket
@@ -1040,6 +1042,15 @@ export async function getServerSideProps({ req, params }) {
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
   const id = params.id;
   const ticket = await fetchAPIAuth("/ticket/" + id, cookies.jwt);
+  if (ticket.status === 204) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/panel/",
+      },
+      props: {},
+    };
+  }
   const file = await fetchAPIAuth("/ticket/" + id + "/file", cookies.jwt);
   const message = await fetchAPIAuth("/ticket/" + id + "/message", cookies.jwt);
   const authorizations = await fetchAPIAuth(

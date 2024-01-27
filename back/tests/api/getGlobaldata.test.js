@@ -67,6 +67,25 @@ describe("GET /api/version/", () => {
   });
 });
 
+describe("GET /api/school/", () => {
+  test("200", async () => {
+    const data = {
+      app: {
+        executeQuery: async (db, query, options) => {
+          return [null, [{ id: 1, name: "ESILV" }]];
+        },
+      },
+    };
+    const response = await require("../../api/getGlobaldata").getSchool(data);
+
+    expect(response.code).toBe(200);
+    expect(response.type).toBe("json");
+    expect(response.json.length !== 0).toBe(true);
+    expect(response.json[0].id != null).toBe(true);
+    expect(response.json[0].name != null).toBe(true);
+  });
+});
+
 describe("GET /api/myFabOpen/", () => {
   test("200", async () => {
     const data = {};

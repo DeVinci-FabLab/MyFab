@@ -1,4 +1,5 @@
 const fs = require("fs");
+const updateTicketDate = require("../../functions/stats").updateTicketDate;
 const maxTicket = 30;
 module.exports.maxTicket = maxTicket;
 
@@ -710,6 +711,35 @@ async function postTicket(data) {
       code: 401,
     };
   }
+
+  //If user has validate the rules
+  const querySelectUserValidRules = `SELECT
+                                CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
+                                FROM users
+                                WHERE i_id = ?;`;
+  const resSelectUserValidRules = await data.app.executeQuery(
+    data.app.db,
+    querySelectUserValidRules,
+    [userId]
+  );
+  /* c8 ignore start */
+  if (resSelectUserValidRules[0]) {
+    console.log(resSelectUserValidRules[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+    /* c8 ignore stop */
+  } else if (
+    resSelectUserValidRules[1].length !== 1 ||
+    resSelectUserValidRules[1][0].acceptedRule !== 1
+  ) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+
   const querySelectProjectType = `SELECT 1 FROM gd_ticketprojecttype WHERE i_id = ?`;
   const resSelectProjectType = await data.app.executeQuery(
     data.app.db,
@@ -736,7 +766,7 @@ async function postTicket(data) {
   const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [
     userId,
     data.body.projectType,
-    data.body.groupNumber,
+    data.body.groupNumber === "" ? null : data.body.groupNumber,
   ]);
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -823,7 +853,8 @@ async function postTicket(data) {
   }
   /* c8 ignore stop */
 
-  data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
+  data.app.io.emit("event-reload-tickets"); // Reload ticket menu on client
+
   return {
     type: "json",
     code: 200,
@@ -1086,6 +1117,7 @@ async function putTicketNewProjectType(data) {
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, data.params.id); // Update last modified for ticket
 
   return {
     type: "code",
@@ -1214,6 +1246,7 @@ async function putTicketNewStatus(data) {
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, idTicket); // Update last modified for ticket
 
   return {
     type: "code",
@@ -1349,6 +1382,7 @@ async function putTicketCancelStatus(data) {
 
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, idTicket); // Update last modified for ticket
 
   return {
     type: "code",

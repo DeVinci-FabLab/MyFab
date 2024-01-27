@@ -34,7 +34,6 @@ app.use(
     tempFileDir: __dirname + "\\tmp\\",
   })
 );
-app.cookiesList = {};
 app.use(
   expressHeader([
     {

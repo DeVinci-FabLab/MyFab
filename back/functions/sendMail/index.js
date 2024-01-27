@@ -2,8 +2,9 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 require("dotenv").config();
 const frontUrl = process.env.FRONT_URL;
+module.exports.frontUrl = frontUrl;
 
-const pathToDkim = __dirname + "/../data/dkim_private.pem";
+const pathToDkim = __dirname + "/../../data/dkim_private.pem";
 const dkim = fs.existsSync(pathToDkim)
   ? {
       domainName: process.env.MAIL_USER.split("@")[1],
@@ -31,7 +32,7 @@ function writeEmail(body) {
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	    <title>DeVinci FabLab Email Template</title>
 	    <style media="all" type="text/css">
-      /* -------------------------------------
+  /* -------------------------------------
 	    GLOBAL RESETS
 	------------------------------------- */
 
@@ -56,7 +57,7 @@ function writeEmail(body) {
         font-size: 16px;
         vertical-align: top;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    BODY & CONTAINER
 	------------------------------------- */
 
@@ -86,7 +87,7 @@ function writeEmail(body) {
         max-width: 600px;
         padding: 0;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    HEADER, FOOTER, MAIN
 	------------------------------------- */
 
@@ -117,7 +118,7 @@ function writeEmail(body) {
         font-size: 16px;
         text-align: center;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    TYPOGRAPHY
 	------------------------------------- */
 
@@ -133,7 +134,7 @@ function writeEmail(body) {
         color: #0867ec;
         text-decoration: underline;
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    BUTTONS
 	------------------------------------- */
 
@@ -192,8 +193,47 @@ function writeEmail(body) {
           border-color: rgb(212, 26, 95) !important;
         }
       }
+  /* -------------------------------------
+      CHAT
+  ------------------------------------- */
 
-      /* -------------------------------------
+      .chat-bubble {
+        max-width: 300px;
+        text-align: justify;
+        padding: 10px;
+        border-radius: 10px;
+        position: relative;
+      }
+      
+      .chat-bubble>div>strong.user {
+        text-align: left;
+      }
+
+      .chat-bubble>div>p.date {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: rgb(150, 150, 150);
+      }
+
+      .chat-agent {
+        background-color: rgb(220, 220, 220);
+      }
+
+      .chat-applicant {
+        background-color: rgb(222, 231, 253);
+      }
+
+      .chat-new {
+        border: solid;
+        border-width: 3px;
+        border-color: rgb(253, 224, 71);
+      }
+
+      .chat-bubble>p {
+        margin-bottom: 0px;
+      }
+
+  /* -------------------------------------
 	    OTHER STYLES THAT MIGHT BE USEFUL
 	------------------------------------- */
 
@@ -251,7 +291,7 @@ function writeEmail(body) {
         text-decoration: none;
       }
 
-      /* -------------------------------------
+  /* -------------------------------------
 	    RESPONSIVE AND MOBILE FRIENDLY STYLES
 	------------------------------------- */
 
@@ -287,7 +327,7 @@ function writeEmail(body) {
           width: 100% !important;
         }
       }
-      /* -------------------------------------
+  /* -------------------------------------
 	    PRESERVE THESE STYLES IN THE HEAD
 	------------------------------------- */
 
@@ -367,120 +407,23 @@ function writeEmail(body) {
 }
 
 module.exports.sendMail = sendMail;
-async function sendMail(userMail, subject, text) {
+async function sendMail({ to, subject, text, html, testFile }) {
   try {
-    const info = await transporter.sendMail({
+    const options = {
       from: `DeVinci FabLab<${process.env.MAIL_USER}>`, // sender address
-      to: userMail, // list of receivers
-      subject: subject, // Subject line
-      text: text, // plain text body
-      html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
-    <tr>
-        <td>
-            <h1>Ceci est un test pour les mails</h1>
-        </td>
-          <td style="text-align: right;">
-              <img src="${frontUrl}/logo.png" alt="Image" style="width: 100%; max-width: 200px; height: auto; margin-right: 10px; display: inline-block; vertical-align: middle;">
-          </td>
-      </tr>
-  </table>
-  ${text}`), // html body
-    });
+      to, // list of receivers
+      subject,
+      text,
+      html: writeEmail(html),
+    };
+
+    if (!testFile) await transporter.sendMail(options);
+    else fs.writeFileSync("./data/" + testFile, options.html);
 
     return true;
+    /* c8 ignore start */
   } catch (error) {
     return false;
   }
-}
-
-module.exports.sendRegisterMail = sendRegisterMail;
-async function sendRegisterMail(userMail, firstName, token) {
-  try {
-    const info = await transporter.sendMail({
-      from: `DeVinci FabLab<${process.env.MAIL_USER}>`,
-      to: userMail,
-      subject: "Insciption DeVinci FabLab",
-      text: `Vous vennez de créer un compte sur de site du ${frontUrl}. Pour utiliser votre compte merci de valider votre mail avec le lien ci-dessous.
-      ${frontUrl}/auth/verify/${token}`,
-      html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
-    <tr>
-        <td>
-            <h1>Bonjour ${firstName}</h1>
-        </td>
-          <td style="text-align: right;">
-              <img src="${frontUrl}/logo.png" alt="Image" style="width: 100%; max-width: 200px; height: auto; margin-right: 10px; display: inline-block; vertical-align: middle;">
-          </td>
-      </tr>
-  </table>
-
-        <p>Vous vennez de créer un compte sur de site du <a href="${frontUrl}">DeVinci FabLab</a> pour utiliser votre compte merci de valider votre mail avec le bouton ci-dessous.</p>
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
-          <tbody>
-            <tr>
-              <td align="center">
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                  <tbody>
-                    <tr>
-                      <td> <a href="${frontUrl}/auth/verify/${token}" target="_blank">Vérifier votre email</a> </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p>Si vous avez des problèmes avec le lien merci de contacter directement un membre de l'association.</p>
-        <p>À très vite,</p>`),
-    });
-
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-module.exports.sendForgetPasswordMail = sendForgetPasswordMail;
-async function sendForgetPasswordMail(userMail, firstName, token) {
-  try {
-    const info = await transporter.sendMail({
-      from: `DeVinci FabLab<${process.env.MAIL_USER}>`,
-      to: userMail,
-      subject: "Insciption DeVinci FabLab",
-      text: `Vous vennez de faire une demande pour réinitialiser votre mot de passe pour votre compte sur de site du DeVinci FabLab. Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.
-      ${frontUrl}/auth/password/${token}`,
-      html: writeEmail(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-bottom: 10px">
-    <tr>
-        <td>
-            <h1>Bonjour ${firstName}</h1>
-        </td>
-          <td style="text-align: right;">
-              <img src="${frontUrl}/logo.png" alt="Image" style="width: 100%; max-width: 200px; height: auto; margin-right: 10px; display: inline-block; vertical-align: middle;">
-          </td>
-      </tr>
-  </table>
-
-        <p>Vous vennez de faire une demande pour réinitialiser votre mot de passe pour votre compte sur de site du <a href="${frontUrl}">DeVinci FabLab</a>. Pour réinitialiser votre mot de passe, cliquez sur le bouton ci-dessous.</p>
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
-          <tbody>
-            <tr>
-              <td align="center">
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                  <tbody>
-                    <tr>
-                      <td><a href="${frontUrl}/auth/password/${token}" target="_blank">Vérifier votre email</a> </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p>Si vous avez des problèmes avec le lien merci de contacter directement un membre de l'association.</p>
-        <p>À très vite,</p>`),
-    });
-
-    return true;
-  } catch (error) {
-    return false;
-  }
+  /* c8 ignore stop */
 }

@@ -1,3 +1,8 @@
+const sendTicketMessageMail =
+  require("../../functions/sendMail/ticketMessage").sendTicketMessageMail;
+const statsIncrement = require("../../functions/stats").increment;
+const updateTicketDate = require("../../functions/stats").updateTicketDate;
+
 /**
  * @swagger
  * components:
@@ -192,6 +197,7 @@ async function postTicketMessage(data) {
       code: 400,
     };
   }
+
   // if the user is not allowed
   const userIdAgent = data.userId;
   if (!userIdAgent) {
@@ -200,9 +206,40 @@ async function postTicketMessage(data) {
       code: 401,
     };
   }
-  const querySelect = `SELECT i_idUser AS 'id'
-                    FROM printstickets
-                    WHERE i_id = ?`;
+
+  //If user has validate the rules
+  const querySelectUserValidRules = `SELECT
+                                CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
+                                FROM users
+                                WHERE i_id = ?;`;
+  const resSelectUserValidRules = await data.app.executeQuery(
+    data.app.db,
+    querySelectUserValidRules,
+    [userIdAgent]
+  );
+  /* c8 ignore start */
+  if (resSelectUserValidRules[0]) {
+    console.log(resSelectUserValidRules[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+    /* c8 ignore stop */
+  } else if (
+    resSelectUserValidRules[1].length !== 1 ||
+    resSelectUserValidRules[1][0].acceptedRule !== 1
+  ) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+
+  const querySelect = `SELECT pt.i_idUser AS 'id',
+                      u.v_email AS email
+                      FROM printstickets AS pt
+                      INNER JOIN users AS u ON pt.i_idUser = u.i_id
+                      WHERE pt.i_id = ?;`;
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
@@ -267,6 +304,29 @@ async function postTicketMessage(data) {
 
   //Update bot channels
   data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, data.params.id);
+
+  // Send mail to user
+  if (idTicketUser != userIdAgent) {
+    const querySelectMessages = `SELECT CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS 'userName', tm.v_content AS 'content', tm.dt_creationDate AS 'creationDate', pt.i_idUser = ? AS 'isApplicant' FROM ticketmessages AS tm INNER JOIN users AS u ON tm.i_idUser = u.i_id INNER JOIN printstickets AS pt ON tm.i_idTicket = pt.i_id WHERE i_idTicket = ?`;
+    const resGetMessagesTicket = await data.app.executeQuery(
+      data.app.db,
+      querySelectMessages,
+      [idTicketUser, data.params.id]
+    );
+    /* c8 ignore start */
+    if (resGetMessagesTicket[0]) {
+      console.log(resGetUserTicket[0]);
+      /* c8 ignore stop */
+    } else {
+      data.sendMailFunction({
+        userMail: resGetUserTicket[1][0].email,
+        ticketId: data.params.id,
+        messages: resGetMessagesTicket[1],
+      });
+      statsIncrement(data.app.db, "mailSent");
+    }
+  }
 
   return {
     type: "code",
@@ -304,6 +364,8 @@ async function startApi(app) {
         req,
         res
       );
+
+      data.sendMailFunction = sendTicketMessageMail;
       const result = await postTicketMessage(data);
       await require("../../functions/apiActions").sendResponse(
         req,

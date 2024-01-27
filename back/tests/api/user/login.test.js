@@ -6,7 +6,6 @@ describe("POST /api/user/login/", () => {
         executeQuery: async (db, query, options) => {
           return [null, [{ id: 1, mailValidated: 1 }]];
         },
-        cookiesList: {},
       },
       body: {
         email: "test@test.com",
@@ -18,8 +17,6 @@ describe("POST /api/user/login/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(response.json.dvflCookie != null).toBe(true);
-    expect(Object.keys(data.app.cookiesList).length).not.toBe(0);
-    expect(data.app.cookiesList[response.json.dvflCookie].id).toBe(1);
   });
 
   test("200testExpire", async () => {
@@ -29,7 +26,6 @@ describe("POST /api/user/login/", () => {
         executeQuery: async (db, query, options) => {
           return [null, [{ id: 1, mailValidated: 1 }]];
         },
-        cookiesList: {},
       },
       body: {
         email: "test@test.com",
@@ -42,8 +38,6 @@ describe("POST /api/user/login/", () => {
     expect(response.code).toBe(200);
     expect(response.type).toBe("json");
     expect(response.json.dvflCookie != null).toBe(true);
-    expect(Object.keys(data.app.cookiesList).length).not.toBe(0);
-    expect(data.app.cookiesList[response.json.dvflCookie].id).toBe(1);
   });
 
   test("400_noBody", async () => {

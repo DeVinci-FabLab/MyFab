@@ -31,7 +31,7 @@ describe("Page panel/admin", () => {
     cy.contains("La page que vous recherchez actuellement n'existe pas");
   });
 
-  it("Check page loading", () => {
+  it("List users button", () => {
     cy.setCookie("jwt", "admin");
     cy.visit(
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
@@ -39,5 +39,10 @@ describe("Page panel/admin", () => {
         failOnStatusCode: false,
       }
     );
+
+    cy.get(".roles-list-button").click();
+    cy.get(".role-description-p").should("exist");
+    cy.get(".roles-list-button").click();
+    cy.get(".role-description-p").should("not.exist");
   });
 });

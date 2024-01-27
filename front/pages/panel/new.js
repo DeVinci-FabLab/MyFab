@@ -13,12 +13,14 @@ import WebSocket from "../../components/webSocket";
 const percents = (value, total) => Math.round(value / total) * 100;
 
 export default function NewPanel({ user, role, authorizations, projectType }) {
+  const [showMissingField, setShowMissingField] = useState(false);
   const [status, setStatus] = useState(false);
   const [userClick, setUserClick] = useState(false);
   const [file, setFile] = useState([]);
-  const [description, setDescription] = useState("Aucune déscription fournie.");
-  const [type, setType] = useState(Object.keys(projectType)[0]);
-  const [group, setGroup] = useState(null);
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState(0);
+  const [group, setGroup] = useState("");
+  const [noGroup, setNoGroup] = useState(false);
   const [percent, setPercent] = useState(0);
 
   function realodPage() {
@@ -47,11 +49,10 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
   };
 
   const handleSubmit = async (e) => {
-    if (
-      description == "Aucune description fournie." ||
-      group == null ||
-      file.length < 1
-    ) {
+    const validGroup = noGroup ? projectType[type].groupCanBeNull === 1 : !isNaN(parseInt(group));
+    if (description == "" || !validGroup || file.length < 1) {
+      setShowMissingField(true);
+      setTimeout(() => setShowMissingField(false), 5000);
       toast.error("Tous les champs ne sont pas complétés.", {
         position: "top-right",
         autoClose: 3000,
@@ -85,58 +86,48 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
       url: process.env.API + "/api/ticket",
       data,
-      onUploadProgress: (progress) =>
-        setPercent(percents(progress.loaded, progress.total)),
+      onUploadProgress: (progress) => setPercent(percents(progress.loaded, progress.total)),
     });
     if (responsePostTicket.error) {
-      toast.error(
-        "Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+      toast.error("Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       setUserClick(false);
     } else {
       document.getElementById("status").scrollIntoView();
       setFile([]);
-      setDescription("Aucune description fournie.");
-      setType(Object.keys(projectType)[0]);
+      setDescription("");
+      setType(0);
       setGroup(null);
-      toast.success(
-        "Le ticket #" + setZero(responsePostTicket.data.id) + " a été créé !",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+      toast.success("Le ticket #" + setZero(responsePostTicket.data.id) + " a été créé !", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       router.push("/panel/newSuccess/?id=" + responsePostTicket.data.id);
     }
   };
 
   const handleChange = (e) => {
-    setFile((oldArray) => [...oldArray, e.target.files]);
+    const files = { ...e.target.files };
+    setFile((oldArray) => [...oldArray, files]);
+    e.target.value = "";
   };
 
   const darkMode = user.darkMode;
 
   return (
-    <LayoutPanel
-      user={user}
-      role={role}
-      authorizations={authorizations}
-      titleMenu="Panel de demande d'impression 3D"
-    >
+    <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Panel de demande d'impression 3D">
       <Seo title={"Créer un ticket"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
 
@@ -145,36 +136,27 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3
-                  className={`text-lg font-medium leading-6 ${
-                    darkMode ? "text-gray-200" : "text-gray-900"
-                  }`}
-                >
+                <h3 className={`text-lg font-medium leading-6 ${darkMode ? "text-gray-200" : "text-gray-900"}`}>
                   Informations
                 </h3>
-                <p
-                  className={`mt-1 text-sm ${
-                    darkMode ? "text-gray-300" : "text-gray-600"
-                  }`}
-                >
-                  Ces informations permettront de traiter aux mieux votre
-                  impression. Merci de les remplir correctement.
+                <p className={`mt-1 text-sm ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                  Ces informations permettront de traiter aux mieux votre impression. Merci de les remplir correctement.
                 </p>
               </div>
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
               <div onSubmit={handleSubmit}>
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
-                  <div
-                    className={`px-4 py-5 space-y-6 sm:p-6 ${
-                      darkMode ? "bg-gray-800" : "bg-white"
-                    }`}
-                  >
+                  <div className={`px-4 py-5 space-y-6 sm:p-6 ${darkMode ? "bg-gray-800" : "bg-white"}`}>
                     <div>
                       <label
                         htmlFor="about"
                         className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
+                          showMissingField && description == ""
+                            ? "text-red-500"
+                            : darkMode
+                            ? "text-gray-200"
+                            : "text-gray-700"
                         }`}
                       >
                         Commentaires
@@ -185,26 +167,23 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           id="about"
                           name="about"
                           rows={3}
-                          className="description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                          className={`description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md ${
+                            showMissingField && description == ""
+                              ? "border-red-300 placeholder-red-300"
+                              : "border-gray-300 placeholder-gray-300"
+                          }`}
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
-                      <p
-                        className={`mt-2 text-sm ${
-                          darkMode ? "text-gray-300" : "text-gray-500"
-                        }`}
-                      >
-                        Description détaillée de la demande d'impression du
-                        fichier.
+                      <p className={`mt-2 text-sm ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
+                        Description détaillée de la demande d'impression du fichier.
                       </p>
                     </div>
 
                     <div>
                       <label
                         htmlFor="type"
-                        className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
-                        }`}
+                        className={`block text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}
                       >
                         Type de projet
                       </label>
@@ -212,19 +191,12 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         onChange={(e) => setType(e.target.value)}
                         id="type"
                         name="type"
-                        className="projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className={`projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border-gray-300`}
                       >
-                        {Object.keys(projectType).map((item, index) => {
-                          const elementSelected = Object.keys(projectType)[0];
+                        {projectType.map((item, index) => {
                           return (
-                            <option
-                              key={`projectType-${index}`}
-                              defaultValue={
-                                item === elementSelected ? "'selected'" : ""
-                              }
-                              value={item}
-                            >
-                              {item}
+                            <option key={`projectType-${index}`} value={index}>
+                              {item.name}
                             </option>
                           );
                         })}
@@ -235,29 +207,65 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                       <label
                         htmlFor="group"
                         className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
+                          showMissingField &&
+                          !(noGroup ? projectType[type].groupCanBeNull === 1 : !isNaN(parseInt(group)))
+                            ? "text-red-500"
+                            : darkMode
+                            ? "text-gray-200"
+                            : "text-gray-700"
                         }`}
                       >
                         N° de groupe
                       </label>
                       <div className="mt-1">
                         <input
-                          onChange={(e) => setGroup(e.target.value)}
+                          onChange={(e) => {
+                            setGroup(e.target.value);
+                            setNoGroup(false);
+                          }}
                           type="number"
                           name="group"
+                          value={group}
                           id="group"
                           min="0"
                           max="1000"
-                          className="group-number-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                          placeholder="64"
+                          className={`group-number-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md ${
+                            showMissingField &&
+                            !(noGroup ? projectType[type].groupCanBeNull === 1 : !isNaN(parseInt(group)))
+                              ? "border-red-300 placeholder-red-300"
+                              : "border-gray-300 placeholder-gray-300"
+                          }`}
+                          placeholder="212"
                         />
                       </div>
+                      {type && projectType[type].groupCanBeNull ? (
+                        <div className="flex items-center justify-center pt-2">
+                          <input
+                            id="no-group"
+                            name="no-group"
+                            type="checkbox"
+                            checked={noGroup}
+                            onChange={(e) => {
+                              setNoGroup(e.target.checked);
+                              setGroup("");
+                            }}
+                            className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                            Je n'ai pas de numéro de groupe pour ce projet
+                          </label>
+                        </div>
+                      ) : null}
                     </div>
 
                     <div>
                       <label
                         className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
+                          showMissingField && file.length < 1
+                            ? "text-red-500"
+                            : darkMode
+                            ? "text-gray-200"
+                            : "text-gray-700"
                         }`}
                       >
                         Fichier STL
@@ -270,7 +278,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                       >
                         <div
                           className={`${
-                            status ? "border-gray-800" : "border-gray-300"
+                            status
+                              ? "border-gray-800"
+                              : showMissingField && file.length < 1
+                              ? "border-red-300"
+                              : "border-gray-300"
                           } ${
                             percent != 0 ? "hidden" : "block"
                           } dropzone mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md`}
@@ -280,16 +292,14 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                               className={`mx-auto h-12 w-12 ${
                                 status
                                   ? "text-indigo-700"
+                                  : showMissingField && file.length < 1
+                                  ? "text-red-500"
                                   : darkMode
                                   ? "text-gray-200"
                                   : "text-gray-400"
                               }`}
                             />
-                            <div
-                              className={`flex text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-600"
-                              }`}
-                            >
+                            <div className={`flex text-sm ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                               <label
                                 htmlFor="file-upload"
                                 className={`relative cursor-pointer rounded-md font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 ${
@@ -308,16 +318,10 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                                   className="sr-only"
                                 />
                               </label>
-                              <p className="pl-1 hidden md:block">
-                                ou déposez-le
-                              </p>
+                              <p className="pl-1 hidden md:block">ou déposez-le</p>
                             </div>
-                            <p
-                              className={`text-xs ${
-                                darkMode ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
-                              STL jusqu'à 64MB
+                            <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                              STL jusqu'à 20MB
                             </p>
                           </div>
                         </div>
@@ -345,11 +349,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                             if (r[0] == null) return null;
                             return (
                               <div key={`file-${index}`} className="block mt-3">
-                                <p
-                                  className={`text-md font-semibold ${
-                                    darkMode ? "text-white" : "text-gray-700"
-                                  }`}
-                                >
+                                <p className={`text-md font-semibold ${darkMode ? "text-white" : "text-gray-700"}`}>
                                   {r[0].name}
                                 </p>
                                 <button
@@ -378,11 +378,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     </div>
                   </div>
                 </div>
-                <div
-                  className={`px-4 py-3 text-right sm:px-6 ${
-                    darkMode ? "bg-gray-800" : "bg-gray-50"
-                  }`}
-                >
+                <div className={`px-4 py-3 text-right sm:px-6 ${darkMode ? "bg-gray-800" : "bg-gray-50"}`}>
                   <button
                     onClick={(e) => {
                       setUserClick(true);
@@ -402,11 +398,7 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
-            <div
-              className={`border-t ${
-                darkMode ? "border-gray-700" : " border-gray-200"
-              }`}
-            />
+            <div className={`border-t ${darkMode ? "border-gray-700" : " border-gray-200"}`} />
           </div>
         </div>
       </div>
@@ -421,24 +413,16 @@ export async function getServerSideProps({ req }) {
   if (resUserConnected) return resUserConnected;
 
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
 
   const projectTypeList = await fetchAPIAuth("/projectType/");
-
-  const projectType = {};
-  for (const element of projectTypeList.data) {
-    projectType[element.name] = { id: element.id };
-  }
 
   return {
     props: {
       user: user.data,
       role: role.data,
       authorizations: authorizations.data,
-      projectType,
+      projectType: projectTypeList.data,
     }, // will be passed to the page component as props
   };
 }

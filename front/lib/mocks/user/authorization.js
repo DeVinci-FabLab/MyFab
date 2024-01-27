@@ -52,6 +52,19 @@ export function mock(path, jwt, options) {
         },
       };
 
+    case "user_need_to_accept_rule":
+      return {
+        status: 200,
+        data: {
+          viewUsers: 0,
+          manageUser: 0,
+          changeUserRole: 0,
+          changeUserProtectedRole: 0,
+          myFabAgent: 0,
+          blogAuthor: 0,
+        },
+      };
+
     default:
       return { error: true };
   }

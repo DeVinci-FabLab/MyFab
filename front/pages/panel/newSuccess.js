@@ -74,9 +74,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
 
   async function getUrlSTL(id) {
     if (process.env.IS_TEST_MODE)
-      return setUrlStl(
-        "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
-      );
+      return setUrlStl("https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl");
 
     const cookie = getCookie("jwt");
     await axios({
@@ -93,12 +91,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
   const darkMode = user.darkMode;
 
   return (
-    <LayoutPanel
-      user={user}
-      role={role}
-      authorizations={authorizations}
-      titleMenu="Récapitulatif de la demande"
-    >
+    <LayoutPanel user={user} role={role} authorizations={authorizations} titleMenu="Récapitulatif de la demande">
       <Seo title={"Nouvelle demande créé"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
 
@@ -113,28 +106,18 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                   }`}
                 >
                   <div className="px-4 py-5 sm:px-6">
-                    <h3
-                      className={`text-lg leading-6 font-medium ${
-                        darkMode ? "text-gray-200" : "text-gray-900"
-                      }`}
-                    >
+                    <h3 className={`text-lg leading-6 font-medium ${darkMode ? "text-gray-200" : "text-gray-900"}`}>
                       La demande {"#" + setZero(ticket.id)} à été créé
                     </h3>
                   </div>
-                  <div
-                    className={`border-t px-4 py-5 sm:p-0 ${
-                      darkMode ? "border-gray-600" : "border-gray-200"
-                    }`}
-                  >
+                  <div className={`border-t px-4 py-5 sm:p-0 ${darkMode ? "border-gray-600" : "border-gray-200"}`}>
                     <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
-                      Les membres du DeVinci FabLab traiteons la demande le dès
-                      que possible. Vous pouvez suivre l'avancée de la demande
-                      sur cette plateforme.
+                      Les membres du DeVinci FabLab traiteons la demande le dès que possible. Vous pouvez suivre
+                      l'avancée de la demande sur cette plateforme.
                     </p>
                     <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
-                      Vous pouvez rajouter des notes sur les fichiers stl pour
-                      par exemple demander plusieurs impression pour un même
-                      fichier, une couleur d'impression spécifique, ...
+                      Vous pouvez rajouter des notes sur les fichiers stl pour par exemple demander plusieurs impression
+                      pour un même fichier, une couleur d'impression spécifique, ...
                     </p>
                     <div className="flex justify-center mb-4">
                       <Link href={ticketLink}>
@@ -153,25 +136,15 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           <div
                             key={`file-${index}`}
                             className={`col-span-6 mt-5 bg-opacity-50 border rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3 ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-600"
-                                : "border-gray-100"
+                              darkMode ? "border-gray-600 bg-gray-600" : "border-gray-100"
                             }`}
                           >
                             <div className="w-0 flex-1 flex items-center">
                               <CubeIcon
-                                className={`flex-shrink-0 h-5 w-5 ${
-                                  darkMode ? "text-gray-200" : "text-gray-400"
-                                }`}
+                                className={`flex-shrink-0 h-5 w-5 ${darkMode ? "text-gray-200" : "text-gray-400"}`}
                                 aria-hidden="true"
                               />
-                              <span
-                                className={`ml-2 flex-1 ${
-                                  darkMode ? "text-gray-100" : ""
-                                }`}
-                              >
-                                {r.filename}
-                              </span>
+                              <span className={`ml-2 flex-1 ${darkMode ? "text-gray-100" : ""}`}>{r.filename}</span>
                             </div>
                             <div className="flex justify-center mt-4">
                               <button
@@ -190,10 +163,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                             {r.comment != "" ? (
                               <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm mt-2">
                                 <p className="text-ellipsis overflow-hidden">
-                                  <span className="font-medium">
-                                    Commentaire{" "}
-                                  </span>
-                                  : {r.comment}
+                                  <span className="font-medium">Commentaire </span>: {r.comment}
                                 </p>
                               </div>
                             ) : (
@@ -207,43 +177,19 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                 </div>
 
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
-                  <div
-                    className={`shadow overflow-hidden sm:rounded-lg ${
-                      darkMode ? "bg-gray-800" : "bg-white"
-                    }`}
-                  >
+                  <div className={`shadow overflow-hidden sm:rounded-lg ${darkMode ? "bg-gray-800" : "bg-white"}`}>
                     <div className="px-4 py-5 sm:px-6">
-                      <h3
-                        className={`text-lg leading-6 font-medium ${
-                          darkMode ? "text-white" : "text-gray-900"
-                        }`}
-                      >
+                      <h3 className={`text-lg leading-6 font-medium ${darkMode ? "text-white" : "text-gray-900"}`}>
                         Détails de la demande d'impression
                       </h3>
-                      <p
-                        className={`mt-1 max-w-2xl text-sm ${
-                          darkMode ? "text-gray-200" : "text-gray-500"
-                        }`}
-                      >
+                      <p className={`mt-1 max-w-2xl text-sm ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                         Ticket n° {ticket.id}
                       </p>
                     </div>
-                    <div
-                      className={`border-t px-4 py-5 sm:p-0 ${
-                        darkMode ? "border-gray-700" : "border-gray-200"
-                      }`}
-                    >
-                      <dl
-                        className={`sm:divide-y ${
-                          darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
-                        }`}
-                      >
+                    <div className={`border-t px-4 py-5 sm:p-0 ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
+                      <dl className={`sm:divide-y ${darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"}`}>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                             Utilisateur
                           </dt>
                           <dd
@@ -253,22 +199,14 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           >
                             <div>
                               {ticket.userName}
-                              <p
-                                className={`mt-1 max-w-2xl text-sm ${
-                                  darkMode ? "text-gray-200" : "text-gray-500"
-                                }`}
-                              >
+                              <p className={`mt-1 max-w-2xl text-sm ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                                 {ticket.title || "Ancien compte"}
                               </p>
                             </div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                             Numéro de groupe
                           </dt>
                           <dd
@@ -276,15 +214,11 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                               darkMode ? "text-white" : "text-gray-900"
                             }`}
                           >
-                            {ticket.groupNumber}
+                            {ticket.groupNumber ? ticket.groupNumber : "Ce projet n'est pas en groupe"}
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                             Type
                           </dt>
                           <dd
@@ -296,11 +230,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                             Status
                           </dt>
                           <dd
@@ -312,11 +242,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
                             Fichiers
                           </dt>
                           <dd
@@ -331,11 +257,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                                 return (
                                   <p
                                     key={`fileName-${index}`}
-                                    className={`mt-1 max-w-2xl text-sm ${
-                                      darkMode
-                                        ? "text-gray-200"
-                                        : "text-gray-500"
-                                    }`}
+                                    className={`mt-1 max-w-2xl text-sm ${darkMode ? "text-gray-200" : "text-gray-500"}`}
                                   >
                                     - {r.filename}
                                   </p>
@@ -356,11 +278,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
 
       {/* modal */}
       <Transition.Root show={open} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={saveFileData}
-        >
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={saveFileData}>
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -374,10 +292,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
               &#8203;
             </span>
             <Transition.Child
@@ -391,25 +306,15 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
             >
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6">
                 <div>
-                  <p className="text-center font-medium">
-                    Aperçu du fichier STL:
-                  </p>
-                  <p className="text-sm text-center text-gray-500">
-                    {ticketFile.filename}
-                  </p>
+                  <p className="text-center font-medium">Aperçu du fichier STL:</p>
+                  <p className="text-sm text-center text-gray-500">{ticketFile.filename}</p>
                   <center>
                     <StlViewer
                       style={{
                         top: 0,
                         left: 0,
-                        width:
-                          typeof window !== "undefined"
-                            ? (window.innerWidth / 100) * 45
-                            : 300,
-                        height:
-                          typeof window !== "undefined"
-                            ? window.innerHeight / 2.2
-                            : 200,
+                        width: typeof window !== "undefined" ? (window.innerWidth / 100) * 45 : 300,
+                        height: typeof window !== "undefined" ? window.innerHeight / 2.2 : 200,
                       }}
                       modelProps={{ color: STLColor }}
                       orbitControls={true}
@@ -471,11 +376,8 @@ export async function getServerSideProps({ req, query }) {
   const file = await fetchAPIAuth("/ticket/" + idTicket + "/file", cookies.jwt);
 
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
-  if (ticket.error)
+  const authorizations = await fetchAPIAuth("/user/authorization/", cookies.jwt);
+  if (ticket.error || idTicket == "" || !ticket.data)
     return {
       redirect: {
         permanent: false,

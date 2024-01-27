@@ -1,3 +1,8 @@
+//Mock stats function
+const stats = require("../../../functions/stats");
+jest.mock("../../../functions/stats");
+stats.increment.mockReturnValue(true);
+
 function emptyFunction() {
   return;
 }

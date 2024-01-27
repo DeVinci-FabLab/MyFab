@@ -35,6 +35,11 @@ export default function Admin({ user, role, authorizations }) {
   const [ticketResult, setTicketResult] = useState([]);
 
   useEffect(function () {
+    if (user.error != undefined) {
+      router.push("/404");
+    } else if (!user.acceptedRule) {
+      router.push("/rules");
+    }
     if (authorizations.myFabAgent) {
       update();
     }
@@ -119,8 +124,9 @@ export default function Admin({ user, role, authorizations }) {
               <h3 className="text-md font-medium text-white">
                 {ticketResult.length === 0
                   ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
-                  : `Il y a ${ticketResult.length} impression
-                ${ticketResult.length > 1 ? "s" : ""} à traiter. N'hésite pas à
+                  : `Il y a ${ticketResult.length} impression${
+                      ticketResult.length > 1 ? "s" : ""
+                    } à traiter. N'hésite pas à
                 t'en occuper !`}
               </h3>
             </div>

@@ -29,7 +29,10 @@ async function cookieDeleteAll(data) {
     };
   }
 
-  data.app.cookiesList = {};
+  // DELETE all cookies
+  const queryDeleteAllCookies = `DELETE FROM usercookies`;
+  await data.app.executeQuery(data.app.db, queryDeleteAllCookies, []);
+
   return {
     type: "code",
     code: 200,

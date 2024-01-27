@@ -39,8 +39,10 @@ text =
   text +
   "\n" +
   "INSERT INTO `users` (`i_id`, `v_firstName`, `v_lastName`, `v_email`, `v_password`, `dt_creationdate`, `i_idschool`, `i_schoolyear`, `v_discordid`, `v_language`, `dt_ruleSignature`, `b_deleted`, `b_visible`, `b_mailValidated`, `b_isMicrosoft`, `b_darkMode`, `v_title`, `dt_rickrolled`) VALUES (NULL, 'bufferUser', 'bufferUser', 'deleteme', 'password', current_timestamp(), NULL, NULL, NULL, 'fr', NULL, '0', '1', '0', '0', '0', NULL, NULL);";
+text = text + "\n" + `DELETE FROM usercookies WHERE i_idUser = ${targetId};`;
 
 //Set element to the new user
+text = text + "\n" + swapUpdate("log_connection", "i_idUser");
 text = text + "\n" + swapUpdate("log_roleschange", "i_idUserAdmin");
 text = text + "\n" + swapUpdate("log_roleschange", "i_idUserTarget");
 text = text + "\n" + swapUpdate("log_ticketschange", "i_idUser");
@@ -56,6 +58,7 @@ text =
 
 //Set element to the user with id Changed
 swapbuffer = false;
+text = text + "\n" + swapUpdate("log_connection", "i_idUser");
 text = text + "\n" + swapUpdate("log_roleschange", "i_idUserAdmin");
 text = text + "\n" + swapUpdate("log_roleschange", "i_idUserTarget");
 text = text + "\n" + swapUpdate("log_ticketschange", "i_idUser");

@@ -1,5 +1,3 @@
-const CronJob = require("cron").CronJob;
-
 module.exports.action = action;
 async function action(app) {
   const queryOneWeek = `UPDATE printstickets
@@ -14,15 +12,3 @@ async function action(app) {
   const dbResTwoWeek = await app.executeQuery(app.db, queryTwoWeek, []);
   if (dbResTwoWeek[0]) console.log(dbResTwoWeek[0]);
 }
-
-module.exports.run = async (app) => {
-  action(app);
-  new CronJob(
-    "10 12 08 * * *",
-    async function () {
-      action(app);
-    },
-    null,
-    true
-  );
-};
