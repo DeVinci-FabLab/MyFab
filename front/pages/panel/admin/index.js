@@ -11,7 +11,12 @@ import { getCookie } from "cookies-next";
 import { isUserConnected } from "../../../lib/function";
 import { toast } from "react-toastify";
 
-export default function Admin({ user, role, authorizations }) {
+import { UserUse } from "../../../context/provider";
+
+export default function Admin({ authorizations }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const router = useRouter();
   function realodPage() {
     router.replace(router.asPath);
@@ -98,8 +103,6 @@ export default function Admin({ user, role, authorizations }) {
     }
   }
 
-  const darkMode = user.darkMode;
-
   return (
     <div>
       <WebSocket
@@ -109,13 +112,11 @@ export default function Admin({ user, role, authorizations }) {
       />
       {authorizations.myFabAgent ? (
         <LayoutPanel
-          user={user}
-          role={role}
           authorizations={authorizations}
           titleMenu="Gestion des demandes"
         >
           <Seo title={"Administration"} />
-          <NavbarAdmin role={role} darkMode={darkMode} />
+          <NavbarAdmin />
           <div className="md:py-8 md:px-6">
             <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
               <h2 className="text-2xl font-bold text-white">
@@ -152,19 +153,23 @@ export default function Admin({ user, role, authorizations }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
     }, // will be passed to the page component as props
   };

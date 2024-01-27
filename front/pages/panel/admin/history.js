@@ -11,7 +11,12 @@ import { isUserConnected } from "../../../lib/function";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
-export default function OverviewAdmin({ user, role, authorizations }) {
+import { UserUse } from "../../../context/provider";
+
+export default function OverviewAdmin({ authorizations }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const router = useRouter();
 
   function realodPage() {
@@ -102,8 +107,6 @@ export default function OverviewAdmin({ user, role, authorizations }) {
     }
   }
 
-  const darkMode = user.darkMode;
-
   return (
     <div>
       <WebSocket
@@ -114,14 +117,12 @@ export default function OverviewAdmin({ user, role, authorizations }) {
       {authorizations.myFabAgent ? (
         <div>
           <LayoutPanel
-            user={user}
-            role={role}
             authorizations={authorizations}
             titleMenu="Gestion des demandes"
           >
             <Seo title={"Historique"} />
 
-            <NavbarAdmin role={role} darkMode={darkMode} />
+            <NavbarAdmin darkMode={darkMode} />
 
             <section className="">
               <div className="container px-4 mx-auto">
@@ -201,20 +202,24 @@ export default function OverviewAdmin({ user, role, authorizations }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   // Pass the data to our page via props
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
     }, // will be passed to the page component as props
   };

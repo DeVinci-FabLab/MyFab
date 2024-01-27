@@ -8,7 +8,7 @@ import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { useRouter } from "next/router";
 import Moment from "react-moment";
-import { isUserConnected, setZero } from "../../lib/function";
+import { setZero } from "../../lib/function";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import Seo from "../../components/seo";
@@ -32,7 +32,8 @@ export default function NewPanel({ authorizations, highDemand }) {
   const faq = [
     {
       question: "Quels sont les fichiers acceptés ?",
-      answer: "Les fichiers doivent être des fichiers 3D au format STL pour être accepté.",
+      answer:
+        "Les fichiers doivent être des fichiers 3D au format STL pour être accepté.",
     },
     {
       question: "Quand est que ma pièce sera réalisée ?",
@@ -124,24 +125,26 @@ export default function NewPanel({ authorizations, highDemand }) {
         progress: undefined,
       });
     } else {
-      toast.error("Une erreur est survenue lors de la suppression du ticket #" + setZero(id) + ".", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "Une erreur est survenue lors de la suppression du ticket #" +
+          setZero(id) +
+          ".",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
     router.replace(router.asPath);
   };
 
   return (
     <LayoutPanel
-      user={user}
-      setUser={setUser}
-      role={roles}
       authorizations={authorizations}
       titleMenu={"Panel de demande d'impression 3D"}
     >
@@ -152,22 +155,37 @@ export default function NewPanel({ authorizations, highDemand }) {
       <div className="py-6 px-3">
         <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="col-span-3">
-            <nav aria-label="Sidebar" className="sticky top-6 divide-y divide-gray-300">
+            <nav
+              aria-label="Sidebar"
+              className="sticky top-6 divide-y divide-gray-300"
+            >
               <Faq className="w-full" darkMode={darkMode} questions={faq} />
             </nav>
           </div>
-          <hr className={`mb-5 mt-5 block lg:hidden ${darkMode ? "border-gray-600" : ""}`} />
+          <hr
+            className={`mb-5 mt-5 block lg:hidden ${
+              darkMode ? "border-gray-600" : ""
+            }`}
+          />
           <main className="col-span-9">
             {highDemand ? (
-              <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4" role="alert">
+              <div
+                className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4"
+                role="alert"
+              >
                 <p className="font-bold">Attention</p>
-                <p>Il y a actuellement beaucoup de demandes d'impression 3D. Merci pour votre patience.</p>
+                <p>
+                  Il y a actuellement beaucoup de demandes d'impression 3D.
+                  Merci pour votre patience.
+                </p>
               </div>
             ) : (
               <div></div>
             )}
             <h1
-              className={`text-lg font-medium leading-6 sm:truncate mt-5 ${darkMode ? "text-white" : "text-gray-900"}`}
+              className={`text-lg font-medium leading-6 sm:truncate mt-5 ${
+                darkMode ? "text-white" : "text-gray-900"
+              }`}
             >
               Vos demandes d'impressions 3D
             </h1>
@@ -187,38 +205,52 @@ export default function NewPanel({ authorizations, highDemand }) {
                     >
                       <table className="min-w-full text-sm align-middle whitespace-nowrap">
                         <thead>
-                          <tr className={`border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
+                          <tr
+                            className={`border-b ${
+                              darkMode ? "border-gray-700" : "border-gray-200"
+                            }`}
+                          >
                             <th
                               className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode ? "text-white bg-gray-600" : "text-gray-700 bg-gray-100"
+                                darkMode
+                                  ? "text-white bg-gray-600"
+                                  : "text-gray-700 bg-gray-100"
                               }`}
                             >
                               Id
                             </th>
                             <th
                               className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode ? "text-white bg-gray-600" : "text-gray-700 bg-gray-100"
+                                darkMode
+                                  ? "text-white bg-gray-600"
+                                  : "text-gray-700 bg-gray-100"
                               }`}
                             >
                               Dernière mise à jour
                             </th>
                             <th
                               className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode ? "text-white bg-gray-600" : "text-gray-700 bg-gray-100"
+                                darkMode
+                                  ? "text-white bg-gray-600"
+                                  : "text-gray-700 bg-gray-100"
                               }`}
                             >
                               Type
                             </th>
                             <th
                               className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode ? "text-white bg-gray-600" : "text-gray-700 bg-gray-100"
+                                darkMode
+                                  ? "text-white bg-gray-600"
+                                  : "text-gray-700 bg-gray-100"
                               }`}
                             >
                               Etat
                             </th>
                             <th
                               className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode ? "text-white bg-gray-600" : "text-gray-700 bg-gray-100"
+                                darkMode
+                                  ? "text-white bg-gray-600"
+                                  : "text-gray-700 bg-gray-100"
                               }`}
                             ></th>
                           </tr>
@@ -234,28 +266,54 @@ export default function NewPanel({ authorizations, highDemand }) {
                                     : "border-gray-200 hover:bg-gray-50"
                                 }`}
                               >
-                                <td className={`p-3 text-center`} onClick={() => router.push(`/panel/${r.id}`)}>
-                                  <span className="font-medium">#{setZero(r.id)}</span>
+                                <td
+                                  className={`p-3 text-center`}
+                                  onClick={() => router.push(`/panel/${r.id}`)}
+                                >
+                                  <span className="font-medium">
+                                    #{setZero(r.id)}
+                                  </span>
                                 </td>
-                                <td className={`p-3 text-center`} onClick={() => router.push(`/panel/${r.id}`)}>
-                                  <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}>
-                                    <Moment format="Do MMM YYYY à HH:mm" locale="fr">
+                                <td
+                                  className={`p-3 text-center`}
+                                  onClick={() => router.push(`/panel/${r.id}`)}
+                                >
+                                  <div
+                                    className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                                  >
+                                    <Moment
+                                      format="Do MMM YYYY à HH:mm"
+                                      locale="fr"
+                                    >
                                       {r.modificationDate}
                                     </Moment>
                                   </div>
                                 </td>
-                                <td className={`p-3 text-center`} onClick={() => router.push(`/panel/${r.id}`)}>
-                                  <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}>
+                                <td
+                                  className={`p-3 text-center`}
+                                  onClick={() => router.push(`/panel/${r.id}`)}
+                                >
+                                  <div
+                                    className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                                  >
                                     {r.projectType}
                                   </div>
                                 </td>
-                                <td className={`p-3 text-center`} onClick={() => router.push(`/panel/${r.id}`)}>
-                                  <div className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}>
+                                <td
+                                  className={`p-3 text-center`}
+                                  onClick={() => router.push(`/panel/${r.id}`)}
+                                >
+                                  <div
+                                    className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                                  >
                                     {r.statusName}
                                   </div>
                                 </td>
                                 <td className={`p-3 text-center`}>
-                                  <Menu as="div" className="relative flex justify-end items-center">
+                                  <Menu
+                                    as="div"
+                                    className="relative flex justify-end items-center"
+                                  >
                                     <Menu.Button
                                       className={`open-delete-button w-8 h-8 inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 ${
                                         darkMode
@@ -263,8 +321,13 @@ export default function NewPanel({ authorizations, highDemand }) {
                                           : "bg-white text-gray-400 hover:text-gray-500"
                                       }`}
                                     >
-                                      <span className="sr-only">Open options</span>
-                                      <DotsVerticalIcon className="w-5 h-5" aria-hidden="true" />
+                                      <span className="sr-only">
+                                        Open options
+                                      </span>
+                                      <DotsVerticalIcon
+                                        className="w-5 h-5"
+                                        aria-hidden="true"
+                                      />
                                     </Menu.Button>
                                     <Transition
                                       as={Fragment}
@@ -280,9 +343,13 @@ export default function NewPanel({ authorizations, highDemand }) {
                                           <Menu.Item>
                                             {({ active }) => (
                                               <a
-                                                onClick={() => deleteTicket(r.id)}
+                                                onClick={() =>
+                                                  deleteTicket(r.id)
+                                                }
                                                 className={classNames(
-                                                  active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                                                  active
+                                                    ? "bg-gray-100 text-gray-900"
+                                                    : "text-gray-700",
                                                   "delete-button group flex items-center px-4 py-2 text-sm"
                                                 )}
                                               >
@@ -309,21 +376,31 @@ export default function NewPanel({ authorizations, highDemand }) {
                       <div className="inline-flex mt-3">
                         <button
                           className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 text-gray-800 ${
-                            darkMode ? "bg-gray-200 hover:bg-gray-100" : "bg-gray-300 hover:bg-gray-400"
+                            darkMode
+                              ? "bg-gray-200 hover:bg-gray-100"
+                              : "bg-gray-300 hover:bg-gray-400"
                           }`}
                           onClick={() => nextPrevPage(-1)}
                         >
                           &lt;
                         </button>
-                        <div className={`inline-flex py-2 px-4 ${darkMode ? "text-gray-200" : ""}`}>
+                        <div
+                          className={`inline-flex py-2 px-4 ${
+                            darkMode ? "text-gray-200" : ""
+                          }`}
+                        >
                           Pages&nbsp;
                           <p className="font-bold">{actualPage + 1}</p>
                           &nbsp;sur&nbsp;
-                          <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
+                          <p className="font-bold">
+                            {maxPage != 0 ? maxPage : 1}
+                          </p>
                         </div>
                         <button
                           className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 text-gray-800 ${
-                            darkMode ? "bg-gray-200 hover:bg-gray-100" : "bg-gray-300 hover:bg-gray-400"
+                            darkMode
+                              ? "bg-gray-200 hover:bg-gray-100"
+                              : "bg-gray-300 hover:bg-gray-400"
                           }`}
                           onClick={() => nextPrevPage(1)}
                         >
@@ -335,21 +412,28 @@ export default function NewPanel({ authorizations, highDemand }) {
                 ) : (
                   <div
                     className={`p-4 md:p-5 rounded flex justify-between ${
-                      darkMode ? "text-white bg-gray-700" : "text-gray-700 bg-gray-100"
+                      darkMode
+                        ? "text-white bg-gray-700"
+                        : "text-gray-700 bg-gray-100"
                     }`}
                   >
                     <p>
-                      Les demandes d'impressions apparaîteront ici. Pour en créer une, cliquez sur le bouton suivant.
+                      Les demandes d'impressions apparaîteront ici. Pour en
+                      créer une, cliquez sur le bouton suivant.
                     </p>
                     <Link href="/panel/new/">
                       <div
                         className={`inline-flex items-center space-x-1 font-semibold ml-2 ${
-                          darkMode ? "text-indigo-500 hover:text-indigo-300" : "text-indigo-600 hover:text-indigo-400"
+                          darkMode
+                            ? "text-indigo-500 hover:text-indigo-300"
+                            : "text-indigo-600 hover:text-indigo-400"
                         }`}
                       >
                         <span>Créer une demande</span>
                         <svg
-                          className={`hi-solid hi-arrow-right inline-block w-4 h-4 ${darkMode ? "fill-white" : ""}`}
+                          className={`hi-solid hi-arrow-right inline-block w-4 h-4 ${
+                            darkMode ? "fill-white" : ""
+                          }`}
                           fillname="currentColor"
                           viewBox="0 0 20 20"
                           xmlns="http://www.w3.org/2000/svg"
@@ -375,8 +459,12 @@ export default function NewPanel({ authorizations, highDemand }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const authorizations = cookies.jwt ? await fetchAPIAuth("/user/authorization/", cookies.jwt) : null;
-  const highDemand = cookies.jwt ? await fetchAPIAuth("/ticket/highDemand/", cookies.jwt) : null;
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  const highDemand = cookies.jwt
+    ? await fetchAPIAuth("/ticket/highDemand/", cookies.jwt)
+    : null;
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);
@@ -388,15 +476,9 @@ export async function getServerSideProps({ req }) {
       props: {},
     };
   }
-  //const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  //const resUserConnected = isUserConnected(user);
-  //if (resUserConnected) return resUserConnected;
-  //const role = await fetchAPIAuth("/user/role", cookies.jwt);
 
   return {
     props: {
-      //user: user.data,
-      //role: role.data,
       authorizations: authorizations.data,
       highDemand: highDemand.data?.result ? highDemand.data.result : false,
     }, // will be passed to the page component as props

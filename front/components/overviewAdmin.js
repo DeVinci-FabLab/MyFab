@@ -57,8 +57,9 @@ export default function OverviewAdmin({
             ) : (
               <div className="p-4 md:p-5 rounded flex justify-between text-gray-700 bg-gray-100">
                 <p>
-                  Il n'y a aucun ticket à traiter. Vous pouvez accéder à l'historique des tickets déjà traités en
-                  cliquant sur le bouton suivant.
+                  Il n'y a aucun ticket à traiter. Vous pouvez accéder à
+                  l'historique des tickets déjà traités en cliquant sur le
+                  bouton suivant.
                 </p>
                 <Link href="/panel/admin/history">
                   <p className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
@@ -82,7 +83,11 @@ export default function OverviewAdmin({
           </div>
 
           {/* FAQ */}
-          <Faq className="w-full lg:w-1/3 px-4" darkMode={darkMode} questions={faqs} />
+          <Faq
+            className="w-full lg:w-1/3 px-4"
+            darkMode={darkMode}
+            questions={faqs}
+          />
         </div>
       </div>
     </section>

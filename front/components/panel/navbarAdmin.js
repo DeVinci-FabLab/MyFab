@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { withRouter } from "next/router";
+import { getCookie } from "cookies-next";
+
+import { UserUse } from "../../context/provider";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function NavbarAdmin({ router, role, darkMode }) {
+function NavbarAdmin({ router }) {
+  const jwt = getCookie("jwt");
+  const { darkMode } = UserUse(jwt);
   const pn = router.pathname;
   const tabs = [
     {
