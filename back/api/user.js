@@ -292,7 +292,7 @@ async function userGetMe(data) {
                       COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
                       CASE WHEN u.v_title IS NULL AND (sch.v_name IS NULL OR u.i_schoolyear IS NULL) THEN FALSE ELSE TRUE END AS "schoolValid",
                       u.b_isMicrosoft AS "isMicrosoft",
-                      (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
+                      CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule",
                       u.b_mailValidated AS "mailValidated"
                       FROM users AS u
                       LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
@@ -300,7 +300,6 @@ async function userGetMe(data) {
                       AND b_deleted = 0`;
 
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
-    userIdAgent,
     userIdAgent,
   ]);
   // The sql request has an error

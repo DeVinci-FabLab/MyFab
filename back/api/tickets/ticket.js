@@ -711,6 +711,35 @@ async function postTicket(data) {
       code: 401,
     };
   }
+
+  //If user has validate the rules
+  const querySelectUserValidRules = `SELECT
+                                CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
+                                FROM users
+                                WHERE i_id = ?;`;
+  const resSelectUserValidRules = await data.app.executeQuery(
+    data.app.db,
+    querySelectUserValidRules,
+    [userId]
+  );
+  /* c8 ignore start */
+  if (resSelectUserValidRules[0]) {
+    console.log(resSelectUserValidRules[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+    /* c8 ignore stop */
+  } else if (
+    resSelectUserValidRules[1].length !== 1 ||
+    resSelectUserValidRules[1][0].acceptedRule !== 1
+  ) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+
   const querySelectProjectType = `SELECT 1 FROM gd_ticketprojecttype WHERE i_id = ?`;
   const resSelectProjectType = await data.app.executeQuery(
     data.app.db,

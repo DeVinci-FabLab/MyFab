@@ -197,6 +197,7 @@ async function postTicketMessage(data) {
       code: 400,
     };
   }
+
   // if the user is not allowed
   const userIdAgent = data.userId;
   if (!userIdAgent) {
@@ -205,6 +206,35 @@ async function postTicketMessage(data) {
       code: 401,
     };
   }
+
+  //If user has validate the rules
+  const querySelectUserValidRules = `SELECT
+                                CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
+                                FROM users
+                                WHERE i_id = ?;`;
+  const resSelectUserValidRules = await data.app.executeQuery(
+    data.app.db,
+    querySelectUserValidRules,
+    [userIdAgent]
+  );
+  /* c8 ignore start */
+  if (resSelectUserValidRules[0]) {
+    console.log(resSelectUserValidRules[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+    /* c8 ignore stop */
+  } else if (
+    resSelectUserValidRules[1].length !== 1 ||
+    resSelectUserValidRules[1][0].acceptedRule !== 1
+  ) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+
   const querySelect = `SELECT pt.i_idUser AS 'id',
                       u.v_email AS email
                       FROM printstickets AS pt

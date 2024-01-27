@@ -72,6 +72,24 @@ export function mock(path, jwt, options) {
           mailValidated: 1,
         },
       };
+    case "user_need_to_accept_rule":
+      return {
+        status: 200,
+        data: {
+          id: 4,
+          firstName: "user_need_to_accept_rule",
+          lastName: "user_need_to_accept_rule",
+          email: "user_need_to_accept_rule@test.com",
+          creationDate: "2015-10-19T22:24:66.212Z",
+          discordid: null,
+          language: "fr",
+          title: "Test",
+          schoolValid: true,
+          isMicrosoft: 0,
+          acceptedRule: 0,
+          mailValidated: 1,
+        },
+      };
 
     default:
       return { error: true };

@@ -282,10 +282,12 @@ describe("POST /api/ticket/:id/message/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ id: 3, email: "test@example.com" }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, {}];
+              return [null, [{ id: 3, email: "test@example.com" }]];
             case 3:
+              return [null, {}];
+            case 4:
               return [
                 null,
                 {
@@ -337,10 +339,12 @@ describe("POST /api/ticket/:id/message/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ id: 1 }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, {}];
+              return [null, [{ id: 1 }]];
             case 3:
+              return [null, {}];
+            case 4:
               return [null, {}];
 
             default:
@@ -540,6 +544,48 @@ describe("POST /api/ticket/:id/message/", () => {
     expect(updateTicketDateMock).not.toHaveBeenCalled();
   });
 
+  test("400rulesNotValid", async () => {
+    //Mock
+    updateTicketDate.mockImplementation(updateTicketDateMock);
+
+    //Execute
+    let requestNumber = 0;
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return false;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ acceptedRule: 0 }]];
+
+            default:
+              return null;
+          }
+        },
+        io,
+      },
+      params: {
+        id: 1,
+      },
+      body: {
+        content: "testContent",
+      },
+    };
+    const response =
+      await require("../../../api/tickets/message").postTicketMessage(data);
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+    expect(updateTicketDateMock).not.toHaveBeenCalled();
+  });
+
   test("403unauthorized", async () => {
     //Mock
     updateTicketDate.mockImplementation(updateTicketDateMock);
@@ -558,6 +604,8 @@ describe("POST /api/ticket/:id/message/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
+              return [null, [{ acceptedRule: 1 }]];
+            case 2:
               return [null, [{ id: 2 }]];
 
             default:

@@ -996,12 +996,14 @@ describe("POST /api/ticket/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ 1: 1 }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, {}];
+              return [null, [{ 1: 1 }]];
             case 3:
-              return [null, [{ id: 1 }]];
+              return [null, {}];
             case 4:
+              return [null, [{ id: 1 }]];
+            case 5:
               return [null, {}];
 
             default:
@@ -1053,14 +1055,16 @@ describe("POST /api/ticket/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ 1: 1 }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, {}];
+              return [null, [{ 1: 1 }]];
             case 3:
-              return [null, [{ id: 1 }]];
-            case 4:
               return [null, {}];
+            case 4:
+              return [null, [{ id: 1 }]];
             case 5:
+              return [null, {}];
+            case 6:
               return [null, {}];
 
             default:
@@ -1126,16 +1130,18 @@ describe("POST /api/ticket/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ 1: 1 }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, {}];
+              return [null, [{ 1: 1 }]];
             case 3:
-              return [null, [{ id: 1 }]];
-            case 4:
               return [null, {}];
+            case 4:
+              return [null, [{ id: 1 }]];
             case 5:
               return [null, {}];
             case 6:
+              return [null, {}];
+            case 7:
               return [null, {}];
 
             default:
@@ -1186,12 +1192,14 @@ describe("POST /api/ticket/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ 1: 1 }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, [{}]];
+              return [null, [{ 1: 1 }]];
             case 3:
-              return [null, [{ id: 1 }]];
+              return [null, [{}]];
             case 4:
+              return [null, [{ id: 1 }]];
+            case 5:
               return [null, [{}]];
 
             default:
@@ -1232,12 +1240,14 @@ describe("POST /api/ticket/", () => {
           requestNumber++;
           switch (requestNumber) {
             case 1:
-              return [null, [{ 1: 1 }]];
+              return [null, [{ acceptedRule: 1 }]];
             case 2:
-              return [null, [{}]];
+              return [null, [{ 1: 1 }]];
             case 3:
-              return [null, [{ id: 1 }]];
+              return [null, [{}]];
             case 4:
+              return [null, [{ id: 1 }]];
+            case 5:
               return [null, [{}]];
 
             default:
@@ -1414,7 +1424,57 @@ describe("POST /api/ticket/", () => {
       },
       app: {
         executeQuery: async (db, query, options) => {
-          return [null, []];
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ acceptedRule: 1 }]];
+            case 2:
+              return [null, []];
+
+            default:
+              return [null, null];
+          }
+        },
+        io,
+      },
+      body: {
+        projectType: 100,
+        comment: "test",
+        groupNumber: 1,
+      },
+      files: {
+        filedata: [],
+      },
+    };
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400_rulesNotValid", async () => {
+    //Execute
+    let requestNumber = 0;
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ acceptedRule: 0 }]];
+
+            default:
+              return [null, null];
+          }
         },
         io,
       },
