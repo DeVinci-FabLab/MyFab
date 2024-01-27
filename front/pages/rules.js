@@ -69,6 +69,8 @@ async function validateRules() {
   }, 1500);
 }
 
+const date = new Date();
+
 export default function Rules({ userNeedToAccept }) {
   return (
     <div className="flex h-screen bg-gray-50">
@@ -89,15 +91,24 @@ export default function Rules({ userNeedToAccept }) {
           <RulesText />
         </div>
         {userNeedToAccept ? (
-          <button
-            type="button"
-            className="accept-button inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={() => {
-              validateRules();
-            }}
-          >
-            J'ai lu et j'accepte le règlement
-          </button>
+          <div>
+            <p className="pb-4">
+              L'acceptation des règles a une validité jusqu'au 31 août{" "}
+              {date.getMonth() >= 8
+                ? date.getFullYear() + 1
+                : date.getFullYear()}
+              .
+            </p>
+            <button
+              type="button"
+              className="accept-button inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={() => {
+                validateRules();
+              }}
+            >
+              J'ai lu et j'accepte le règlement
+            </button>
+          </div>
         ) : (
           <a
             href="/"
