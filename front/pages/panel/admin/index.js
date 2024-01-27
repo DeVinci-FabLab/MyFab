@@ -35,6 +35,11 @@ export default function Admin({ user, role, authorizations }) {
   const [ticketResult, setTicketResult] = useState([]);
 
   useEffect(function () {
+    if (user.error != undefined) {
+      router.push("/404");
+    } else if (!user.acceptedRule) {
+      router.push("/rules");
+    }
     if (authorizations.myFabAgent) {
       update();
     }

@@ -1,9 +1,11 @@
 const CronJob = require("cron").CronJob;
+const validRulesForRoot = require("./validRulesForRoot").action;
 const autoCloseTicket = require("./autoCloseTicket").action;
 const updatePriority = require("./updatePriority").action;
 
 module.exports.action = action;
 async function action(app) {
+  await validRulesForRoot(app);
   await autoCloseTicket(app);
   await updatePriority(app);
 }

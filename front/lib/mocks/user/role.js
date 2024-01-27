@@ -42,6 +42,12 @@ export function mock(path, jwt, options) {
         data: [],
       };
 
+    case "user_need_to_accept_rule":
+      return {
+        status: 200,
+        data: [],
+      };
+
     default:
       return { error: true };
   }

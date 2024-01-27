@@ -1,6 +1,6 @@
 module.exports.action = action;
 async function action(app) {
-  const querySelectLastUsedUsers = `SELECT i_idUser AS idUser, MAX(dt_lastUsed) AS lastUsed FROM userCookies GROUP BY i_idUser;`;
+  const querySelectLastUsedUsers = `SELECT i_idUser AS idUser, MAX(dt_lastUsed) AS lastUsed FROM usercookies GROUP BY i_idUser;`;
   const dbResLastUsed = await app.executeQuery(
     app.db,
     querySelectLastUsedUsers,
