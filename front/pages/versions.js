@@ -69,11 +69,12 @@ const versions = [
   ,
   {
     version: "1.0.7",
-    date: "VERSION-NOT-CREATED",
+    date: "27-01-2024",
     changes: [
       "Ajout d'animations pour l'ouverture/fermeture de la FAQ",
       "Ajout d'une FAQ pour les rôles",
       "La page `/panel/admin` la colone `créé il y a` est devenu `modifié il y a`",
+      "Mise à jour des CGU et création des redirections pour les signer",
     ],
   },
 ];
