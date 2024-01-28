@@ -2,7 +2,7 @@ name: Test Front-end
 run-name: "Front : ${{ github.actor }} push '${{ github.event.head_commit.message }}' 🚀"
 on: [push]
 jobs:
-  End-to-end:
+  End-to-end-Light-Mode:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -34,6 +34,12 @@ jobs:
           start: npm run start
           wait-on: "http://localhost:3000/test"
           working-directory: front
+
+  End-to-end-Dark-Mode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
       - name: Create .env file
         run: |
           echo PORT_FRONT=3000 > front/.env
