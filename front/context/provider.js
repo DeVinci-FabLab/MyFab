@@ -27,7 +27,7 @@ export function Provider({ children }) {
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
-export const UserUse = (cookies) => {
+export const UserUse = (cookies, actionAfterFech) => {
   const { user, setUser, darkMode, setDarkMode, roles, setRoles } =
     useContext(UserContext);
 
@@ -50,6 +50,8 @@ export const UserUse = (cookies) => {
       fetchAPIAuth("/user/role", cookies).then((apiRoles) => {
         if (apiRoles.error) return;
         setRoles(apiRoles.data);
+
+        if (actionAfterFech) actionAfterFech({ user });
       });
     });
   }
@@ -65,7 +67,7 @@ export const UserUse = (cookies) => {
 
   if (cookies !== undefined && user.cookies !== cookies) {
     updateUser(cookies);
-  }
+  } else if (actionAfterFech) actionAfterFech({ user });
 
   return {
     user,

@@ -232,7 +232,7 @@ const GestionTicket = ({
   }
 
   async function getUrlSTL(id) {
-    if (process.env.IS_TEST_MODE)
+    if (process.env.IS_TEST_MODE === "true")
       return setUrlStl(
         "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
       );

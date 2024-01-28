@@ -54,7 +54,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
         draggable: true,
         progress: undefined,
       });
-    } else if (process.env.IS_TEST_MODE) {
+    } else if (process.env.IS_TEST_MODE === "true") {
       //Used for e2e test
       toast.success("Le commentaire du fichier a été enregistré.", {
         position: "top-right",
@@ -73,7 +73,7 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
   }
 
   async function getUrlSTL(id) {
-    if (process.env.IS_TEST_MODE)
+    if (process.env.IS_TEST_MODE === "true")
       return setUrlStl(
         "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
       );

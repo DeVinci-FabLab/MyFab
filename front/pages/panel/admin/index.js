@@ -110,43 +110,37 @@ export default function Admin({ authorizations }) {
         event={[{ name: "event-reload-tickets", action: update }]}
         userId={user.id}
       />
-      {authorizations.myFabAgent ? (
-        <LayoutPanel
-          authorizations={authorizations}
-          titleMenu="Gestion des demandes"
-        >
-          <Seo title={"Administration"} />
-          <NavbarAdmin />
-          <div className="md:py-8 md:px-6">
-            <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
-              <h2 className="text-2xl font-bold text-white">
-                Bonjour, {user.firstName} 👋{" "}
-              </h2>
-              <h3 className="text-md font-medium text-white">
-                {ticketResult.length === 0
-                  ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
-                  : `Il y a ${ticketResult.length} impression${
-                      ticketResult.length > 1 ? "s" : ""
-                    } à traiter. N'hésite pas à
+      <LayoutPanel
+        authorizations={authorizations}
+        titleMenu={"Gestion des demandes"}
+      >
+        <Seo title={"Administration"} />
+        <NavbarAdmin />
+        <div className="md:py-8 md:px-6">
+          <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
+            <h2 className="text-2xl font-bold text-white">
+              Bonjour, {user.firstName} 👋{" "}
+            </h2>
+            <h3 className="text-md font-medium text-white">
+              {ticketResult.length === 0
+                ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
+                : `Il y a ${ticketResult.length} impression${
+                    ticketResult.length > 1 ? "s" : ""
+                  } à traiter. N'hésite pas à
                 t'en occuper !`}
-              </h3>
-            </div>
+            </h3>
           </div>
-          <OverviewAdmin
-            tickets={ticketResult}
-            maxPage={maxPage}
-            actualPage={actualPage}
-            nextPrevPage={nextPrevPage}
-            collumnState={collumnState}
-            changeCollumnState={changeCollumnState}
-            darkMode={darkMode}
-          />
-        </LayoutPanel>
-      ) : (
-        <div>
-          <Error />
         </div>
-      )}
+        <OverviewAdmin
+          tickets={ticketResult}
+          maxPage={maxPage}
+          actualPage={actualPage}
+          nextPrevPage={nextPrevPage}
+          collumnState={collumnState}
+          changeCollumnState={changeCollumnState}
+          darkMode={darkMode}
+        />
+      </LayoutPanel>
     </div>
   );
 }
@@ -163,6 +157,16 @@ export async function getServerSideProps({ req }) {
       redirect: {
         permanent: false,
         destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
+  if (authorizations.status === 200 && !authorizations.data.myFabAgent) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/404",
       },
       props: {},
     };

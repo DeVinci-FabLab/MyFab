@@ -28,9 +28,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function LayoutPanel({ children, authorizations, titleMenu }) {
-  const jwt = getCookie("jwt");
-  const { user, setUser, darkMode, setDarkMode, roles } = UserUse(jwt);
-
   const router = useRouter();
   const pn = router.pathname;
   if (!authorizations) authorizations = {};
@@ -38,7 +35,24 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
   const [schools, setSchools] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState(0);
   const [selectedYear, setSelectedYear] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [version] = useState(process.env.VERSION);
+
+  const jwt = getCookie("jwt");
+  const { user, setUser, darkMode, setDarkMode, roles } = UserUse(
+    jwt,
+    ({ user }) => {
+      if (user.id !== 0 && !user.acceptedRule) {
+        const url = router.asPath;
+        const encodedUrl = encodeURIComponent(url);
+        router.push("/rules?from=" + encodedUrl);
+      } else if (user.id !== 0 && !user.schoolValid) {
+        fetchAPIAuth("/school/").then((school) => {
+          setSchools(school.data);
+        });
+      }
+    }
+  );
 
   //name = le nom qui est affiché
   //href = le lien du bouton
@@ -172,23 +186,6 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       });
     }
   }
-
-  useEffect(function () {
-    // Get list of valid school if user school is not specified
-    if (!user.schoolValid) {
-      fetchAPIAuth("/school/").then((school) => {
-        setSchools(school.data);
-      });
-    }
-    if (roles.length == 0 && pn.split("/")[2] == "admin") {
-      router.push("/404");
-    }
-  }, []);
-  if (roles.length == 0 && pn.split("/")[2] == "admin") {
-    return "";
-  }
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const name = user.firstName;
   const surname = user.lastName;
@@ -394,21 +391,23 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                         if (item.current) {
                           return (
                             <a
-                              key={`nav-large-${index}`}
+                              key={`nav-small-${index}`}
                               className={`cursor-pointer`}
                               onClick={() => clickCurrent()}
                             >
                               <ButtonLayoutPanel
                                 item={item}
+                                suffix={"small"}
                                 darkMode={darkMode}
                               />
                             </a>
                           );
                         } else {
                           return (
-                            <Link key={`nav-large-${index}`} href={item.href}>
+                            <Link key={`nav-small-${index}`} href={item.href}>
                               <ButtonLayoutPanel
                                 item={item}
+                                suffix={"small"}
                                 darkMode={darkMode}
                               />
                             </Link>
@@ -606,13 +605,21 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                           className={`cursor-pointer`}
                           onClick={() => clickCurrent()}
                         >
-                          <ButtonLayoutPanel item={item} darkMode={darkMode} />
+                          <ButtonLayoutPanel
+                            item={item}
+                            suffix={"large"}
+                            darkMode={darkMode}
+                          />
                         </a>
                       );
                     } else {
                       return (
                         <Link key={`nav-large-${index}`} href={item.href}>
-                          <ButtonLayoutPanel item={item} darkMode={darkMode} />
+                          <ButtonLayoutPanel
+                            item={item}
+                            suffix={"large"}
+                            darkMode={darkMode}
+                          />
                         </Link>
                       );
                     }

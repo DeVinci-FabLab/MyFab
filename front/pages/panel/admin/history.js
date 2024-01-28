@@ -118,7 +118,7 @@ export default function OverviewAdmin({ authorizations }) {
         <div>
           <LayoutPanel
             authorizations={authorizations}
-            titleMenu="Gestion des demandes"
+            titleMenu={"Gestion des demandes"}
           >
             <Seo title={"Historique"} />
 
