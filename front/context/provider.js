@@ -44,8 +44,8 @@ export const UserUse = (cookies, actionAfterFech) => {
     fetchAPIAuth("/user/me", cookies).then((apiUser) => {
       if (apiUser.error) return;
       apiUser.data.cookies = cookies;
-      setDarkMode(user.darkMode);
       setUser(apiUser.data);
+      setDarkMode(apiUser.data.darkMode);
 
       fetchAPIAuth("/user/role", cookies).then((apiRoles) => {
         if (apiRoles.error) return;

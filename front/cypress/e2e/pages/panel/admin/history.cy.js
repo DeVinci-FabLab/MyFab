@@ -12,10 +12,7 @@ describe("Page panel/admin/history", () => {
       }
     );
 
-    cy.location("pathname").should(
-      "eq",
-      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
-    );
+    cy.location("pathname").should("eq", Cypress.env().BASE_PATH + "/auth");
   });
 
   it("User is not allowed", () => {
