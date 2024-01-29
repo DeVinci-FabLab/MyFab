@@ -1,5 +1,4 @@
 export function mock(path, jwt, options) {
-  console.log(process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0);
   switch (jwt) {
     case "admin":
       return {

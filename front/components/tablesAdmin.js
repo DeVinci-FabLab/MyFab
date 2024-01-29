@@ -209,7 +209,7 @@ export default function TablesAdmin({
           <button
             className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 text-gray-800 ${
               darkMode
-                ? "bg-gray-200 hover:bg-gray-100"
+                ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
             onClick={() => nextPrevPage(-1)}
@@ -228,7 +228,7 @@ export default function TablesAdmin({
           <button
             className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 text-gray-800 ${
               darkMode
-                ? "bg-gray-200 hover:bg-gray-100"
+                ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
             onClick={() => nextPrevPage(1)}
