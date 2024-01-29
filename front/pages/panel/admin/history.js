@@ -7,7 +7,6 @@ import Error from "../../404";
 import Seo from "../../../components/seo";
 import TablesAdmin from "../../../components/tablesAdmin";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
-import { isUserConnected } from "../../../lib/function";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
@@ -57,8 +56,7 @@ export default function OverviewAdmin({ authorizations }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked])
-      newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -109,17 +107,10 @@ export default function OverviewAdmin({ authorizations }) {
 
   return (
     <div>
-      <WebSocket
-        realodPage={realodPage}
-        event={[{ name: "event-reload-tickets", action: update }]}
-        userId={user.id}
-      />
+      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-tickets", action: update }]} userId={user.id} />
       {authorizations.myFabAgent ? (
         <div>
-          <LayoutPanel
-            authorizations={authorizations}
-            titleMenu={"Gestion des demandes"}
-          >
+          <LayoutPanel authorizations={authorizations} titleMenu={"Gestion des demandes"}>
             <Seo title={"Historique"} />
 
             <NavbarAdmin darkMode={darkMode} />
@@ -136,10 +127,7 @@ export default function OverviewAdmin({ authorizations }) {
                     >
                       <div className="mb-3 grow">
                         <div className="space-x-2">
-                          <form
-                            onSubmit={handleSubmit}
-                            className="relative grow"
-                          >
+                          <form onSubmit={handleSubmit} className="relative grow">
                             <div
                               className={`absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l ${
                                 darkMode ? "text-gray-400" : "text-gray-500"
@@ -163,7 +151,7 @@ export default function OverviewAdmin({ authorizations }) {
                                 onChange={(e) => {
                                   setInputValue(e.target.value);
                                 }}
-                                className={`filterInput block border pr-3 py-2 leading-6 w-full rounded focus:ring focus:ring-opacity-50 pl-10 mr-2  ${
+                                className={`filterInput block border pr-3 py-2 leading-6 w-full rounded focus:ring focus:ring-opacity-50 pl-10 mr-2 ${
                                   darkMode
                                     ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
                                     : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
@@ -210,9 +198,7 @@ export default function OverviewAdmin({ authorizations }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const authorizations = cookies.jwt
-    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
-    : null;
+  const authorizations = cookies.jwt ? await fetchAPIAuth("/user/authorization/", cookies.jwt) : null;
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);
