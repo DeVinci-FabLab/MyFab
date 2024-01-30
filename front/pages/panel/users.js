@@ -1,4 +1,7 @@
-import { InformationCircleIcon, ChevronDownIcon } from "@heroicons/react/outline";
+import {
+  InformationCircleIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/outline";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import LayoutPanel from "../../components/layoutPanel";
@@ -84,15 +87,18 @@ export default function Settings({ authorizations, rolesList }) {
       setMaxPage(responseGetUsers.data.maxPage);
       setUsersListResult(responseGetUsers.data.values);
     } else {
-      toast.error("Une erreur est survenue lors du chargement des utilisateurs.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(
+        "Une erreur est survenue lors du chargement des utilisateurs.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
   }
 
@@ -106,7 +112,8 @@ export default function Settings({ authorizations, rolesList }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked])
+      newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -140,9 +147,16 @@ export default function Settings({ authorizations, rolesList }) {
 
   return (
     <div>
-      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-users", action: update }]} userId={me.id} />
+      <WebSocket
+        realodPage={realodPage}
+        event={[{ name: "event-reload-users", action: update }]}
+        userId={me.id}
+      />
       {authorizations.viewUsers ? (
-        <LayoutPanel authorizations={authorizations} titleMenu="Gestion des utilisateurs">
+        <LayoutPanel
+          authorizations={authorizations}
+          titleMenu="Gestion des utilisateurs"
+        >
           <Seo title={"Paramètres administrateurs"} />
           <section className="">
             <div className="container px-4 mx-auto">
@@ -201,13 +215,19 @@ export default function Settings({ authorizations, rolesList }) {
                                     <div className="w-2/12 flex items-center">
                                       <>
                                         <Disclosure.Button className="roles-list-button text-left w-full flex justify-between items-start px-4">
-                                          <h3 className={`text-xl font-bold ${darkMode ? "text-gray-200" : ""}`}>
+                                          <h3
+                                            className={`text-xl font-bold ${
+                                              darkMode ? "text-gray-200" : ""
+                                            }`}
+                                          >
                                             Roles
                                           </h3>
                                           <span className="ml-6 h-7 flex items-center">
                                             <ChevronDownIcon
                                               className={classNames(
-                                                open ? "-rotate-180" : "rotate-0",
+                                                open
+                                                  ? "-rotate-180"
+                                                  : "rotate-0",
                                                 "h-6 w-6 transform duration-300 text-gray-400"
                                               )}
                                               aria-hidden="true"
@@ -239,14 +259,17 @@ export default function Settings({ authorizations, rolesList }) {
                                               <p
                                                 className="text-center bg-gray-200"
                                                 style={{
-                                                  backgroundColor: "#" + role.color,
+                                                  backgroundColor:
+                                                    "#" + role.color,
                                                 }}
                                               >
                                                 {role.name}
                                               </p>
                                               <p
                                                 className={`role-description-p p-2 text-justify ${
-                                                  darkMode ? "text-gray-200" : ""
+                                                  darkMode
+                                                    ? "text-gray-200"
+                                                    : ""
                                                 }`}
                                               >
                                                 {role.description}
@@ -280,7 +303,11 @@ export default function Settings({ authorizations, rolesList }) {
             </div>
           </section>
           <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpen}>
+            <Dialog
+              as="div"
+              className="fixed z-10 inset-0 overflow-y-auto"
+              onClose={setOpen}
+            >
               <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <Transition.Child
                   as={Fragment}
@@ -295,7 +322,10 @@ export default function Settings({ authorizations, rolesList }) {
                 </Transition.Child>
 
                 {/* This element is to trick the browser into centering the modal contents. */}
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+                <span
+                  className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                  aria-hidden="true"
+                >
                   &#8203;
                 </span>
                 <Transition.Child
@@ -319,17 +349,22 @@ export default function Settings({ authorizations, rolesList }) {
                         }`}
                       >
                         <InformationCircleIcon
-                          className={`h-6 w-6 ${darkMode ? "text-blue-800" : "text-blue-600"}`}
+                          className={`h-6 w-6 ${
+                            darkMode ? "text-blue-800" : "text-blue-600"
+                          }`}
                           aria-hidden="true"
                         />
                       </div>
                       <div className="mt-3 text-center sm:mt-5">
                         <Dialog.Title
                           as="h3"
-                          className={`text-lg leading-6 font-medium ${darkMode ? "text-gray-200" : "text-gray-900"}`}
+                          className={`text-lg leading-6 font-medium ${
+                            darkMode ? "text-gray-200" : "text-gray-900"
+                          }`}
                         >
                           <p>
-                            Utilisateur <strong>#{setZero(data.id)}</strong>: {data.firstName} {data.lastName}
+                            Utilisateur <strong>#{setZero(data.id)}</strong>:{" "}
+                            {data.firstName} {data.lastName}
                           </p>
                           <div>{data.title ? data.title : "Ancien compte"}</div>
                           <div>
@@ -347,7 +382,9 @@ export default function Settings({ authorizations, rolesList }) {
                                     className="user-role inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
                                     style={{
                                       backgroundColor: "#" + r.color,
-                                      paddingRight: buttonAvailable ? "" : "8px",
+                                      paddingRight: buttonAvailable
+                                        ? ""
+                                        : "8px",
                                     }}
                                   >
                                     {r.name}
@@ -355,24 +392,35 @@ export default function Settings({ authorizations, rolesList }) {
                                       <button
                                         onClick={async () => {
                                           setUserRole({
-                                            data: userRole.data.filter((e) => e != r),
+                                            data: userRole.data.filter(
+                                              (e) => e != r
+                                            ),
                                           });
                                           var array = allRole;
                                           array.push(r);
                                           setAllRole(array);
 
-                                          const responseDeleteUserRole = await fetchAPIAuth({
-                                            method: "DELETE",
-                                            headers: {
-                                              Accept: "application/json",
-                                              "Content-Type": "application/json",
-                                              dvflCookie: getCookie("jwt"),
-                                            },
+                                          const responseDeleteUserRole =
+                                            await fetchAPIAuth({
+                                              method: "DELETE",
+                                              headers: {
+                                                Accept: "application/json",
+                                                "Content-Type":
+                                                  "application/json",
+                                                dvflCookie: getCookie("jwt"),
+                                              },
 
-                                            url: process.env.API + "/api/user/" + data.id + "/role/" + r.id,
-                                          });
+                                              url:
+                                                process.env.API +
+                                                "/api/user/" +
+                                                data.id +
+                                                "/role/" +
+                                                r.id,
+                                            });
 
-                                          if (responseDeleteUserRole.status == 200) {
+                                          if (
+                                            responseDeleteUserRole.status == 200
+                                          ) {
                                             toast.success(
                                               "Le rôle " +
                                                 r.name +
@@ -389,23 +437,37 @@ export default function Settings({ authorizations, rolesList }) {
                                               }
                                             );
                                           } else {
-                                            toast.error("Une erreur est survenue. Impossible de supprimer le rôle", {
-                                              position: "top-right",
-                                              autoClose: 3000,
-                                              hideProgressBar: true,
-                                              closeOnClick: true,
-                                              pauseOnHover: true,
-                                              draggable: true,
-                                              progress: undefined,
-                                            });
+                                            toast.error(
+                                              "Une erreur est survenue. Impossible de supprimer le rôle",
+                                              {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: true,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                              }
+                                            );
                                           }
                                         }}
                                         type="button"
                                         className="remove-role-button flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
                                       >
-                                        <span className="sr-only">Remove small option</span>
-                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                          <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                        <span className="sr-only">
+                                          Remove small option
+                                        </span>
+                                        <svg
+                                          className="h-2 w-2"
+                                          stroke="currentColor"
+                                          fill="none"
+                                          viewBox="0 0 8 8"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeWidth="1.5"
+                                            d="M1 1l6 6m0-6L1 7"
+                                          />
                                         </svg>
                                       </button>
                                     ) : (
@@ -425,14 +487,18 @@ export default function Settings({ authorizations, rolesList }) {
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                                     <label
                                       className={`block text-sm font-medium text-gray-700 sm:pt-1 ${
-                                        darkMode ? "text-gray-200" : "text-gray-900"
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
                                       }`}
                                     >
                                       Prénom
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                                       <p
-                                        className={`text-left self-end justify-end ${darkMode ? "text-gray-200" : ""}`}
+                                        className={`text-left self-end justify-end ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
                                       >
                                         {data.firstName}
                                       </p>
@@ -442,14 +508,18 @@ export default function Settings({ authorizations, rolesList }) {
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                                     <label
                                       className={`block text-sm font-medium text-gray-700 sm:pt-1 ${
-                                        darkMode ? "text-gray-200" : "text-gray-900"
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
                                       }`}
                                     >
                                       Nom
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                                       <p
-                                        className={`text-left self-end justify-end ${darkMode ? "text-gray-200" : ""}`}
+                                        className={`text-left self-end justify-end ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
                                       >
                                         {data.lastName}
                                       </p>
@@ -459,14 +529,18 @@ export default function Settings({ authorizations, rolesList }) {
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                                     <label
                                       className={`block text-sm font-medium text-gray-700 sm:pt-1 ${
-                                        darkMode ? "text-gray-200" : "text-gray-900"
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
                                       }`}
                                     >
                                       E-mail
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                                       <p
-                                        className={`text-left self-end justify-end ${darkMode ? "text-gray-200" : ""}`}
+                                        className={`text-left self-end justify-end ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
                                       >
                                         {data.email}
                                       </p>
@@ -476,7 +550,9 @@ export default function Settings({ authorizations, rolesList }) {
                                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                                     <label
                                       className={`block text-sm font-medium text-gray-700 sm:pt-1 ${
-                                        darkMode ? "text-gray-200" : "text-gray-900"
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
                                       }`}
                                     >
                                       Rôle disponible
@@ -495,31 +571,52 @@ export default function Settings({ authorizations, rolesList }) {
                                             className="available-role inline-flex items-center py-0.5 pl-2 pr-0.5 rounded-full text-xs font-medium text-white"
                                             style={{
                                               backgroundColor: "#" + r.color,
-                                              paddingRight: buttonAvailable ? "" : "8px",
+                                              paddingRight: buttonAvailable
+                                                ? ""
+                                                : "8px",
                                             }}
                                           >
                                             {r.name}
                                             {buttonAvailable ? (
                                               <button
                                                 onClick={async () => {
-                                                  setAllRole(allRole.filter((e) => e != r));
+                                                  setAllRole(
+                                                    allRole.filter(
+                                                      (e) => e != r
+                                                    )
+                                                  );
                                                   var array = userRole.data;
                                                   array.push(r);
                                                   setUserRole({ data: array });
 
-                                                  const responseAddUserRole = await fetchAPIAuth({
-                                                    method: "POST",
-                                                    headers: {
-                                                      Accept: "application/json",
-                                                      "Content-Type": "application/json",
-                                                      dvflCookie: getCookie("jwt"),
-                                                    },
+                                                  const responseAddUserRole =
+                                                    await fetchAPIAuth({
+                                                      method: "POST",
+                                                      headers: {
+                                                        Accept:
+                                                          "application/json",
+                                                        "Content-Type":
+                                                          "application/json",
+                                                        dvflCookie:
+                                                          getCookie("jwt"),
+                                                      },
 
-                                                    url: process.env.API + "/api/user/" + data.id + "/role/" + r.id,
-                                                  });
+                                                      url:
+                                                        process.env.API +
+                                                        "/api/user/" +
+                                                        data.id +
+                                                        "/role/" +
+                                                        r.id,
+                                                    });
 
-                                                  if (responseAddUserRole.status == 200) {
-                                                    if (responseAddUserRole.status == 200) {
+                                                  if (
+                                                    responseAddUserRole.status ==
+                                                    200
+                                                  ) {
+                                                    if (
+                                                      responseAddUserRole.status ==
+                                                      200
+                                                    ) {
                                                       toast.success(
                                                         "Le rôle " +
                                                           r.name +
@@ -554,7 +651,9 @@ export default function Settings({ authorizations, rolesList }) {
                                                 type="button"
                                                 className="add-role-button flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white hover:bg-gray-200 hover:text-gray-500 focus:outline-none focus:bg-gray-500 focus:text-white"
                                               >
-                                                <span className="sr-only">Remove small option</span>
+                                                <span className="sr-only">
+                                                  Remove small option
+                                                </span>
                                                 <PlusIcon className="h-2 w-2" />
                                               </button>
                                             ) : (
@@ -600,7 +699,9 @@ export default function Settings({ authorizations, rolesList }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const authorizations = cookies.jwt ? await fetchAPIAuth("/user/authorization/", cookies.jwt) : null;
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
   const rolesList = await fetchAPIAuth("/role", cookies.jwt);
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;

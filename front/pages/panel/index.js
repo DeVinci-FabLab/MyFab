@@ -23,7 +23,7 @@ function classNames(...classes) {
 
 export default function NewPanel({ authorizations, highDemand }) {
   const jwt = getCookie("jwt");
-  const { user, setUser, darkMode, roles } = UserUse(jwt);
+  const { user, darkMode } = UserUse(jwt);
 
   const [maxPage, setMaxPage] = useState(1);
   const [actualPage, setActualPage] = useState(0);

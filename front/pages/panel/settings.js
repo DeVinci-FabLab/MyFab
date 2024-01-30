@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
-import { isUserConnected } from "../../lib/function";
 import { toast } from "react-toastify";
 import { getCookie } from "cookies-next";
 import Seo from "../../components/seo";
@@ -10,7 +9,12 @@ import router from "next/router";
 import WebSocket from "../../components/webSocket";
 import sha256 from "sha256";
 
-export default function Settings({ user, role, authorizations }) {
+import { UserUse } from "../../context/provider";
+
+export default function Settings({ authorizations }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const [newPassword, setNewPassword] = useState(null);
   const [newPasswordConfirm, setNewPasswordConfirm] = useState(null);
   const [actualPassword, setActualPassword] = useState(null);
@@ -91,15 +95,8 @@ export default function Settings({ user, role, authorizations }) {
     }
   }
 
-  const darkMode = user.darkMode;
-
   return (
-    <LayoutPanel
-      user={user}
-      role={role}
-      authorizations={authorizations}
-      titleMenu="Paramètres"
-    >
+    <LayoutPanel authorizations={authorizations} titleMenu="Paramètres">
       <Seo title={"Paramètres"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
       <div className="px-10 py-10" id="status">
@@ -148,7 +145,11 @@ export default function Settings({ user, role, authorizations }) {
                           type="text"
                           name="lastName"
                           id="lastName"
-                          className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md text-gray-500 border-gray-300`}
+                          className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                            darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                          }`}
                           value={user.lastName}
                         />
                       </div>
@@ -168,7 +169,11 @@ export default function Settings({ user, role, authorizations }) {
                           type="text"
                           name="firstName"
                           id="firstName"
-                          className="text-gray-500 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                            darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                          }`}
                           value={user.firstName}
                         />
                       </div>
@@ -188,85 +193,95 @@ export default function Settings({ user, role, authorizations }) {
                           type="email"
                           name="email"
                           id="email"
-                          className="text-gray-500 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                            darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                          }`}
                           value={user.email}
                         />
                       </div>
                     </div>
-                    {user.isMicrosoft == 0 ? (
+                    <div>
+                      <h1
+                        className={`text-lg font-medium leading-6 ${
+                          darkMode ? "text-gray-200" : "text-gray-900"
+                        }`}
+                      >
+                        Changer mon mot de passe
+                      </h1>
                       <div>
-                        <h1
-                          className={`text-lg font-medium leading-6 ${
-                            darkMode ? "text-gray-200" : "text-gray-900"
+                        <label
+                          htmlFor="actualPassword"
+                          className={`block text-sm mt-2 font-medium ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
                           }`}
                         >
-                          Changer mon mot de passe
-                        </h1>
-                        <div>
-                          <label
-                            htmlFor="actualPassword"
-                            className={`block text-sm font-medium ${
-                              darkMode ? "text-gray-300" : "text-gray-700"
+                          Mot de passe actuel
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            onChange={(e) => setActualPassword(e.target.value)}
+                            type="password"
+                            name="actualPassword"
+                            id="actualPassword"
+                            className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                              darkMode
+                                ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                             }`}
-                          >
-                            Mot de passe actuel
-                          </label>
-                          <div className="mt-1">
-                            <input
-                              onChange={(e) =>
-                                setActualPassword(e.target.value)
-                              }
-                              type="password"
-                              name="actualPassword"
-                              id="actualPassword"
-                              className="actual-password-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="password"
-                            className={`block text-sm font-medium ${
-                              darkMode ? "text-white" : "text-gray-700"
-                            }`}
-                          >
-                            Mot de passe
-                          </label>
-                          <div className="mt-1">
-                            <input
-                              onChange={(e) => setNewPassword(e.target.value)}
-                              type="password"
-                              name="password"
-                              id="password"
-                              className="new-password-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="confirmPassword"
-                            className={`block text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-700"
-                            }`}
-                          >
-                            Confirmer votre mot de passe
-                          </label>
-                          <div className="mt-1">
-                            <input
-                              onChange={(e) =>
-                                setNewPasswordConfirm(e.target.value)
-                              }
-                              type="password"
-                              name="confirmPassword"
-                              id="confirmPassword"
-                              className="confirm-new-password-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            />
-                          </div>
+                          />
                         </div>
                       </div>
-                    ) : (
-                      <div></div>
-                    )}
+                      <div>
+                        <label
+                          htmlFor="password"
+                          className={`block text-sm mt-6 font-medium ${
+                            darkMode ? "text-white" : "text-gray-700"
+                          }`}
+                        >
+                          Mot de passe
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            type="password"
+                            name="password"
+                            id="password"
+                            className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                              darkMode
+                                ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                            }`}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="confirmPassword"
+                          className={`block text-sm mt-6 font-medium ${
+                            darkMode ? "text-gray-200" : "text-gray-700"
+                          }`}
+                        >
+                          Confirmer votre mot de passe
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            onChange={(e) =>
+                              setNewPasswordConfirm(e.target.value)
+                            }
+                            type="password"
+                            name="confirmPassword"
+                            id="confirmPassword"
+                            className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                              darkMode
+                                ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 {user.isMicrosoft == 0 ? (
@@ -307,19 +322,23 @@ export default function Settings({ user, role, authorizations }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
     }, // will be passed to the page component as props
   };

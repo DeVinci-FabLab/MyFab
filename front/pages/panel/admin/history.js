@@ -56,7 +56,8 @@ export default function OverviewAdmin({ authorizations }) {
   function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
-    else if (collumnState[collumnClicked]) newCollumnState[collumnClicked] = false;
+    else if (collumnState[collumnClicked])
+      newCollumnState[collumnClicked] = false;
     setCollumnState(newCollumnState);
     update(true, newCollumnState);
   }
@@ -107,10 +108,17 @@ export default function OverviewAdmin({ authorizations }) {
 
   return (
     <div>
-      <WebSocket realodPage={realodPage} event={[{ name: "event-reload-tickets", action: update }]} userId={user.id} />
+      <WebSocket
+        realodPage={realodPage}
+        event={[{ name: "event-reload-tickets", action: update }]}
+        userId={user.id}
+      />
       {authorizations.myFabAgent ? (
         <div>
-          <LayoutPanel authorizations={authorizations} titleMenu={"Gestion des demandes"}>
+          <LayoutPanel
+            authorizations={authorizations}
+            titleMenu={"Gestion des demandes"}
+          >
             <Seo title={"Historique"} />
 
             <NavbarAdmin darkMode={darkMode} />
@@ -127,7 +135,10 @@ export default function OverviewAdmin({ authorizations }) {
                     >
                       <div className="mb-3 grow">
                         <div className="space-x-2">
-                          <form onSubmit={handleSubmit} className="relative grow">
+                          <form
+                            onSubmit={handleSubmit}
+                            className="relative grow"
+                          >
                             <div
                               className={`absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l ${
                                 darkMode ? "text-gray-400" : "text-gray-500"
@@ -198,7 +209,9 @@ export default function OverviewAdmin({ authorizations }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const authorizations = cookies.jwt ? await fetchAPIAuth("/user/authorization/", cookies.jwt) : null;
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);
