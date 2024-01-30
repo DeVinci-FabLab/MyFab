@@ -10,9 +10,14 @@ import router from "next/router";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
 
+import { UserUse } from "../../context/provider";
+
 const percents = (value, total) => Math.round(value / total) * 100;
 
-export default function NewPanel({ user, role, authorizations, projectType }) {
+export default function NewPanel({ authorizations, projectType }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const [showMissingField, setShowMissingField] = useState(false);
   const [status, setStatus] = useState(false);
   const [userClick, setUserClick] = useState(false);
@@ -133,12 +138,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
     e.target.value = "";
   };
 
-  const darkMode = user.darkMode;
-
   return (
     <LayoutPanel
-      user={user}
-      role={role}
       authorizations={authorizations}
       titleMenu="Panel de demande d'impression 3D"
     >
@@ -197,7 +198,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           className={`description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md ${
                             showMissingField && description == ""
                               ? "border-red-300 placeholder-red-300"
-                              : "border-gray-300 placeholder-gray-300"
+                              : darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                           }`}
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
@@ -225,7 +228,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         onChange={(e) => setType(e.target.value)}
                         id="type"
                         name="type"
-                        className={`projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border-gray-300`}
+                        className={`projectType-select mt-1 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md ${
+                          darkMode
+                            ? "text-gray-200 border-gray-600 bg-gray-700 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
                       >
                         {projectType.map((item, index) => {
                           return (
@@ -271,7 +278,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                               ? projectType[type].groupCanBeNull === 1
                               : !isNaN(parseInt(group)))
                               ? "border-red-300 placeholder-red-300"
-                              : "border-gray-300 placeholder-gray-300"
+                              : darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                           }`}
                           placeholder="212"
                         />
@@ -471,22 +480,24 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
-
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
   const projectTypeList = await fetchAPIAuth("/projectType/");
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
       projectType: projectTypeList.data,
     }, // will be passed to the page component as props
