@@ -19,17 +19,17 @@ import { toast } from "react-toastify";
 import { setZero, isUserConnected } from "../../lib/function";
 import { format } from "../../lib/date";
 
+import { UserUse } from "../../context/provider";
+
 const colors = {
   "2274e0": "text-gray-700 bg-gray-200",
   e9d41d: "text-amber-700 bg-amber-200",
   f30b0b: "text-white bg-gradient-to-r from-amber-400 to-red-500",
 };
-const fabColor = ["D51D65", "F5841D", "2CA0BB", "CDCDCD"];
+const fabColor = ["D51D65", "F5841D", "2CA0BB"];
 
 const GestionTicket = ({
   params,
-  user,
-  role,
   ticket,
   file,
   message,
@@ -39,6 +39,9 @@ const GestionTicket = ({
   projectType,
   printers,
 }) => {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
@@ -288,8 +291,6 @@ const GestionTicket = ({
 
   return (
     <LayoutPanel
-      user={user}
-      role={role}
       authorizations={authorizations}
       titleMenu="Panel de demande d'impression 3D"
     >
@@ -307,25 +308,53 @@ const GestionTicket = ({
           <main className="col-span-9">
             <div className="container px-4 mx-auto">
               <div className="flex flex-wrap -mx-4">
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4">
+                <div
+                  className={`shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 ${
+                    darkMode ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
                   <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3
+                      className={`text-lg leading-6 font-medium ${
+                        darkMode ? "text-gray-200" : "text-gray-900"
+                      }`}
+                    >
                       Fichiers et commentaires
                     </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    <p
+                      className={`mt-1 max-w-2xl text-sm text-gray-500 ${
+                        darkMode ? "text-gray-200" : "text-gray-900"
+                      }`}
+                    >
                       Ticket n° {ticket.id}
                     </p>
                   </div>
-                  <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                    <dl className="sm:divide-y sm:divide-gray-200">
+                  <div
+                    className={`border-t px-4 py-5 sm:p-0 ${
+                      darkMode ? "border-gray-700" : "border-gray-200"
+                    }`}
+                  >
+                    <dl
+                      className={`sm:divide-y ${
+                        darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
+                      }`}
+                    >
                       <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500">
+                        <dt
+                          className={`text-sm font-medium ${
+                            darkMode ? "text-gray-200" : "text-gray-500"
+                          }`}
+                        >
                           Fichier(s) stl
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul
                             role="list"
-                            className="border border-gray-200 rounded-md divide-y divide-gray-200"
+                            className={`border rounded-md divide-y ${
+                              darkMode
+                                ? "border-gray-700 divide-gray-700"
+                                : "border-gray-200 divide-gray-200"
+                            }`}
                           >
                             {file.map((r, index) => {
                               return (
@@ -336,7 +365,11 @@ const GestionTicket = ({
                                         className="flex-shrink-0 h-5 w-5 text-gray-400"
                                         aria-hidden="true"
                                       />
-                                      <span className="ml-2 flex-1 w-0 truncate">
+                                      <span
+                                        className={`ml-2 flex-1 w-0 truncate ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
+                                      >
                                         {r.filename}
                                       </span>
                                     </div>
@@ -350,7 +383,11 @@ const GestionTicket = ({
                                         Télécharger
                                       </button>
                                     </div>
-                                    <div className="see-file-button ml-4 flex-shrink-0">
+                                    <div
+                                      className={`see-file-button ml-4 flex-shrink-0 ${
+                                        darkMode ? "text-gray-200" : ""
+                                      }`}
+                                    >
                                       <button
                                         onClick={() => {
                                           changeSTLColor();
@@ -365,8 +402,16 @@ const GestionTicket = ({
                                   </li>
                                   {r.comment != "" ? (
                                     <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm">
-                                      <p className="text-ellipsis overflow-hidden">
-                                        <span className="font-medium">
+                                      <p
+                                        className={`text-ellipsis overflow-hidden ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
+                                      >
+                                        <span
+                                          className={`font-medium ${
+                                            darkMode ? "text-gray-200" : ""
+                                          }`}
+                                        >
                                           Commentaire sur le fichier
                                         </span>
                                         : {r.comment}
@@ -377,8 +422,16 @@ const GestionTicket = ({
                                   )}
                                   {authorizations.myFabAgent ? (
                                     <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm">
-                                      <p className="text-ellipsis overflow-hidden">
-                                        <span className="font-medium">
+                                      <p
+                                        className={`text-ellipsis overflow-hidden ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
+                                      >
+                                        <span
+                                          className={`font-medium ${
+                                            darkMode ? "text-gray-200" : ""
+                                          }`}
+                                        >
                                           Impression lancé sur
                                         </span>
                                         :{" "}
@@ -397,7 +450,11 @@ const GestionTicket = ({
                         </dd>
                       </div>
                       <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500">
+                        <dt
+                          className={`text-sm font-medium ${
+                            darkMode ? "text-gray-200" : "text-gray-500"
+                          }`}
+                        >
                           Commentaires
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
@@ -405,27 +462,45 @@ const GestionTicket = ({
                             {message.map((r, index) => (
                               <li
                                 key={`message-${index}`}
-                                className="relative bg-white py-5 px-4 hover:bg-gray-50"
+                                className={`relative py-5 px-4 ${
+                                  darkMode
+                                    ? "bg-gray-800 hover:bg-gray-700"
+                                    : "bg-white hover:bg-gray-50"
+                                }`}
                               >
                                 <div className="flex justify-between space-x-3">
                                   <div className="min-w-0 flex-1">
-                                    <a
-                                      href="#"
-                                      className="block focus:outline-none"
-                                    >
+                                    <a className="block focus:outline-none">
                                       <span
-                                        className="absolute inset-0 cursor-default"
+                                        className="inset-0 cursor-default"
                                         aria-hidden="true"
                                       />
-                                      <p className="text-sm font-medium text-gray-900 truncate">
+                                      <p
+                                        className={`text-sm font-medium truncate ${
+                                          darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-900"
+                                        }`}
+                                      >
                                         {r.userName}
                                       </p>
-                                      <p className="text-sm text-gray-500 truncate">
+                                      <p
+                                        className={`text-sm truncate ${
+                                          darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-500"
+                                        }`}
+                                      >
                                         {r.subject}
                                       </p>
                                     </a>
                                   </div>
                                   <Moment
+                                    className={`${
+                                      darkMode
+                                        ? "text-gray-200"
+                                        : "text-gray-500"
+                                    }`}
                                     format="Do MMM YYYY à HH:mm"
                                     locale="fr"
                                   >
@@ -433,7 +508,13 @@ const GestionTicket = ({
                                   </Moment>
                                 </div>
                                 <div className="mt-1">
-                                  <p className="line-clamp-2 text-sm text-gray-600">
+                                  <p
+                                    className={`line-clamp-2 text-sm ${
+                                      darkMode
+                                        ? "text-gray-300"
+                                        : "text-gray-600"
+                                    }`}
+                                  >
                                     {r.content}
                                   </p>
                                 </div>
@@ -445,7 +526,11 @@ const GestionTicket = ({
                                 name="comment"
                                 rows={3}
                                 onChange={(e) => setComment(e.target.value)}
-                                className="chat-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                                className={`chat-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
+                                  darkMode
+                                    ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                }`}
                                 defaultValue={""}
                               />
                               <button
@@ -457,7 +542,11 @@ const GestionTicket = ({
                               >
                                 Envoyer le message
                               </button>
-                              <p className="mt-2 text-sm text-gray-500">
+                              <p
+                                className={`mt-2 text-sm ${
+                                  darkMode ? "text-gray-200" : "text-gray-500"
+                                }`}
+                              >
                                 Vous pouvez communiquer avec les membres du
                                 FabLab via ce formulaire.
                               </p>
@@ -470,25 +559,57 @@ const GestionTicket = ({
                 </div>
 
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
-                  <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                  <div
+                    className={`shadow overflow-hidden sm:rounded-lg ${
+                      darkMode ? "bg-gray-800" : "bg-white"
+                    }`}
+                  >
                     <div className="px-4 py-5 sm:px-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      <h3
+                        className={`text-lg leading-6 font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-900"
+                        }`}
+                      >
                         Détails de la demande d'impression
                       </h3>
-                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                      <p
+                        className={`mt-1 max-w-2xl text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Ticket n° {ticket.id}
                       </p>
-                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                      <p
+                        className={`mt-1 max-w-2xl text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Créé le {format(ticket.creationDate, "frAt")}
                       </p>
                     </div>
-                    <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                      <dl className="sm:divide-y sm:divide-gray-200">
+                    <div
+                      className={`border-t px-4 py-5 sm:p-0 ${
+                        darkMode ? "border-gray-700" : "border-gray-200"
+                      }`}
+                    >
+                      <dl
+                        className={`sm:divide-y ${
+                          darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
+                        }`}
+                      >
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Utilisateur
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-gray-50" : "text-gray-900"
+                            }`}
+                          >
                             <div>
                               {ticket.userFirstName +
                                 " " +
@@ -498,13 +619,21 @@ const GestionTicket = ({
                                 )
                                   .toString()
                                   .toUpperCase()}
-                              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                              <p
+                                className={`mt-1 max-w-2xl text-sm ${
+                                  darkMode ? "text-gray-200" : "text-gray-500"
+                                }`}
+                              >
                                 {ticket.title || "Ancien compte"}
                               </p>
                             </div>
                             {authorizations.myFabAgent ? (
                               <button
-                                className="user-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className={`user-button font-bold py-2 px-4 rounded ${
+                                  darkMode
+                                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-gray-200"
+                                    : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600"
+                                }`}
                                 onClick={() => {
                                   setOpenUser(true);
                                 }}
@@ -517,7 +646,11 @@ const GestionTicket = ({
                           </dd>
 
                           {authorizations.myFabAgent ? (
-                            <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
+                            <dd
+                              className={`mt-1 text-sm sm:mt-0 sm:col-span-3 flex justify-between ${
+                                darkMode ? "text-gray-300" : "text-gray-400"
+                              }`}
+                            >
                               <div>
                                 Cet utilisateur a {ticket.ticketCountUser}{" "}
                                 ticket{ticket.ticketCountUser > 1 ? "s" : ""}{" "}
@@ -530,17 +663,29 @@ const GestionTicket = ({
                           )}
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Numéro de groupe
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-gray-200" : "text-gray-900"
+                            }`}
+                          >
                             {ticket.groupNumber
                               ? ticket.groupNumber
                               : "Ce projet n'est pas en groupe"}
                           </dd>
 
                           {authorizations.myFabAgent && ticket.groupNumber ? (
-                            <dd className="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-3 flex justify-between">
+                            <dd
+                              className={`mt-1 text-sm sm:mt-0 sm:col-span-3 flex justify-between ${
+                                darkMode ? "text-gray-300" : "text-gray-400"
+                              }`}
+                            >
                               <div>
                                 Ce groupe a {ticket.ticketCountGroup} ticket
                                 {ticket.ticketCountGroup > 1 ? "s" : ""} réalisé
@@ -553,14 +698,22 @@ const GestionTicket = ({
                           )}
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Type
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>{ticket.projectType}</div>
                             {authorizations.myFabAgent ? (
                               <button
-                                className="change-type-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className={`change-type-button font-bold py-2 px-4 rounded ${
+                                  darkMode
+                                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-gray-200"
+                                    : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600"
+                                }`}
                                 onClick={() => {
                                   setparamType("projectType");
                                   setOpenStatus(true);
@@ -574,14 +727,22 @@ const GestionTicket = ({
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                          <dt
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-gray-200" : "text-gray-500"
+                            }`}
+                          >
                             Status
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
                             <div>{ticket.statusName}</div>
                             {authorizations.myFabAgent && !ticket.isCancel ? (
                               <button
-                                className="change-status-button bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600 font-bold py-2 px-4 rounded"
+                                className={`change-status-button font-bold py-2 px-4 rounded ${
+                                  darkMode
+                                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-gray-200"
+                                    : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600"
+                                }`}
                                 onClick={() => {
                                   setparamType("status");
                                   setOpenStatus(true);
@@ -609,7 +770,11 @@ const GestionTicket = ({
                         </div>
                         {authorizations.myFabAgent ? (
                           <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
+                            <dt
+                              className={`text-sm font-medium ${
+                                darkMode ? "text-gray-200" : "text-gray-500"
+                              }`}
+                            >
                               Priorité
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
@@ -670,12 +835,24 @@ const GestionTicket = ({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6">
+              <div
+                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6 ${
+                  darkMode ? "bg-gray-600" : "bg-white"
+                }`}
+              >
                 <div>
-                  <p className="text-center font-medium">
+                  <p
+                    className={`text-center font-medium ${
+                      darkMode ? "text-gray-100" : ""
+                    }`}
+                  >
                     Aperçu du fichier STL:
                   </p>
-                  <p className="text-sm text-center text-gray-500">
+                  <p
+                    className={`text-sm text-center ${
+                      darkMode ? "text-gray-200" : "text-gray-500"
+                    }`}
+                  >
                     {ticketFile.filename}
                   </p>
                   <center>
@@ -699,7 +876,11 @@ const GestionTicket = ({
 
                     {authorizations.myFabAgent ? (
                       <div>
-                        <p className="text-center font-medium">
+                        <p
+                          className={`text-center font-medium ${
+                            darkMode ? "text-gray-100" : ""
+                          }`}
+                        >
                           Commentaire et imprimante:
                         </p>
                         <div className="flex flex-wrap -mx-4">
@@ -720,7 +901,11 @@ const GestionTicket = ({
                                   setTicketFile(ticketFile);
                                 }
                               }}
-                              className="comment-file-textarea mt-5 w-full shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                              className={`comment-file-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
+                                darkMode
+                                  ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                  : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                              }`}
                               defaultValue={ticketFile.comment}
                             />
                           </div>
@@ -737,7 +922,11 @@ const GestionTicket = ({
                               }}
                               id="type"
                               name="type"
-                              className="printer-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                              className={`printer-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
+                                darkMode
+                                  ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                                  : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                              }`}
                             >
                               <option
                                 value={0}
@@ -924,7 +1113,11 @@ const GestionTicket = ({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6">
+              <div
+                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
+                  darkMode ? "bg-gray-600" : "bg-white"
+                }`}
+              >
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                     <ExclamationIcon
@@ -935,7 +1128,9 @@ const GestionTicket = ({
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title
                       as="h3"
-                      className="text-lg leading-6 font-medium text-gray-900"
+                      className={`text-lg leading-6 font-medium ${
+                        darkMode ? "text-gray-200" : "text-gray-900"
+                      }`}
                     >
                       {paramType === "cancel" ? (
                         <p>Annulation de la demande</p>
@@ -951,7 +1146,9 @@ const GestionTicket = ({
                     </Dialog.Title>
                     {paramType === "cancel" ? (
                       <div>
-                        <p className="pt-4">
+                        <p
+                          className={`pt-4 ${darkMode ? "text-gray-200" : ""}`}
+                        >
                           Attention, vous allez annuler la demande{" "}
                           <strong>#{ticket.id}</strong>
                         </p>
@@ -962,7 +1159,11 @@ const GestionTicket = ({
                           onChange={(e) => setNewParam(e.target.value)}
                           id="type"
                           name="type"
-                          className="statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                          className={`statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none sm:text-sm rounded-md cursor-pointer ${
+                            darkMode
+                              ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                          }`}
                           defaultValue={
                             paramType === "status"
                               ? ticket.idStatus
@@ -997,7 +1198,11 @@ const GestionTicket = ({
                         Annuler la demande
                       </button>
                       <button
-                        className="back-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                        className={`back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
+                          darkMode
+                            ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                            : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
+                        }`}
                         onClick={() => setOpenStatus(false)}
                       >
                         Retour
@@ -1018,7 +1223,11 @@ const GestionTicket = ({
                     </button>
                     <button
                       type="button"
-                      className="cancel-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                      className={`cancel-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm ${
+                        darkMode
+                          ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                          : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
+                      }`}
                       onClick={() => setOpenStatus(false)}
                     >
                       Annuler
