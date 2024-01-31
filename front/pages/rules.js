@@ -75,14 +75,24 @@ export default function Rules({ userNeedToAccept, darkMode }) {
   return (
     <div className={`flex h-screen ${darkMode ? "bg-gray-800" : "bg-gray-50"}`}>
       <div className="max-w-3xl m-auto text-center space-y-3 ">
-        <h1 className={`font-semibold leading-6 text-xl ${darkMode ? "text-gray-200" : ""}`}>
+        <h1
+          className={`font-semibold leading-6 text-xl ${
+            darkMode ? "text-gray-200" : ""
+          }`}
+        >
           Avant d'accéder à MyFab, vous devez accepter notre règlement.
         </h1>
-        <p className={`font-light text-md ${darkMode ? "text-gray-200" : "text-gray-500"}`}>
-          Les présentes conditions générales d'utilisation (dites « CGU ») ont pour objet l'encadrement juridique des
-          modalités de mise à disposition du site et des services par le DeVinci FabLab et de définir les conditions
-          d’accès et d’utilisation des services par « l'Utilisateur ». Vous pouvez à tout moment nous contacter à
-          fablab@devinci.fr si vous souhaitez faire valoir vos droits.
+        <p
+          className={`font-light text-md ${
+            darkMode ? "text-gray-200" : "text-gray-500"
+          }`}
+        >
+          Les présentes conditions générales d'utilisation (dites « CGU ») ont
+          pour objet l'encadrement juridique des modalités de mise à disposition
+          du site et des services par le DeVinci FabLab et de définir les
+          conditions d’accès et d’utilisation des services par « l'Utilisateur
+          ». Vous pouvez à tout moment nous contacter à fablab@devinci.fr si
+          vous souhaitez faire valoir vos droits.
         </p>
 
         <div
@@ -96,7 +106,10 @@ export default function Rules({ userNeedToAccept, darkMode }) {
           <div>
             <p className={`pb-4 ${darkMode ? "text-gray-200" : ""}`}>
               L'acceptation des règles a une validité jusqu'au 31 août{" "}
-              {date.getMonth() >= 8 ? date.getFullYear() + 1 : date.getFullYear()}.
+              {date.getMonth() >= 8
+                ? date.getFullYear() + 1
+                : date.getFullYear()}
+              .
             </p>
             <button
               type="button"
