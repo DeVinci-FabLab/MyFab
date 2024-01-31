@@ -34,5 +34,5 @@ module.exports = defineConfig({
       : "false",
     VERSION: require("./package.json").version,
   },
-  videoCompression: process.env.VIDEO_COMPRESSION ? false : 15,
+  video: true,
 });
