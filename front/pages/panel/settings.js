@@ -225,7 +225,7 @@ export default function Settings({ authorizations }) {
                             type="password"
                             name="actualPassword"
                             id="actualPassword"
-                            className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                            className={`actual-password-input shadow-sm block w-full sm:text-sm rounded-md ${
                               darkMode
                                 ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
                                 : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
@@ -248,7 +248,7 @@ export default function Settings({ authorizations }) {
                             type="password"
                             name="password"
                             id="password"
-                            className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                            className={`new-password-input shadow-sm block w-full sm:text-sm rounded-md ${
                               darkMode
                                 ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
                                 : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
@@ -273,7 +273,7 @@ export default function Settings({ authorizations }) {
                             type="password"
                             name="confirmPassword"
                             id="confirmPassword"
-                            className={`shadow-sm block w-full sm:text-sm rounded-md ${
+                            className={`confirm-new-password-input shadow-sm block w-full sm:text-sm rounded-md ${
                               darkMode
                                 ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
                                 : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"

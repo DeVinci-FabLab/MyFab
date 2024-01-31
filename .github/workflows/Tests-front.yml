@@ -32,7 +32,7 @@ jobs:
           install-command: npm install
           build: npm run build
           start: npm run start
-          wait-on: "http://localhost:3000/test"
+          wait-on: "http://localhost:3000"
           working-directory: front
 
   End-to-end-Dark-Mode:
