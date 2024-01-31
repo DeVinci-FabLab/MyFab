@@ -14,9 +14,14 @@ import { toast } from "react-toastify";
 import router from "next/router";
 import WebSocket from "../../components/webSocket";
 
-const fabColor = ["D51D65", "F5841D", "2CA0BB", "CDCDCD"];
+import { UserUse } from "../../context/provider";
 
-export default function NewPanel({ user, role, ticket, file, authorizations }) {
+const fabColor = ["D51D65", "F5841D", "2CA0BB"];
+
+export default function NewPanel({ ticket, file, authorizations }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const [open, setOpen] = useState(false);
   const [ticketFile, setTicketFile] = useState({});
   const [urlStl, setUrlStl] = useState("");
@@ -90,12 +95,8 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
     });
   }
 
-  const darkMode = user.darkMode;
-
   return (
     <LayoutPanel
-      user={user}
-      role={role}
       authorizations={authorizations}
       titleMenu="Récapitulatif de la demande"
     >
@@ -189,7 +190,11 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                             </div>
                             {r.comment != "" ? (
                               <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm mt-2">
-                                <p className="text-ellipsis overflow-hidden">
+                                <p
+                                  className={`text-ellipsis overflow-hidden ${
+                                    darkMode ? "text-gray-100" : ""
+                                  }`}
+                                >
                                   <span className="font-medium">
                                     Commentaire{" "}
                                   </span>
@@ -391,12 +396,24 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6">
+              <div
+                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6 ${
+                  darkMode ? "bg-gray-600" : "bg-white"
+                }`}
+              >
                 <div>
-                  <p className="text-center font-medium">
+                  <p
+                    className={`text-center font-medium ${
+                      darkMode ? "text-gray-100" : ""
+                    }`}
+                  >
                     Aperçu du fichier STL:
                   </p>
-                  <p className="text-sm text-center text-gray-500">
+                  <p
+                    className={`text-sm text-center ${
+                      darkMode ? "text-gray-200" : "text-gray-500"
+                    }`}
+                  >
                     {ticketFile.filename}
                   </p>
                   <center>
@@ -419,7 +436,13 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                     />
 
                     <div>
-                      <p className="text-center font-medium">Commentaire:</p>
+                      <p
+                        className={`text-center font-medium ${
+                          darkMode ? "text-gray-100" : ""
+                        }`}
+                      >
+                        Commentaire:
+                      </p>
                       <textarea
                         id="comment"
                         name="comment"
@@ -428,7 +451,11 @@ export default function NewPanel({ user, role, ticket, file, authorizations }) {
                           ticketFile.comment = e.target.value;
                           setTicketFile(ticketFile);
                         }}
-                        className="comment-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                        className={`comment-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
+                          darkMode
+                            ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                        }`}
                         defaultValue={ticketFile.comment}
                       />
                     </div>
@@ -465,31 +492,30 @@ const defaultTicket = {
 
 export async function getServerSideProps({ req, query }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  const highDemand = cookies.jwt
+    ? await fetchAPIAuth("/ticket/highDemand/", cookies.jwt)
+    : null;
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
   const idTicket = query.id;
   const ticket = await fetchAPIAuth("/ticket/" + idTicket, cookies.jwt);
   const file = await fetchAPIAuth("/ticket/" + idTicket + "/file", cookies.jwt);
 
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
-  if (ticket.error || idTicket == "" || !ticket.data)
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/panel/",
-      },
-      props: {},
-    };
-
   return {
     props: {
-      user: user.data,
-      role: role.data,
       ticket: ticket.data ? ticket.data : defaultTicket,
       file: file.data ? file.data : [],
       authorizations: authorizations.data,
