@@ -104,7 +104,7 @@ export default function Auth() {
 
   async function login(e) {
     e.preventDefault(); // Don't reload page on form submit
-    const expires = new Date(Date.now() + 7200000);
+    const expires = new Date(Date.now() + (!checked ? 7200000 : 31536000000));
     const responseLogin = await fetchAPIAuth({
       method: "POST",
       headers: {
@@ -116,17 +116,12 @@ export default function Auth() {
         email,
         password: sha256(password),
         rememberMe: checked,
-        expires: !checked ? expires : null,
+        expires: expires,
       },
     });
 
     if (responseLogin.status == 200) {
-      setCookies(responseLogin.data.dvflCookie);
-      if (!checked) {
-        setCookie("jwt", responseLogin.data.dvflCookie, { expires });
-      } else {
-        setCookie("jwt", responseLogin.data.dvflCookie);
-      }
+      setCookie("jwt", responseLogin.data.dvflCookie, { expires });
 
       const responseAuth = await fetchAPIAuth({
         method: "GET",
