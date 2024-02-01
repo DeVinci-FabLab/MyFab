@@ -362,7 +362,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none">
+                  <Menu.Items
+                    className={`z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg  ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none ${
+                      user.darkMode ? "bg-gray-600" : "bg-white"
+                    }`}
+                  >
                     <div className="py-1">
                       <Menu.Item>
                         {({ active }) => (
@@ -370,7 +374,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                             onClick={() => router.push("/panel/settings")}
                             className={classNames(
                               active
-                                ? "bg-gray-100 text-gray-900"
+                                ? user.darkMode
+                                  ? "bg-gray-500 text-gray-100"
+                                  : "bg-gray-100 text-gray-900"
+                                : user.darkMode
+                                ? "text-gray-200"
                                 : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
@@ -387,7 +395,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                             }}
                             className={classNames(
                               active
-                                ? "bg-gray-100 text-gray-900"
+                                ? user.darkMode
+                                  ? "bg-gray-500 text-gray-100"
+                                  : "bg-gray-100 text-gray-900"
+                                : user.darkMode
+                                ? "text-gray-200"
                                 : "text-gray-700",
                               "block px-4 py-2 text-sm cursor-pointer"
                             )}
@@ -571,7 +583,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none">
+                <Menu.Items
+                  className={`z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none ${
+                    user.darkMode ? "bg-gray-600" : "bg-white"
+                  }`}
+                >
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
@@ -579,7 +595,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                           onClick={() => router.push("/panel/settings")}
                           className={classNames(
                             active
-                              ? "bg-gray-100 text-gray-900"
+                              ? user.darkMode
+                                ? "bg-gray-500 text-gray-100"
+                                : "bg-gray-100 text-gray-900"
+                              : user.darkMode
+                              ? "text-gray-200"
                               : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
@@ -596,7 +616,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                           }}
                           className={classNames(
                             active
-                              ? "bg-gray-100 text-gray-900"
+                              ? user.darkMode
+                                ? "bg-gray-500 text-gray-100"
+                                : "bg-gray-100 text-gray-900"
+                              : user.darkMode
+                              ? "text-gray-200"
                               : "text-gray-700",
                             "block px-4 py-2 text-sm cursor-pointer"
                           )}
@@ -674,8 +698,8 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <div
-          className={`relative flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:hidden ${
-            darkMode ? "bg-gray-700 border-gray-500" : ""
+          className={`relative flex-shrink-0 flex h-16 border-b border-gray-200 lg:hidden ${
+            darkMode ? "bg-gray-700 border-gray-500" : "bg-white"
           }`}
         >
           <button
@@ -690,76 +714,6 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
             <span className="sr-only">Open sidebar</span>
             <MenuAlt1Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className={`flex-1 flex justify-between px-4 sm:px-6 lg:px-8`}>
-            <div className={`flex-1 flex `}></div>
-            <div className="flex items-center">
-              <Menu as="div" className="ml-3 relative">
-                <div>
-                  <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-                    <span className="sr-only">Open user menu</span>
-                    <div
-                      className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${
-                        darkMode
-                          ? "bg-gray-500 text-gray-100"
-                          : "bg-gray-200 text-gray-500"
-                      }`}
-                    >
-                      {name[0].toString().toUpperCase() +
-                        " " +
-                        surname[0].toString().toUpperCase()}
-                    </div>
-                  </Menu.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="origin-top-right z-50 absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none">
-                    <div className="py-1">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            onClick={() => router.push("/panel/settings")}
-                            className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
-                              "block px-4 py-2 text-sm"
-                            )}
-                          >
-                            <button>Mes paramètres</button>
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            onClick={() => {
-                              logout(user);
-                            }}
-                            href="#"
-                            className={classNames(
-                              active
-                                ? "bg-gray-100 text-gray-900"
-                                : "text-gray-700",
-                              "block px-4 py-2 text-sm"
-                            )}
-                          >
-                            <button>Se déconnecter</button>
-                          </a>
-                        )}
-                      </Menu.Item>
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            </div>
-          </div>
         </div>
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div
@@ -831,25 +785,43 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6">
+                <div
+                  className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
+                    darkMode ? "bg-gray-700" : "bg-white"
+                  }`}
+                >
                   <div className="flex items-center justify-center">
-                    <h1 className="text-3xl font-bold pb-6">
+                    <h1
+                      className={`text-3xl font-bold pb-6 ${
+                        darkMode ? "text-gray-200" : ""
+                      }`}
+                    >
                       Informations à saisir
                     </h1>
                   </div>
                   <div className="flex items-center justify-center sm:flex sm:items-start pb-3">
                     <Dialog.Title
                       as="div"
-                      className="text-lg leading-6 font-medium text-gray-900"
+                      className={`text-lg leading-6 font-medium`}
                     >
-                      <p>Sélectionner votre école</p>
+                      <p
+                        className={`${
+                          darkMode ? "text-gray-200" : "text-gray-900"
+                        }`}
+                      >
+                        Sélectionner votre école
+                      </p>
                       <select
                         onChange={(e) => {
                           setSelectedSchool(e.target.value);
                         }}
                         id="type"
                         name="type"
-                        className="school-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                        className={`school-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
+                          darkMode
+                            ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
                       >
                         <option value={0} defaultValue="">
                           (Sélectionnez votre école)
@@ -870,14 +842,24 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                       as="div"
                       className="text-lg leading-6 font-medium text-gray-900"
                     >
-                      <p>Sélectionner votre année</p>
+                      <p
+                        className={`${
+                          darkMode ? "text-gray-200" : "text-gray-900"
+                        }`}
+                      >
+                        Sélectionner votre année
+                      </p>
                       <select
                         onChange={(e) => {
                           setSelectedYear(e.target.value);
                         }}
                         id="type"
                         name="type"
-                        className="year-select mt-5 block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer"
+                        className={`year-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
+                          darkMode
+                            ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
                       >
                         <option value={0} defaultValue="">
                           (Sélectionnez votre année)
@@ -895,7 +877,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
 
                   <div className="flex items-center justify-center">
                     <button
-                      className="approve-button back-button mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2"
+                      className={`approve-button back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
+                        darkMode
+                          ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                          : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
+                      }`}
                       onClick={() => validSchool()}
                     >
                       Valider
