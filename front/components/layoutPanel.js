@@ -131,8 +131,27 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
     }
   }
 
+  async function toggleDarkMode() {
+    user.darkMode = !user.darkMode;
+    setUser(user);
+    setDarkMode(user.darkMode);
+
+    const responseToggleDarkMode = await fetchAPIAuth({
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: jwt,
+      },
+      url: process.env.API + "/api/user/darkmode/",
+      params: {
+        darkmode: user.darkMode,
+      },
+    });
+    console.log(responseToggleDarkMode);
+  }
+
   async function validSchool() {
-    const cookie = getCookie("jwt");
     let errorMessage = null;
     if (selectedSchool === 0)
       errorMessage = "Vous devez sélectionner une école";
@@ -154,7 +173,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        dvflCookie: cookie,
+        dvflCookie: jwt,
       },
       url: process.env.API + "/api/user/school/",
       data: {
@@ -258,9 +277,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                     value=""
                     className="sr-only peer"
                     onChange={() => {
-                      user.darkMode = !user.darkMode;
-                      setUser(user);
-                      setDarkMode(user.darkMode);
+                      toggleDarkMode();
                     }}
                     checked={user.darkMode}
                   />
@@ -468,9 +485,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                 value=""
                 className="sr-only peer"
                 onChange={() => {
-                  user.darkMode = !user.darkMode;
-                  setUser(user);
-                  setDarkMode(user.darkMode);
+                  toggleDarkMode();
                 }}
                 checked={user.darkMode}
               />
