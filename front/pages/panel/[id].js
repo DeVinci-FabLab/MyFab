@@ -458,7 +458,12 @@ const GestionTicket = ({
                           Commentaires
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                          <ul role="list" className="divide-y divide-gray-200">
+                          <ul
+                            role="list"
+                            className={`divide-y ${
+                              darkMode ? "divide-gray-700" : "divide-gray-200"
+                            }`}
+                          >
                             {message.map((r, index) => (
                               <li
                                 key={`message-${index}`}
@@ -1025,39 +1030,83 @@ const GestionTicket = ({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:p-6">
+              <div
+                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:p-6 ${
+                  darkMode ? "bg-gray-600" : "bg-white"
+                }`}
+              >
                 <div>
-                  <p className="text-center font-medium">
+                  <p
+                    className={`text-center font-medium ${
+                      darkMode ? "text-gray-200" : ""
+                    }`}
+                  >
                     Aperçu de l'utilisateur :
                   </p>
-                  <dl className="sm:divide-y sm:divide-gray-200">
+                  <dl
+                    className={`sm:divide-y ${
+                      darkMode ? "sm:divide-gray-500" : "sm:divide-gray-200"
+                    }`}
+                  >
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
+                      <dt
+                        className={`text-sm font-medium whitespace-nowrap ${
+                          darkMode ? "text-gray-200" : "text-gray-500"
+                        }`}
+                      >
                         Nom et prénom
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      <dd
+                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
                         {ticket.userFirstName +
                           " " +
                           ticket.userLastName.toString().toUpperCase()}
                       </dd>
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
+                      <dt
+                        className={`text-sm font-medium whitespace-nowrap ${
+                          darkMode ? "text-gray-200" : "text-gray-500"
+                        }`}
+                      >
                         Ecole et année
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      <dd
+                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
                         {ticket.title || "Ancien compte"}
                       </dd>
                     </div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
+                      <dt
+                        className={`text-sm font-medium whitespace-nowrap ${
+                          darkMode ? "text-gray-200" : "text-gray-500"
+                        }`}
+                      >
                         Adresse e-mail
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      <dd
+                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
                         {ticket.email}
                       </dd>
-                      <dt className="text-sm font-medium text-gray-500 whitespace-nowrap">
+                      <dt
+                        className={`text-sm font-medium whitespace-nowrap ${
+                          darkMode ? "text-gray-200" : "text-gray-500"
+                        }`}
+                      >
                         Type de projet
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      <dd
+                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
                         {ticket.projectType}
                       </dd>
                     </div>
