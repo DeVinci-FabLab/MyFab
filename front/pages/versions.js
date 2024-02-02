@@ -81,6 +81,19 @@ const versions = [
       "Mise à jour des CGU et création des redirections pour les signer",
     ],
   },
+  ,
+  {
+    version: "1.1.0",
+    date: "02-02-2024",
+    changes: [
+      "Ajout du darkMode",
+      "Certaines données utilisateurs sont sauvegardé dans le navigateur pour diminuer le nombre de requêtes",
+      "Ajout d'une date d'expiration d'un an pour les cookies après avoir cliqué sur 'se souvenir de moi' (les cookies ne seront plus supprimé à la fin de la session)",
+      "Correction d'une erreur avec les valeurs en doublon lors de l'importation des tables sql",
+      "Correction de la requête sql pour la validation automatique des CGU pour les utilisateurs par default",
+      "Diminution du temps de démarrage du conteneur Front-End",
+    ],
+  },
 ];
 
 const versionsToShow = versions.reverse();
@@ -90,15 +103,8 @@ const ProjectVersions = () => {
   const { darkMode } = UserUse(jwt);
   return (
     <div className={` ${darkMode ? "bg-gray-800" : ""}`}>
-      <div
-        className="max-w-3xl mx-auto py-10 text-center space-y-3"
-        style={{ minWidth: "50%" }}
-      >
-        <h1
-          className={`text-3xl md:text-4xl font-extrabold mb-4 ${
-            darkMode ? "text-gray-200" : ""
-          }`}
-        >
+      <div className="max-w-3xl mx-auto py-10 text-center space-y-3" style={{ minWidth: "50%" }}>
+        <h1 className={`text-3xl md:text-4xl font-extrabold mb-4 ${darkMode ? "text-gray-200" : ""}`}>
           Liste des Versions de MyFab
         </h1>
         <ul>
@@ -106,33 +112,17 @@ const ProjectVersions = () => {
             <VersionBlock key={index} version={version}>
               <div className="pb-2">
                 <div className="flex justify-between">
-                  <h2
-                    className={`font-bold text-justify ${
-                      darkMode ? "text-gray-300" : "text-gray-500"
-                    }`}
-                  >
+                  <h2 className={`font-bold text-justify ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                     {version.version}
                   </h2>
-                  <p className={darkMode ? "text-gray-300" : "text-gray-400"}>
-                    {version.date}
-                  </p>
+                  <p className={darkMode ? "text-gray-300" : "text-gray-400"}>{version.date}</p>
                 </div>
                 {version.message && (
-                  <p
-                    className={`text-justify ${
-                      darkMode ? "text-gray-300" : "text-gray-500"
-                    }`}
-                  >
-                    {version.message}
-                  </p>
+                  <p className={`text-justify ${darkMode ? "text-gray-300" : "text-gray-500"}`}>{version.message}</p>
                 )}
                 {version.changes.length !== 0 && (
                   <div
-                    className={`rounded-lg p-4 ${
-                      darkMode
-                        ? "text-gray-300 bg-gray-600"
-                        : "text-gray-500 bg-gray-200"
-                    }`}
+                    className={`rounded-lg p-4 ${darkMode ? "text-gray-300 bg-gray-600" : "text-gray-500 bg-gray-200"}`}
                   >
                     {version.changes.map((change, index) => (
                       <p key={index} className="text-justify">
