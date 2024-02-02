@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { withRouter } from "next/router";
+import { getCookie } from "cookies-next";
+
+import { UserUse } from "../../context/provider";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function NavbarAdmin({ router, role }) {
+function NavbarAdmin({ router }) {
+  const jwt = getCookie("jwt");
+  const { darkMode } = UserUse(jwt);
   const pn = router.pathname;
   const tabs = [
     {
@@ -46,7 +51,11 @@ function NavbarAdmin({ router, role }) {
         </select>
       </div>
       <div className="hidden sm:block">
-        <div className="border-b border-gray-200">
+        <div
+          className={`border-b ${
+            darkMode ? "border-gray-600" : "border-gray-200"
+          }`}
+        >
           <nav className="-mb-px flex space-x-8 px-8" aria-label="Tabs">
             {tabs.map((tab, index) => {
               if (tab.show == true) {
@@ -56,8 +65,12 @@ function NavbarAdmin({ router, role }) {
                       key={tab.name}
                       className={classNames(
                         tab.current
-                          ? "border-indigo-500 text-indigo-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
+                          ? darkMode
+                            ? "border-indigo-300 text-indigo-400"
+                            : "border-indigo-500 text-indigo-600"
+                          : darkMode
+                          ? "border-transparent hover:border-gray-300 text-gray-200 hover:text-gray-100"
+                          : "border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700",
                         "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm " +
                           tab.classNames
                       )}

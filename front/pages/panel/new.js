@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { CubeIcon } from "@heroicons/react/solid";
 import LayoutPanel from "../../components/layoutPanel";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
@@ -11,9 +10,14 @@ import router from "next/router";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
 
+import { UserUse } from "../../context/provider";
+
 const percents = (value, total) => Math.round(value / total) * 100;
 
-export default function NewPanel({ user, role, authorizations, projectType }) {
+export default function NewPanel({ authorizations, projectType }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const [showMissingField, setShowMissingField] = useState(false);
   const [status, setStatus] = useState(false);
   const [userClick, setUserClick] = useState(false);
@@ -136,8 +140,6 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
   return (
     <LayoutPanel
-      user={user}
-      role={role}
       authorizations={authorizations}
       titleMenu="Panel de demande d'impression 3D"
     >
@@ -149,10 +151,18 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3
+                  className={`text-lg font-medium leading-6 ${
+                    darkMode ? "text-gray-200" : "text-gray-900"
+                  }`}
+                >
                   Informations
                 </h3>
-                <p className="mt-1 text-sm text-gray-600">
+                <p
+                  className={`mt-1 text-sm ${
+                    darkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   Ces informations permettront de traiter aux mieux votre
                   impression. Merci de les remplir correctement.
                 </p>
@@ -161,13 +171,19 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
             <div className="mt-5 md:mt-0 md:col-span-2">
               <div onSubmit={handleSubmit}>
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
-                  <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                  <div
+                    className={`px-4 py-5 space-y-6 sm:p-6 ${
+                      darkMode ? "bg-gray-800" : "bg-white"
+                    }`}
+                  >
                     <div>
                       <label
                         htmlFor="about"
                         className={`block text-sm font-medium ${
                           showMissingField && description == ""
                             ? "text-red-500"
+                            : darkMode
+                            ? "text-gray-200"
                             : "text-gray-700"
                         }`}
                       >
@@ -182,12 +198,18 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                           className={`description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md ${
                             showMissingField && description == ""
                               ? "border-red-300 placeholder-red-300"
-                              : "border-gray-300 placeholder-gray-300"
+                              : darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                           }`}
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
-                      <p className={`mt-2 text-sm text-gray-500`}>
+                      <p
+                        className={`mt-2 text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Description détaillée de la demande d'impression du
                         fichier.
                       </p>
@@ -196,7 +218,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     <div>
                       <label
                         htmlFor="type"
-                        className="block text-sm font-medium text-gray-700"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
                       >
                         Type de projet
                       </label>
@@ -204,7 +228,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         onChange={(e) => setType(e.target.value)}
                         id="type"
                         name="type"
-                        className={`projectType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border-gray-300`}
+                        className={`projectType-select mt-1 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md ${
+                          darkMode
+                            ? "text-gray-200 border-gray-600 bg-gray-700 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
                       >
                         {projectType.map((item, index) => {
                           return (
@@ -225,6 +253,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                             ? projectType[type].groupCanBeNull === 1
                             : !isNaN(parseInt(group)))
                             ? "text-red-500"
+                            : darkMode
+                            ? "text-gray-200"
                             : "text-gray-700"
                         }`}
                       >
@@ -248,7 +278,9 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                               ? projectType[type].groupCanBeNull === 1
                               : !isNaN(parseInt(group)))
                               ? "border-red-300 placeholder-red-300"
-                              : "border-gray-300 placeholder-gray-300"
+                              : darkMode
+                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                           }`}
                           placeholder="212"
                         />
@@ -281,6 +313,8 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                         className={`block text-sm font-medium ${
                           showMissingField && file.length < 1
                             ? "text-red-500"
+                            : darkMode
+                            ? "text-gray-200"
                             : "text-gray-700"
                         }`}
                       >
@@ -310,13 +344,23 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                                   ? "text-indigo-700"
                                   : showMissingField && file.length < 1
                                   ? "text-red-500"
+                                  : darkMode
+                                  ? "text-gray-200"
                                   : "text-gray-400"
                               }`}
                             />
-                            <div className="flex text-sm text-gray-600">
+                            <div
+                              className={`flex text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-600"
+                              }`}
+                            >
                               <label
                                 htmlFor="file-upload"
-                                className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                                className={`relative cursor-pointer rounded-md font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 ${
+                                  darkMode
+                                    ? "text-indigo-500 hover:text-indigo-400"
+                                    : "text-indigo-600 hover:text-indigo-500"
+                                }`}
                               >
                                 <span>Choisir un fichier</span>
                                 <input
@@ -332,7 +376,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                                 ou déposez-le
                               </p>
                             </div>
-                            <p className="text-xs text-gray-500">
+                            <p
+                              className={`text-xs ${
+                                darkMode ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
                               STL jusqu'à 20MB
                             </p>
                           </div>
@@ -340,14 +388,14 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                       </div>
 
                       {/* progress bar */}
-                      {file.length > 0 ? (
+                      {file.length && userClick > 0 ? (
                         <div className="flex items-center w-full h-5 bg-indigo-100 rounded-lg overflow-hidden mt-5">
                           <div
                             role="progressbar"
                             aria-valuenow={percent}
                             aria-valuemin={0}
                             aria-valuemax={100}
-                            className="flex items-center justify-center self-stretch transition-all duration-500 ease-out bg-indigo-500 text-white text-sm font-semibold"
+                            className={`flex items-center justify-center self-stretch transition-all duration-500 ease-out bg-indigo-500 text-white text-sm font-semibold`}
                             style={{ width: `${percent}%` }}
                           >
                             {percent}%
@@ -361,7 +409,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                             if (r[0] == null) return null;
                             return (
                               <div key={`file-${index}`} className="block mt-3">
-                                <p className="text-md font-semibold text-gray-700">
+                                <p
+                                  className={`text-md font-semibold ${
+                                    darkMode ? "text-white" : "text-gray-700"
+                                  }`}
+                                >
                                   {r[0].name}
                                 </p>
                                 <button
@@ -373,7 +425,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                                       })
                                     );
                                   }}
-                                  className="mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-5 text-sm rounded border-indigo-200 bg-indigo-200 text-indigo-700 hover:text-indigo-700 hover:bg-indigo-300 hover:border-indigo-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-200 active:border-indigo-200"
+                                  className={`mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-5 text-sm rounded border-indigo-200 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 ${
+                                    darkMode
+                                      ? "text-indigo-800 bg-indigo-300 hover:bg-indigo-400 hover:border-indigo-400 active:bg-indigo-300 active:border-indigo-300"
+                                      : "text-indigo-700 bg-indigo-200 hover:bg-indigo-300 hover:border-indigo-300 active:bg-indigo-200 active:border-indigo-200"
+                                  }`}
                                 >
                                   Supprimer le fichier
                                 </button>
@@ -386,7 +442,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
                     </div>
                   </div>
                 </div>
-                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <div
+                  className={`px-4 py-3 text-right sm:px-6 ${
+                    darkMode ? "bg-gray-800" : "bg-gray-50"
+                  }`}
+                >
                   <button
                     onClick={(e) => {
                       setUserClick(true);
@@ -406,7 +466,11 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
-            <div className="border-t border-gray-200" />
+            <div
+              className={`border-t ${
+                darkMode ? "border-gray-700" : " border-gray-200"
+              }`}
+            />
           </div>
         </div>
       </div>
@@ -416,22 +480,24 @@ export default function NewPanel({ user, role, authorizations, projectType }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
-
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
   const projectTypeList = await fetchAPIAuth("/projectType/");
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
       projectType: projectTypeList.data,
     }, // will be passed to the page component as props

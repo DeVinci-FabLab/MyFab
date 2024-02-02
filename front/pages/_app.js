@@ -11,6 +11,8 @@ import Seo from "../components/seo";
 import Cookie from "../components/cookie";
 import { getCookie } from "cookies-next";
 
+import { Provider } from "../context/provider";
+
 //Binding events.
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -21,13 +23,15 @@ export const GlobalContext = createContext({});
 const MyApp = ({ Component, pageProps }) => {
   return (
     <>
-      <Seo
-        title={"Accueil"}
-        description={"Bienvenue sur le site du Devinci FabLab !"}
-      />
-      <Component {...pageProps}></Component>
-      <ToastContainer />
-      {getCookie("cookie") ? "" : <Cookie />}
+      <Provider>
+        <Seo
+          title={"Accueil"}
+          description={"Bienvenue sur le site du Devinci FabLab !"}
+        />
+        <Component {...pageProps}></Component>
+        <ToastContainer />
+        {getCookie("cookie") ? "" : <Cookie />}
+      </Provider>
     </>
   );
 };

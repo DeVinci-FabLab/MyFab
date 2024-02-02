@@ -17,11 +17,16 @@ import { toast } from "react-toastify";
 import Seo from "../../components/seo";
 import { PlusIcon } from "@heroicons/react/solid";
 
+import { UserUse } from "../../context/provider";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Settings({ role, me, authorizations, rolesList }) {
+export default function Settings({ authorizations, rolesList }) {
+  const jwt = getCookie("jwt");
+  const { user: me, darkMode } = UserUse(jwt);
+
   const [open, setOpen] = useState(false);
   const [data, setData] = useState("");
 
@@ -31,7 +36,7 @@ export default function Settings({ role, me, authorizations, rolesList }) {
   const [collumnState, setCollumnState] = useState({});
   let newActualPage = 0;
   const [usersListResult, setUsersListResult] = useState([]);
-  const [allRole, setAllRole] = useState({ data: [] });
+  const [allRole, setAllRole] = useState([]);
   const [userRole, setUserRole] = useState({ data: [] });
 
   function realodPage() {
@@ -122,16 +127,14 @@ export default function Settings({ role, me, authorizations, rolesList }) {
   async function settingModal(id) {
     const cookie = getCookie("jwt");
 
-    var allRoles = await fetchAPIAuth("/role", cookie);
+    var allRoles = [...rolesList];
     const user = await fetchAPIAuth("/user/" + id, cookie);
     const userRole = await fetchAPIAuth("/user/" + id + "/role", cookie);
 
     for (let i = 0; i < userRole.data.length; i++) {
-      for (let j = 0; j < allRoles.data.length; j++) {
-        if (userRole.data[i].id == allRoles.data[j].id) {
-          allRoles.data = allRoles.data.filter(
-            (e) => e.id != userRole.data[i].id
-          );
+      for (let j = 0; j < allRoles.length; j++) {
+        if (userRole.data[i].id == allRoles[j].id) {
+          allRoles = allRoles.filter((e) => e.id != userRole.data[i].id);
         }
       }
     }
@@ -151,8 +154,6 @@ export default function Settings({ role, me, authorizations, rolesList }) {
       />
       {authorizations.viewUsers ? (
         <LayoutPanel
-          user={me}
-          role={role}
           authorizations={authorizations}
           titleMenu="Gestion des utilisateurs"
         >
@@ -162,7 +163,11 @@ export default function Settings({ role, me, authorizations, rolesList }) {
               <div className="flex flex-wrap -mx-4">
                 {/* Tickets à traiter */}
                 <div className="w-full md:px-6 mt-5 mb-8 lg:mb-0">
-                  <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
+                  <div
+                    className={`flex flex-col rounded shadow-sm bg-white overflow-hidden ${
+                      darkMode ? "bg-gray-800" : ""
+                    }`}
+                  >
                     <div className="mb-3 grow">
                       <div className="space-x-2">
                         <div className="relative grow">
@@ -192,7 +197,11 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                       onChange={(e) => {
                                         setInputValue(e.target.value);
                                       }}
-                                      className="search-input filterInput block border placeholder-gray-400 pr-3 py-2 leading-6 w-full rounded border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 pl-10 mr-2"
+                                      className={`search-input filterInput block border pr-3 py-2 leading-6 w-full rounded focus:ring focus:ring-opacity-50 pl-10 mr-2 ${
+                                        darkMode
+                                          ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                          : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                                      }`}
                                       type="text"
                                       placeholder="Rechercher un étudiant"
                                     />
@@ -206,7 +215,11 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                     <div className="w-2/12 flex items-center">
                                       <>
                                         <Disclosure.Button className="roles-list-button text-left w-full flex justify-between items-start px-4">
-                                          <h3 className="text-xl font-bold">
+                                          <h3
+                                            className={`text-xl font-bold ${
+                                              darkMode ? "text-gray-200" : ""
+                                            }`}
+                                          >
                                             Roles
                                           </h3>
                                           <span className="ml-6 h-7 flex items-center">
@@ -252,7 +265,13 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                               >
                                                 {role.name}
                                               </p>
-                                              <p className="role-description-p p-2 text-justify">
+                                              <p
+                                                className={`role-description-p p-2 text-justify ${
+                                                  darkMode
+                                                    ? "text-gray-200"
+                                                    : ""
+                                                }`}
+                                              >
                                                 {role.description}
                                               </p>
                                             </div>
@@ -277,6 +296,7 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                     nextPrevPage={nextPrevPage}
                     collumnState={collumnState}
                     changeCollumnState={changeCollumnState}
+                    darkMode={darkMode}
                   />
                 </div>
               </div>
@@ -317,18 +337,30 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                   leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                  <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6">
+                  <div
+                    className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full sm:p-6 ${
+                      darkMode ? "bg-gray-600" : "bg-white"
+                    }`}
+                  >
                     <div>
-                      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+                      <div
+                        className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${
+                          darkMode ? "bg-blue-300" : "bg-blue-100"
+                        }`}
+                      >
                         <InformationCircleIcon
-                          className="h-6 w-6 text-blue-600"
+                          className={`h-6 w-6 ${
+                            darkMode ? "text-blue-800" : "text-blue-600"
+                          }`}
                           aria-hidden="true"
                         />
                       </div>
                       <div className="mt-3 text-center sm:mt-5">
                         <Dialog.Title
                           as="h3"
-                          className="text-lg leading-6 font-medium text-gray-900"
+                          className={`text-lg leading-6 font-medium ${
+                            darkMode ? "text-gray-200" : "text-gray-900"
+                          }`}
                         >
                           <p>
                             Utilisateur <strong>#{setZero(data.id)}</strong>:{" "}
@@ -364,9 +396,9 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                               (e) => e != r
                                             ),
                                           });
-                                          var array = allRole.data;
+                                          var array = allRole;
                                           array.push(r);
-                                          setAllRole({ data: array });
+                                          setAllRole(array);
 
                                           const responseDeleteUserRole =
                                             await fetchAPIAuth({
@@ -453,33 +485,63 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                               <div className="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
                                 <div className="space-y-6 sm:space-y-5">
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">
+                                    <label
+                                      className={`block text-sm font-medium sm:pt-1 ${
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
+                                      }`}
+                                    >
                                       Prénom
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                      <p className="text-left self-end justify-end">
+                                      <p
+                                        className={`text-left self-end justify-end ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
+                                      >
                                         {data.firstName}
                                       </p>
                                     </div>
                                   </div>
 
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">
+                                    <label
+                                      className={`block text-sm font-medium sm:pt-1 ${
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
+                                      }`}
+                                    >
                                       Nom
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                      <p className="text-left self-end justify-end">
+                                      <p
+                                        className={`text-left self-end justify-end ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
+                                      >
                                         {data.lastName}
                                       </p>
                                     </div>
                                   </div>
 
                                   <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label className="block text-sm font-medium text-gray-700 sm:pt-1">
+                                    <label
+                                      className={`block text-sm font-medium sm:pt-1 ${
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
+                                      }`}
+                                    >
                                       E-mail
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                      <p className="text-left self-end justify-end">
+                                      <p
+                                        className={`text-left self-end justify-end ${
+                                          darkMode ? "text-gray-200" : ""
+                                        }`}
+                                      >
                                         {data.email}
                                       </p>
                                     </div>
@@ -487,13 +549,16 @@ export default function Settings({ role, me, authorizations, rolesList }) {
 
                                   <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                                     <label
-                                      htmlFor="role"
-                                      className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                                      className={`block text-sm font-medium sm:pt-1 ${
+                                        darkMode
+                                          ? "text-gray-200"
+                                          : "text-gray-900"
+                                      }`}
                                     >
                                       Rôle disponible
                                     </label>
                                     <div className="mt-1 sm:mt-0 sm:col-span-2 space-x-1">
-                                      {allRole.data.map((r, index) => {
+                                      {allRole.map((r, index) => {
                                         const buttonAvailable =
                                           data.id === me.id
                                             ? false
@@ -515,11 +580,11 @@ export default function Settings({ role, me, authorizations, rolesList }) {
                                             {buttonAvailable ? (
                                               <button
                                                 onClick={async () => {
-                                                  setAllRole({
-                                                    data: allRole.data.filter(
+                                                  setAllRole(
+                                                    allRole.filter(
                                                       (e) => e != r
-                                                    ),
-                                                  });
+                                                    )
+                                                  );
                                                   var array = userRole.data;
                                                   array.push(r);
                                                   setUserRole({ data: array });
@@ -634,21 +699,25 @@ export default function Settings({ role, me, authorizations, rolesList }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const me = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(me);
-  if (resUserConnected) return resUserConnected;
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
   const rolesList = await fetchAPIAuth("/role", cookies.jwt);
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   // Pass the data to our page via props
   return {
     props: {
-      role: role.data,
-      me: me.data,
       authorizations: authorizations.data,
       rolesList: rolesList.data,
     }, // will be passed to the page component as props

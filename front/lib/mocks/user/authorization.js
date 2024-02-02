@@ -60,7 +60,7 @@ export function mock(path, jwt, options) {
           manageUser: 0,
           changeUserRole: 0,
           changeUserProtectedRole: 0,
-          myFabAgent: 0,
+          myFabAgent: 1,
           blogAuthor: 0,
         },
       };

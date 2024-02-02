@@ -1,6 +1,8 @@
 async function updateUser(app, email) {
   const queryUpdateUser = `UPDATE users SET dt_lastUsed = NOW(), dt_ruleSignature = NOW() WHERE v_email = ?;`;
-  const dbResUpdateUser = await app.executeQuery(app.db, queryUpdateUser, []);
+  const dbResUpdateUser = await app.executeQuery(app.db, queryUpdateUser, [
+    email,
+  ]);
   if (dbResUpdateUser[0]) console.log(dbResUpdateUser[0]);
 }
 

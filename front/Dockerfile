@@ -15,6 +15,7 @@ COPY . /home/node/MyFab_Front/
 WORKDIR /home/node/MyFab_Front/
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
-RUN npm install 
+RUN npm install
+RUN npm run build
 
-CMD ["npm", "run", "buildStart"]
+CMD ["npm", "run", "start"]

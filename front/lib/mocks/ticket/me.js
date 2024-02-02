@@ -1,7 +1,8 @@
 export function mock(path, jwt, options) {
-  const page = options?.data?.page;
+  const page = options?.params?.page;
   const date = new Date();
   switch (jwt) {
+    case "admin":
     case "user":
       if (page !== 0)
         return {

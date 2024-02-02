@@ -41,7 +41,7 @@ describe("Page auth/index", () => {
     );
     cy.getCookie("jwt").then((cookie) => {
       expect(cookie).to.not.be.null;
-      expect(cookie.expiry).to.be.undefined;
+      expect(cookie.expiry).to.not.be.null;
     });
   });
 

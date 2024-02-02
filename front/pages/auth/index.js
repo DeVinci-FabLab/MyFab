@@ -6,12 +6,17 @@ import Link from "next/link";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import sha256 from "sha256";
 
+import { UserUse } from "../../context/provider";
+
 export default function Auth() {
+  const { setCookies } = UserUse();
+
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(false);
   const [toastedLoad, setToastedLoad] = useState(false);
+  const [capsLockActive, setCapsLockActive] = useState(false);
 
   useEffect(() => {
     if (!toastedLoad && router.query.close != null) {
@@ -79,11 +84,27 @@ export default function Auth() {
       const adfs = getCookie("adfs");
       if (adfs) router.push(process.env.API + "/api/user/login/adfs/");
     }
+
+    const handleKeyPress = (e) => {
+      try {
+        const isCapsLockActive = e.getModifierState("CapsLock");
+
+        setCapsLockActive(isCapsLockActive);
+      } catch (error) {}
+    };
+
+    // Ajoutez un écouteur d'événements pour la touche pressée
+    window.addEventListener("keydown", handleKeyPress);
+
+    // Retirez l'écouteur d'événements lors du démontage du composant
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
   });
 
   async function login(e) {
     e.preventDefault(); // Don't reload page on form submit
-    const expires = new Date(Date.now() + 7200000);
+    const expires = new Date(Date.now() + (!checked ? 7200000 : 31536000000));
     const responseLogin = await fetchAPIAuth({
       method: "POST",
       headers: {
@@ -95,16 +116,12 @@ export default function Auth() {
         email,
         password: sha256(password),
         rememberMe: checked,
-        expires: !checked ? expires : null,
+        expires: expires,
       },
     });
 
     if (responseLogin.status == 200) {
-      if (!checked) {
-        setCookie("jwt", responseLogin.data.dvflCookie, { expires });
-      } else {
-        setCookie("jwt", responseLogin.data.dvflCookie);
-      }
+      setCookie("jwt", responseLogin.data.dvflCookie, { expires });
 
       const responseAuth = await fetchAPIAuth({
         method: "GET",
@@ -215,6 +232,11 @@ export default function Auth() {
                     />
                   </div>
                 </div>
+                {capsLockActive && (
+                  <p className="text-red-500">
+                    <strong>La touche Ver Maj est active !</strong>
+                  </p>
+                )}
 
                 <div className="flex items-center justify-between">
                   <div className="text-sm">

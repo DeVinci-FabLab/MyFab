@@ -1,17 +1,21 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LayoutPanel from "../../../components/layoutPanel";
-import NavbarAdmin from "../../../components/navbarAdmin";
+import NavbarAdmin from "../../../components/panel/navbarAdmin";
 import WebSocket from "../../../components/webSocket";
 import Error from "../../404";
 import Seo from "../../../components/seo";
 import TablesAdmin from "../../../components/tablesAdmin";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
-import { isUserConnected } from "../../../lib/function";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
-export default function OverviewAdmin({ user, role, authorizations }) {
+import { UserUse } from "../../../context/provider";
+
+export default function OverviewAdmin({ authorizations }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const router = useRouter();
 
   function realodPage() {
@@ -112,28 +116,34 @@ export default function OverviewAdmin({ user, role, authorizations }) {
       {authorizations.myFabAgent ? (
         <div>
           <LayoutPanel
-            user={user}
-            role={role}
             authorizations={authorizations}
-            titleMenu="Gestion des demandes"
+            titleMenu={"Gestion des demandes"}
           >
             <Seo title={"Historique"} />
 
-            <NavbarAdmin role={role} />
+            <NavbarAdmin darkMode={darkMode} />
 
             <section className="">
               <div className="container px-4 mx-auto">
                 <div className="flex flex-wrap -mx-4">
                   {/* Tickets à traiter */}
                   <div className="w-full md:px-6 mt-5 mb-8 lg:mb-0">
-                    <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
+                    <div
+                      className={`flex flex-col rounded shadow-sm bg-white overflow-hidden ${
+                        darkMode ? "bg-gray-800" : ""
+                      }`}
+                    >
                       <div className="mb-3 grow">
                         <div className="space-x-2">
                           <form
                             onSubmit={handleSubmit}
                             className="relative grow"
                           >
-                            <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500">
+                            <div
+                              className={`absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l ${
+                                darkMode ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
                               <svg
                                 className="hi-solid hi-search inline-block w-5 h-5"
                                 fill="currentColor"
@@ -152,7 +162,11 @@ export default function OverviewAdmin({ user, role, authorizations }) {
                                 onChange={(e) => {
                                   setInputValue(e.target.value);
                                 }}
-                                className="filterInput block border placeholder-gray-400 pr-3 py-2 leading-6 w-full rounded border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 pl-10 mr-2"
+                                className={`filterInput block border pr-3 py-2 leading-6 w-full rounded focus:ring focus:ring-opacity-50 pl-10 mr-2 ${
+                                  darkMode
+                                    ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                    : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                                }`}
                                 type="text"
                                 placeholder="Rechercher un ticket"
                               />
@@ -176,6 +190,7 @@ export default function OverviewAdmin({ user, role, authorizations }) {
                       nextPrevPage={nextPrevPage}
                       collumnState={collumnState}
                       changeCollumnState={changeCollumnState}
+                      darkMode={darkMode}
                     />
                   </div>
                 </div>
@@ -194,20 +209,24 @@ export default function OverviewAdmin({ user, role, authorizations }) {
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
 
   // Pass the data to our page via props
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
     }, // will be passed to the page component as props
   };

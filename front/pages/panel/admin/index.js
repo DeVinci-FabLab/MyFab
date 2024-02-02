@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LayoutPanel from "../../../components/layoutPanel";
-import NavbarAdmin from "../../../components/navbarAdmin";
+import NavbarAdmin from "../../../components/panel/navbarAdmin";
 import OverviewAdmin from "../../../components/overviewAdmin";
 import WebSocket from "../../../components/webSocket";
 import Seo from "../../../components/seo";
@@ -11,7 +11,12 @@ import { getCookie } from "cookies-next";
 import { isUserConnected } from "../../../lib/function";
 import { toast } from "react-toastify";
 
-export default function Admin({ user, role, authorizations }) {
+import { UserUse } from "../../../context/provider";
+
+export default function Admin({ authorizations }) {
+  const jwt = getCookie("jwt");
+  const { user, darkMode } = UserUse(jwt);
+
   const router = useRouter();
   function realodPage() {
     router.replace(router.asPath);
@@ -98,8 +103,6 @@ export default function Admin({ user, role, authorizations }) {
     }
   }
 
-  const darkMode = false; //user.darkMode;
-
   return (
     <div>
       <WebSocket
@@ -107,63 +110,70 @@ export default function Admin({ user, role, authorizations }) {
         event={[{ name: "event-reload-tickets", action: update }]}
         userId={user.id}
       />
-      {authorizations.myFabAgent ? (
-        <LayoutPanel
-          user={user}
-          role={role}
-          authorizations={authorizations}
-          titleMenu="Gestion des demandes"
-        >
-          <Seo title={"Administration"} />
-          <NavbarAdmin role={role} darkMode={darkMode} />
-          <div className="md:py-8 md:px-6">
-            <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
-              <h2 className="text-2xl font-bold text-white">
-                Bonjour, {user.firstName} 👋{" "}
-              </h2>
-              <h3 className="text-md font-medium text-white">
-                {ticketResult.length === 0
-                  ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
-                  : `Il y a ${ticketResult.length} impression${
-                      ticketResult.length > 1 ? "s" : ""
-                    } à traiter. N'hésite pas à
+      <LayoutPanel
+        authorizations={authorizations}
+        titleMenu={"Gestion des demandes"}
+      >
+        <Seo title={"Administration"} />
+        <NavbarAdmin />
+        <div className="md:py-8 md:px-6">
+          <div className="container px-8 md:px-16 py-8 mx-auto bg-gradient-to-r from-blue-400 to-indigo-500">
+            <h2 className="text-2xl font-bold text-white">
+              Bonjour, {user.firstName} 👋{" "}
+            </h2>
+            <h3 className="text-md font-medium text-white">
+              {ticketResult.length === 0
+                ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
+                : `Il y a ${ticketResult.length} impression${
+                    ticketResult.length > 1 ? "s" : ""
+                  } à traiter. N'hésite pas à
                 t'en occuper !`}
-              </h3>
-            </div>
+            </h3>
           </div>
-          <OverviewAdmin
-            tickets={ticketResult}
-            maxPage={maxPage}
-            actualPage={actualPage}
-            nextPrevPage={nextPrevPage}
-            collumnState={collumnState}
-            changeCollumnState={changeCollumnState}
-          />
-        </LayoutPanel>
-      ) : (
-        <div>
-          <Error />
         </div>
-      )}
+        <OverviewAdmin
+          tickets={ticketResult}
+          maxPage={maxPage}
+          actualPage={actualPage}
+          nextPrevPage={nextPrevPage}
+          collumnState={collumnState}
+          changeCollumnState={changeCollumnState}
+          darkMode={darkMode}
+        />
+      </LayoutPanel>
     </div>
   );
 }
 
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies(req);
-  const user = await fetchAPIAuth("/user/me", cookies.jwt);
-  const resUserConnected = isUserConnected(user);
-  if (resUserConnected) return resUserConnected;
-  const role = await fetchAPIAuth("/user/role", cookies.jwt);
-  const authorizations = await fetchAPIAuth(
-    "/user/authorization/",
-    cookies.jwt
-  );
+  const authorizations = cookies.jwt
+    ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
+    : null;
+  if (!cookies.jwt || !authorizations.data) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
+  if (authorizations.status === 200 && !authorizations.data.myFabAgent) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/404",
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {
-      user: user.data,
-      role: role.data,
       authorizations: authorizations.data,
     }, // will be passed to the page component as props
   };
