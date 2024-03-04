@@ -94,6 +94,11 @@ const versions = [
       "Diminution du temps de démarrage du conteneur Front-End",
     ],
   },
+  {
+    version: "1.1.1",
+    date: "04-03-2024",
+    changes: ["Correction de la couleur du DarkMode dans la page /panel/:id"],
+  },
 ];
 
 const versionsToShow = versions.reverse();

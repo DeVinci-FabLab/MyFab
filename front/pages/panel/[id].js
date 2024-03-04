@@ -710,7 +710,11 @@ const GestionTicket = ({
                           >
                             Type
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-gray-300" : "text-gray-400"
+                            }`}
+                          >
                             <div>{ticket.projectType}</div>
                             {authorizations.myFabAgent ? (
                               <button
@@ -739,7 +743,11 @@ const GestionTicket = ({
                           >
                             Status
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex justify-between">
+                          <dd
+                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
+                              darkMode ? "text-gray-300" : "text-gray-400"
+                            }`}
+                          >
                             <div>{ticket.statusName}</div>
                             {authorizations.myFabAgent && !ticket.isCancel ? (
                               <button
