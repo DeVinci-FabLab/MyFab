@@ -170,20 +170,21 @@ const GestionTicket = ({
 
   async function download(id, name) {
     const cookie = getCookie("jwt");
-    const options = !process.env.IS_TEST_MODE
-      ? {
-          method: "GET",
-          responseType: "blob",
-          url: process.env.API + "/api/file/" + id,
-          headers: {
-            dvflCookie: cookie,
-          },
-        }
-      : {
-          method: "GET",
-          responseType: "blob",
-          url: "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl",
-        };
+    const options =
+      !process.env.IS_TEST_MODE || true
+        ? {
+            method: "GET",
+            responseType: "blob",
+            url: process.env.API + "/api/file/" + id,
+            headers: {
+              dvflCookie: cookie,
+            },
+          }
+        : {
+            method: "GET",
+            responseType: "blob",
+            url: "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl",
+          };
 
     await axios(options).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));

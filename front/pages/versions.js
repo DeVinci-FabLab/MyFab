@@ -97,7 +97,10 @@ const versions = [
   {
     version: "1.1.1",
     date: "04-03-2024",
-    changes: ["Correction de la couleur du DarkMode dans la page /panel/:id"],
+    changes: [
+      "Correction de la couleur du DarkMode dans la page /panel/:id",
+      "Fix error with test mode and stl viewer",
+    ],
   },
 ];
 

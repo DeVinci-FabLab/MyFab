@@ -54,6 +54,8 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
     }
   );
 
+  const date = new Date();
+
   //name = le nom qui est affiché
   //href = le lien du bouton
   //icon = l'icon du bouton
@@ -93,7 +95,15 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       current: false,
       show: false,
     }, // Mettre les autorisations
-    //{ name: "Retourner au site", href: "/", icon: CubeIcon, current: false, show: true },
+    {
+      name: "Pannel d'administration",
+      className: [],
+      href: "/youClickedOnTheLogo",
+      icon: UsersIcon,
+      current: false,
+      show: date.getMonth() === 3 && date.getDate() === 1,
+    },
+    //{ name: "Retourner au site", className: ["ag-button"], href: "/", icon: CubeIcon, current: false, show: true },
   ];
 
   const years = [
