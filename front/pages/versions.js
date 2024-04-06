@@ -102,6 +102,12 @@ const versions = [
       "Fix error with test mode and stl viewer",
     ],
   },
+  ,
+  {
+    version: "1.1.2",
+    date: "PAS-OFFICIEL",
+    changes: ["Ajout d'une route de stats"],
+  },
 ];
 
 const versionsToShow = versions.reverse();
