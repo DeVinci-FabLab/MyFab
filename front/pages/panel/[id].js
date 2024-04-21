@@ -171,7 +171,7 @@ const GestionTicket = ({
   async function download(id, name) {
     const cookie = getCookie("jwt");
     const options =
-      !process.env.IS_TEST_MODE || true
+      process.env.IS_TEST_MODE !== "true"
         ? {
             method: "GET",
             responseType: "blob",
