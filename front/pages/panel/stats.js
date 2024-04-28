@@ -7,15 +7,47 @@ import { useRouter } from "next/router";
 import { getCookie } from "cookies-next";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
-import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-Chart.register(ArcElement, Tooltip, Legend);
-import { Doughnut } from "react-chartjs-2";
+import Stats from "../../components/stats";
 
 import { UserUse } from "../../context/provider";
+
+function getMonthName(monthIndex) {
+  switch (monthIndex) {
+    case "01":
+      return "Janvier";
+    case "02":
+      return "Février";
+    case "03":
+      return "Mars";
+    case "04":
+      return "Avril";
+    case "05":
+      return "Mai";
+    case "06":
+      return "Juin";
+    case "07":
+      return "Juillet";
+    case "08":
+      return "Août";
+    case "09":
+      return "Septembre";
+    case "10":
+      return "Octobre";
+    case "11":
+      return "Novembre";
+    case "12":
+      return "Décembre";
+
+    default:
+      return "INCORRECT_MONTH";
+  }
+}
 
 export default function NewPanel({ authorizations, stats }) {
   const jwt = getCookie("jwt");
   const { user, darkMode } = UserUse(jwt);
+  const [nav, setNav] = useState("general");
+  const [navMonth, setNavMonth] = useState([]);
 
   const router = useRouter();
   function realodPage() {
@@ -30,7 +62,6 @@ export default function NewPanel({ authorizations, stats }) {
     }
   }, []);
 
-  console.log(stats);
   return (
     <LayoutPanel
       authorizations={authorizations}
@@ -41,14 +72,25 @@ export default function NewPanel({ authorizations, stats }) {
 
       {/* Dernières activités */}
 
-      <nav class="">
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
-          <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-            <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 dark:border-gray-700">
+      <nav className="">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
+          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 dark:border-gray-700">
               <li>
                 <a
-                  href="#"
-                  class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
+                  onClick={() => {
+                    setNavMonth([]);
+                    setNav("general");
+                  }}
+                  className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
+                    nav === "general"
+                      ? darkMode
+                        ? "text-blue-700"
+                        : "text-blue-500"
+                      : darkMode
+                      ? "text-gray-300 hover:text-gray-100"
+                      : "text-gray-900 hover:text-gray-500"
+                  } `}
                   aria-current="page"
                 >
                   Général
@@ -56,110 +98,87 @@ export default function NewPanel({ authorizations, stats }) {
               </li>
               <li>
                 <a
-                  href="#"
-                  class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  onClick={() => {
+                    setNavMonth([]);
+                    setNav("alltime");
+                  }}
+                  className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
+                    nav === "alltime"
+                      ? darkMode
+                        ? "text-blue-700"
+                        : "text-blue-500"
+                      : darkMode
+                      ? "text-gray-300 hover:text-gray-100"
+                      : "text-gray-900 hover:text-gray-500"
+                  } `}
                 >
                   All time
                 </a>
               </li>
-              <li>
-                <a
-                  href="#"
-                  class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Services
-                </a>
-              </li>
+
+              {stats.ticketStatsByYears.map((statByYear, index) => {
+                return (
+                  <li key={"year_" + index}>
+                    <a
+                      onClick={() => {
+                        setNavMonth(
+                          stats.ticketStatsByMonths.filter(
+                            (currentValue) =>
+                              currentValue.year === statByYear.year
+                          )
+                        );
+                        setNav(statByYear.year);
+                      }}
+                      className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
+                        nav === statByYear.year ||
+                        (navMonth.length !== 0 &&
+                          navMonth[0].year === statByYear.year)
+                          ? darkMode
+                            ? "text-blue-700"
+                            : "text-blue-500"
+                          : darkMode
+                          ? "text-gray-300 hover:text-gray-100"
+                          : "text-gray-900 hover:text-gray-500"
+                      } `}
+                    >
+                      {statByYear.year}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
+
+            {navMonth.length !== 0 ? (
+              <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 dark:border-gray-700">
+                {navMonth.map((month, index) => {
+                  return (
+                    <li key={"month_" + month.month}>
+                      <a
+                        onClick={() => setNav(month.month)}
+                        className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
+                          nav === month.month
+                            ? darkMode
+                              ? "text-blue-700"
+                              : "text-blue-500"
+                            : darkMode
+                            ? "text-gray-300 hover:text-gray-100"
+                            : "text-gray-900 hover:text-gray-500"
+                        } `}
+                      >
+                        {getMonthName(month.month.split("-")[1])}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
       </nav>
 
-      <div className="grid grid-cols-12 gap-5 p-5 ">
-        <div
-          className={`col-span-6 mt-5 bg-opacity-50 border rounded shadow-lg backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3 ${
-            darkMode ? "border-gray-600 bg-gray-600" : "border-gray-100"
-          }`}
-        >
-          <p
-            className={`ml-2 flex-1 text-center ${
-              darkMode ? "text-gray-100" : ""
-            }`}
-          >
-            Nombre d'utilisateurs total créé
-          </p>
-          <p
-            className={`ml-2 flex-1 text-5xl text-center ${
-              darkMode ? "text-gray-100" : ""
-            }`}
-          >
-            {stats.users[0].total_users}
-          </p>
-        </div>
-        <div
-          className={`row-span-3 md:col-span-6 lg:col-span-4 mt-5 bg-opacity-50 border rounded shadow-lg backdrop-blur-20 to-gray-50 pl-3 pr-4 py-3 ${
-            darkMode ? "border-gray-600 bg-gray-600" : "border-gray-100"
-          }`}
-        >
-          <Doughnut
-            data={{
-              labels: ["Light mode", "Dark mode"],
-              datasets: [
-                {
-                  label: "Dark mode",
-                  data: [
-                    stats.users[0].total_users - stats.users[0].dark_mode_users,
-                    stats.users[0].dark_mode_users,
-                  ],
-                  backgroundColor: ["rgb(195, 195, 195)", "rgb(48, 48, 48)"],
-                  borderColor: ["rgb(195, 195, 195)", "rgb(48, 48, 48)"],
-                },
-              ],
-            }}
-            options={{
-              plugins: {
-                legend: { labels: { color: darkMode ? "white" : "black" } },
-              },
-            }}
-          />
-        </div>{" "}
-        <div
-          className={`row-span-3 md:col-span-6 lg:col-span-4 mt-5 bg-opacity-50 border rounded shadow-lg backdrop-blur-20 to-gray-50 pl-3 pr-4 py-3 ${
-            darkMode ? "border-gray-600 bg-gray-600" : "border-gray-100"
-          }`}
-        >
-          <Doughnut
-            data={{
-              labels: ["ESILV", "EMLV", "IIM"],
-              datasets: [
-                {
-                  label: "Users",
-                  data: [
-                    stats.usersBySchools[0].count_user,
-                    stats.usersBySchools[1].count_user,
-                    stats.usersBySchools[2].count_user,
-                  ],
-                  backgroundColor: [
-                    "rgb(213, 29, 101)",
-                    "rgb(44, 160, 187)",
-                    "rgb(245, 132, 29)",
-                  ],
-                  borderColor: [
-                    "rgb(213, 29, 101)",
-                    "rgb(44, 160, 187)",
-                    "rgb(245, 132, 29)",
-                  ],
-                },
-              ],
-            }}
-            options={{
-              plugins: {
-                legend: { labels: { color: darkMode ? "white" : "black" } },
-              },
-            }}
-          />
-        </div>
-      </div>
+      <Stats nav={nav} stats={stats}></Stats>
     </LayoutPanel>
   );
 }
