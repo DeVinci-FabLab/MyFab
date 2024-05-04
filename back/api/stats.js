@@ -223,16 +223,18 @@ async function getStats(data) {
     data.app.db,
     data.app.executeQuery,
     `SELECT
-        s.name,
-        COUNT(s.id) AS count
-      FROM
+          s.name,
+          s.color,
+          COUNT(s.id) AS count
+        FROM
         (SELECT
             p.i_status AS id,
             s.v_name AS name,
-            p.dt_creationdate AS creationdate
+            p.dt_creationdate AS creationdate,
+            s.v_color AS color
           FROM printstickets AS p
           INNER JOIN gd_status AS s ON p.i_status = s.i_id)
-      AS s GROUP BY s.id;`
+        AS s GROUP BY s.id;`
   );
 
   // Get status from tickets (BY years)
@@ -242,14 +244,16 @@ async function getStats(data) {
     `SELECT
           CONCAT(DATE_FORMAT(DATE_ADD(DATE_ADD(s.creationdate, INTERVAL -1 YEAR), INTERVAL 4 MONTH), '%Y'), '-', DATE_FORMAT(DATE_ADD(s.creationdate, INTERVAL 4 MONTH), '%Y')) AS 'year',
           s.name,
+          s.color,
           COUNT(s.id) AS count
         FROM
-          (SELECT
-              p.i_status AS id,
-              s.v_name AS name,
-              p.dt_creationdate AS creationdate
-            FROM printstickets AS p
-            INNER JOIN gd_status AS s ON p.i_status = s.i_id)
+        (SELECT
+            p.i_status AS id,
+            s.v_name AS name,
+            p.dt_creationdate AS creationdate,
+            s.v_color AS color
+          FROM printstickets AS p
+          INNER JOIN gd_status AS s ON p.i_status = s.i_id)
         AS s GROUP BY 1, s.id;`
   );
 
@@ -257,18 +261,20 @@ async function getStats(data) {
   result.ticketStatusByMonths = await runQuerryStats(
     data.app.db,
     data.app.executeQuery,
-    `SELECT
+    `SELECT 
           DATE_FORMAT(s.creationdate,'%Y-%m') AS 'month',
           CONCAT(DATE_FORMAT(DATE_ADD(DATE_ADD(s.creationdate, INTERVAL -1 YEAR), INTERVAL 4 MONTH), '%Y'), '-', DATE_FORMAT(DATE_ADD(s.creationdate, INTERVAL 4 MONTH), '%Y')) AS 'year',
           s.name,
+          s.color,
           COUNT(s.id) AS count
         FROM
-          (SELECT
-              p.i_status AS id,
-              s.v_name AS name,
-              p.dt_creationdate AS creationdate
-            FROM printstickets AS p
-            INNER JOIN gd_status AS s ON p.i_status = s.i_id)
+        (SELECT
+            p.i_status AS id,
+            s.v_name AS name,
+            p.dt_creationdate AS creationdate,
+            s.v_color AS color
+          FROM printstickets AS p
+          INNER JOIN gd_status AS s ON p.i_status = s.i_id)
         AS s GROUP BY 1, s.id;`
   );
 
@@ -276,19 +282,21 @@ async function getStats(data) {
   result.ticketStatusByWeeks = await runQuerryStats(
     data.app.db,
     data.app.executeQuery,
-    `SELECT
+    `SELECT 
           DATE_FORMAT(s.creationdate,'%Y-%u') AS 'week',
           DATE_FORMAT(s.creationdate,'%Y-%m') AS 'month',
           CONCAT(DATE_FORMAT(DATE_ADD(DATE_ADD(s.creationdate, INTERVAL -1 YEAR), INTERVAL 4 MONTH), '%Y'), '-', DATE_FORMAT(DATE_ADD(s.creationdate, INTERVAL 4 MONTH), '%Y')) AS 'year',
           s.name,
+          s.color,
           COUNT(s.id) AS count
         FROM
-          (SELECT
-              p.i_status AS id,
-              s.v_name AS name,
-              p.dt_creationdate AS creationdate
-            FROM printstickets AS p
-            INNER JOIN gd_status AS s ON p.i_status = s.i_id)
+        (SELECT
+            p.i_status AS id,
+            s.v_name AS name,
+            p.dt_creationdate AS creationdate,
+            s.v_color AS color
+          FROM printstickets AS p
+          INNER JOIN gd_status AS s ON p.i_status = s.i_id)
         AS s GROUP BY 1, s.id;`
   );
 
