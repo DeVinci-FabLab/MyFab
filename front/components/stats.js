@@ -10,7 +10,21 @@ import { UserUse } from "../context/provider";
 const regexYear = /^\d{4}\-\d{4}$/;
 const regexMonth = /^\d{4}\-\d{2}$/;
 
-function getTicketStats({ darkMode, ticketStats, ticketStatsForSchools }) {
+function getTicketStats({
+  darkMode,
+  ticketStats,
+  ticketStatus,
+  ticketStatsForSchools,
+}) {
+  const labels = [];
+  const counts = [];
+  const colors = [];
+  for (const status of ticketStatus) {
+    labels.push(status.name);
+    counts.push(status.count);
+    colors.push("#" + status.color);
+  }
+
   return (
     <div className="grid grid-cols-12 gap-5 p-5">
       <div
@@ -30,9 +44,7 @@ function getTicketStats({ darkMode, ticketStats, ticketStatsForSchools }) {
             darkMode ? "text-gray-100" : ""
           }`}
         >
-          {ticketStatsForSchools["ESILV"].count_ticket +
-            ticketStatsForSchools["EMLV"].count_ticket +
-            ticketStatsForSchools["IIM"].count_ticket}
+          {ticketStats.count_ticket}
         </p>
       </div>
       <div
@@ -62,20 +74,15 @@ function getTicketStats({ darkMode, ticketStats, ticketStatsForSchools }) {
       >
         <Doughnut
           data={{
-            labels: ["Light mode", "Dark mode"],
+            labels: labels,
             datasets: [
               {
-                label: "Dark mode",
-                data: [1, 1],
-                backgroundColor: ["rgb(195, 195, 195)", "rgb(48, 48, 48)"],
-                borderColor: ["rgb(195, 195, 195)", "rgb(48, 48, 48)"],
+                label: "Nombre de tickets",
+                data: counts,
+                backgroundColor: colors,
+                borderColor: colors,
               },
             ],
-          }}
-          options={{
-            plugins: {
-              legend: { labels: { color: darkMode ? "white" : "black" } },
-            },
           }}
         />
       </div>{" "}
@@ -156,6 +163,7 @@ function Stats({ nav, stats }) {
       const ticketStatsAllTime = stats["ticketStatsAllTime"][0];
       const ticketStatsForSchoolsAllTime =
         stats["ticketStatsForSchoolsAllTime"];
+      const ticketStatusAllTime = stats["ticketStatusAllTime"];
       const ticketStatsForEsilvByAllTime = ticketStatsForSchoolsAllTime.reduce(
         (accumulator, currentValue) => {
           return currentValue.v_name === "ESILV" ? currentValue : accumulator;
@@ -190,6 +198,7 @@ function Stats({ nav, stats }) {
       return getTicketStats({
         darkMode,
         ticketStats: ticketStatsAllTime,
+        ticketStatus: ticketStatusAllTime,
         ticketStatsForSchools: {
           ESILV: ticketStatsForEsilvByAllTime,
           EMLV: ticketStatsForEmvlByAllTime,
@@ -199,6 +208,7 @@ function Stats({ nav, stats }) {
 
     default:
       if (nav.match(regexYear)) {
+        const ticketStatusByYear = stats["ticketStatusByYears"];
         const ticketStatsByYear = stats.ticketStatsByYears.reduce(
           (accumulator, currentValue) => {
             return currentValue.year === nav ? currentValue : accumulator;
@@ -246,6 +256,7 @@ function Stats({ nav, stats }) {
         return getTicketStats({
           darkMode,
           ticketStats: ticketStatsByYear,
+          ticketStatus: ticketStatusByYear,
           ticketStatsForSchools: {
             ESILV: ticketStatsForEsilvByYear,
             EMLV: ticketStatsForEmvlByYear,
@@ -253,6 +264,9 @@ function Stats({ nav, stats }) {
           },
         });
       } else if (nav.match(regexMonth)) {
+        const ticketStatusByMonth = stats.ticketStatusByMonths.filter(
+          (currentValue) => currentValue.month === nav
+        );
         const ticketStatsByMonth = stats.ticketStatsByMonths.reduce(
           (accumulator, currentValue) => {
             return currentValue.month === nav ? currentValue : accumulator;
@@ -300,11 +314,10 @@ function Stats({ nav, stats }) {
           }
         );
 
-        console.log(ticketStatsForSchoolsByMonth);
-
         return getTicketStats({
           darkMode,
           ticketStats: ticketStatsByMonth,
+          ticketStatus: ticketStatusByMonth,
           ticketStatsForSchools: {
             ESILV: ticketStatsForEsilvByMonth,
             EMLV: ticketStatsForEmvlByMonth,
