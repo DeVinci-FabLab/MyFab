@@ -84,6 +84,11 @@ function getTicketStats({
               },
             ],
           }}
+          options={{
+            plugins: {
+              legend: { labels: { color: darkMode ? "white" : "black" } },
+            },
+          }}
         />
       </div>{" "}
       <div
