@@ -100,13 +100,17 @@ const versions = [
     changes: [
       "Correction de la couleur du DarkMode dans la page /panel/:id",
       "Fix error with test mode and stl viewer",
+      "Si le mot de passe est incorect lors de la connexion, le champ du mot de passe est vidé ",
     ],
   },
   ,
   {
     version: "1.1.2",
     date: "PAS-OFFICIEL",
-    changes: ["Ajout d'une route de stats"],
+    changes: [
+      "Ajout d'une route de stats",
+      "Lorsque un utilisateur entre un mauvais mot de passe, celui-ci est supprimé",
+    ],
   },
 ];
 

@@ -1,5 +1,5 @@
 import { getCookie, setCookie } from "cookies-next";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import router from "next/router";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -17,6 +17,8 @@ export default function Auth() {
   const [checked, setChecked] = useState(false);
   const [toastedLoad, setToastedLoad] = useState(false);
   const [capsLockActive, setCapsLockActive] = useState(false);
+
+  const passwordRef = useRef(null);
 
   useEffect(() => {
     if (!toastedLoad && router.query.close != null) {
@@ -164,6 +166,8 @@ export default function Auth() {
           progress: undefined,
         }
       );
+
+      passwordRef.current.value = "";
     }
   }
 
@@ -226,6 +230,7 @@ export default function Auth() {
                       type="password"
                       autoComplete="current-password"
                       required
+                      ref={passwordRef}
                       className={`password appearance-none block w-full px-3 py-2 border ${
                         error ? "border-red-300" : "border-gray-300"
                       } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}

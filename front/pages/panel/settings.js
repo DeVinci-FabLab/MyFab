@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { toast } from "react-toastify";
@@ -18,6 +17,10 @@ export default function Settings({ authorizations }) {
   const [newPassword, setNewPassword] = useState(null);
   const [newPasswordConfirm, setNewPasswordConfirm] = useState(null);
   const [actualPassword, setActualPassword] = useState(null);
+
+  const actualPasswordRef = useRef(null);
+  const password1Ref = useRef(null);
+  const password2Ref = useRef(null);
 
   function realodPage() {
     router.replace(router.asPath);
@@ -39,6 +42,9 @@ export default function Settings({ authorizations }) {
         draggable: true,
         progress: undefined,
       });
+      actualPasswordRef.current.value = "";
+      password1Ref.current.value = "";
+      password2Ref.current.value = "";
     } else {
       const cookie = getCookie("jwt");
       const responseUpdatePassword = await fetchAPIAuth({
@@ -56,6 +62,9 @@ export default function Settings({ authorizations }) {
       });
 
       if (responseUpdatePassword.error) {
+        actualPasswordRef.current.value = "";
+        password1Ref.current.value = "";
+        password2Ref.current.value = "";
         toast.error(
           "Une erreur est survenue, veuillez réessayer. Vérifiez que votre mot de passe actuel est correct.",
           {
@@ -88,9 +97,6 @@ export default function Settings({ authorizations }) {
           draggable: true,
           progress: undefined,
         });
-        document.getElementById("actualPassword").value = "";
-        document.getElementById("password").value = "";
-        document.getElementById("confirmPassword").value = "";
       }
     }
   }
@@ -225,6 +231,7 @@ export default function Settings({ authorizations }) {
                             type="password"
                             name="actualPassword"
                             id="actualPassword"
+                            ref={actualPasswordRef}
                             className={`actual-password-input shadow-sm block w-full sm:text-sm rounded-md ${
                               darkMode
                                 ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
@@ -248,6 +255,7 @@ export default function Settings({ authorizations }) {
                             type="password"
                             name="password"
                             id="password"
+                            ref={password1Ref}
                             className={`new-password-input shadow-sm block w-full sm:text-sm rounded-md ${
                               darkMode
                                 ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
@@ -273,6 +281,7 @@ export default function Settings({ authorizations }) {
                             type="password"
                             name="confirmPassword"
                             id="confirmPassword"
+                            ref={password2Ref}
                             className={`confirm-new-password-input shadow-sm block w-full sm:text-sm rounded-md ${
                               darkMode
                                 ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"

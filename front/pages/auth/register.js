@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import router from "next/router";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
@@ -12,6 +12,9 @@ export default function Register() {
   const [name, setName] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [checked, setChecked] = useState(false);
+
+  const password1Ref = useRef(null);
+  const password2Ref = useRef(null);
 
   async function register(e) {
     e.preventDefault(); // Don't reload page on form submit
@@ -59,6 +62,8 @@ export default function Register() {
         draggable: true,
         progress: undefined,
       });
+      password1Ref.current.value = "";
+      password2Ref.current.value = "";
     } else {
       const responseRegister = await fetchAPIAuth({
         method: "POST",
@@ -213,6 +218,7 @@ export default function Register() {
                         type={`${checked ? "text" : "password"}`}
                         autoComplete="current-password"
                         required
+                        ref={password1Ref}
                         className={`password1 appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300" : "border-gray-300"
                         } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
@@ -236,6 +242,7 @@ export default function Register() {
                         type={`${checked ? "text" : "password"}`}
                         autoComplete="current-password"
                         required
+                        ref={password2Ref}
                         className={`password2 appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300" : "border-gray-300"
                         } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
