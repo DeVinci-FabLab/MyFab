@@ -30,6 +30,17 @@ sendForgetPasswordMail({
   testFile: "forgotPasswordMail.html",
 });
 
+// Password changed mail
+const sendPasswordChangedMail =
+  require("./functions/sendMail/passwordChanged").sendPasswordChangedMail;
+
+sendPasswordChangedMail({
+  userMail: email,
+  firstName: "TestUser",
+  token: "token",
+  testFile: "passwordChanged.html",
+});
+
 // New message to ticket mail
 const sendTicketMessageMail =
   require("./functions/sendMail/ticketMessage").sendTicketMessageMail;
