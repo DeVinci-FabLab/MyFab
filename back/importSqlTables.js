@@ -40,7 +40,7 @@ async function importSqlTables(file) {
               const value = matchesValues[index];
               const querryInsert = `INSERT INTO \`${table}\` ${matchesValues[0]} VALUES ${value}`;
               const resInsert = await executeQuery(db, querryInsert, []);
-              if (resInsert[0] && resInsert[0].code === "ER_DUP_ENTRY") {
+              if (resInsert[0].code === "ER_DUP_ENTRY") {
                 const queryResetAutoIncrement = `ALTER TABLE \`${table}\` AUTO_INCREMENT = ?;`;
                 await executeQuery(db, queryResetAutoIncrement, [
                   autoIncrement,
