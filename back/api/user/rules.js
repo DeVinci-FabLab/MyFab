@@ -32,7 +32,8 @@ async function putValidateRules(data) {
   const queryUpdate = `UPDATE users 
                         SET dt_ruleSignature = CURRENT_TIMESTAMP()
                         WHERE i_id = ?
-                        AND dt_ruleSignature IS NULL;`;
+                        AND 0 = CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END;`;
+
   const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
     userId,
   ]);
@@ -83,3 +84,4 @@ async function startApi(app) {
   });
 }
 /* c8 ignore stop */
+
