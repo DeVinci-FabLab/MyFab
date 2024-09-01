@@ -129,8 +129,8 @@ export default function OverviewAdmin({ authorizations }) {
                   {/* Tickets à traiter */}
                   <div className="w-full md:px-6 mt-5 mb-8 lg:mb-0">
                     <div
-                      className={`flex flex-col rounded shadow-sm bg-white overflow-hidden ${
-                        darkMode ? "bg-gray-800" : ""
+                      className={`flex flex-col rounded shadow-sm overflow-hidden ${
+                        darkMode ? "bg-gray-800" : "bg-white"
                       }`}
                     >
                       <div className="mb-3 grow">

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { CubeIcon } from "@heroicons/react/solid";
+import { CubeIcon } from "@heroicons/react/24/solid";
 import LayoutPanel from "../../components/layoutPanel";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
@@ -107,7 +107,7 @@ export default function NewPanel({ authorizations, projectType }) {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
       setUserClick(false);
     } else {
@@ -126,7 +126,7 @@ export default function NewPanel({ authorizations, projectType }) {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
       router.push("/panel/newSuccess/?id=" + responsePostTicket.data.id);
     }
@@ -183,8 +183,8 @@ export default function NewPanel({ authorizations, projectType }) {
                           showMissingField && description == ""
                             ? "text-red-500"
                             : darkMode
-                            ? "text-gray-200"
-                            : "text-gray-700"
+                              ? "text-gray-200"
+                              : "text-gray-700"
                         }`}
                       >
                         Commentaires
@@ -197,10 +197,12 @@ export default function NewPanel({ authorizations, projectType }) {
                           rows={3}
                           className={`description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md ${
                             showMissingField && description == ""
-                              ? "border-red-300 placeholder-red-300"
+                              ? darkMode
+                                ? "border-red-500 placeholder-red-400 bg-gray-700 text-gray-200"
+                                : "border-red-500 placeholder-red-400"
                               : darkMode
-                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                                ? "placeholder-gray-300 border-gray-600 focus:border-indigo-700 focus:ring-indigo-700 bg-gray-700 text-gray-200"
+                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
                           }`}
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
@@ -254,8 +256,8 @@ export default function NewPanel({ authorizations, projectType }) {
                             : !isNaN(parseInt(group)))
                             ? "text-red-500"
                             : darkMode
-                            ? "text-gray-200"
-                            : "text-gray-700"
+                              ? "text-gray-200"
+                              : "text-gray-700"
                         }`}
                       >
                         N° de groupe
@@ -277,11 +279,13 @@ export default function NewPanel({ authorizations, projectType }) {
                             !(noGroup
                               ? projectType[type].groupCanBeNull === 1
                               : !isNaN(parseInt(group)))
-                              ? "border-red-300 placeholder-red-300"
+                              ? darkMode
+                                ? "border-red-500 placeholder-red-400 bg-gray-700 text-gray-200"
+                                : "border-red-500 placeholder-red-400"
                               : darkMode
-                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                          }`}
+                                ? "placeholder-gray-300 border-gray-600 focus:border-indigo-700 focus:ring-indigo-700 bg-gray-700 text-gray-200"
+                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
+                          } [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                           placeholder="212"
                         />
                       </div>
@@ -296,7 +300,7 @@ export default function NewPanel({ authorizations, projectType }) {
                               setNoGroup(e.target.checked);
                               setGroup("");
                             }}
-                            className="rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            className={`rememberMe-button h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded`}
                           />
                           <label
                             htmlFor="remember-me"
@@ -314,8 +318,8 @@ export default function NewPanel({ authorizations, projectType }) {
                           showMissingField && file.length < 1
                             ? "text-red-500"
                             : darkMode
-                            ? "text-gray-200"
-                            : "text-gray-700"
+                              ? "text-gray-200"
+                              : "text-gray-700"
                         }`}
                       >
                         Fichier STL
@@ -331,8 +335,10 @@ export default function NewPanel({ authorizations, projectType }) {
                             status
                               ? "border-gray-800"
                               : showMissingField && file.length < 1
-                              ? "border-red-300"
-                              : "border-gray-300"
+                                ? "border-red-500"
+                                : darkMode
+                                  ? "border-gray-600"
+                                  : "border-gray-300"
                           } ${
                             percent != 0 ? "hidden" : "block"
                           } dropzone mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md`}
@@ -343,10 +349,10 @@ export default function NewPanel({ authorizations, projectType }) {
                                 status
                                   ? "text-indigo-700"
                                   : showMissingField && file.length < 1
-                                  ? "text-red-500"
-                                  : darkMode
-                                  ? "text-gray-200"
-                                  : "text-gray-400"
+                                    ? "text-red-500"
+                                    : darkMode
+                                      ? "text-gray-300"
+                                      : "text-gray-400"
                               }`}
                             />
                             <div
@@ -422,7 +428,7 @@ export default function NewPanel({ authorizations, projectType }) {
                                     setFile(
                                       file.filter(function (item) {
                                         return item !== r;
-                                      })
+                                      }),
                                     );
                                   }}
                                   className={`mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-5 text-sm rounded border-indigo-200 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 ${

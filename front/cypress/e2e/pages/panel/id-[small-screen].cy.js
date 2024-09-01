@@ -104,7 +104,7 @@ describe("Page panel/:id", () => {
 
     cy.get(".download-button").first().click();
     cy.readFile(downloadsFolder + "/Test.stl", { timeout: 15000 }).should(
-      "exist"
+      "exist",
     );
   });
 });

@@ -37,9 +37,15 @@ const Home = ({ posts }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
 
-  useEffect(async function () {
-    setUser(await fetchAPIAuth("/user/me", getCookie("jwt")));
-    setRole(await fetchAPIAuth("/user/role", getCookie("jwt")));
+  async function test() {
+    const resUser = await fetchAPIAuth("/user/me", getCookie("jwt"));
+    setUser(resUser.data);
+    const resRole = await fetchAPIAuth("/user/role", getCookie("jwt"));
+    setRole(resRole.data);
+  }
+
+  useEffect(() => {
+    test();
   }, []);
 
   return (

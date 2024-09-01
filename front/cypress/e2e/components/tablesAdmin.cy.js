@@ -8,7 +8,7 @@ describe("Components tablesAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("Etudiant 1");
@@ -28,7 +28,7 @@ describe("Components tablesAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".ticket-element").first().click();
@@ -37,7 +37,7 @@ describe("Components tablesAdmin", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -47,7 +47,7 @@ describe("Components tablesAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".faq-button").each(($btn, index) => {

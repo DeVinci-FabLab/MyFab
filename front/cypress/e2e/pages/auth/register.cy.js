@@ -7,7 +7,7 @@ describe("Page auth/index", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth/register/",
       {
         failOnStatusCode: false,
-      }
+      },
     );
   });
 

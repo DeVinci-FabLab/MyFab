@@ -7,12 +7,12 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.location("pathname").should(
       "eq",
-      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/"),
     );
   });
 
@@ -22,7 +22,7 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".actual-password-input").type("Good-password");
@@ -39,7 +39,7 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".actual-password-input").type("Wrong-password");
@@ -56,7 +56,7 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/settings",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".actual-password-input").type("Good-password");

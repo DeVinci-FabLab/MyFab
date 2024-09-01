@@ -19,9 +19,9 @@ describe("Page auth/index", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
     cy.getCookie("jwt").should("have.property", "expiry");
   });
@@ -37,7 +37,7 @@ describe("Page auth/index", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
     cy.getCookie("jwt").then((cookie) => {
       expect(cookie).to.not.be.null;
@@ -58,7 +58,7 @@ describe("Page auth/index", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?error=true",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("Il y a une erreur");
@@ -69,7 +69,7 @@ describe("Page auth/index", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?mail=ok",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("Votre e-mail a été vérifié");
@@ -80,7 +80,7 @@ describe("Page auth/index", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/auth?mail=ko",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("vérification de votre e-mail");

@@ -10,7 +10,7 @@ describe("Page rules", () => {
 
     cy.location("pathname").should(
       "eq",
-      path.normalize(Cypress.env().BASE_PATH + "/rules").replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/rules").replace(/\\/g, "/"),
     );
   });
 
@@ -20,12 +20,12 @@ describe("Page rules", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.location("pathname").should(
       "eq",
-      path.normalize(Cypress.env().BASE_PATH + "/rules").replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/rules").replace(/\\/g, "/"),
     );
   });
 
@@ -41,7 +41,7 @@ describe("Page rules", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/rules")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -56,7 +56,7 @@ describe("Page rules", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/rules")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 });

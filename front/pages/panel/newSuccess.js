@@ -5,9 +5,9 @@ import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { setZero, isUserConnected } from "../../lib/function";
 import Seo from "../../components/seo";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, DialogPanel } from "@headlessui/react";
 import { StlViewer } from "react-stl-viewer";
-import { CubeIcon } from "@heroicons/react/outline";
+import { CubeIcon } from "@heroicons/react/24/solid";
 import { getCookie } from "cookies-next";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -78,10 +78,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
   }
 
   async function getUrlSTL(id) {
-    if (process.env.IS_TEST_MODE === "true")
-      return setUrlStl(
-        "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
-      );
+    if (process.env.IS_TEST_MODE === "true") return setUrlStl("/stl/cube.stl");
 
     const cookie = getCookie("jwt");
     await axios({
@@ -128,7 +125,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                     }`}
                   >
                     <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
-                      Les membres du DeVinci FabLab traiteons la demande le dès
+                      Les membres du DeVinci FabLab traiterons la demande le dès
                       que possible. Vous pouvez suivre l'avancée de la demande
                       sur cette plateforme.
                     </p>
@@ -362,121 +359,111 @@ export default function NewPanel({ ticket, file, authorizations }) {
       </div>
 
       {/* modal */}
-      <Transition.Root show={open} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={saveFileData}
-        >
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
 
+      <Dialog
+        open={open}
+        as="div"
+        className="fixed inset-0 flex items-center justify-center"
+        onClose={saveFileData}
+      >
+        {" "}
+        <DialogPanel
+          transition
+          className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50`}
+        >
+          <div
+            className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+            onClick={(e) => {
+              if (e.target == e.currentTarget) saveFileData();
+            }}
+          >
             <span
               className="hidden sm:inline-block sm:align-middle sm:h-screen"
               aria-hidden="true"
             >
               &#8203;
             </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              <div
-                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6 ${
-                  darkMode ? "bg-gray-600" : "bg-white"
-                }`}
-              >
-                <div>
-                  <p
-                    className={`text-center font-medium ${
-                      darkMode ? "text-gray-100" : ""
-                    }`}
-                  >
-                    Aperçu du fichier STL:
-                  </p>
-                  <p
-                    className={`text-sm text-center ${
-                      darkMode ? "text-gray-200" : "text-gray-500"
-                    }`}
-                  >
-                    {ticketFile.filename}
-                  </p>
-                  <center>
-                    <StlViewer
-                      style={{
-                        top: 0,
-                        left: 0,
-                        width:
-                          typeof window !== "undefined"
-                            ? (window.innerWidth / 100) * 45
-                            : 300,
-                        height:
-                          typeof window !== "undefined"
-                            ? window.innerHeight / 2.2
-                            : 200,
-                      }}
-                      modelProps={{ color: STLColor }}
-                      orbitControls={true}
-                      url={urlStl}
-                    />
 
-                    <div>
-                      <p
-                        className={`text-center font-medium ${
-                          darkMode ? "text-gray-100" : ""
-                        }`}
-                      >
-                        Commentaire:
-                      </p>
-                      <textarea
-                        id="comment"
-                        name="comment"
-                        rows={3}
-                        onChange={(e) => {
-                          ticketFile.comment = e.target.value;
-                          setTicketFile(ticketFile);
-                        }}
-                        className={`comment-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
-                          darkMode
-                            ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                            : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                        }`}
-                        defaultValue={ticketFile.comment}
-                      />
-                    </div>
-                  </center>
-                </div>
-                <div className="mt-5 sm:mt-6 justify-center">
-                  <button
-                    type="button"
-                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                    onClick={() => {
-                      saveFileData();
+            <div
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 ${
+                darkMode ? "bg-gray-600" : "bg-white"
+              }`}
+            >
+              <div>
+                <p
+                  className={`text-center font-medium ${
+                    darkMode ? "text-gray-100" : ""
+                  }`}
+                >
+                  Aperçu du fichier STL:
+                </p>
+                <p
+                  className={`text-sm text-center ${
+                    darkMode ? "text-gray-200" : "text-gray-500"
+                  }`}
+                >
+                  {ticketFile.filename}
+                </p>
+                <center>
+                  <StlViewer
+                    style={{
+                      top: 0,
+                      left: 0,
+                      width:
+                        typeof window !== "undefined"
+                          ? (window.innerWidth / 100) * 45
+                          : 300,
+                      height:
+                        typeof window !== "undefined"
+                          ? window.innerHeight / 2.2
+                          : 200,
                     }}
-                  >
-                    Fermer
-                  </button>
-                </div>
+                    modelProps={{ color: STLColor }}
+                    orbitControls={true}
+                    url={urlStl}
+                  />
+
+                  <div>
+                    <p
+                      className={`text-center font-medium ${
+                        darkMode ? "text-gray-100" : ""
+                      }`}
+                    >
+                      Commentaire:
+                    </p>
+                    <textarea
+                      id="comment"
+                      name="comment"
+                      rows={3}
+                      onChange={(e) => {
+                        ticketFile.comment = e.target.value;
+                        setTicketFile(ticketFile);
+                      }}
+                      className={`comment-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
+                        darkMode
+                          ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                          : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                      }`}
+                      defaultValue={ticketFile.comment}
+                    />
+                  </div>
+                </center>
               </div>
-            </Transition.Child>
+              <div className="mt-5 sm:mt-6 justify-center">
+                <button
+                  type="button"
+                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  onClick={() => {
+                    saveFileData();
+                  }}
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
           </div>
-        </Dialog>
-      </Transition.Root>
+        </DialogPanel>
+      </Dialog>
     </LayoutPanel>
   );
 }
@@ -511,8 +498,21 @@ export async function getServerSideProps({ req, query }) {
   }
 
   const idTicket = query.id;
-  const ticket = await fetchAPIAuth("/ticket/" + idTicket, cookies.jwt);
-  const file = await fetchAPIAuth("/ticket/" + idTicket + "/file", cookies.jwt);
+  const ticket = !idTicket
+    ? { error: true }
+    : await fetchAPIAuth("/ticket/" + idTicket, cookies.jwt);
+  const file = !idTicket
+    ? { error: true }
+    : await fetchAPIAuth("/ticket/" + idTicket + "/file", cookies.jwt);
+  if (ticket.error) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/panel",
+      },
+      props: {},
+    };
+  }
 
   return {
     props: {

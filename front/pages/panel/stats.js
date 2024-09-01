@@ -88,8 +88,8 @@ export default function NewPanel({ authorizations, stats }) {
                         ? "text-blue-700"
                         : "text-blue-500"
                       : darkMode
-                      ? "text-gray-300 hover:text-gray-100"
-                      : "text-gray-900 hover:text-gray-500"
+                        ? "text-gray-300 hover:text-gray-100"
+                        : "text-gray-900 hover:text-gray-500"
                   } `}
                   aria-current="page"
                 >
@@ -108,8 +108,8 @@ export default function NewPanel({ authorizations, stats }) {
                         ? "text-blue-700"
                         : "text-blue-500"
                       : darkMode
-                      ? "text-gray-300 hover:text-gray-100"
-                      : "text-gray-900 hover:text-gray-500"
+                        ? "text-gray-300 hover:text-gray-100"
+                        : "text-gray-900 hover:text-gray-500"
                   } `}
                 >
                   All time
@@ -124,8 +124,8 @@ export default function NewPanel({ authorizations, stats }) {
                         setNavMonth(
                           stats.ticketStatsByMonths.filter(
                             (currentValue) =>
-                              currentValue.year === statByYear.year
-                          )
+                              currentValue.year === statByYear.year,
+                          ),
                         );
                         setNav(statByYear.year);
                       }}
@@ -137,8 +137,8 @@ export default function NewPanel({ authorizations, stats }) {
                             ? "text-blue-700"
                             : "text-blue-500"
                           : darkMode
-                          ? "text-gray-300 hover:text-gray-100"
-                          : "text-gray-900 hover:text-gray-500"
+                            ? "text-gray-300 hover:text-gray-100"
+                            : "text-gray-900 hover:text-gray-500"
                       } `}
                     >
                       {statByYear.year}
@@ -161,8 +161,8 @@ export default function NewPanel({ authorizations, stats }) {
                               ? "text-blue-700"
                               : "text-blue-500"
                             : darkMode
-                            ? "text-gray-300 hover:text-gray-100"
-                            : "text-gray-900 hover:text-gray-500"
+                              ? "text-gray-300 hover:text-gray-100"
+                              : "text-gray-900 hover:text-gray-500"
                         } `}
                       >
                         {getMonthName(month.month.split("-")[1])}

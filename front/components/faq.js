@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -50,7 +50,7 @@ export default function Faq({ className = "", questions = [], darkMode }) {
                           className={
                             classNames(
                               open ? "-rotate-180" : "rotate-0",
-                              "faq-button h-6 w-6 transform"
+                              "faq-button h-6 w-6 transform",
                             ) + ` ${darkMode ? "text-white" : ""}`
                           }
                           aria-hidden="true"

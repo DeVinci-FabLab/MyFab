@@ -11,7 +11,6 @@ export default function Forget({ params }) {
 
   const passwordReset = async (e) => {
     const { token } = router.query;
-    console.log(token);
     if (password1 == password) {
       await axios({
         method: "PUT",
@@ -36,7 +35,7 @@ export default function Forget({ params }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-              }
+              },
             );
             router.push("/auth");
           } else {
@@ -50,7 +49,7 @@ export default function Forget({ params }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-              }
+              },
             );
           }
         })
@@ -66,7 +65,7 @@ export default function Forget({ params }) {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
-            }
+            },
           );
         });
     } else {

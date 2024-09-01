@@ -9,7 +9,7 @@ describe("Page panel/admin/history", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.location("pathname").should("eq", Cypress.env().BASE_PATH + "/auth");
@@ -23,7 +23,7 @@ describe("Page panel/admin/history", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("La page que vous recherchez actuellement n'existe pas");
@@ -37,7 +37,7 @@ describe("Page panel/admin/history", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
   });
 });

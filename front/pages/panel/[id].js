@@ -6,12 +6,11 @@ import {
   CubeIcon,
   UserCircleIcon,
   CogIcon,
-  ExclamationIcon,
-} from "@heroicons/react/outline";
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/solid";
 import { useEffect, Fragment, useState } from "react";
-import Moment from "react-moment";
 import { StlViewer } from "react-stl-viewer";
-import { Dialog, Transition, Menu } from "@headlessui/react";
+import { Dialog, Transition, DialogPanel } from "@headlessui/react";
 import { getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -38,6 +37,7 @@ const GestionTicket = ({
   status,
   projectType,
   printers,
+  is_test_mode,
 }) => {
   const jwt = getCookie("jwt");
   const { user, darkMode } = UserUse(jwt);
@@ -114,7 +114,7 @@ const GestionTicket = ({
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
       realodPage();
     } else {
@@ -183,7 +183,7 @@ const GestionTicket = ({
         : {
             method: "GET",
             responseType: "blob",
-            url: "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl",
+            url: "/stl/cube.stl",
           };
 
     await axios(options).then((response) => {
@@ -236,10 +236,7 @@ const GestionTicket = ({
   }
 
   async function getUrlSTL(id) {
-    if (process.env.IS_TEST_MODE === "true")
-      return setUrlStl(
-        "https://storage.googleapis.com/ucloud-v3/ccab50f18fb14c91ccca300a.stl"
-      );
+    if (process.env.IS_TEST_MODE === "true") return setUrlStl("/stl/cube.stl");
 
     const cookie = getCookie("jwt");
     const responseGetUrlSTL = await fetchAPIAuth({
@@ -501,17 +498,17 @@ const GestionTicket = ({
                                       </p>
                                     </a>
                                   </div>
-                                  <Moment
+                                  <div
                                     className={`${
                                       darkMode
                                         ? "text-gray-200"
                                         : "text-gray-500"
                                     }`}
-                                    format="Do MMM YYYY à HH:mm"
-                                    locale="fr"
                                   >
-                                    {r.creationDate}
-                                  </Moment>
+                                    {is_test_mode
+                                      ? r.creationDate
+                                      : format(r.creationDate, "frAt")}
+                                  </div>
                                 </div>
                                 <div className="mt-1">
                                   <p
@@ -590,7 +587,10 @@ const GestionTicket = ({
                           darkMode ? "text-gray-300" : "text-gray-500"
                         }`}
                       >
-                        Créé le {format(ticket.creationDate, "frAt")}
+                        Créé le{" "}
+                        {is_test_mode
+                          ? ticket.creationDate
+                          : format(ticket.creationDate, "frAt")}
                       </p>
                     </div>
                     <div
@@ -815,488 +815,449 @@ const GestionTicket = ({
       </div>
 
       {/* modal */}
-      <Transition.Root show={open} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={saveFileData}
+      <Dialog
+        open={open}
+        as="div"
+        className="fixed inset-0 flex items-center justify-center"
+        onClose={saveFileData}
+      >
+        {" "}
+        <DialogPanel
+          transition
+          className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50`}
         >
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
+          <div
+            className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+            onClick={(e) => {
+              if (e.target == e.currentTarget) saveFileData();
+            }}
+          >
             <span
               className="hidden sm:inline-block sm:align-middle sm:h-screen"
               aria-hidden="true"
             >
               &#8203;
             </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              <div
-                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:max-h-max sm:h-full sm:p-6 ${
-                  darkMode ? "bg-gray-600" : "bg-white"
-                }`}
-              >
-                <div>
-                  <p
-                    className={`text-center font-medium ${
-                      darkMode ? "text-gray-100" : ""
-                    }`}
-                  >
-                    Aperçu du fichier STL:
-                  </p>
-                  <p
-                    className={`text-sm text-center ${
-                      darkMode ? "text-gray-200" : "text-gray-500"
-                    }`}
-                  >
-                    {ticketFile.filename}
-                  </p>
-                  <center>
-                    <StlViewer
-                      style={{
-                        top: 0,
-                        left: 0,
-                        width:
-                          typeof window !== "undefined"
-                            ? (window.innerWidth / 100) * 45
-                            : 300,
-                        height:
-                          typeof window !== "undefined"
-                            ? window.innerHeight / 2.2
-                            : 200,
-                      }}
-                      modelProps={{ color: STLColor }}
-                      orbitControls={true}
-                      url={urlStl}
-                    />
 
-                    {authorizations.myFabAgent ? (
-                      <div>
-                        <p
-                          className={`text-center font-medium ${
-                            darkMode ? "text-gray-100" : ""
-                          }`}
-                        >
-                          Commentaire et imprimante:
-                        </p>
-                        <div className="flex flex-wrap -mx-4">
-                          <div className="overflow-hidden sm:rounded-lg w-full lg:w-7/12 pl-4">
-                            <textarea
-                              id="comment"
-                              name="comment"
-                              maxLength="256"
-                              rows={
-                                ticketFile.comment &&
-                                ticketFile.comment.length < 150
-                                  ? 3
-                                  : 5
-                              }
-                              onChange={(e) => {
-                                if (ticketFile.comment !== e.target.value) {
-                                  ticketFile.comment = e.target.value;
-                                  setTicketFile(ticketFile);
-                                }
-                              }}
-                              className={`comment-file-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
-                                darkMode
-                                  ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                  : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                              }`}
-                              defaultValue={ticketFile.comment}
-                            />
-                          </div>
-                          <div className="w-full lg:w-5/12 space-y-400 px-4">
-                            <select
-                              onChange={(e) => {
-                                //setNewParam(e.target.value)
-                                if (ticketFile.idprinter !== e.target.value) {
-                                  ticketFile.idprinter = e.target.value;
-                                  ticketFile.printerName =
-                                    printerObject[ticketFile.idprinter];
-                                  setTicketFile(ticketFile);
-                                }
-                              }}
-                              id="type"
-                              name="type"
-                              className={`printer-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
-                                darkMode
-                                  ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
-                                  : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
-                              }`}
-                            >
-                              <option
-                                value={0}
-                                defaultValue={
-                                  ticketFile.idprinter === 0 ? "'selected'" : ""
-                                }
-                              >
-                                (Sélectionnez une imprimante)
-                              </option>
-                              {printers.map((item, index) => {
-                                const elementSelected =
-                                  ticketFile.idprinter === item.id;
-                                return (
-                                  <option
-                                    key={`printer-${index}`}
-                                    defaultValue={
-                                      elementSelected ? "'selected'" : ""
-                                    }
-                                    value={item.id}
-                                  >
-                                    {item.name}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <p className="text-center font-medium">Commentaire:</p>
-                        <textarea
-                          id="comment"
-                          name="comment"
-                          rows={3}
-                          onChange={(e) => {
-                            ticketFile.comment = e.target.value;
-                            setTicketFile(ticketFile);
-                          }}
-                          className="comment-file-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-                          defaultValue={ticketFile.comment}
-                        />
-                      </div>
-                    )}
-                  </center>
-                </div>
-                <div className="mt-5 sm:mt-6 justify-center">
-                  <button
-                    type="button"
-                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                    onClick={() => {
-                      saveFileData();
+            <div
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 ${
+                darkMode ? "bg-gray-600" : "bg-white"
+              }`}
+            >
+              <div>
+                <p
+                  className={`text-center font-medium ${
+                    darkMode ? "text-gray-100" : ""
+                  }`}
+                >
+                  Aperçu du fichier STL:
+                </p>
+                <p
+                  className={`text-sm text-center ${
+                    darkMode ? "text-gray-200" : "text-gray-500"
+                  }`}
+                >
+                  {ticketFile.filename}
+                </p>
+                <center>
+                  <StlViewer
+                    style={{
+                      top: 0,
+                      left: 0,
+                      width:
+                        typeof window !== "undefined"
+                          ? (window.innerWidth / 100) * 45
+                          : 300,
+                      height:
+                        typeof window !== "undefined"
+                          ? window.innerHeight / 2.2
+                          : 200,
                     }}
-                  >
-                    Fermer
-                  </button>
-                </div>
-              </div>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition.Root>
+                    modelProps={{ color: STLColor }}
+                    orbitControls={true}
+                    url={urlStl}
+                  />
 
-      {/* modal */}
-      <Transition.Root show={openUser} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={setOpenUser}
-        >
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="outside-popup fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              <div
-                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:w-full sm:p-6 ${
-                  darkMode ? "bg-gray-600" : "bg-white"
-                }`}
-              >
-                <div>
-                  <p
-                    className={`text-center font-medium ${
-                      darkMode ? "text-gray-200" : ""
-                    }`}
-                  >
-                    Aperçu de l'utilisateur :
-                  </p>
-                  <dl
-                    className={`sm:divide-y ${
-                      darkMode ? "sm:divide-gray-500" : "sm:divide-gray-200"
-                    }`}
-                  >
-                    <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
-                      <dt
-                        className={`text-sm font-medium whitespace-nowrap ${
-                          darkMode ? "text-gray-200" : "text-gray-500"
+                  {authorizations.myFabAgent ? (
+                    <div>
+                      <p
+                        className={`text-center font-medium ${
+                          darkMode ? "text-gray-100" : ""
                         }`}
                       >
-                        Nom et prénom
-                      </dt>
-                      <dd
-                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
-                          darkMode ? "text-gray-300" : "text-gray-900"
-                        }`}
-                      >
-                        {ticket.userFirstName +
-                          " " +
-                          ticket.userLastName.toString().toUpperCase()}
-                      </dd>
-                      <dt
-                        className={`text-sm font-medium whitespace-nowrap ${
-                          darkMode ? "text-gray-200" : "text-gray-500"
-                        }`}
-                      >
-                        Ecole et année
-                      </dt>
-                      <dd
-                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
-                          darkMode ? "text-gray-300" : "text-gray-900"
-                        }`}
-                      >
-                        {ticket.title || "Ancien compte"}
-                      </dd>
-                    </div>
-                    <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
-                      <dt
-                        className={`text-sm font-medium whitespace-nowrap ${
-                          darkMode ? "text-gray-200" : "text-gray-500"
-                        }`}
-                      >
-                        Adresse e-mail
-                      </dt>
-                      <dd
-                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
-                          darkMode ? "text-gray-300" : "text-gray-900"
-                        }`}
-                      >
-                        {ticket.email}
-                      </dd>
-                      <dt
-                        className={`text-sm font-medium whitespace-nowrap ${
-                          darkMode ? "text-gray-200" : "text-gray-500"
-                        }`}
-                      >
-                        Type de projet
-                      </dt>
-                      <dd
-                        className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
-                          darkMode ? "text-gray-300" : "text-gray-900"
-                        }`}
-                      >
-                        {ticket.projectType}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="mt-5 sm:mt-6">
-                  <button
-                    type="button"
-                    className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                    onClick={() => setOpenUser(false)}
-                  >
-                    Fermer
-                  </button>
-                </div>
-              </div>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition.Root>
-
-      {/* modal */}
-      <Transition.Root show={openStatus} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={setOpenStatus}
-        >
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              <div
-                className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
-                  darkMode ? "bg-gray-600" : "bg-white"
-                }`}
-              >
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <ExclamationIcon
-                      className="h-6 w-6 text-red-600"
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <Dialog.Title
-                      as="h3"
-                      className={`text-lg leading-6 font-medium ${
-                        darkMode ? "text-gray-200" : "text-gray-900"
-                      }`}
-                    >
-                      {paramType === "cancel" ? (
-                        <p>Annulation de la demande</p>
-                      ) : (
-                        <p>
-                          Changer le{" "}
-                          {paramType === "status" ? "status" : "type"} du ticket{" "}
-                          {paramType === "status"
-                            ? ticket.statusName
-                            : ticket.projectType}
-                        </p>
-                      )}
-                    </Dialog.Title>
-                    {paramType === "cancel" ? (
-                      <div>
-                        <p
-                          className={`pt-4 ${darkMode ? "text-gray-200" : ""}`}
-                        >
-                          Attention, vous allez annuler la demande{" "}
-                          <strong>#{ticket.id}</strong>
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="mt-2">
-                        <select
-                          onChange={(e) => setNewParam(e.target.value)}
-                          id="type"
-                          name="type"
-                          className={`statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none sm:text-sm rounded-md cursor-pointer ${
-                            darkMode
-                              ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
-                              : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-                          }`}
-                          defaultValue={
-                            paramType === "status"
-                              ? ticket.idStatus
-                              : ticket.idProjectType
-                          }
-                        >
-                          {(paramType === "status" ? status : projectType).map(
-                            (item, index) => {
+                        Commentaire et imprimante:
+                      </p>
+                      <div className="flex flex-wrap -mx-4">
+                        <div className="overflow-hidden sm:rounded-lg w-full lg:w-7/12 pl-4">
+                          <textarea
+                            id="comment"
+                            name="comment"
+                            maxLength="256"
+                            rows={
+                              ticketFile.comment &&
+                              ticketFile.comment.length < 150
+                                ? 3
+                                : 5
+                            }
+                            onChange={(e) => {
+                              if (ticketFile.comment !== e.target.value) {
+                                ticketFile.comment = e.target.value;
+                                setTicketFile(ticketFile);
+                              }
+                            }}
+                            className={`comment-file-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
+                              darkMode
+                                ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            }`}
+                            defaultValue={ticketFile.comment}
+                          />
+                        </div>
+                        <div className="w-full lg:w-5/12 space-y-400 px-4">
+                          <select
+                            onChange={(e) => {
+                              //setNewParam(e.target.value)
+                              if (ticketFile.idprinter !== e.target.value) {
+                                ticketFile.idprinter = e.target.value;
+                                ticketFile.printerName =
+                                  printerObject[ticketFile.idprinter];
+                                setTicketFile(ticketFile);
+                              }
+                            }}
+                            id="type"
+                            name="type"
+                            className={`printer-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
+                              darkMode
+                                ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                                : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                            }`}
+                          >
+                            <option
+                              value={0}
+                              defaultValue={
+                                ticketFile.idprinter === 0 ? "'selected'" : ""
+                              }
+                            >
+                              (Sélectionnez une imprimante)
+                            </option>
+                            {printers.map((item, index) => {
+                              const elementSelected =
+                                ticketFile.idprinter === item.id;
                               return (
-                                <option key={`param-${index}`} value={item.id}>
+                                <option
+                                  key={`printer-${index}`}
+                                  defaultValue={
+                                    elementSelected ? "'selected'" : ""
+                                  }
+                                  value={item.id}
+                                >
                                   {item.name}
                                 </option>
                               );
-                            }
-                          )}
-                        </select>
+                            })}
+                          </select>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </div>
-
-                {paramType === "cancel" ? (
-                  <div>
-                    <div className="py-4 sm:py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
-                      <button
-                        className="confirmation-cancel-ticket-button bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
-                        onClick={() => {
-                          setOpenStatus(false);
-                          cancelTicket();
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-center font-medium">Commentaire:</p>
+                      <textarea
+                        id="comment"
+                        name="comment"
+                        rows={3}
+                        onChange={(e) => {
+                          ticketFile.comment = e.target.value;
+                          setTicketFile(ticketFile);
                         }}
-                      >
-                        Annuler la demande
-                      </button>
-                      <button
-                        className={`back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
-                          darkMode
-                            ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
-                            : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
-                        }`}
-                        onClick={() => setOpenStatus(false)}
-                      >
-                        Retour
-                      </button>
+                        className="comment-file-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                        defaultValue={ticketFile.comment}
+                      />
+                    </div>
+                  )}
+                </center>
+              </div>
+              <div className="mt-5 sm:mt-6 justify-center">
+                <button
+                  type="button"
+                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  onClick={() => {
+                    saveFileData();
+                  }}
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
+      </Dialog>
+
+      {/* modal */}
+      <Dialog
+        open={openUser}
+        as="div"
+        className="fixed inset-0 items-center justify-center"
+        onClose={setOpenUser}
+      >
+        <DialogPanel
+          transition
+          className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50`}
+        >
+          <div
+            className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+            onClick={(e) => {
+              if (e.target == e.currentTarget) setOpenUser(false);
+            }}
+          >
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <div
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:min-w-[45%] sm:w-full sm:p-6 ${
+                darkMode ? "bg-gray-600" : "bg-white"
+              }`}
+            >
+              <div>
+                <p
+                  className={`text-center font-medium ${
+                    darkMode ? "text-gray-200" : ""
+                  }`}
+                >
+                  Aperçu de l'utilisateur :
+                </p>
+                <dl
+                  className={`sm:divide-y ${
+                    darkMode ? "sm:divide-gray-500" : "sm:divide-gray-200"
+                  }`}
+                >
+                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
+                    <dt
+                      className={`text-sm font-medium whitespace-nowrap ${
+                        darkMode ? "text-gray-200" : "text-gray-500"
+                      }`}
+                    >
+                      Nom et prénom
+                    </dt>
+                    <dd
+                      className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                        darkMode ? "text-gray-300" : "text-gray-900"
+                      }`}
+                    >
+                      {ticket.userFirstName +
+                        " " +
+                        ticket.userLastName.toString().toUpperCase()}
+                    </dd>
+                    <dt
+                      className={`text-sm font-medium whitespace-nowrap ${
+                        darkMode ? "text-gray-200" : "text-gray-500"
+                      }`}
+                    >
+                      Ecole et année
+                    </dt>
+                    <dd
+                      className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                        darkMode ? "text-gray-300" : "text-gray-900"
+                      }`}
+                    >
+                      {ticket.title || "Ancien compte"}
+                    </dd>
+                  </div>
+                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
+                    <div
+                      className={`text-sm font-medium whitespace-nowrap ${
+                        darkMode ? "text-gray-200" : "text-gray-500"
+                      }`}
+                    >
+                      Adresse e-mail
+                    </div>
+                    <div
+                      className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                        darkMode ? "text-gray-300" : "text-gray-900"
+                      }`}
+                    >
+                      {ticket.email}
+                    </div>
+                    <div
+                      className={`text-sm font-medium whitespace-nowrap ${
+                        darkMode ? "text-gray-200" : "text-gray-500"
+                      }`}
+                    >
+                      Type de projet
+                    </div>
+                    <div
+                      className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${
+                        darkMode ? "text-gray-300" : "text-gray-900"
+                      }`}
+                    >
+                      {ticket.projectType}
                     </div>
                   </div>
-                ) : (
-                  <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                </dl>
+              </div>
+              <div className="mt-5 sm:mt-6">
+                <button
+                  type="button"
+                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  onClick={() => setOpenUser(false)}
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
+      </Dialog>
+
+      {/* modal */}
+      <Dialog
+        open={openStatus}
+        as="div"
+        className="fixed z-10 inset-0 overflow-y-auto"
+        onClose={setOpenStatus}
+      >
+        <DialogPanel
+          transition
+          className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50`}
+        >
+          <div
+            className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+            onClick={(e) => {
+              if (e.target == e.currentTarget) setOpenStatus(false);
+            }}
+          >
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <div
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
+                darkMode ? "bg-gray-600" : "bg-white"
+              }`}
+            >
+              <div className="sm:flex sm:items-start">
+                <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <ExclamationTriangleIcon
+                    className="h-6 w-6 text-red-600"
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <Dialog.Title
+                    as="h3"
+                    className={`text-lg leading-6 font-medium ${
+                      darkMode ? "text-gray-200" : "text-gray-900"
+                    }`}
+                  >
+                    {paramType === "cancel" ? (
+                      <p>Annulation de la demande</p>
+                    ) : (
+                      <p>
+                        Changer le {paramType === "status" ? "status" : "type"}{" "}
+                        du ticket{" "}
+                        {paramType === "status"
+                          ? ticket.statusName
+                          : ticket.projectType}
+                      </p>
+                    )}
+                  </Dialog.Title>
+                  {paramType === "cancel" ? (
+                    <div>
+                      <p className={`pt-4 ${darkMode ? "text-gray-200" : ""}`}>
+                        Attention, vous allez annuler la demande{" "}
+                        <strong>#{ticket.id}</strong>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <select
+                        onChange={(e) => setNewParam(e.target.value)}
+                        id="type"
+                        name="type"
+                        className={`statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none sm:text-sm rounded-md cursor-pointer ${
+                          darkMode
+                            ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
+                        defaultValue={
+                          paramType === "status"
+                            ? ticket.idStatus
+                            : ticket.idProjectType
+                        }
+                      >
+                        {(paramType === "status" ? status : projectType).map(
+                          (item, index) => {
+                            return (
+                              <option key={`param-${index}`} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          },
+                        )}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {paramType === "cancel" ? (
+                <div>
+                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
                     <button
-                      type="button"
-                      className="approve-button w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="confirmation-cancel-ticket-button bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 sm:col-span-2 rounded"
                       onClick={() => {
                         setOpenStatus(false);
-                        change();
+                        cancelTicket();
                       }}
                     >
-                      Confirmer
+                      Annuler
                     </button>
                     <button
-                      type="button"
-                      className={`cancel-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm ${
+                      className={`back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
                         darkMode
                           ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
                           : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
                       }`}
                       onClick={() => setOpenStatus(false)}
                     >
-                      Annuler
+                      Retour
                     </button>
                   </div>
-                )}
-              </div>
-            </Transition.Child>
+                </div>
+              ) : (
+                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    className="approve-button w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => {
+                      setOpenStatus(false);
+                      change();
+                    }}
+                  >
+                    Confirmer
+                  </button>
+                  <button
+                    type="button"
+                    className={`cancel-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm ${
+                      darkMode
+                        ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                        : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
+                    }`}
+                    onClick={() => setOpenStatus(false)}
+                  >
+                    Annuler
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </Dialog>
-      </Transition.Root>
+        </DialogPanel>
+      </Dialog>
     </LayoutPanel>
   );
 };
@@ -1309,7 +1270,7 @@ export async function getServerSideProps({ req, params }) {
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
   const id = params.id;
   const ticket = await fetchAPIAuth("/ticket/" + id, cookies.jwt);
-  if (ticket.status === 204) {
+  if (ticket.status === 204 || ticket.error) {
     return {
       redirect: {
         permanent: false,
@@ -1322,7 +1283,7 @@ export async function getServerSideProps({ req, params }) {
   const message = await fetchAPIAuth("/ticket/" + id + "/message", cookies.jwt);
   const authorizations = await fetchAPIAuth(
     "/user/authorization/",
-    cookies.jwt
+    cookies.jwt,
   );
   const status = await fetchAPIAuth("/status/");
   const projectType = await fetchAPIAuth("/projectType/");
@@ -1341,6 +1302,7 @@ export async function getServerSideProps({ req, params }) {
       status: status.data,
       projectType: projectType.data,
       printers: printers.data,
+      is_test_mode: process.env.IS_TEST_MODE == "true",
     }, // will be passed to the page component as props
   };
 }

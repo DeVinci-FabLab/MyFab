@@ -8,7 +8,7 @@ describe("Components navbarAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".goTo-history-button").click();
@@ -17,9 +17,11 @@ describe("Components navbarAdmin", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/history"
+            "localhost:3000/" +
+              Cypress.env().BASE_PATH +
+              "/panel/admin/history",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -31,7 +33,7 @@ describe("Components navbarAdmin", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".goTo-tickets-button").click();
@@ -40,9 +42,9 @@ describe("Components navbarAdmin", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 });

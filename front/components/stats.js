@@ -177,7 +177,7 @@ function Stats({ nav, stats }) {
           count_ticket: 0,
           count_user: 0,
           v_name: "ESILV",
-        }
+        },
       );
       const ticketStatsForEmvlByAllTime = ticketStatsForSchoolsAllTime.reduce(
         (accumulator, currentValue) => {
@@ -187,7 +187,7 @@ function Stats({ nav, stats }) {
           count_ticket: 0,
           count_user: 0,
           v_name: "EMLV",
-        }
+        },
       );
       const ticketStatsForIimByAllTime = ticketStatsForSchoolsAllTime.reduce(
         (accumulator, currentValue) => {
@@ -197,7 +197,7 @@ function Stats({ nav, stats }) {
           count_ticket: 0,
           count_user: 0,
           v_name: "IIM",
-        }
+        },
       );
 
       return getTicketStats({
@@ -218,11 +218,11 @@ function Stats({ nav, stats }) {
           (accumulator, currentValue) => {
             return currentValue.year === nav ? currentValue : accumulator;
           },
-          {}
+          {},
         );
         const ticketStatsForSchoolsByYear =
           stats.ticketStatsForSchoolsByYears.filter(
-            (currentValue) => currentValue.year === nav
+            (currentValue) => currentValue.year === nav,
           );
         const ticketStatsForEsilvByYear = ticketStatsForSchoolsByYear.reduce(
           (accumulator, currentValue) => {
@@ -233,7 +233,7 @@ function Stats({ nav, stats }) {
             count_user: 0,
             v_name: "ESILV",
             year: ticketStatsForSchoolsByYear.year,
-          }
+          },
         );
         const ticketStatsForEmvlByYear = ticketStatsForSchoolsByYear.reduce(
           (accumulator, currentValue) => {
@@ -244,7 +244,7 @@ function Stats({ nav, stats }) {
             count_user: 0,
             v_name: "EMLV",
             year: ticketStatsForSchoolsByYear.year,
-          }
+          },
         );
         const ticketStatsForIimByYear = ticketStatsForSchoolsByYear.reduce(
           (accumulator, currentValue) => {
@@ -255,7 +255,7 @@ function Stats({ nav, stats }) {
             count_user: 0,
             v_name: "IIM",
             year: ticketStatsForSchoolsByYear.year,
-          }
+          },
         );
 
         return getTicketStats({
@@ -270,17 +270,17 @@ function Stats({ nav, stats }) {
         });
       } else if (nav.match(regexMonth)) {
         const ticketStatusByMonth = stats.ticketStatusByMonths.filter(
-          (currentValue) => currentValue.month === nav
+          (currentValue) => currentValue.month === nav,
         );
         const ticketStatsByMonth = stats.ticketStatsByMonths.reduce(
           (accumulator, currentValue) => {
             return currentValue.month === nav ? currentValue : accumulator;
           },
-          {}
+          {},
         );
         const ticketStatsForSchoolsByMonth =
           stats.ticketStatsForSchoolsByMonths.filter(
-            (currentValue) => currentValue.month === nav
+            (currentValue) => currentValue.month === nav,
           );
         const ticketStatsForEsilvByMonth = ticketStatsForSchoolsByMonth.reduce(
           (accumulator, currentValue) => {
@@ -292,7 +292,7 @@ function Stats({ nav, stats }) {
             month: ticketStatsByMonth.month,
             v_name: "ESILV",
             year: ticketStatsByMonth.year,
-          }
+          },
         );
         const ticketStatsForEmvlByMonth = ticketStatsForSchoolsByMonth.reduce(
           (accumulator, currentValue) => {
@@ -304,7 +304,7 @@ function Stats({ nav, stats }) {
             month: ticketStatsByMonth.month,
             v_name: "EMLV",
             year: ticketStatsByMonth.year,
-          }
+          },
         );
         const ticketStatsForIimByMonth = ticketStatsForSchoolsByMonth.reduce(
           (accumulator, currentValue) => {
@@ -316,7 +316,7 @@ function Stats({ nav, stats }) {
             month: ticketStatsByMonth.month,
             v_name: "IIM",
             year: ticketStatsByMonth.year,
-          }
+          },
         );
 
         return getTicketStats({

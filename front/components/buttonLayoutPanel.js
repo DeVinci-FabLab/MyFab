@@ -9,7 +9,7 @@ export default function ButtonLayoutPanel({ item, suffix, darkMode }) {
         item.className.reduce(
           (accumulator, currentValue) =>
             accumulator + " " + currentValue + (suffix ? "-" + suffix : ""),
-          ""
+          "",
         ) +
           " " +
           (item.current
@@ -23,7 +23,7 @@ export default function ButtonLayoutPanel({ item, suffix, darkMode }) {
                   ? "bg-gray-700 hover:bg-gray-800 text-white hover:text-gray-100"
                   : "text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200"
               }`) +
-          " group flex items-center px-2 py-2 text-sm font-medium rounded-md select-none"
+          " group flex items-center px-2 py-2 text-sm font-medium rounded-md select-none",
       )}
       aria-current={item.current ? "page" : undefined}
     >
@@ -32,7 +32,7 @@ export default function ButtonLayoutPanel({ item, suffix, darkMode }) {
           item.current
             ? "text-gray-500"
             : "text-gray-400 group-hover:text-gray-500",
-          "mr-3 flex-shrink-0 h-6 w-6"
+          "mr-3 flex-shrink-0 h-6 w-6",
         )}
         aria-hidden="true"
       />

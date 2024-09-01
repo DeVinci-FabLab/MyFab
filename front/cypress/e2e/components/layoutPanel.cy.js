@@ -8,7 +8,7 @@ describe("Components layoutPanel", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".open-layout-button").click();
@@ -19,7 +19,7 @@ describe("Components layoutPanel", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -30,7 +30,7 @@ describe("Components layoutPanel", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin/",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".my-demand-button-large").click();
@@ -40,7 +40,7 @@ describe("Components layoutPanel", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -58,9 +58,9 @@ describe("Components layoutPanel", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -78,9 +78,9 @@ describe("Components layoutPanel", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin"
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/admin",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -98,9 +98,9 @@ describe("Components layoutPanel", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users"
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -118,9 +118,9 @@ describe("Components layoutPanel", () => {
       "http://" +
         path
           .normalize(
-            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users"
+            "localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
           )
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 });

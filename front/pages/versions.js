@@ -105,9 +105,11 @@ const versions = [
   },
   ,
   {
-    version: "1.1.2",
+    version: "1.2.0",
     date: "PAS-OFFICIEL",
     changes: [
+      "Mise à jours des dépendences du front-end",
+      "Correction d'un bug qui empêchait de signer les règles pour la nouvelle année scolaire",
       "Ajout d'une route de stats",
       "Lorsque un utilisateur entre un mauvais mot de passe, celui-ci est supprimé",
     ],

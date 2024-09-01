@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
-import { DotsVerticalIcon, TrashIcon } from "@heroicons/react/solid";
+import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/solid";
 import "moment/locale/fr";
 
 import LayoutPanel from "../../components/layoutPanel";
@@ -137,7 +137,7 @@ export default function NewPanel({ authorizations, highDemand }) {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
+        },
       );
     }
     router.replace(router.asPath);
@@ -324,7 +324,7 @@ export default function NewPanel({ authorizations, highDemand }) {
                                       <span className="sr-only">
                                         Open options
                                       </span>
-                                      <DotsVerticalIcon
+                                      <EllipsisVerticalIcon
                                         className="w-5 h-5"
                                         aria-hidden="true"
                                       />
@@ -338,7 +338,9 @@ export default function NewPanel({ authorizations, highDemand }) {
                                       leaveFrom="transform opacity-100 scale-100"
                                       leaveTo="transform opacity-0 scale-95"
                                     >
-                                      <Menu.Items className="mx-3 origin-top-right absolute right-7 w-48 mt-1 rounded-md shadow-lg z-10 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none">
+                                      <Menu.Items
+                                        className={`mx-3 origin-top-right absolute right-7 w-48 mt-1 rounded-md shadow-lg z-10 ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none ${darkMode ? "bg-gray-700" : "bg-gray-50"}`}
+                                      >
                                         <div className="py-1">
                                           <Menu.Item>
                                             {({ active }) => (
@@ -348,13 +350,17 @@ export default function NewPanel({ authorizations, highDemand }) {
                                                 }
                                                 className={classNames(
                                                   active
-                                                    ? "bg-gray-100 text-gray-900"
-                                                    : "text-gray-700",
-                                                  "delete-button group flex items-center px-4 py-2 text-sm"
+                                                    ? darkMode
+                                                      ? "bg-gray-600 text-gray-100"
+                                                      : "bg-gray-100 text-gray-800"
+                                                    : darkMode
+                                                      ? "bg-gray-700 text-gray-200"
+                                                      : "bg-gray-50 text-gray-700",
+                                                  "delete-button group flex items-center px-4 py-2 text-sm",
                                                 )}
                                               >
                                                 <TrashIcon
-                                                  className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-hover:cursor-pointer"
+                                                  className={`mr-3 h-5 w-5 group-hover:cursor-pointer ${darkMode ? "text-gray-200 group-hover:text-gray-300" : "text-gray-400 group-hover:text-gray-500"}`}
                                                   aria-hidden="true"
                                                 />
                                                 Supprimer
@@ -375,9 +381,9 @@ export default function NewPanel({ authorizations, highDemand }) {
                     <div className="grid place-items-center mb-10">
                       <div className="inline-flex mt-3">
                         <button
-                          className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 text-gray-800 ${
+                          className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 ${
                             darkMode
-                              ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                              ? "bg-gray-600 hover:bg-gray-500 text-gray-300"
                               : "bg-gray-300 hover:bg-gray-400"
                           }`}
                           onClick={() => nextPrevPage(-1)}
@@ -397,9 +403,9 @@ export default function NewPanel({ authorizations, highDemand }) {
                           </p>
                         </div>
                         <button
-                          className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 text-gray-800 ${
+                          className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 ${
                             darkMode
-                              ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                              ? "bg-gray-600 hover:bg-gray-500 text-gray-300"
                               : "bg-gray-300 hover:bg-gray-400"
                           }`}
                           onClick={() => nextPrevPage(1)}

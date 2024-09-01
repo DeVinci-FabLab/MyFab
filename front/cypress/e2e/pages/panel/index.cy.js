@@ -9,7 +9,7 @@ describe("Page panel/admin", () => {
 
     cy.location("pathname").should(
       "eq",
-      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/"),
     );
   });
 
@@ -42,7 +42,7 @@ describe("Page panel/admin", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 

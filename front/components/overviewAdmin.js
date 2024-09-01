@@ -8,7 +8,7 @@ const faqs = [
   {
     question: "Comment choisir une demande à traiter ?",
     answer:
-      "Les demandes sont triées du plus ancien, au plus récent. Pour choisir une demande, il faut commencer par les plus anciennes.",
+      "Les demandes sont triées par default du plus ancien, au plus récent. Pour choisir une demande, il faut commencer par les plus anciennes.",
   },
   {
     question: "Comment fonctionnent le système de priorité ?",
@@ -55,14 +55,18 @@ export default function OverviewAdmin({
                 darkMode={darkMode}
               />
             ) : (
-              <div className="p-4 md:p-5 rounded flex justify-between text-gray-700 bg-gray-100">
+              <div
+                className={`p-4 md:p-5 rounded flex justify-between ${darkMode ? "text-gray-200 bg-gray-700" : "text-gray-700 bg-gray-100"}`}
+              >
                 <p>
                   Il n'y a aucun ticket à traiter. Vous pouvez accéder à
                   l'historique des tickets déjà traités en cliquant sur le
                   bouton suivant.
                 </p>
                 <Link href="/panel/admin/history">
-                  <p className="inline-flex items-center space-x-1 font-semibold ml-2 text-indigo-600 hover:text-indigo-400">
+                  <p
+                    className={`inline-flex items-center space-x-1 font-semibold ml-2 ${darkMode ? "text-indigo-500 hover:text-indigo-300" : "text-indigo-600 hover:text-indigo-400"}`}
+                  >
                     <span>Accéder à l'historique</span>
                     <svg
                       className="hi-solid hi-arrow-right inline-block w-4 h-4"

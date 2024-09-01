@@ -75,7 +75,7 @@ export default function Settings({ authorizations }) {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
+          },
         );
       } else if (responseUpdatePassword.status === 204) {
         toast.error("Votre mot de passe actuel est incorrect.", {
@@ -295,9 +295,7 @@ export default function Settings({ authorizations }) {
                 </div>
                 {user.isMicrosoft == 0 ? (
                   <div
-                    className={`px-4 py-3 text-right sm:px-6 ${
-                      darkMode ? "border-gray-600" : "bg-gray-50"
-                    }`}
+                    className={`px-4 py-3 text-right sm:px-6 border-gray-600`}
                   >
                     <button
                       onClick={() => changePassword()}

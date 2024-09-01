@@ -91,7 +91,7 @@ export default function Register() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
+          },
         );
         router.push("/auth");
       } else if (responseRegister.error) {
@@ -108,7 +108,7 @@ export default function Register() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
+          },
         );
       }
     }

@@ -13,11 +13,11 @@ describe("Page youClickedOnTheLogo", () => {
         "/youClickedOnTheLogo",
       {
         failOnStatusCode: false,
-      }
+      },
     );
     cy.location("href").should(
       "eq",
-      "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     );
   });
 });

@@ -41,6 +41,8 @@ export function mock(path, jwt, options) {
       };
 
     default:
-      return { error: true };
+      return {
+        status: 204,
+      };
   }
 }
