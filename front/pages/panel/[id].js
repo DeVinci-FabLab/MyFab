@@ -512,7 +512,7 @@ const GestionTicket = ({
                                 </div>
                                 <div className="mt-1">
                                   <p
-                                    className={`line-clamp-2 text-sm ${
+                                    className={`text-sm ${
                                       darkMode
                                         ? "text-gray-300"
                                         : "text-gray-600"
