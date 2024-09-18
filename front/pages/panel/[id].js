@@ -818,7 +818,7 @@ const GestionTicket = ({
       <Dialog
         open={open}
         as="div"
-        className="fixed inset-0 flex items-center justify-center"
+        className="fixed inset-0 items-center justify-center"
         onClose={saveFileData}
       >
         {" "}
@@ -840,7 +840,7 @@ const GestionTicket = ({
             </span>
 
             <div
-              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 ${
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:min-w-[45%] sm:w-full sm:p-6 ${
                 darkMode ? "bg-gray-600" : "bg-white"
               }`}
             >
