@@ -200,7 +200,9 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         draggable: true,
         progress: undefined,
       });
-      router.push(window.location.href);
+      window.location.reload();
+      
+      //router.push(window.location.href);
       //setOpenStatus(false);
     } else {
       toast.error("Erreur avec le serveur", {
@@ -508,12 +510,12 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       <Dialog
         open={openStatus}
         as="div"
-        className="fixed inset-0 flex items-center justify-center"
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
         onClose={() => {}}
       >
         <DialogPanel
           transition
-          className={`w-full max-w-md rounded-xl p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50 inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
+          className={`w-full max-w-md rounded-xl p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
             darkMode ? "bg-gray-700" : "bg-white"
           }`}
         >
