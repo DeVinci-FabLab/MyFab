@@ -1,5 +1,5 @@
 import router from "next/router";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { setZero } from "../lib/function";
 import { dateDiff } from "../lib/date";
 

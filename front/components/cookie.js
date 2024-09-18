@@ -1,9 +1,3 @@
-import {
-  CursorClickIcon,
-  QuestionMarkCircleIcon,
-} from "@heroicons/react/outline";
-import { setCookies } from "cookies-next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 

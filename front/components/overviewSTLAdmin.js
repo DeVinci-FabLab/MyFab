@@ -1,6 +1,3 @@
-import { Disclosure } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/outline";
-import TablesAdmin from "./tablesAdmin";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";

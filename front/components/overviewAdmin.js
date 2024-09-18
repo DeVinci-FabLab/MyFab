@@ -1,5 +1,3 @@
-import { Disclosure, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/outline";
 import TablesAdmin from "./tablesAdmin";
 import Faq from "./faq";
 import Link from "next/link";
