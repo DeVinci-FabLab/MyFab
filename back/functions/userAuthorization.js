@@ -62,6 +62,7 @@ async function getUserAuth(app, userId) {
     console.log(resTestIfCorrelationExist[0]);
     return;
   }
+
   if (resTestIfCorrelationExist[1].length === 0) {
     const emptyRes = {};
     for (const column of resDescGdRole[1]) {
@@ -71,6 +72,22 @@ async function getUserAuth(app, userId) {
     return emptyRes;
   }
   const userAuth = resTestIfCorrelationExist[1].reduce(authReducer);
+  const resGetRulesValid = await app.executeQuery(
+    app.db,
+    `SELECT
+      CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
+      FROM users AS u
+      WHERE u.i_id = ?`,
+    [userId]
+  );
+
+  if (resGetRulesValid[0] || resGetRulesValid[1].length !== 1) {
+    console.log(resGetRulesValid[0]);
+    return;
+  }
+
+  userAuth.acceptedRule = resGetRulesValid[1][0].acceptedRule;
+
   return userAuth;
 }
 
