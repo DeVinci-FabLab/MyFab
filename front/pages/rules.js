@@ -52,6 +52,7 @@ async function validateRules() {
       progress: undefined,
     });
   }
+
   setTimeout(async () => {
     const responseAuth = await fetchAPIAuth({
       method: "GET",

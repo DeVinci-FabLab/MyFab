@@ -332,6 +332,18 @@ export async function getServerSideProps({ req }) {
   const authorizations = cookies.jwt
     ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
     : null;
+
+  if (!authorizations.data.acceptedRule) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/rules/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);

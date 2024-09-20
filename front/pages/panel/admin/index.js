@@ -172,6 +172,18 @@ export async function getServerSideProps({ req }) {
     };
   }
 
+  if (!authorizations.data.acceptedRule) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/rules/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
   return {
     props: {
       authorizations: authorizations.data,

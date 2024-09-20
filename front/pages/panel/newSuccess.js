@@ -497,6 +497,18 @@ export async function getServerSideProps({ req, query }) {
     };
   }
 
+  if (!authorizations.data.acceptedRule) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/rules/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
   const idTicket = query.id;
   const ticket = !idTicket
     ? { error: true }

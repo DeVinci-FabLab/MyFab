@@ -38,13 +38,16 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
   const [version] = useState(process.env.VERSION);
 
   const jwt = getCookie("jwt");
+
   let { user, setUser, darkMode, setDarkMode, roles } = UserUse(
     jwt,
     ({ user }) => {
       if (user.id !== 0 && !user.acceptedRule) {
-        const url = router.asPath;
-        const encodedUrl = encodeURIComponent(url);
-        router.push("/rules?from=" + encodedUrl);
+        setInterval(() => {
+          const url = router.asPath;
+          const encodedUrl = encodeURIComponent(url);
+          router.push("/rules?from=" + encodedUrl);
+        }, 3000);
       } else if (user.id !== 0 && !user.schoolValid) {
         fetchAPIAuth("/school/").then((school) => {
           setSchools(school.data);
@@ -201,7 +204,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         progress: undefined,
       });
       window.location.reload();
-      
+
       //router.push(window.location.href);
       //setOpenStatus(false);
     } else {

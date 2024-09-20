@@ -1285,6 +1285,19 @@ export async function getServerSideProps({ req, params }) {
     "/user/authorization/",
     cookies.jwt,
   );
+
+  if (!authorizations.data.acceptedRule) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/rules/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
   const status = await fetchAPIAuth("/status/");
   const projectType = await fetchAPIAuth("/projectType/");
   const printers = await fetchAPIAuth("/printer/");

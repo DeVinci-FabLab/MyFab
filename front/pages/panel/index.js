@@ -468,6 +468,7 @@ export async function getServerSideProps({ req }) {
   const authorizations = cookies.jwt
     ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
     : null;
+
   const highDemand = cookies.jwt
     ? await fetchAPIAuth("/ticket/highDemand/", cookies.jwt)
     : null;
@@ -478,6 +479,18 @@ export async function getServerSideProps({ req }) {
       redirect: {
         permanent: false,
         destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
+  if (!authorizations.data.acceptedRule) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/rules/?from=" + encodedUrl,
       },
       props: {},
     };
