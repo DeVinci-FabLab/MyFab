@@ -2,13 +2,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ButtonLayoutPanel({ item, suffix, darkMode }) {
+export default function ButtonLayoutPanel({ item, darkMode }) {
   return (
     <p
       className={classNames(
         item.className.reduce(
-          (accumulator, currentValue) =>
-            accumulator + " " + currentValue + (suffix ? "-" + suffix : ""),
+          (accumulator, currentValue) => accumulator + " " + currentValue,
           "",
         ) +
           " " +

@@ -203,7 +203,9 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         draggable: true,
         progress: undefined,
       });
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
 
       //router.push(window.location.href);
       //setOpenStatus(false);

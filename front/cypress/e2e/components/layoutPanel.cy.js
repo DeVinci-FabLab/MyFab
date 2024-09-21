@@ -12,7 +12,7 @@ describe("Components layoutPanel", () => {
     );
 
     cy.get(".open-layout-button").click();
-    cy.get(".my-demand-button-small").click();
+    cy.get(".my-demand-button").click();
 
     cy.location("href").should(
       "eq",
@@ -33,7 +33,7 @@ describe("Components layoutPanel", () => {
       },
     );
 
-    cy.get(".my-demand-button-large").click();
+    cy.get(".my-demand-button").click();
 
     cy.location("href").should(
       "eq",
@@ -51,7 +51,7 @@ describe("Components layoutPanel", () => {
     });
 
     cy.get(".open-layout-button").click();
-    cy.get(".users-demand-button-small").click();
+    cy.get(".users-demand-button").click();
 
     cy.location("href").should(
       "eq",
@@ -71,7 +71,7 @@ describe("Components layoutPanel", () => {
       failOnStatusCode: false,
     });
 
-    cy.get(".users-demand-button-large").click();
+    cy.get(".users-demand-button").click();
 
     cy.location("href").should(
       "eq",
@@ -91,7 +91,7 @@ describe("Components layoutPanel", () => {
     });
 
     cy.get(".open-layout-button").click();
-    cy.get(".users-button-small").click();
+    cy.get(".users-button").click();
 
     cy.location("href").should(
       "eq",
@@ -111,7 +111,7 @@ describe("Components layoutPanel", () => {
       failOnStatusCode: false,
     });
 
-    cy.get(".users-button-large").click();
+    cy.get(".users-button").click();
 
     cy.location("href").should(
       "eq",

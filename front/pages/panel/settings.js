@@ -333,17 +333,6 @@ export async function getServerSideProps({ req }) {
     ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
     : null;
 
-  if (!authorizations.data.acceptedRule) {
-    const url = req.url;
-    const encodedUrl = encodeURIComponent(url);
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/rules/?from=" + encodedUrl,
-      },
-      props: {},
-    };
-  }
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);
@@ -351,6 +340,18 @@ export async function getServerSideProps({ req }) {
       redirect: {
         permanent: false,
         destination: "/auth/?from=" + encodedUrl,
+      },
+      props: {},
+    };
+  }
+
+  if (!authorizations.data.acceptedRule) {
+    const url = req.url;
+    const encodedUrl = encodeURIComponent(url);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/rules/?from=" + encodedUrl,
       },
       props: {},
     };

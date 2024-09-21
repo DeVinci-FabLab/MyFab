@@ -1,6 +1,10 @@
 /// <reference types="cypress" />
 
 describe("Page panel/:id", () => {
+  beforeEach(() => {
+    cy.viewport(1200, 600);
+  });
+
   it("Show user infos", () => {
     cy.setCookie("jwt", "admin");
     cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1", {
