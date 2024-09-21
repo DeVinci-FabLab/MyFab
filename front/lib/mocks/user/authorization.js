@@ -10,6 +10,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 1,
           myFabAgent: 1,
           blogAuthor: 1,
+          acceptedRule: 1,
         },
       };
 
@@ -23,6 +24,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 1,
           blogAuthor: 1,
+          acceptedRule: 1,
         },
       };
 
@@ -36,6 +38,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 0,
           blogAuthor: 0,
+          acceptedRule: 1,
         },
       };
 
@@ -49,6 +52,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 0,
           blogAuthor: 0,
+          acceptedRule: 1,
         },
       };
 
@@ -62,6 +66,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 1,
           blogAuthor: 0,
+          acceptedRule: 0,
         },
       };
 
