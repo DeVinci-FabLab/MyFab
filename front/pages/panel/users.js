@@ -305,12 +305,12 @@ export default function Settings({ authorizations, rolesList }) {
           <Dialog
             open={open}
             as="div"
-            className="fixed inset-0 flex items-center justify-center"
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
             onClose={setOpen}
           >
             <DialogPanel
               transition
-              className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50 w-8/12`}
+              className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 w-8/12`}
             >
               <div
                 className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
