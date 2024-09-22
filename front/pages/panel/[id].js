@@ -183,7 +183,7 @@ const GestionTicket = ({
         : {
             method: "GET",
             responseType: "blob",
-            url: "/stl/cube.stl",
+            url: process.env.BASE_PATH + "/stl/cube.stl",
           };
 
     await axios(options).then((response) => {
