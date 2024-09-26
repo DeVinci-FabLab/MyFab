@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import router from "next/router";
 import Seo from "../../components/seo";
 import WebSocket from "../../components/webSocket";
+import axios from "axios";
 
 import { UserUse } from "../../context/provider";
 
@@ -80,14 +81,14 @@ export default function NewPanel({ authorizations, projectType }) {
     for (let i = 0; i < file.length; i++) {
       data.append(`filedata`, file[i][0]);
     }
+
     data.append("comment", description);
     data.append("groupNumber", group);
     data.append("projectType", projectType[type].id);
     const responsePostTicket = await fetchAPIAuth({
       method: "POST",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         dvflCookie: jwt,
       },
 
@@ -96,6 +97,7 @@ export default function NewPanel({ authorizations, projectType }) {
       onUploadProgress: (progress) =>
         setPercent(percents(progress.loaded, progress.total)),
     });
+
     if (responsePostTicket.error) {
       toast.error(
         "Une erreur est survenue, veuillez vérifier le formulaire ou actualiser la page.",
@@ -111,11 +113,6 @@ export default function NewPanel({ authorizations, projectType }) {
       );
       setUserClick(false);
     } else {
-      document.getElementById("status").scrollIntoView();
-      setFile([]);
-      setDescription("");
-      setType(0);
-      setGroup(null);
       toast.success(
         "Le ticket #" + setZero(responsePostTicket.data.id) + " a été créé !",
         {
