@@ -363,13 +363,13 @@ export default function NewPanel({ ticket, file, authorizations }) {
       <Dialog
         open={open}
         as="div"
-        className="fixed inset-0 flex items-center justify-center"
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
         onClose={saveFileData}
       >
         {" "}
         <DialogPanel
           transition
-          className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 bg-black bg-opacity-50`}
+          className={`duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0`}
         >
           <div
             className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
@@ -481,9 +481,6 @@ export async function getServerSideProps({ req, query }) {
   const cookies = parseCookies(req);
   const authorizations = cookies.jwt
     ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
-    : null;
-  const highDemand = cookies.jwt
-    ? await fetchAPIAuth("/ticket/highDemand/", cookies.jwt)
     : null;
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
