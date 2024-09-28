@@ -56,8 +56,6 @@ export default function NewPanel({ authorizations, highDemand }) {
   useEffect(function () {
     if (user.error != undefined) {
       router.push("/404");
-    } else if (!user.acceptedRule) {
-      router.push("/rules");
     }
     update();
   }, []);

@@ -14,6 +14,7 @@ const authReducer = (previousValue, currentValue) => {
 module.exports.getUserAuth = getUserAuth;
 async function getUserAuth(app, userId) {
   const resDescGdRole = await app.executeQuery(app.db, "DESC `gd_roles`", []);
+
   // Error with the sql request
   if (resDescGdRole[0]) {
     console.log(resDescGdRole[0]);
@@ -50,6 +51,12 @@ async function getUserAuth(app, userId) {
     }
   }
 
+  const emptyRes = {};
+  for (const column of resDescGdRole[1]) {
+    if (!banColumn.includes(column.Field))
+      emptyRes[column.Field.split("_")[1]] = 0;
+  }
+
   const resTestIfCorrelationExist = await app.executeQuery(
     app.db,
     "SELECT " +
@@ -63,15 +70,10 @@ async function getUserAuth(app, userId) {
     return;
   }
 
-  if (resTestIfCorrelationExist[1].length === 0) {
-    const emptyRes = {};
-    for (const column of resDescGdRole[1]) {
-      if (!banColumn.includes(column.Field))
-        emptyRes[column.Field.split("_")[1]] = 0;
-    }
-    return emptyRes;
-  }
-  const userAuth = resTestIfCorrelationExist[1].reduce(authReducer);
+  const userAuth =
+    resTestIfCorrelationExist[1].length === 0
+      ? emptyRes
+      : resTestIfCorrelationExist[1].reduce(authReducer);
   const resGetRulesValid = await app.executeQuery(
     app.db,
     `SELECT

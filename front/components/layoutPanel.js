@@ -42,13 +42,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
   let { user, setUser, darkMode, setDarkMode, roles } = UserUse(
     jwt,
     ({ user }) => {
-      if (user.id !== 0 && !user.acceptedRule) {
-        setInterval(() => {
-          const url = router.asPath;
-          const encodedUrl = encodeURIComponent(url);
-          router.push("/rules?from=" + encodedUrl);
-        }, 3000);
-      } else if (user.id !== 0 && !user.schoolValid) {
+      if (user.id !== 0 && !user.schoolValid) {
         fetchAPIAuth("/school/").then((school) => {
           setSchools(school.data);
           setOpenStatus(true);
