@@ -435,6 +435,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                       id="comment"
                       name="comment"
                       rows={3}
+                      maxLength="256"
                       onChange={(e) => {
                         ticketFile.comment = e.target.value;
                         setTicketFile(ticketFile);
