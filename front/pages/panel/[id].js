@@ -550,8 +550,11 @@ const GestionTicket = ({
                                   darkMode ? "text-gray-200" : "text-gray-500"
                                 }`}
                               >
-                                Vous pouvez communiquer avec les membres du
-                                FabLab via ce formulaire.
+                                Vous pouvez communiquer avec{" "}
+                                {authorizations.myFabAgent
+                                  ? "le demandeur"
+                                  : "les membres du FabLab"}{" "}
+                                via ce formulaire.
                               </p>
                             </div>
                           </ul>
@@ -961,7 +964,13 @@ const GestionTicket = ({
                     </div>
                   ) : (
                     <div>
-                      <p className="text-center font-medium">Commentaire:</p>
+                      <p
+                        className={`text-center font-medium ${
+                          darkMode ? "text-gray-100" : ""
+                        }`}
+                      >
+                        Commentaire:
+                      </p>
                       <textarea
                         id="comment"
                         name="comment"
@@ -970,7 +979,11 @@ const GestionTicket = ({
                           ticketFile.comment = e.target.value;
                           setTicketFile(ticketFile);
                         }}
-                        className="comment-file-textarea mt-5 max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                        className={`comment-file-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
+                          darkMode
+                            ? "border-gray-500 bg-gray-600 text-white focus:border-indigo-700 focus:ring-indigo-700"
+                            : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                        }`}
                         defaultValue={ticketFile.comment}
                       />
                     </div>
