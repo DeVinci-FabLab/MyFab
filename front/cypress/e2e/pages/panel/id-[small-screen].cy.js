@@ -2,7 +2,7 @@
 
 describe("Page panel/:id", () => {
   beforeEach(() => {
-    cy.viewport(1200, 600);
+    cy.viewport(800, 1200);
   });
 
   it("Show user infos", () => {
