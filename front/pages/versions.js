@@ -112,6 +112,7 @@ const versions = [
       "Correction d'un bug qui empêchait de signer les règles pour la nouvelle année scolaire",
       "Ajout d'une route de stats",
       "Lorsque un utilisateur entre un mauvais mot de passe, celui-ci est supprimé",
+      "Les messages du chat dans un ticket s'affiche maintenant sur plusieurs lignes",
     ],
   },
 ];
