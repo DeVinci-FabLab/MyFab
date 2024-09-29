@@ -530,7 +530,7 @@ const GestionTicket = ({
                                 id="comment"
                                 name="comment"
                                 rows={3}
-                                maxlength="1000"
+                                maxLength="1000"
                                 onChange={(e) => setComment(e.target.value)}
                                 className={`chat-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
                                   darkMode

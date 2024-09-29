@@ -192,7 +192,7 @@ export default function NewPanel({ authorizations, projectType }) {
                           id="about"
                           name="about"
                           rows={3}
-                          maxlength="1000"
+                          maxLength="1000"
                           className={`description-textarea shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md ${
                             showMissingField && description == ""
                               ? darkMode
