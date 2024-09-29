@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  MenuIcon,
-  XIcon,
-  CubeIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/solid";
+import { CubeIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { withRouter } from "next/router";
 import { logout } from "../lib/function";
 
@@ -34,11 +29,7 @@ function Navbar({ router, user, role }) {
                   {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                     <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    )}
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   </Disclosure.Button>
                 </div>
                 <div className="flex-shrink-0 flex items-center">

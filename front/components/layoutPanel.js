@@ -9,7 +9,6 @@ import {
   BeakerIcon,
   CubeIcon,
   UsersIcon,
-  ClipboardListIcon,
   MoonIcon,
 } from "@heroicons/react/24/outline";
 import ButtonLayoutPanel from "./buttonLayoutPanel";
@@ -83,15 +82,6 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       current: pn === "/panel/users",
       show: authorizations.myFabAgent == 1,
     },
-    //{ name: "Gestions du blog", href: process.env.GHOST_URL + "/ghost", icon: ClipboardListIcon, current: false, show: authorizations.myFabAgent == 1 },
-    {
-      name: "Assemblée générale",
-      className: ["ag-button"],
-      href: "/ag/settings",
-      icon: ClipboardListIcon,
-      current: false,
-      show: false,
-    }, // Mettre les autorisations
     {
       name: "Pannel d'administration",
       className: [],
