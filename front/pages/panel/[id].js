@@ -510,16 +510,18 @@ const GestionTicket = ({
                                       : format(r.creationDate, "frAt")}
                                   </div>
                                 </div>
-                                <div className="mt-1">
-                                  <p
-                                    className={`text-sm ${
-                                      darkMode
-                                        ? "text-gray-300"
-                                        : "text-gray-600"
-                                    }`}
-                                  >
-                                    {r.content}
-                                  </p>
+                                <div
+                                  className={`mt-1 text-sm ${
+                                    darkMode ? "text-gray-300" : "text-gray-600"
+                                  }`}
+                                >
+                                  {r.content
+                                    .split("\n")
+                                    .map((message, indexLine) => (
+                                      <p key={`message-${index}-${indexLine}`}>
+                                        {message}
+                                      </p>
+                                    ))}
                                 </div>
                               </li>
                             ))}
