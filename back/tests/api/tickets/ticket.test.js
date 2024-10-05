@@ -1383,6 +1383,36 @@ describe("POST /api/ticket/", () => {
     expect(response.type).toBe("code");
   });
 
+  test("400_noComment", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        io,
+      },
+      body: {
+        projectType: 1,
+        comment:
+          "Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères.",
+      },
+      files: {
+        filedata: [],
+      },
+    };
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
   test("400_groupNumberNan", async () => {
     //Execute
     const data = {

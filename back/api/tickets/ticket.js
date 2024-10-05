@@ -697,7 +697,8 @@ async function postTicket(data) {
     !data.body.projectType ||
     isNaN(data.body.projectType) ||
     isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) ||
-    !data.body.comment
+    !data.body.comment ||
+    data.body.comment.length > 1050
   ) {
     return {
       type: "code",
