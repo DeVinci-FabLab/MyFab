@@ -95,6 +95,25 @@ export function mock(path, jwt, options) {
           darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
         },
       };
+    case "1410":
+      return {
+        status: 200,
+        data: {
+          id: 4,
+          firstName: "1410",
+          lastName: "1410",
+          email: "1410@test.com",
+          creationDate: "2015-10-19T22:24:66.212Z",
+          discordid: null,
+          language: "fr",
+          title: "Test",
+          schoolValid: true,
+          isMicrosoft: 0,
+          acceptedRule: 1,
+          mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
+        },
+      };
 
     default:
       return { error: true };
