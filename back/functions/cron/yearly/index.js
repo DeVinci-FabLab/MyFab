@@ -1,9 +1,9 @@
 const CronJob = require("cron").CronJob;
-const validRulesForRoot = require("./validRulesForRoot").action;
+const removeYearAndSchool = require("./removeYearAndSchool").action;
 
 module.exports.action = action;
 async function action(app) {
-  await validRulesForRoot(app);
+  await removeYearAndSchool(app);
 }
 
 module.exports.run = async (app) => {
