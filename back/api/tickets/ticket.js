@@ -121,16 +121,18 @@ async function getTicketAllFromUser(data) {
   const page = data.query && data.query.page ? data.query.page : 0;
   const query = `SELECT pt.i_id AS 'id',
             CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
-            tpt.v_name AS 'projectType', 
-            COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+            tpt.v_name AS 'projectType',
+            COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
+            CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'b_isold',
             pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
             stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
-            tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor' 
-            FROM printstickets AS pt 
-            INNER JOIN users AS u ON pt.i_idUser = u.i_id 
-            INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
+            tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor'
+            FROM printstickets AS pt
+            INNER JOIN users AS u ON pt.i_idUser = u.i_id
+            INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id
             INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-            LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+            LEFT JOIN gd_school AS sch ON pt.i_useridschool = sch.i_id
+            LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
             LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
             WHERE pt.i_idUser = ? 
             AND pt.b_isDeleted = 0 
@@ -268,7 +270,8 @@ async function getTicketAll(data) {
   const query = `SELECT pt.i_id AS 'id',
               CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
               tpt.v_name AS 'projectType',
-              COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+              COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
+              CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'b_isold',
               pt.i_groupNumber AS 'groupNumber',
               pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
               stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
@@ -278,7 +281,8 @@ async function getTicketAll(data) {
               INNER JOIN users AS u ON pt.i_idUser = u.i_id 
               INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
               INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-              LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+              LEFT JOIN gd_school AS sch ON pt.i_useridschool = sch.i_id
+              LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
               LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
               WHERE pt.b_isDeleted = 0
              ${selectOpenOnly ? "AND stat.b_isOpen = 1" : ""}
@@ -461,7 +465,8 @@ async function getTicketById(data) {
   const querySelect = `SELECT pt.i_id AS 'id', pt.i_idUser AS 'idUser',CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS 'userName',
                 u.v_firstName AS 'userFirstName', u.v_lastName AS 'userLastName',
                 tpt.v_name AS 'projectType', pt.i_projecttype AS 'idProjectType', 
-                COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
+                CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'b_isold',
                 u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
                 pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
                 stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
@@ -470,7 +475,8 @@ async function getTicketById(data) {
                 INNER JOIN users AS u ON pt.i_idUser = u.i_id 
                 INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
                 INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-                LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                LEFT JOIN gd_school AS sch ON pt.i_useridschool = sch.i_id
+                LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
                 LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
                 WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
@@ -762,9 +768,11 @@ async function postTicket(data) {
     };
   }
 
-  const queryCreateTicket = `INSERT INTO printstickets (i_idUser, i_projecttype, i_groupNumber, i_priority, i_status)
-                            VALUES (?, ?, ?, (SELECT i_id FROM gd_ticketpriority WHERE v_name = 'Normal'), (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert'));`;
+  const queryCreateTicket = `INSERT INTO printstickets (i_idUser, i_useridschool, i_userschoolyear, i_projecttype, i_groupNumber, i_priority, i_status)
+                            VALUES (?, (SELECT i_idschool FROM users WHERE i_id = ?), (SELECT i_schoolyear FROM users WHERE i_id = ?), ?, ?, (SELECT i_id FROM gd_ticketpriority WHERE v_name = 'Normal'), (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert'));`;
   const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [
+    userId,
+    userId,
     userId,
     data.body.projectType,
     data.body.groupNumber === "" ? null : data.body.groupNumber,

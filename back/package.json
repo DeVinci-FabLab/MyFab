@@ -46,6 +46,7 @@
   "devDependencies": {
     "@alex_neo/jest-expect-message": "^1.0.5",
     "jest": "^27.5.1",
+    "nodemon": "^3.1.7",
     "prettier": "2.8.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3"
