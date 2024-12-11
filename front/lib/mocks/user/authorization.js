@@ -71,6 +71,7 @@ export function mock(path, jwt, options) {
       };
 
     case "1410":
+    case "1212":
       return {
         status: 200,
         data: {

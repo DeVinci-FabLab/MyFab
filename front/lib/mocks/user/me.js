@@ -96,13 +96,14 @@ export function mock(path, jwt, options) {
         },
       };
     case "1410":
+    case "1212":
       return {
         status: 200,
         data: {
           id: 4,
-          firstName: "1410",
-          lastName: "1410",
-          email: "1410@test.com",
+          firstName: "fireworks",
+          lastName: "fireworks",
+          email: "fireworks@test.com",
           creationDate: "2015-10-19T22:24:66.212Z",
           discordid: null,
           language: "fr",
