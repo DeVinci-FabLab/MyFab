@@ -28,7 +28,7 @@ function readJsonFile() {
     // Vérifier si le fichier existe
     if (fs.existsSync(filePath)) {
       // Lire le contenu du fichier
-      const data = fs.readFileSync(filePath, 'utf8');
+      const data = fs.readFileSync(filePath, "utf8");
       // Retourner le contenu du fichier en tant qu'objet JSON
       return JSON.parse(data);
     } else {
@@ -37,7 +37,7 @@ function readJsonFile() {
     }
     /* c8 ignore start */
   } catch (error) {
-    console.error('Erreur lors de la lecture du fichier JSON:', error);
+    console.error("Erreur lors de la lecture du fichier JSON:", error);
     // Retourner les valeurs par défaut en cas d'erreur
     return { scoreboard: [], cheaters: [] };
   }
@@ -55,7 +55,11 @@ async function codyChallengePost(data) {
     };
   }
 
-  if (!data?.body?.score || !Number.isInteger(data.body.score) || !data?.body?.key) {
+  if (
+    !data?.body?.score ||
+    !Number.isInteger(data.body.score) ||
+    !data?.body?.key
+  ) {
     return {
       type: "code",
       code: 400,
@@ -88,10 +92,10 @@ async function codyChallengePost(data) {
   const value = {
     email,
     score,
-    date
+    date,
   };
   const jsonData = readJsonFile();
-  
+
   if (key === trueKey) {
     jsonData.scoreboard.push(value);
     jsonData.scoreboard.sort((a, b) => a.score - b.score);
