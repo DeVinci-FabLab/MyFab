@@ -72,7 +72,7 @@ const FallingEmojis = ({ children }) => {
     (process.env.IS_TEST_MODE === "true" && jwt === "1212") ||
     (process.env.IS_TEST_MODE !== "true" &&
       roles.length !== 0 &&
-      date === 11 &&
+      date === 12 &&
       month == 11)
   )
     type = "1212"; //Activation le 12 decembre
