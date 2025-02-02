@@ -15,7 +15,7 @@ import { UserUse } from "../../context/provider";
 
 const percents = (value, total) => Math.round(value / total) * 100;
 
-export default function NewPanel({ authorizations, projectType }) {
+export default function NewPanel({ authorizations, projectType, materials }) {
   const jwt = getCookie("jwt");
   const { user, darkMode } = UserUse(jwt);
 
@@ -25,6 +25,7 @@ export default function NewPanel({ authorizations, projectType }) {
   const [file, setFile] = useState([]);
   const [description, setDescription] = useState("");
   const [type, setType] = useState(0);
+  const [material, setMaterial] = useState(0);
   const [group, setGroup] = useState("");
   const [noGroup, setNoGroup] = useState(false);
   const [percent, setPercent] = useState(0);
@@ -85,6 +86,7 @@ export default function NewPanel({ authorizations, projectType }) {
     data.append("comment", description);
     data.append("groupNumber", group);
     data.append("projectType", projectType[type].id);
+    data.append("projectMaterial", materials[material].id);
     const responsePostTicket = await fetchAPIAuth({
       method: "POST",
       headers: {
@@ -314,6 +316,42 @@ export default function NewPanel({ authorizations, projectType }) {
 
                     <div>
                       <label
+                        htmlFor="type"
+                        className={`block text-sm font-medium ${
+                          darkMode ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Type de matériaux
+                      </label>
+                      <select
+                        onChange={(e) => setMaterial(e.target.value)}
+                        id="type"
+                        name="type"
+                        className={`material-select mt-1 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md ${
+                          darkMode
+                            ? "text-gray-200 border-gray-600 bg-gray-700 focus:border-indigo-700 focus:ring-indigo-700"
+                            : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
+                      >
+                        {materials.map((item, index) => {
+                          return (
+                            <option key={`materials-${index}`} value={index}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <p
+                        className={`mt-2 text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
+                        Si vous souhaitez une impression standard en plastique, selectionnez FDM. Vidéo exemple du <a href="https://www.youtube.com/watch?v=m_QhY1aABsE" target="_blank" className="text-sky-600">FDM</a>.
+                      </p>
+                    </div>
+
+                    <div>
+                      <label
                         className={`block text-sm font-medium ${
                           showMissingField && file.length < 1
                             ? "text-red-500"
@@ -491,7 +529,8 @@ export async function getServerSideProps({ req }) {
   const authorizations = cookies.jwt
     ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
     : null;
-  const projectTypeList = await fetchAPIAuth("/projectType/");
+    const projectTypeList = await fetchAPIAuth("/projectType/");
+    const materialList = await fetchAPIAuth("/material/");
 
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;
@@ -521,6 +560,7 @@ export async function getServerSideProps({ req }) {
     props: {
       authorizations: authorizations.data,
       projectType: projectTypeList.data,
+      materials: materialList.data,
     }, // will be passed to the page component as props
   };
 }

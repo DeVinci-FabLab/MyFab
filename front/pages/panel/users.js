@@ -354,7 +354,11 @@ export default function Settings({ authorizations, rolesList }) {
                           Utilisateur <strong>#{setZero(data.id)}</strong>:{" "}
                           {data.firstName} {data.lastName}
                         </p>
-                        <div>{data.title ? data.title : "Ancien compte"}</div>
+                        <div>
+                          {data.title
+                            ? `${data.b_isold ? "Aciennement " : ""}${data.title}`
+                            : "Ancien compte"}
+                        </div>
                         <div>
                           <div className="space-x-1 text-center">
                             {userRole.data.map((r, index) => {

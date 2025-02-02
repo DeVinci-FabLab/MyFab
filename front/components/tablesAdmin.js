@@ -139,6 +139,23 @@ export default function TablesAdmin({
               >
                 <div
                   className="inline-flex"
+                  onClick={() => changeCollumnState("material")}
+                >
+                  Matériaux
+                  {getChevron(collumnState, "material")}
+                </div>
+              </th>
+              <th
+                className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
+                  changeCollumnDefined ? "cursor-pointer select-none" : ""
+                } ${
+                  darkMode
+                    ? "text-white bg-gray-600"
+                    : "text-gray-700 bg-gray-100"
+                }`}
+              >
+                <div
+                  className="inline-flex"
                   onClick={() => changeCollumnState("status")}
                 >
                   État
@@ -189,6 +206,13 @@ export default function TablesAdmin({
                       className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
                     >
                       {r.projectType}
+                    </div>
+                  </td>
+                  <td className="p-3 text-center">
+                    <div
+                      className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
+                    >
+                      {r.material}
                     </div>
                   </td>
                   <td className="p-3 text-center">

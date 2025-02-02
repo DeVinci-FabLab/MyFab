@@ -28,6 +28,7 @@ export function mock(path, jwt, options) {
                 statusName: "Ouvert",
                 title: "Date test",
                 userName: "Secondes",
+                material: "FDM",
               },
               {
                 creationDate: date.setMinutes(date.getMinutes() - 2),
@@ -42,6 +43,7 @@ export function mock(path, jwt, options) {
                 statusName: "Ouvert",
                 title: "Date test",
                 userName: "Minutes",
+                material: "FDM",
               },
               {
                 creationDate: date.setHours(date.getHours() - 3),
@@ -56,6 +58,7 @@ export function mock(path, jwt, options) {
                 statusName: "Ouvert",
                 title: "Date test",
                 userName: "Heures",
+                material: "FDM",
               },
               {
                 creationDate: date.setDate(date.getDate() - 4),
@@ -70,6 +73,7 @@ export function mock(path, jwt, options) {
                 statusName: "Ouvert",
                 title: "Date test",
                 userName: "Jours",
+                material: "FDM",
               },
               {
                 creationDate: date.setMonth(date.getMonth() - 5),
@@ -84,6 +88,7 @@ export function mock(path, jwt, options) {
                 statusName: "Ouvert",
                 title: "Date test",
                 userName: "Mois",
+                material: "FDM",
               },
               {
                 creationDate: date.setFullYear(date.getFullYear() - 6),
@@ -98,6 +103,7 @@ export function mock(path, jwt, options) {
                 statusName: "Ouvert",
                 title: "Date test",
                 userName: "Années",
+                material: "FDM",
               },
             ],
           },
@@ -120,6 +126,7 @@ export function mock(path, jwt, options) {
               statusName: "Ouvert",
               title: "Etudiant1",
               userName: "Etudiant 1",
+              material: "FDM",
             },
             {
               creationDate: "2023-06-18T08:00:24.000Z",
@@ -134,6 +141,7 @@ export function mock(path, jwt, options) {
               statusName: "Ouvert",
               title: "Etudiant1",
               userName: "Etudiant 1",
+              material: "SLA",
             },
           ],
         },

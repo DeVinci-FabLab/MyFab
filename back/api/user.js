@@ -166,7 +166,7 @@ async function userGetAll(data) {
                 u.v_lastName AS lastName,
                 u.v_email AS email,
                 COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
-                CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'b_isold',
+                CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                 u.b_isMicrosoft AS "isMicrosoft"
                 FROM users AS u
                 LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
@@ -292,7 +292,7 @@ async function userGetMe(data) {
                       u.v_language AS "language",
                       u.b_darkMode AS "darkMode",
                       COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
-                      CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'b_isold',
+                      CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                       CASE WHEN u.v_title IS NULL AND (sch.v_name IS NULL OR u.i_schoolyear IS NULL) THEN FALSE ELSE TRUE END AS "schoolValid",
                       u.b_isMicrosoft AS "isMicrosoft",
                       CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule",
@@ -406,7 +406,7 @@ async function userGetById(data) {
                     u.v_discordid AS "discordid",
                     u.v_language AS "language",
                     COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
-                    CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'b_isold',
+                    CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                     u.b_isMicrosoft AS "isMicrosoft",
                     (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
                     u.b_mailValidated AS "mailValidated"

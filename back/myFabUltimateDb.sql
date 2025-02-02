@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS `gd_ticketprojecttype` ( `i_id` INT NOT NULL AUTO_INC
 
 CREATE TABLE IF NOT EXISTS `gd_printer` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_name` VARCHAR(25) NOT NULL , `b_isAvailable` BOOLEAN NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `gd_printmaterial` ( `i_id` INT NOT NULL , `v_name` VARCHAR(30) NOT NULL , `i_idRoleNotify` INT(3) NOT NULL , PRIMARY KEY (`i_id`), CONSTRAINT uk_v_name Unique (`v_name`)) ENGINE = InnoDB;
+ALTER TABLE `gd_printmaterial` ADD CONSTRAINT `fk_gdr_idRole` FOREIGN KEY IF NOT EXISTS (`i_idRoleNotify`) REFERENCES `gd_roles`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
 --CREATE TABLE IF NOT EXISTS `discordticket` ( `i_id` INT NOT NULL AUTO_INCREMENT , `v_idGuild` VARCHAR(18) NOT NULL , `v_idChannel` VARCHAR(18) NOT NULL , `v_idUser` VARCHAR(18) NOT NULL , PRIMARY KEY (`i_id`)) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `rolescorrelation` ( `i_id` INT NOT NULL AUTO_INCREMENT , `i_idUser` INT NOT NULL , `i_idRole` INT NOT NULL , PRIMARY KEY (`i_id`)) ENGINE = InnoDB;
@@ -30,12 +33,13 @@ ALTER TABLE `log_roleschange` ADD CONSTRAINT `fk_lrc_idUserAdmin` FOREIGN KEY IF
 ALTER TABLE `log_roleschange` ADD CONSTRAINT `fk_lrc_idUserTarget` FOREIGN KEY IF NOT EXISTS (`i_idUserTarget`) REFERENCES `users`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `log_roleschange` ADD CONSTRAINT `fk_lrc_idRole` FOREIGN KEY IF NOT EXISTS (`i_idRole`) REFERENCES `gd_roles`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-CREATE TABLE IF NOT EXISTS `printstickets` ( `i_id` INT NOT NULL AUTO_INCREMENT , `i_idUser` INT NOT NULL , `i_useridschool` INT(11) NULL DEFAULT NULL , `i_userschoolyear` INT(1) NULL DEFAULT NULL , `i_projecttype` INT(3) NOT NULL , `i_groupNumber` INT(4) NULL DEFAULT NULL , `v_idChannel` VARCHAR(18) NULL , `dt_creationdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `dt_modificationdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `i_status` INT(4) NULL DEFAULT NULL , `i_priority` INT(4) NOT NULL, `b_isDeleted` BOOLEAN NOT NULL DEFAULT FALSE , PRIMARY KEY (`i_id`)) ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `printstickets` ( `i_id` INT NOT NULL AUTO_INCREMENT , `i_idUser` INT NOT NULL , `i_useridschool` INT(11) NULL DEFAULT NULL , `i_userschoolyear` INT(1) NULL DEFAULT NULL , `i_projecttype` INT(3) NOT NULL , `i_groupNumber` INT(4) NULL DEFAULT NULL , `v_idChannel` VARCHAR(18) NULL , `dt_creationdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `dt_modificationdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `i_status` INT(4) NULL DEFAULT NULL , `i_priority` INT(4) NOT NULL , `i_material` INT(4) NOT NULL , `b_isDeleted` BOOLEAN NOT NULL DEFAULT FALSE , PRIMARY KEY (`i_id`)) ENGINE = InnoDB;
 ALTER TABLE `printstickets` ADD CONSTRAINT `fk_pt_idUser` FOREIGN KEY IF NOT EXISTS (`i_idUser`) REFERENCES `users`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `printstickets` ADD CONSTRAINT `fk_pt_idSchool` FOREIGN KEY IF NOT EXISTS (`i_useridschool`) REFERENCES `gd_school`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `printstickets` ADD CONSTRAINT `fk_pt_idStatus` FOREIGN KEY IF NOT EXISTS (`i_status`) REFERENCES `gd_status`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `printstickets` ADD CONSTRAINT `fk_pt_idpriority` FOREIGN KEY IF NOT EXISTS (`i_priority`) REFERENCES `gd_ticketpriority`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `printstickets` ADD CONSTRAINT `fk_pt_idprojecttype` FOREIGN KEY IF NOT EXISTS (`i_projecttype`) REFERENCES `gd_ticketprojecttype`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `printstickets` ADD CONSTRAINT `fk_pm_idMaterial` FOREIGN KEY IF NOT EXISTS (`i_material`) REFERENCES `gd_printmaterial`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 CREATE TABLE IF NOT EXISTS `log_ticketschange` ( `i_id` INT NOT NULL AUTO_INCREMENT , `i_idUser` INT NOT NULL , `i_idTicket` INT NOT NULL , `v_action` VARCHAR(25) NOT NULL , `v_newValue` VARCHAR(100) , `dt_timeStamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`i_id`)) ENGINE = InnoDB;
 ALTER TABLE `log_ticketschange` ADD CONSTRAINT `fk_ltc_idUser` FOREIGN KEY IF NOT EXISTS (`i_idUser`) REFERENCES `users`(`i_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;

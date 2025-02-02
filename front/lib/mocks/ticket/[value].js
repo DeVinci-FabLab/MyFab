@@ -30,6 +30,7 @@ export function mock(path, jwt, options) {
           priorityColor: "e9d41d",
           ticketCountUser: 1,
           ticketCountGroup: 0,
+          material: "FDM",
           history: [
             {
               message: "Agent 1 a changé le type de projet en P2IP",

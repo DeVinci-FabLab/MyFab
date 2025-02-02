@@ -30,6 +30,7 @@ describe("Page panel/new", () => {
       "Yo je suis Cody et je savais pas quoi écrire en description pour le test End to End, donc j'écris ce qu'il me passe par la tête en plus il est 00:30 tout pile donc je réfléchis pas trop.",
     );
     cy.get(".projectType-select").select("Autre");
+    cy.get(".material-select").select("FDM");
     cy.get(".group-number-input").type("212");
     cy.get("#file-upload").attachFile("test.stl");
     cy.get(".submit-button").click();
