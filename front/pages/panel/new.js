@@ -346,7 +346,16 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                           darkMode ? "text-gray-300" : "text-gray-500"
                         }`}
                       >
-                        Si vous souhaitez une impression standard en plastique, selectionnez FDM. Vidéo exemple du <a href="https://www.youtube.com/watch?v=m_QhY1aABsE" target="_blank" className="text-sky-600">FDM</a>.
+                        Si vous souhaitez une impression standard en plastique,
+                        selectionnez FDM. Vidéo exemple du{" "}
+                        <a
+                          href="https://www.youtube.com/watch?v=m_QhY1aABsE"
+                          target="_blank"
+                          className="text-sky-600"
+                        >
+                          FDM
+                        </a>
+                        .
                       </p>
                     </div>
 
@@ -529,8 +538,8 @@ export async function getServerSideProps({ req }) {
   const authorizations = cookies.jwt
     ? await fetchAPIAuth("/user/authorization/", cookies.jwt)
     : null;
-    const projectTypeList = await fetchAPIAuth("/projectType/");
-    const materialList = await fetchAPIAuth("/material/");
+  const projectTypeList = await fetchAPIAuth("/projectType/");
+  const materialList = await fetchAPIAuth("/material/");
 
   if (!cookies.jwt || !authorizations.data) {
     const url = req.url;

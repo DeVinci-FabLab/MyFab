@@ -87,14 +87,14 @@ describe("Page panel/:id", () => {
 
     cy.get(".see-file-button").first().click();
     cy.get(".close-button").first().click();
-    cy.reload()
+    cy.reload();
     cy.get(".see-file-button").first().click();
     cy.get("body").click(100, 100);
-    cy.reload()
+    cy.reload();
     cy.get(".see-file-button").first().click();
     cy.get(".comment-file-textarea").type("Comment test");
     cy.get(".close-button").first().click();
-    cy.reload()
+    cy.reload();
     cy.get(".see-file-button").first().click();
     cy.get(".printer-select").select("Cody");
     cy.get(".close-button").first().click();

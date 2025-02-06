@@ -213,8 +213,6 @@ async function getSchool(data) {
   };
 }
 
-
-
 /**
  * @swagger
  * /material/:

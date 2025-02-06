@@ -742,7 +742,7 @@ const GestionTicket = ({
                             )}
                           </dd>
                         </div>
-                        
+
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                           <dt
                             className={`text-sm font-medium ${
@@ -757,7 +757,7 @@ const GestionTicket = ({
                             }`}
                           >
                             <div>{ticket.material}</div>
-                            </dd>
+                          </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                           <dt

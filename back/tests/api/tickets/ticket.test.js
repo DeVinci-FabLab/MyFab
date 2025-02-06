@@ -1005,6 +1005,8 @@ describe("POST /api/ticket/", () => {
               return [null, [{ id: 1 }]];
             case 5:
               return [null, {}];
+            case 6:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1018,6 +1020,7 @@ describe("POST /api/ticket/", () => {
         comment: "test",
       },
       files: null,
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1067,6 +1070,8 @@ describe("POST /api/ticket/", () => {
               return [null, {}];
             case 6:
               return [null, {}];
+            case 7:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1085,6 +1090,7 @@ describe("POST /api/ticket/", () => {
           tempFilePath: __dirname + "/../../../tmp/test-file.stl",
         },
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1145,6 +1151,8 @@ describe("POST /api/ticket/", () => {
               return [null, {}];
             case 7:
               return [null, {}];
+            case 8:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1169,6 +1177,7 @@ describe("POST /api/ticket/", () => {
           },
         ],
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1204,6 +1213,8 @@ describe("POST /api/ticket/", () => {
               return [null, [{ id: 1 }]];
             case 5:
               return [null, [{}]];
+            case 6:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1218,6 +1229,7 @@ describe("POST /api/ticket/", () => {
         groupNumber: 1,
       },
       files: null,
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1253,6 +1265,8 @@ describe("POST /api/ticket/", () => {
               return [null, [{ id: 1 }]];
             case 5:
               return [null, [{}]];
+            case 6:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1267,6 +1281,7 @@ describe("POST /api/ticket/", () => {
         groupNumber: "",
       },
       files: null,
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data

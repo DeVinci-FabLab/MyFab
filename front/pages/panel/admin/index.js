@@ -55,7 +55,7 @@ export default function Admin({ authorizations }) {
     update();
   }
 
-  function changeCollumnState(collumnClicked) {    
+  function changeCollumnState(collumnClicked) {
     const newCollumnState = {};
     if (!collumnState[collumnClicked]) newCollumnState[collumnClicked] = true;
     else if (collumnState[collumnClicked])

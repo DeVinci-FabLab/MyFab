@@ -1,5 +1,7 @@
 const fs = require("fs");
 const updateTicketDate = require("../../functions/stats").updateTicketDate;
+const sendMailFunction =
+  require("../../functions/sendMail/notifyNewTicket").sendNotifyNewEmail;
 const maxTicket = 30;
 module.exports.maxTicket = maxTicket;
 
@@ -876,6 +878,32 @@ async function postTicket(data) {
   /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // Reload ticket menu on client
+  const querySelectNotifyEmail = `SELECT DISTINCT u.v_email FROM rolescorrelation AS rc
+                                  LEFT JOIN gd_roles AS r ON rc.i_idRole = r.i_id
+                                  LEFT JOIN gd_printmaterial AS pm ON r.i_id = pm.i_idRoleNotify
+                                  LEFT JOIN users AS u ON rc.i_idUser = u.i_id
+                                  WHERE pm.i_id = ?;`;
+  const resSelectNotifyEmail = await data.app.executeQuery(
+    data.app.db,
+    querySelectNotifyEmail,
+    [data.body.projectMaterial]
+  );
+  /* c8 ignore start */
+  if (resSelectNotifyEmail[0]) {
+    console.log(resSelectNotifyEmail[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+  const emailList = resSelectNotifyEmail[1].map((row) => row.v_email);
+
+  await data.sendMailFunction({
+    emailList,
+    ticketId: lastIdentityRes[1][0].id,
+    projectMaterial: data.body.projectMaterial,
+  });
 
   return {
     type: "json",
@@ -1566,6 +1594,7 @@ async function startApi(app) {
         req,
         res
       );
+      data.sendMailFunction = sendMailFunction;
       const result = await postTicket(data);
       await require("../../functions/apiActions").sendResponse(
         req,

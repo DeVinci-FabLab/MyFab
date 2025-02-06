@@ -407,11 +407,21 @@ function writeEmail(body) {
 }
 
 module.exports.sendMail = sendMail;
-async function sendMail({ to, subject, text, html, testFile }) {
+async function sendMail({
+  to = null,
+  cc = null,
+  bcc = null,
+  subject,
+  text,
+  html,
+  testFile,
+}) {
   try {
     const options = {
       from: `DeVinci FabLab<${process.env.MAIL_USER}>`, // sender address
       to, // list of receivers
+      cc,
+      bcc,
       subject,
       text,
       html: writeEmail(html),

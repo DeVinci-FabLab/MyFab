@@ -85,3 +85,14 @@ sendTicketMessageMail({
   messages,
   testFile: "ticketMessageMail.html",
 });
+
+// Notify new ticket
+const sendNotifyNewEmail =
+  require("./functions/sendMail/notifyNewTicket").sendNotifyNewEmail;
+
+sendNotifyNewEmail({
+  emailList: [email, email],
+  ticketId: "1",
+  projectMaterial: "FDM",
+  testFile: "notifyNewTicket.html",
+});
