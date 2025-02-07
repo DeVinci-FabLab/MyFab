@@ -878,7 +878,9 @@ async function postTicket(data) {
   /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // Reload ticket menu on client
-  const querySelectNotifyEmail = `SELECT DISTINCT u.v_email FROM rolescorrelation AS rc
+  const querySelectNotifyEmail = `SELECT DISTINCT u.v_email AS email,
+                                        pm.v_name AS name
+                                  FROM rolescorrelation AS rc
                                   LEFT JOIN gd_roles AS r ON rc.i_idRole = r.i_id
                                   LEFT JOIN gd_printmaterial AS pm ON r.i_id = pm.i_idRoleNotify
                                   LEFT JOIN users AS u ON rc.i_idUser = u.i_id
@@ -897,13 +899,16 @@ async function postTicket(data) {
     };
   }
   /* c8 ignore stop */
-  const emailList = resSelectNotifyEmail[1].map((row) => row.v_email);
 
-  await data.sendMailFunction({
-    emailList,
-    ticketId: lastIdentityRes[1][0].id,
-    projectMaterial: data.body.projectMaterial,
-  });
+  if (resSelectNotifyEmail[1].length !== 0) {
+    const emailList = resSelectNotifyEmail[1].map((row) => row.email);
+
+    await data.sendMailFunction({
+      emailList,
+      ticketId: lastIdentityRes[1][0].id,
+      projectMaterial: resSelectNotifyEmail[1][0].name,
+    });
+  }
 
   return {
     type: "json",
