@@ -113,6 +113,7 @@ const versions = [
       "Ajout d'une route de stats",
       "Lorsque un utilisateur entre un mauvais mot de passe, celui-ci est supprimé",
       "Les messages du chat dans un ticket s'affiche maintenant sur plusieurs lignes",
+      "Création de l'option matériau pour les tickets",
     ],
   },
 ];

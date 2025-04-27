@@ -1,5 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import { setZero } from "../lib/function";
+import { getCookie } from "cookies-next";
+
+import { UserUse } from "../context/provider";
 
 function getChevron(collumnState, type) {
   if (!collumnState) return null;
@@ -11,7 +13,7 @@ function getChevron(collumnState, type) {
 }
 
 export default function UserTablesAdmin({
-  user,
+  users,
   id,
   maxPage,
   actualPage,
@@ -20,7 +22,10 @@ export default function UserTablesAdmin({
   changeCollumnState,
   darkMode,
 }) {
-  if (user.error) user = [];
+  const jwt = getCookie("jwt");
+  const { user } = UserUse(jwt);
+
+  if (users.error) users = [];
   const changeCollumnDefined = changeCollumnState ? true : false;
   if (!changeCollumnState) changeCollumnState = function () {};
   return (
@@ -49,7 +54,18 @@ export default function UserTablesAdmin({
                 className="inline-flex"
                 onClick={() => changeCollumnState("firstname")}
               >
-                Prénom
+                <div>
+                  <div>Prénom</div>
+                  {user.specialFont ? (
+                    <div
+                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                    >
+                      Prénom
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 {getChevron(collumnState, "firstname")}
               </div>
             </th>
@@ -66,7 +82,18 @@ export default function UserTablesAdmin({
                 className="inline-flex"
                 onClick={() => changeCollumnState("lastname")}
               >
-                Nom
+                <div>
+                  <div>Nom</div>
+                  {user.specialFont ? (
+                    <div
+                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                    >
+                      Nom
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 {getChevron(collumnState, "lastname")}
               </div>
             </th>
@@ -83,7 +110,18 @@ export default function UserTablesAdmin({
                 className="inline-flex"
                 onClick={() => changeCollumnState("email")}
               >
-                E-mail
+                <div>
+                  <div>E-mail</div>
+                  {user.specialFont ? (
+                    <div
+                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                    >
+                      E-mail
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 {getChevron(collumnState, "email")}
               </div>
             </th>
@@ -100,14 +138,25 @@ export default function UserTablesAdmin({
                 className="inline-flex"
                 onClick={() => changeCollumnState("title")}
               >
-                Ecole et année
+                <div>
+                  <div>Ecole et année</div>
+                  {user.specialFont ? (
+                    <div
+                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                    >
+                      Ecole et année
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 {getChevron(collumnState, "title")}
               </div>
             </th>
           </tr>
         </thead>
         <tbody>
-          {user.map((r, index) => {
+          {users.map((r, index) => {
             return (
               <tr
                 key={`user-${index}`}

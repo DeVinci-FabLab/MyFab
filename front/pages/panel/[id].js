@@ -319,6 +319,13 @@ const GestionTicket = ({
                     >
                       Fichiers et commentaires
                     </h3>
+                    {user.specialFont ? (
+                      <p className={`${user.specialFont} small text-gray-500`}>
+                        Fichiers et commentaires
+                      </p>
+                    ) : (
+                      ""
+                    )}
                     <p
                       className={`mt-1 max-w-2xl text-sm text-gray-500 ${
                         darkMode ? "text-gray-200" : "text-gray-900"
@@ -343,7 +350,16 @@ const GestionTicket = ({
                             darkMode ? "text-gray-200" : "text-gray-500"
                           }`}
                         >
-                          Fichier(s) stl
+                          <p>Fichier(s) stl</p>
+                          {user.specialFont ? (
+                            <p
+                              className={`${user.specialFont} small text-gray-500`}
+                            >
+                              Fichier(s) stl
+                            </p>
+                          ) : (
+                            ""
+                          )}
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul
@@ -453,7 +469,16 @@ const GestionTicket = ({
                             darkMode ? "text-gray-200" : "text-gray-500"
                           }`}
                         >
-                          Commentaires
+                          <p>Commentaires</p>
+                          {user.specialFont ? (
+                            <p
+                              className={`${user.specialFont} small text-gray-500`}
+                            >
+                              Commentaires
+                            </p>
+                          ) : (
+                            ""
+                          )}
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul
@@ -539,14 +564,32 @@ const GestionTicket = ({
                                 }`}
                                 defaultValue={""}
                               />
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small max-w-lg text-justify text-gray-500`}
+                                >
+                                  {comment}
+                                </p>
+                              ) : (
+                                ""
+                              )}
                               <button
                                 onClick={(e) => {
                                   document.getElementById("comment").value = "";
                                   sendComment(e);
                                 }}
-                                className="send-message-button mt-3 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
+                                className="send-message-button mt-3 justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
                               >
-                                Envoyer le message
+                                <p>Envoyer le message</p>
+                                {user.specialFont ? (
+                                  <p
+                                    className={`${user.specialFont} small text-violet-200`}
+                                  >
+                                    Envoyer le message
+                                  </p>
+                                ) : (
+                                  ""
+                                )}
                               </button>
                               <p
                                 className={`mt-2 text-sm ${
@@ -581,6 +624,15 @@ const GestionTicket = ({
                       >
                         Détails de la demande d'impression
                       </h3>
+                      {user.specialFont ? (
+                        <p
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Détails de la demande d'impression
+                        </p>
+                      ) : (
+                        ""
+                      )}
                       <p
                         className={`mt-1 max-w-2xl text-sm ${
                           darkMode ? "text-gray-300" : "text-gray-500"
@@ -615,7 +667,16 @@ const GestionTicket = ({
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Utilisateur
+                            <p>Utilisateur</p>
+                            {user.specialFont ? (
+                              <p
+                                className={`${user.specialFont} small text-gray-500`}
+                              >
+                                Utilisateur
+                              </p>
+                            ) : (
+                              ""
+                            )}
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -680,7 +741,16 @@ const GestionTicket = ({
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Numéro de groupe
+                            <p>Numéro de groupe</p>
+                            {user.specialFont ? (
+                              <p
+                                className={`${user.specialFont} small text-gray-500`}
+                              >
+                                Numéro de groupe
+                              </p>
+                            ) : (
+                              ""
+                            )}
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -715,7 +785,16 @@ const GestionTicket = ({
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Type
+                            <p>Type</p>
+                            {user.specialFont ? (
+                              <p
+                                className={`${user.specialFont} small text-gray-500`}
+                              >
+                                Type
+                              </p>
+                            ) : (
+                              ""
+                            )}
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -749,7 +828,16 @@ const GestionTicket = ({
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Type de matériaux
+                            <p>Type de matériaux</p>
+                            {user.specialFont ? (
+                              <p
+                                className={`${user.specialFont} small text-gray-500`}
+                              >
+                                Type de matériaux
+                              </p>
+                            ) : (
+                              ""
+                            )}
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -765,7 +853,16 @@ const GestionTicket = ({
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Status
+                            <p>Status</p>
+                            {user.specialFont ? (
+                              <p
+                                className={`${user.specialFont} small text-gray-500`}
+                              >
+                                Status
+                              </p>
+                            ) : (
+                              ""
+                            )}
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -812,7 +909,16 @@ const GestionTicket = ({
                                 darkMode ? "text-gray-200" : "text-gray-500"
                               }`}
                             >
-                              Priorité
+                              <p>Priorité</p>
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small text-gray-500`}
+                                >
+                                  Priorité
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                               <div
@@ -1056,13 +1162,22 @@ const GestionTicket = ({
               }`}
             >
               <div>
-                <p
+                <div
                   className={`text-center font-medium ${
                     darkMode ? "text-gray-200" : ""
                   }`}
                 >
-                  Aperçu de l'utilisateur :
-                </p>
+                  <p>Aperçu de l'utilisateur :</p>
+                  {user.specialFont ? (
+                    <p
+                      className={`${user.specialFont} small ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
+                      Aperçu de l'utilisateur :
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 <dl
                   className={`sm:divide-y ${
                     darkMode ? "sm:divide-gray-500" : "sm:divide-gray-200"
@@ -1189,15 +1304,42 @@ const GestionTicket = ({
                     }`}
                   >
                     {paramType === "cancel" ? (
-                      <p>Annulation de la demande</p>
+                      <div>
+                        <p>Annulation de la demande</p>
+                        {user.specialFont ? (
+                          <p
+                            className={`${user.specialFont} small ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                          >
+                            Annulation de la demande
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     ) : (
-                      <p>
-                        Changer le {paramType === "status" ? "status" : "type"}{" "}
-                        du ticket{" "}
-                        {paramType === "status"
-                          ? ticket.statusName
-                          : ticket.projectType}
-                      </p>
+                      <div>
+                        <p>
+                          Changer le{" "}
+                          {paramType === "status" ? "status" : "type"} du ticket{" "}
+                          {paramType === "status"
+                            ? ticket.statusName
+                            : ticket.projectType}
+                        </p>
+                        {user.specialFont ? (
+                          <p
+                            className={`${user.specialFont} small ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                          >
+                            Changer le{" "}
+                            {paramType === "status" ? "status" : "type"} du
+                            ticket{" "}
+                            {paramType === "status"
+                              ? ticket.statusName
+                              : ticket.projectType}
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     )}
                   </Dialog.Title>
                   {paramType === "cancel" ? (

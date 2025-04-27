@@ -10,7 +10,7 @@ function classNames(...classes) {
 
 function NavbarAdmin({ router }) {
   const jwt = getCookie("jwt");
-  const { darkMode } = UserUse(jwt);
+  const { user, darkMode } = UserUse(jwt);
   const pn = router.pathname;
   const tabs = [
     {
@@ -70,7 +70,7 @@ function NavbarAdmin({ router }) {
               if (tab.show == true) {
                 return (
                   <Link key={`nav-${index}`} href={tab.href}>
-                    <p
+                    <div
                       key={tab.name}
                       className={classNames(
                         tab.current
@@ -85,8 +85,15 @@ function NavbarAdmin({ router }) {
                       )}
                       aria-current={tab.current ? "page" : undefined}
                     >
-                      {tab.name}
-                    </p>
+                      <p>{tab.name}</p>
+                      {user.specialFont ? (
+                        <p className={`${user.specialFont} small`}>
+                          {tab.name}
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </Link>
                 );
               }

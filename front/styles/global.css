@@ -57,3 +57,26 @@
     background-position: right;
   }
 }
+
+@font-face {
+  font-family: "Aurebesh";
+  src: url("/fonts/aurebesh_af/AurebeshAF-Canon.otf") format("opentype");
+}
+
+.font-aurebesh {
+  font-family: "Aurebesh", sans-serif;
+}
+
+@font-face {
+  font-family: "Sith";
+  src: url("/fonts/sith-prophecy-font/SithProphecy-xPwV.ttf") format("truetype");
+}
+
+.font-sith {
+  font-family: "Sith", sans-serif;
+}
+
+.font-aurebesh.small,
+.font-sith.small {
+  font-size: 10px;
+}

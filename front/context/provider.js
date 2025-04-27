@@ -50,6 +50,20 @@ export const UserUse = (cookies, actionAfterFech) => {
       fetchAPIAuth("/user/role", cookies).then((apiRoles) => {
         if (apiRoles.error) return;
         setRoles(apiRoles.data);
+        if (apiRoles.data.length) {
+          const now = new Date();
+          const date = now.getDate();
+          const month = now.getMonth();
+          if (`${date}/${month + 1}` === "4/5") {
+            // Le 4 mai (may the force)
+            apiUser.data.specialFont = "font-aurebesh";
+            setUser(apiUser.data);
+          } else if (`${date}/${month + 1}` === "6/5") {
+            // Le 6 mai (may the sith)
+            apiUser.data.specialFont = "font-sith";
+            setUser(apiUser.data);
+          }
+        }
 
         if (actionAfterFech) actionAfterFech({ user });
       });

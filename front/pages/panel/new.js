@@ -188,6 +188,15 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                       >
                         Commentaires
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Commentaires
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <div className="mt-1">
                         <textarea
                           onChange={(e) => setDescription(e.target.value)}
@@ -226,6 +235,15 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                       >
                         Type de projet
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Type de projet
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <select
                         onChange={(e) => setType(e.target.value)}
                         id="type"
@@ -262,6 +280,15 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                       >
                         N° de groupe
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          N° de groupe
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <div className="mt-1">
                         <input
                           onChange={(e) => {
@@ -323,6 +350,15 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                       >
                         Type de matériaux
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Type de matériaux
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <select
                         onChange={(e) => setMaterial(e.target.value)}
                         id="type"
@@ -371,6 +407,15 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                       >
                         Fichier STL
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Fichier STL
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <div
                         onDragEnter={onDragEnter}
                         onDragLeave={onDragLeave}
@@ -508,10 +553,19 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                       handleSubmit(e);
                     }}
                     type="submit"
-                    className="submit-button inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+                    className="submit-button justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
                     disabled={userClick}
                   >
-                    Valider et envoyer mon fichier
+                    <p>Valider et envoyer mon fichier</p>
+                    {user.specialFont ? (
+                      <p
+                        className={`${user.specialFont} small text-violet-200`}
+                      >
+                        Type de matériaux
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </button>
                 </div>
               </div>

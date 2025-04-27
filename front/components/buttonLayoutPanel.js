@@ -2,9 +2,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ButtonLayoutPanel({ item, darkMode }) {
+export default function ButtonLayoutPanel({ item, darkMode, specialFont }) {
   return (
-    <p
+    <div
       className={classNames(
         item.className.reduce(
           (accumulator, currentValue) => accumulator + " " + currentValue,
@@ -35,7 +35,14 @@ export default function ButtonLayoutPanel({ item, darkMode }) {
         )}
         aria-hidden="true"
       />
-      {item.name}
-    </p>
+      <div>
+        <p>{item.name}</p>
+        {specialFont ? (
+          <p className={`${specialFont} small text-gray-500`}>{item.name}</p>
+        ) : (
+          ""
+        )}
+      </div>
+    </div>
   );
 }

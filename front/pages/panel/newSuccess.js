@@ -118,6 +118,13 @@ export default function NewPanel({ ticket, file, authorizations }) {
                     >
                       La demande {"#" + setZero(ticket.id)} à été créé
                     </h3>
+                    {user.specialFont ? (
+                      <p className={`${user.specialFont} small text-gray-500`}>
+                        La demande {"#" + setZero(ticket.id)} à été créé
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <div
                     className={`border-t px-4 py-5 sm:p-0 ${
@@ -138,9 +145,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                       <Link href={ticketLink}>
                         <button
                           type="button"
-                          className={`continue-button order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                          className={`continue-button order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
                         >
-                          Continuer
+                          <p>Continuer</p>
+                          {user.specialFont ? (
+                            <p
+                              className={`${user.specialFont} small text-violet-200`}
+                            >
+                              Continuer
+                            </p>
+                          ) : (
+                            ""
+                          )}
                         </button>
                       </Link>
                     </div>
@@ -180,9 +196,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                                   getUrlSTL(r.id);
                                   setOpen(true);
                                 }}
-                                className={`file-button order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                                className={`file-button order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
                               >
-                                Mettre un commentaire
+                                <p>Mettre un commentaire</p>
+                                {user.specialFont ? (
+                                  <p
+                                    className={`${user.specialFont} small text-violet-200`}
+                                  >
+                                    Mettre un commentaire
+                                  </p>
+                                ) : (
+                                  ""
+                                )}
                               </button>
                             </div>
                             {r.comment != "" ? (
@@ -222,6 +247,15 @@ export default function NewPanel({ ticket, file, authorizations }) {
                       >
                         Détails de la demande d'impression
                       </h3>
+                      {user.specialFont ? (
+                        <p
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Détails de la demande d'impression
+                        </p>
+                      ) : (
+                        ""
+                      )}
                       <p
                         className={`mt-1 max-w-2xl text-sm ${
                           darkMode ? "text-gray-200" : "text-gray-500"
@@ -246,7 +280,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Utilisateur
+                            <p>Utilisateur</p>
+                            <p>
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small text-gray-500`}
+                                >
+                                  Utilisateur
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </p>
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -271,7 +316,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Numéro de groupe
+                            <p>Numéro de groupe</p>
+                            <p>
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small text-gray-500`}
+                                >
+                                  Numéro de groupe
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </p>
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -289,7 +345,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Type
+                            <p>Type</p>
+                            <p>
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small text-gray-500`}
+                                >
+                                  Type
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </p>
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -305,7 +372,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Status
+                            <p>Status</p>
+                            <p>
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small text-gray-500`}
+                                >
+                                  Status
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </p>
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
@@ -321,7 +399,18 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               darkMode ? "text-gray-200" : "text-gray-500"
                             }`}
                           >
-                            Fichiers
+                            <p>Fichiers</p>
+                            <p>
+                              {user.specialFont ? (
+                                <p
+                                  className={`${user.specialFont} small text-gray-500`}
+                                >
+                                  Fichiers
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </p>
                           </dt>
                           <dd
                             className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${

@@ -60,6 +60,15 @@ const FallingEmojis = ({ children }) => {
   }, []);
 
   if (
+    (process.env.IS_TEST_MODE === "true" && jwt === "2005") ||
+    (process.env.IS_TEST_MODE !== "true" &&
+      roles.length !== 0 &&
+      date === 20 &&
+      month == 4)
+  )
+    type = "2005"; //Activation le 20 mai
+
+  if (
     (process.env.IS_TEST_MODE === "true" && jwt === "1410") ||
     (process.env.IS_TEST_MODE !== "true" &&
       roles.length !== 0 &&
@@ -79,6 +88,19 @@ const FallingEmojis = ({ children }) => {
 
   let images = [];
   switch (type) {
+    case "2005":
+      images = [
+        "/icon/lapinou/lapinou1.png",
+        "/icon/lapinou/lapinou2.png",
+        "/icon/lapinou/lapinou3.png",
+        "/icon/lapinou/lapinou4.png",
+        "/icon/lapinou/lapinou5.png",
+        "/icon/lapinou/lapinou6.png",
+        "/icon/lapinou/lapinou7.png",
+        "/icon/lapinou/lapinou8.png",
+      ];
+      return onclickEmoji({ images, emojiList, children, setEmojiList });
+
     case "1410":
       images = [
         "/icon/alpaga/alpaga1.png",

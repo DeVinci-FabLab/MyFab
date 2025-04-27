@@ -187,6 +187,13 @@ export default function NewPanel({ authorizations, highDemand }) {
             >
               Vos demandes d'impressions 3D
             </h1>
+            {user.specialFont ? (
+              <p className={`${user.specialFont} small text-gray-500`}>
+                Vos demandes d'impressions 3D
+              </p>
+            ) : (
+              ""
+            )}
             <div className="block mt-5">
               {/* big projects */}
               <div

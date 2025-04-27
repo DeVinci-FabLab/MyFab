@@ -2,6 +2,9 @@ import router from "next/router";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { setZero } from "../lib/function";
 import { dateDiff } from "../lib/date";
+import { getCookie } from "cookies-next";
+
+import { UserUse } from "../context/provider";
 
 const colors = {
   "2274e0": "text-gray-700 bg-gray-200",
@@ -27,6 +30,9 @@ export default function TablesAdmin({
   changeCollumnState,
   darkMode,
 }) {
+  const jwt = getCookie("jwt");
+  const { user } = UserUse(jwt);
+
   const dateNow = new Date();
   const changeCollumnDefined = changeCollumnState ? true : false;
   if (!changeCollumnState) changeCollumnState = function () {};
@@ -57,7 +63,14 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("id")}
                 >
-                  Id
+                  <div>
+                    <div>Id</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>Id</div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {getChevron(collumnState, "id")}
                 </div>
               </th>
@@ -74,7 +87,14 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("name")}
                 >
-                  Nom
+                  <div>
+                    <div>Nom</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>Nom</div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {getChevron(collumnState, "name")}
                 </div>
               </th>
@@ -91,7 +111,17 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("createAt")}
                 >
-                  Modifié il y a{getChevron(collumnState, "createAt")}
+                  <div>
+                    <div>Modifié il y a</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>
+                        Modifié il y a
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {getChevron(collumnState, "createAt")}
                 </div>
               </th>
               <th
@@ -107,7 +137,16 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("priority")}
                 >
-                  Priorité
+                  <div>
+                    <div>Priorité</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>
+                        Priorité
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {getChevron(collumnState, "priority")}
                 </div>
               </th>
@@ -124,7 +163,14 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("type")}
                 >
-                  Type
+                  <div>
+                    <div>Type</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>Type</div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {getChevron(collumnState, "type")}
                 </div>
               </th>
@@ -141,7 +187,16 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("material")}
                 >
-                  Matériaux
+                  <div>
+                    <div>Matériaux</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>
+                        Matériaux
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {getChevron(collumnState, "material")}
                 </div>
               </th>
@@ -158,7 +213,14 @@ export default function TablesAdmin({
                   className="inline-flex"
                   onClick={() => changeCollumnState("status")}
                 >
-                  État
+                  <div>
+                    <div>État</div>
+                    {user.specialFont ? (
+                      <div className={`${user.specialFont} text-sm`}>État</div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {getChevron(collumnState, "status")}
                 </div>
               </th>

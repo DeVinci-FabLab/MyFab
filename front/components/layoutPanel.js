@@ -264,7 +264,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                           darkMode
                             ? "bg-gray-500 text-gray-100"
                             : "bg-gray-200 text-gray-500"
-                        }`}
+                        } ${user.specialFont ? user.specialFont : ""}`}
                       >
                         {name[0].toString().toUpperCase() +
                           " " +
@@ -274,14 +274,14 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                         <span
                           className={`text-sm font-medium truncate ${
                             darkMode ? "text-gray-100" : "text-gray-900"
-                          }`}
+                          } ${user.specialFont ? user.specialFont + " small" : ""}`}
                         >
                           {name + " " + surname.toUpperCase()}
                         </span>
                         <span
                           className={`text-sm truncate ${
                             darkMode ? "text-gray-400" : "text-gray-500"
-                          }`}
+                          } ${user.specialFont ? user.specialFont + " small" : ""}`}
                         >
                           {user.title || "Ancien compte"}
                         </span>
@@ -297,7 +297,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                       return (
                         <span
                           key={`role-${size}-${index}`}
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white ${user.specialFont ? user.specialFont + " small" : ""}`}
                           style={{ backgroundColor: "#" + r.color }}
                         >
                           {r.name}
@@ -382,6 +382,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                             item={item}
                             suffix={size}
                             darkMode={darkMode}
+                            specialFont={user.specialFont}
                           />
                         </a>
                       );
@@ -392,6 +393,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                             item={item}
                             suffix={size}
                             darkMode={darkMode}
+                            specialFont={user.specialFont}
                           />
                         </Link>
                       );
@@ -465,7 +467,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         </div>
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div
-            className={`border-b px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8  ${
+            className={`border-b px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 ${
               darkMode ? "border-gray-600" : "border-gray-200"
             }`}
           >
@@ -477,6 +479,15 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
               >
                 {title}
               </h1>
+              {user.specialFont ? (
+                <p
+                  className={`${user.specialFont} text-sm ${darkMode ? "text-gray-500" : "text-gray-400"}`}
+                >
+                  {title}
+                </p>
+              ) : (
+                ""
+              )}
             </div>
             <div className="mt-4 flex sm:mt-0 sm:ml-4">
               <Link href="/panel/new">
@@ -484,10 +495,21 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                   type="button"
                   className={`${
                     pn.split("/")[2] == "new" ? "hidden" : "block"
-                  } order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                  } order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
                 >
-                  <CubeIcon width="16" height="16" className="mr-1" />
-                  Créer une demande
+                  <div className="inline-flex">
+                    <CubeIcon width="16" height="16" className="mr-1" />
+                    Créer une demande
+                  </div>
+                  {user.specialFont ? (
+                    <p
+                      className={`${user.specialFont} small text-sm text-violet-200`}
+                    >
+                      Créer une demande
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </button>
               </Link>
             </div>

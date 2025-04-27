@@ -289,7 +289,7 @@ export default function Settings({ authorizations, rolesList }) {
                     </div>
                   </div>
                   <UserTablesAdmin
-                    user={usersListResult}
+                    users={usersListResult}
                     id={settingModal}
                     maxPage={maxPage}
                     actualPage={actualPage}
@@ -482,7 +482,16 @@ export default function Settings({ authorizations, rolesList }) {
                                         : "text-gray-900"
                                     }`}
                                   >
-                                    Prénom
+                                    <p>Prénom</p>
+                                    {me.specialFont ? (
+                                      <p
+                                        className={`${me.specialFont} small text-gray-400`}
+                                      >
+                                        Prénom
+                                      </p>
+                                    ) : (
+                                      ""
+                                    )}
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                                     <p
@@ -503,7 +512,16 @@ export default function Settings({ authorizations, rolesList }) {
                                         : "text-gray-900"
                                     }`}
                                   >
-                                    Nom
+                                    <p>Nom</p>
+                                    {me.specialFont ? (
+                                      <p
+                                        className={`${me.specialFont} small text-gray-400`}
+                                      >
+                                        Nom
+                                      </p>
+                                    ) : (
+                                      ""
+                                    )}
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                                     <p
@@ -524,7 +542,16 @@ export default function Settings({ authorizations, rolesList }) {
                                         : "text-gray-900"
                                     }`}
                                   >
-                                    E-mail
+                                    <p>E-mail</p>
+                                    {me.specialFont ? (
+                                      <p
+                                        className={`${me.specialFont} small text-gray-400`}
+                                      >
+                                        E-mail
+                                      </p>
+                                    ) : (
+                                      ""
+                                    )}
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                                     <p
@@ -545,7 +572,16 @@ export default function Settings({ authorizations, rolesList }) {
                                         : "text-gray-900"
                                     }`}
                                   >
-                                    Rôle disponible
+                                    <p>Rôle disponible</p>
+                                    {me.specialFont ? (
+                                      <p
+                                        className={`${me.specialFont} small text-gray-400`}
+                                      >
+                                        Rôle disponible
+                                      </p>
+                                    ) : (
+                                      ""
+                                    )}
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2 space-x-1">
                                     {allRole.map((r, index) => {

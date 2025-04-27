@@ -145,6 +145,15 @@ export default function Settings({ authorizations }) {
                       >
                         Nom
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Nom
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <div className="mt-1">
                         <input
                           disabled
@@ -169,6 +178,15 @@ export default function Settings({ authorizations }) {
                       >
                         Prénom
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Prénom
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <div className="mt-1">
                         <input
                           disabled
@@ -193,6 +211,15 @@ export default function Settings({ authorizations }) {
                       >
                         E-mail
                       </label>
+                      {user.specialFont ? (
+                        <label
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          E-mail
+                        </label>
+                      ) : (
+                        ""
+                      )}
                       <div className="mt-1">
                         <input
                           disabled
@@ -216,6 +243,15 @@ export default function Settings({ authorizations }) {
                       >
                         Changer mon mot de passe
                       </h1>
+                      {user.specialFont ? (
+                        <p
+                          className={`${user.specialFont} small text-gray-500`}
+                        >
+                          Changer mon mot de passe
+                        </p>
+                      ) : (
+                        ""
+                      )}
                       <div>
                         <label
                           htmlFor="actualPassword"
@@ -225,6 +261,15 @@ export default function Settings({ authorizations }) {
                         >
                           Mot de passe actuel
                         </label>
+                        {user.specialFont ? (
+                          <label
+                            className={`${user.specialFont} small text-gray-500`}
+                          >
+                            Mot de passe actuel
+                          </label>
+                        ) : (
+                          ""
+                        )}
                         <div className="mt-1">
                           <input
                             onChange={(e) => setActualPassword(e.target.value)}
@@ -249,6 +294,15 @@ export default function Settings({ authorizations }) {
                         >
                           Mot de passe
                         </label>
+                        {user.specialFont ? (
+                          <label
+                            className={`${user.specialFont} small text-gray-500`}
+                          >
+                            Mot de passe
+                          </label>
+                        ) : (
+                          ""
+                        )}
                         <div className="mt-1">
                           <input
                             onChange={(e) => setNewPassword(e.target.value)}
@@ -273,6 +327,15 @@ export default function Settings({ authorizations }) {
                         >
                           Confirmer votre mot de passe
                         </label>
+                        {user.specialFont ? (
+                          <label
+                            className={`${user.specialFont} small text-gray-500`}
+                          >
+                            Confirmer votre mot de passe
+                          </label>
+                        ) : (
+                          ""
+                        )}
                         <div className="mt-1">
                           <input
                             onChange={(e) =>
@@ -300,9 +363,18 @@ export default function Settings({ authorizations }) {
                     <button
                       onClick={() => changePassword()}
                       type="submit"
-                      className="validate-button inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="validate-button justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                      Valider et changer mon mot de passe
+                      <p>Valider et changer mon mot de passe</p>
+                      {user.specialFont ? (
+                        <p
+                          className={`${user.specialFont} small text-violet-200`}
+                        >
+                          Valider et changer mon mot de passe
+                        </p>
+                      ) : (
+                        ""
+                      )}
                     </button>
                   </div>
                 ) : (

@@ -5,10 +5,8 @@ import NavbarAdmin from "../../../components/panel/navbarAdmin";
 import OverviewAdmin from "../../../components/overviewAdmin";
 import WebSocket from "../../../components/webSocket";
 import Seo from "../../../components/seo";
-import Error from "../../404";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
 import { getCookie } from "cookies-next";
-import { isUserConnected } from "../../../lib/function";
 import { toast } from "react-toastify";
 
 import { UserUse } from "../../../context/provider";
@@ -119,6 +117,13 @@ export default function Admin({ authorizations }) {
             <h2 className="text-2xl font-bold text-white">
               Bonjour, {user.firstName} 👋{" "}
             </h2>
+            {user.specialFont ? (
+              <p className={`${user.specialFont} text-sm text-blue-200`}>
+                Bonjour, {user.firstName}
+              </p>
+            ) : (
+              ""
+            )}
             <h3 className="text-md font-medium text-white">
               {ticketResult.length === 0
                 ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
@@ -127,6 +132,18 @@ export default function Admin({ authorizations }) {
                   } à traiter. N'hésite pas à
                 t'en occuper !`}
             </h3>
+            {user.specialFont ? (
+              <p className={`${user.specialFont} small text-blue-200`}>
+                {ticketResult.length === 0
+                  ? `Il n'y a aucune demande d'impression en cours. Le FabLapinou te remercie. 🐰`
+                  : `Il y a ${ticketResult.length} impression${
+                      ticketResult.length > 1 ? "s" : ""
+                    } à traiter. N'hésite pas à
+                t'en occuper !`}
+              </p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <OverviewAdmin
