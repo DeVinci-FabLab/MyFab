@@ -165,6 +165,40 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                   Ces informations permettront de traiter aux mieux votre
                   impression. Merci de les remplir correctement.
                 </p>
+                <div
+                  className={`mt-1 text-sm pt-6 ${
+                    darkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
+                  <h3>Avant de soumettre une demande d’impression 3D :</h3>
+                  <ul className="list-disc">
+                    <li>
+                      Le volume maximal d’impression est limité à{" "}
+                      <strong>18 cm³</strong>.
+                    </li>
+                    <li>
+                      Il est possible de{" "}
+                      <strong>joindre plusieurs fichiers</strong> à une seule
+                      demande.
+                    </li>
+                    <li>
+                      Les demandes seront traitées en priorité pour les{" "}
+                      <strong>
+                        groupes ayant peu de demandes déjà effectuées
+                      </strong>
+                      .
+                    </li>
+                    <li>
+                      Veuillez{" "}
+                      <strong>
+                        évaluer si l’impression 3D est réellement nécessaire
+                      </strong>
+                      , ou si d’autres solutions comme la{" "}
+                      <strong>découpe ou gravure laser</strong> pourraient
+                      convenir.
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
