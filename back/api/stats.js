@@ -1,3 +1,6 @@
+const fs = require("fs");
+const csvConverter = require("json-2-csv");
+
 /**
  * @swagger
  * /stats:
@@ -371,6 +374,106 @@ async function getStats(data) {
 // Moyenne de demande par école
 // SELECT DATE_FORMAT(p.dt_creationdate,'%Y-%u') AS 'week', s.v_name, COUNT(DISTINCT p.i_id) AS 'count_ticket', COUNT(DISTINCT i_idUser) AS 'count_user' FROM printstickets AS p INNER JOIN users AS u ON p.i_idUser = u.i_id INNER JOIN gd_school AS s ON u.i_idschool = s.i_id GROUP BY 1, u.i_idschool;
 
+/**
+ * @swagger
+ * /stats/prints/csv:
+ *   get:
+ *     summary: Export prints stats into csv
+ *     tags: [GlobalData]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       description: Cookie of the user making the request. The user need to be the ticket owner or an agent.
+ *       required: true
+ *       type: string
+ *     responses:
+ *       200:
+ *         description: "Export prints stats into csv"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+function makeid(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+module.exports.getStatsPrintCsv = getStatsPrintCsv;
+async function getStatsPrintCsv(data) {
+  const userIdAgent = data.userId;
+  if (!userIdAgent) {
+    return {
+      type: "code",
+      code: 401,
+    };
+  }
+  const authChangeRoleResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "changeUserRole"
+  );
+  if (!authChangeRoleResult) {
+    return {
+      type: "code",
+      code: 401,
+    };
+  }
+
+  const tmpFolder = __dirname + "/../tmp/";
+  const fileName = `export_${makeid(20)}.csv`;
+
+  const resData = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT
+        i_id AS 'id',
+        i_groupNumber AS 'groupNumber',
+        dt_creationdate AS 'creationDate',
+        tpt.v_name AS projectType,
+        s.v_name AS status
+      FROM printstickets AS p
+      INNER JOIN gd_ticketprojecttype AS tpt ON p.i_projecttype = tpt.i_id
+      INNER JOIN gd_status AS s ON p.i_status = s.i_id;`
+  );
+
+  const formatDate = (date) => {
+    const pad = (n) => String(n).padStart(2, "0");
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1);
+    const year = date.getFullYear(); // YY
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
+
+  const resDataFormated = resData.map((item) => ({
+    ...item,
+    creationDate: formatDate(item.creationDate),
+  }));
+
+  const csvData = csvConverter.json2csv(resDataFormated);
+  fs.writeFileSync(tmpFolder + fileName, csvData);
+
+  return {
+    type: "download",
+    code: 200,
+    path: __dirname + "/../tmp/" + fileName,
+    fileName: "myfab_export.csv",
+  };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
@@ -382,6 +485,22 @@ async function startApi(app) {
         res
       );
       const result = await getStats(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: GET /api/stats/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/stats/prints/csv", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await getStatsPrintCsv(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
       console.log("ERROR: GET /api/stats/");

@@ -97,7 +97,7 @@ async function getTicketMessage(data) {
   }
   /* c8 ignore stop */
   const idTicketUser = resGetUserTicket[1][0].id;
-  if (idTicketUser != userIdAgent) {
+  if (idTicketUser !== userIdAgent) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,

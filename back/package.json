@@ -33,6 +33,7 @@
     "express-header": "^1.1.1",
     "express-session": "^1.17.3",
     "fs": "^0.0.1-security",
+    "json-2-csv": "^5.5.9",
     "jwt-decode": "^3.1.2",
     "jwt-encode": "^1.0.1",
     "mysql": "^2.18.1",
