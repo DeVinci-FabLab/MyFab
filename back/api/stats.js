@@ -1,6 +1,46 @@
 const fs = require("fs");
 const csvConverter = require("json-2-csv");
 
+// Get stats tickets, simple query :)
+const queryStatsTicket = `SELECT 
+                                i_id,
+                                i_idUser,
+                                i_status,
+                                count_file,
+                                dt_creationdate,
+                                dt_enddate,
+                                TIMESTAMPDIFF(MINUTE, dt_creationdate, dt_enddate) AS diff
+                              FROM (
+                                SELECT
+                                    i_id,
+                                    i_idUser,
+                                    i_status,
+                                    CASE WHEN tf.count_file IS NOT NULL
+                                      THEN tf.count_file
+                                      ELSE 0 END AS count_file,
+                                    dt_creationdate,
+                                    CASE WHEN pt.i_status = 5 OR pt.i_status = 6
+                                      THEN dtend.dt_enddate
+                                      ELSE NOW() END AS dt_enddate
+                                  FROM printstickets AS pt
+                                  LEFT JOIN (
+                                    SELECT
+                                        i_idTicket,
+                                        MAX(dt_timeStamp) AS dt_enddate
+                                      FROM log_ticketschange
+                                      WHERE v_action = 'upd_status'
+                                      GROUP BY 1)
+                                  AS dtend ON pt.i_id = dtend.i_idTicket
+                                  LEFT JOIN (
+                                    SELECT
+                                        i_idTicket,
+                                        COUNT(*) AS count_file
+                                      FROM ticketfiles
+                                      GROUP BY 1)
+                                  AS tf ON pt.i_id = tf.i_idTicket
+                                  WHERE pt.i_status != 7
+                                  AND NOT pt.b_isDeleted) AS data`;
+
 /**
  * @swagger
  * /stats:
@@ -88,46 +128,6 @@ async function getStats(data) {
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
       GROUP BY u.i_idschool, 2;`
   );
-
-  // Get stats tickets, simple query :)
-  const queryStatsTicket = `SELECT 
-                                i_id,
-                                i_idUser,
-                                i_status,
-                                count_file,
-                                dt_creationdate,
-                                dt_enddate,
-                                TIMESTAMPDIFF(MINUTE, dt_creationdate, dt_enddate) AS diff
-                              FROM (
-                                SELECT
-                                    i_id,
-                                    i_idUser,
-                                    i_status,
-                                    CASE WHEN tf.count_file IS NOT NULL
-                                      THEN tf.count_file
-                                      ELSE 0 END AS count_file,
-                                    dt_creationdate,
-                                    CASE WHEN pt.i_status = 5 OR pt.i_status = 6
-                                      THEN dtend.dt_enddate
-                                      ELSE NOW() END AS dt_enddate
-                                  FROM printstickets AS pt
-                                  LEFT JOIN (
-                                    SELECT
-                                        i_idTicket,
-                                        MAX(dt_timeStamp) AS dt_enddate
-                                      FROM log_ticketschange
-                                      WHERE v_action = 'upd_status'
-                                      GROUP BY 1)
-                                  AS dtend ON pt.i_id = dtend.i_idTicket
-                                  LEFT JOIN (
-                                    SELECT
-                                        i_idTicket,
-                                        COUNT(*) AS count_file
-                                      FROM ticketfiles
-                                      GROUP BY 1)
-                                  AS tf ON pt.i_id = tf.i_idTicket
-                                  WHERE pt.i_status != 7
-                                  AND NOT pt.b_isDeleted) AS data`;
 
   // Get stats tickets (ALL TIME)
   result.ticketStatsAllTime = await runQuerryStats(
@@ -437,16 +437,19 @@ async function getStatsPrintCsv(data) {
     data.app.executeQuery,
     `SELECT
         p.i_id AS 'id',
-        i_groupNumber AS 'groupNumber',
-        dt_creationdate AS 'creationDate',
+        p.i_groupNumber AS 'groupNumber',
+        p.dt_creationdate AS 'creationDate',
+        stats.dt_enddate AS 'enddate',
         tpt.v_name AS projectType,
         s.v_name AS status
       FROM printstickets AS p
       INNER JOIN gd_ticketprojecttype AS tpt ON p.i_projecttype = tpt.i_id
-      INNER JOIN gd_status AS s ON p.i_status = s.i_id;`
+      INNER JOIN gd_status AS s ON p.i_status = s.i_id
+      INNER JOIN (${queryStatsTicket}) AS stats ON p.i_id = stats.i_id`
   );
 
   const formatDate = (date) => {
+    if (!date) return date;
     const pad = (n) => String(n).padStart(2, "0");
 
     const day = pad(date.getDate());
@@ -461,6 +464,7 @@ async function getStatsPrintCsv(data) {
   const resDataFormated = resData.map((item) => ({
     ...item,
     creationDate: formatDate(item.creationDate),
+    enddate: formatDate(item.enddate),
   }));
 
   const csvData = csvConverter.json2csv(resDataFormated);
