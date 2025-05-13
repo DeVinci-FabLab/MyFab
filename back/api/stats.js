@@ -436,7 +436,7 @@ async function getStatsPrintCsv(data) {
     data.app.db,
     data.app.executeQuery,
     `SELECT
-        i_id AS 'id',
+        p.i_id AS 'id',
         i_groupNumber AS 'groupNumber',
         dt_creationdate AS 'creationDate',
         tpt.v_name AS projectType,
