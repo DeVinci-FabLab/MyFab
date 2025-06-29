@@ -106,7 +106,7 @@ const versions = [
   ,
   {
     version: "1.2.0",
-    date: "PAS-OFFICIEL",
+    date: "29-06-2025",
     changes: [
       "Mise à jours des dépendences du front-end",
       "Correction d'un bug qui empêchait de signer les règles pour la nouvelle année scolaire",
