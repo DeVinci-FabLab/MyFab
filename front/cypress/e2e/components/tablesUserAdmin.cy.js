@@ -7,7 +7,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".user-2").click();
@@ -22,7 +22,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".user-2").click();
@@ -36,7 +36,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".user-3").click();
@@ -50,7 +50,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".user-0").click();
@@ -64,7 +64,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".user-0").click();
@@ -78,7 +78,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".user-3").click();
@@ -104,7 +104,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".search-input").type("Target user");
@@ -118,7 +118,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".search-input").type("Target user{enter}");
@@ -131,7 +131,7 @@ describe("Component tablesUserAdmin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("etudiant1@test.com");

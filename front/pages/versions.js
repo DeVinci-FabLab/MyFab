@@ -1,4 +1,8 @@
 import React from "react";
+import { getCookie } from "cookies-next";
+import VersionBlock from "../components/versionBlock";
+
+import { UserUse } from "../context/provider";
 
 const versions = [
   {
@@ -77,45 +81,106 @@ const versions = [
       "Mise à jour des CGU et création des redirections pour les signer",
     ],
   },
+  ,
+  {
+    version: "1.1.0",
+    date: "02-02-2024",
+    changes: [
+      "Ajout du darkMode",
+      "Certaines données utilisateurs sont sauvegardé dans le navigateur pour diminuer le nombre de requêtes",
+      "Ajout d'une date d'expiration d'un an pour les cookies après avoir cliqué sur 'se souvenir de moi' (les cookies ne seront plus supprimé à la fin de la session)",
+      "Correction d'une erreur avec les valeurs en doublon lors de l'importation des tables sql",
+      "Correction de la requête sql pour la validation automatique des CGU pour les utilisateurs par default",
+      "Diminution du temps de démarrage du conteneur Front-End",
+    ],
+  },
+  {
+    version: "1.1.1",
+    date: "04-03-2024",
+    changes: [
+      "Correction de la couleur du DarkMode dans la page /panel/:id",
+      "Fix error with test mode and stl viewer",
+      "Si le mot de passe est incorect lors de la connexion, le champ du mot de passe est vidé ",
+    ],
+  },
+  ,
+  {
+    version: "1.2.0",
+    date: "29-06-2025",
+    changes: [
+      "Mise à jours des dépendences du front-end",
+      "Correction d'un bug qui empêchait de signer les règles pour la nouvelle année scolaire",
+      "Ajout d'une route de stats",
+      "Lorsque un utilisateur entre un mauvais mot de passe, celui-ci est supprimé",
+      "Les messages du chat dans un ticket s'affiche maintenant sur plusieurs lignes",
+      "Création de l'option matériau pour les tickets",
+    ],
+  },
 ];
 
 const versionsToShow = versions.reverse();
 
 const ProjectVersions = () => {
-  // Remplacez ce tableau par les versions réelles de votre projet
-
+  const jwt = getCookie("jwt");
+  const { darkMode } = UserUse(jwt);
   return (
-    <div
-      className="max-w-3xl mx-auto my-10 text-center space-y-3"
-      style={{ minWidth: "50%" }}
-    >
-      <h1 className="text-3xl md:text-4xl font-extrabold mb-4">
-        Liste des Versions de MyFab
-      </h1>
-      <ul>
-        {versionsToShow.map((version, index) => (
-          <li key={index} className="border-b mt-4">
-            <div className="flex justify-between">
-              <h2 className="font-bold text-gray-500 text-justify">
-                {version.version}
-              </h2>
-              <p className="text-gray-400">{version.date}</p>
-            </div>
-            {version.message && (
-              <p className="text-justify">{version.message}</p>
-            )}
-            {version.changes.length !== 0 && (
-              <div className="rounded-lg p-4 bg-gray-200">
-                {version.changes.map((change, index) => (
-                  <p key={index} className="text-justify">
-                    • {change}
+    <div className={` ${darkMode ? "bg-gray-800" : ""}`}>
+      <div
+        className="max-w-3xl mx-auto py-10 text-center space-y-3"
+        style={{ minWidth: "50%" }}
+      >
+        <h1
+          className={`text-3xl md:text-4xl font-extrabold mb-4 ${
+            darkMode ? "text-gray-200" : ""
+          }`}
+        >
+          Liste des Versions de MyFab
+        </h1>
+        <ul>
+          {versionsToShow.map((version, index) => (
+            <VersionBlock key={index} version={version}>
+              <div className="pb-2">
+                <div className="flex justify-between">
+                  <h2
+                    className={`font-bold text-justify ${
+                      darkMode ? "text-gray-300" : "text-gray-500"
+                    }`}
+                  >
+                    {version.version}
+                  </h2>
+                  <p className={darkMode ? "text-gray-300" : "text-gray-400"}>
+                    {version.date}
                   </p>
-                ))}
+                </div>
+                {version.message && (
+                  <p
+                    className={`text-justify ${
+                      darkMode ? "text-gray-300" : "text-gray-500"
+                    }`}
+                  >
+                    {version.message}
+                  </p>
+                )}
+                {version.changes.length !== 0 && (
+                  <div
+                    className={`rounded-lg p-4 ${
+                      darkMode
+                        ? "text-gray-300 bg-gray-600"
+                        : "text-gray-500 bg-gray-200"
+                    }`}
+                  >
+                    {version.changes.map((change, index) => (
+                      <p key={index} className="text-justify">
+                        • {change}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </li>
-        ))}
-      </ul>
+            </VersionBlock>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

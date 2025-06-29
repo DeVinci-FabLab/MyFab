@@ -10,6 +10,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 1,
           myFabAgent: 1,
           blogAuthor: 1,
+          acceptedRule: 1,
         },
       };
 
@@ -23,6 +24,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 1,
           blogAuthor: 1,
+          acceptedRule: 1,
         },
       };
 
@@ -36,6 +38,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 0,
           blogAuthor: 0,
+          acceptedRule: 1,
         },
       };
 
@@ -49,6 +52,7 @@ export function mock(path, jwt, options) {
           changeUserProtectedRole: 0,
           myFabAgent: 0,
           blogAuthor: 0,
+          acceptedRule: 1,
         },
       };
 
@@ -60,8 +64,24 @@ export function mock(path, jwt, options) {
           manageUser: 0,
           changeUserRole: 0,
           changeUserProtectedRole: 0,
+          myFabAgent: 1,
+          blogAuthor: 0,
+          acceptedRule: 0,
+        },
+      };
+
+    case "1410":
+    case "1212":
+      return {
+        status: 200,
+        data: {
+          viewUsers: 0,
+          manageUser: 0,
+          changeUserRole: 0,
+          changeUserProtectedRole: 0,
           myFabAgent: 0,
           blogAuthor: 0,
+          acceptedRule: 1,
         },
       };
 

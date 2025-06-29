@@ -66,7 +66,7 @@ export async function getServerSideProps({ req }) {
   const role = await fetchAPIAuth("/user/role", cookies.jwt);
   const authorizations = await fetchAPIAuth(
     "/user/authorization/",
-    cookies.jwt
+    cookies.jwt,
   );
   const token = await fetchAPIAuth("/user/mailtoken/", cookies.jwt);
 

@@ -52,6 +52,7 @@ async function validateRules() {
       progress: undefined,
     });
   }
+
   setTimeout(async () => {
     const responseAuth = await fetchAPIAuth({
       method: "GET",
@@ -71,14 +72,22 @@ async function validateRules() {
 
 const date = new Date();
 
-export default function Rules({ userNeedToAccept }) {
+export default function Rules({ userNeedToAccept, darkMode }) {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className={`flex h-screen ${darkMode ? "bg-gray-800" : "bg-gray-50"}`}>
       <div className="max-w-3xl m-auto text-center space-y-3 ">
-        <h1 className="font-semibold leading-6 text-xl">
+        <h1
+          className={`font-semibold leading-6 text-xl ${
+            darkMode ? "text-gray-200" : ""
+          }`}
+        >
           Avant d'accéder à MyFab, vous devez accepter notre règlement.
         </h1>
-        <p className="font-light text-md text-gray-500">
+        <p
+          className={`font-light text-md ${
+            darkMode ? "text-gray-200" : "text-gray-500"
+          }`}
+        >
           Les présentes conditions générales d'utilisation (dites « CGU ») ont
           pour objet l'encadrement juridique des modalités de mise à disposition
           du site et des services par le DeVinci FabLab et de définir les
@@ -87,12 +96,16 @@ export default function Rules({ userNeedToAccept }) {
           vous souhaitez faire valoir vos droits.
         </p>
 
-        <div className="prose max-w-4xl overflow-y-auto max-h-96 mx-5 p-5 shadow-sm block w-full ring-indigo-500 border-indigo-500 sm:text-sm border rounded-md text-left text-justify">
-          <RulesText />
+        <div
+          className={`prose max-w-4xl overflow-y-auto max-h-96 mx-5 p-5 shadow-sm block w-full ring-indigo-500 border-indigo-500 sm:text-sm border rounded-md text-left text-justify ${
+            darkMode ? "text-gray-200 bg-gray-700" : ""
+          }`}
+        >
+          <RulesText darkMode={darkMode} />
         </div>
         {userNeedToAccept ? (
           <div>
-            <p className="pb-4">
+            <p className={`pb-4 ${darkMode ? "text-gray-200" : ""}`}>
               L'acceptation des règles a une validité jusqu'au 31 août{" "}
               {date.getMonth() >= 8
                 ? date.getFullYear() + 1
@@ -134,7 +147,8 @@ export async function getServerSideProps({ req }) {
     userNeedToAccept = true;
   }
 
+  const darkMode = user.error ? false : user.data.darkMode;
   return {
-    props: { userNeedToAccept }, // will be passed to the page component as props
+    props: { userNeedToAccept, darkMode }, // will be passed to the page component as props
   };
 }

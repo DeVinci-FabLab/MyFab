@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { MenuIcon, XIcon, CubeIcon, LoginIcon } from "@heroicons/react/outline";
+import { CubeIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { withRouter } from "next/router";
-import { removeCookies } from "cookies-next";
 import { logout } from "../lib/function";
 
 function classNames(...classes) {
@@ -30,11 +29,7 @@ function Navbar({ router, user, role }) {
                   {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                     <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <MenuIcon className="block h-6 w-6" aria-hidden="true" />
-                    )}
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   </Disclosure.Button>
                 </div>
                 <div className="flex-shrink-0 flex items-center">
@@ -94,7 +89,7 @@ function Navbar({ router, user, role }) {
                         type="button"
                         className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
-                        <LoginIcon
+                        <XMarkIcon
                           className="-ml-1 mr-2 h-5 w-5"
                           aria-hidden="true"
                         />
@@ -119,37 +114,27 @@ function Navbar({ router, user, role }) {
                           </div>
                         </Menu.Button>
                       </div>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
+                      <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700",
+                              )}
+                            >
+                              <button
+                                onClick={() => {
+                                  logout(user);
+                                }}
                               >
-                                <button
-                                  onClick={() => {
-                                    logout(user);
-                                  }}
-                                >
-                                  Se déconnecter
-                                </button>
-                              </a>
-                            )}
-                          </Menu.Item>
-                        </Menu.Items>
-                      </Transition>
+                                Se déconnecter
+                              </button>
+                            </a>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
                     </Menu>
                   </div>
                 ) : (

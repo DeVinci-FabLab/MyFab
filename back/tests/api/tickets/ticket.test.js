@@ -1005,6 +1005,8 @@ describe("POST /api/ticket/", () => {
               return [null, [{ id: 1 }]];
             case 5:
               return [null, {}];
+            case 6:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1014,9 +1016,11 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
         comment: "test",
       },
       files: null,
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1066,6 +1070,8 @@ describe("POST /api/ticket/", () => {
               return [null, {}];
             case 6:
               return [null, {}];
+            case 7:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1075,6 +1081,7 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
         comment: "test",
       },
       files: {
@@ -1083,6 +1090,7 @@ describe("POST /api/ticket/", () => {
           tempFilePath: __dirname + "/../../../tmp/test-file.stl",
         },
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1143,6 +1151,8 @@ describe("POST /api/ticket/", () => {
               return [null, {}];
             case 7:
               return [null, {}];
+            case 8:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1152,6 +1162,7 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
         comment: "test",
       },
       files: {
@@ -1166,6 +1177,7 @@ describe("POST /api/ticket/", () => {
           },
         ],
       },
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1201,6 +1213,8 @@ describe("POST /api/ticket/", () => {
               return [null, [{ id: 1 }]];
             case 5:
               return [null, [{}]];
+            case 6:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1210,10 +1224,12 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
         comment: "test",
         groupNumber: 1,
       },
       files: null,
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1249,6 +1265,8 @@ describe("POST /api/ticket/", () => {
               return [null, [{ id: 1 }]];
             case 5:
               return [null, [{}]];
+            case 6:
+              return [null, []];
 
             default:
               return [null, null];
@@ -1258,10 +1276,12 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
         comment: "test",
         groupNumber: "",
       },
       files: null,
+      sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
       data
@@ -1311,6 +1331,7 @@ describe("POST /api/ticket/", () => {
         io,
       },
       body: {
+        projectMaterial: 1,
         comment: "test",
       },
       files: {
@@ -1339,8 +1360,169 @@ describe("POST /api/ticket/", () => {
         io,
       },
       body: {
+        projectMaterial: 1,
         projectType: "NaN",
         comment: "test",
+      },
+      files: {
+        filedata: [],
+      },
+    };
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400_noProjectMaterial", async () => {
+    //Prepare
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-file.stl"));
+
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+
+    let requestNumber = 0;
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ acceptedRule: 1 }]];
+            case 2:
+              return [null, [{ 1: 1 }]];
+            case 3:
+              return [null, {}];
+            case 4:
+              return [null, [{ id: 1 }]];
+            case 5:
+              return [null, {}];
+            case 6:
+              return [null, {}];
+
+            default:
+              return [null, null];
+          }
+        },
+        io,
+      },
+      body: {
+        projectType: 1,
+        comment: "test",
+      },
+      files: {
+        filedata: {
+          name: "test-file.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-file.stl",
+        },
+      },
+    };
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400_projectMaterialIsNaN", async () => {
+    //Prepare
+    const fileStream = await fs
+      .createReadStream(__dirname + "/../../pyramid.stl")
+      .pipe(fs.createWriteStream(__dirname + "/../../../tmp/test-file.stl"));
+
+    //wait end copy of file
+    await new Promise((resolve) => {
+      fileStream.on("finish", () => {
+        resolve();
+      });
+    });
+
+    let requestNumber = 0;
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        executeQuery: async (db, query, options) => {
+          requestNumber++;
+          switch (requestNumber) {
+            case 1:
+              return [null, [{ acceptedRule: 1 }]];
+            case 2:
+              return [null, [{ 1: 1 }]];
+            case 3:
+              return [null, {}];
+            case 4:
+              return [null, [{ id: 1 }]];
+            case 5:
+              return [null, {}];
+            case 6:
+              return [null, {}];
+
+            default:
+              return [null, null];
+          }
+        },
+        io,
+      },
+      body: {
+        projectType: 1,
+        projectMaterial: "NaN",
+        comment: "test",
+      },
+      files: {
+        filedata: {
+          name: "test-file.STL",
+          tempFilePath: __dirname + "/../../../tmp/test-file.stl",
+        },
+      },
+    };
+    const response = await require("../../../api/tickets/ticket").postTicket(
+      data
+    );
+
+    //Tests
+    expect(response.code).toBe(400);
+    expect(response.type).toBe("code");
+  });
+
+  test("400_noComment", async () => {
+    //Execute
+    const data = {
+      userId: 1,
+      userAuthorization: {
+        validateUserAuth: async (app, userIdAgent, authName) => {
+          return true;
+        },
+      },
+      app: {
+        io,
+      },
+      body: {
+        projectMaterial: 1,
+        projectType: 1,
       },
       files: {
         filedata: [],
@@ -1369,6 +1551,9 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
+        comment:
+          "Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères. Test avec un commentaire de plus de 1000 carctères.",
       },
       files: {
         filedata: [],
@@ -1397,6 +1582,7 @@ describe("POST /api/ticket/", () => {
       },
       body: {
         projectType: 1,
+        projectMaterial: 1,
         comment: "test",
         groupNumber: "NaN",
       },
@@ -1438,6 +1624,7 @@ describe("POST /api/ticket/", () => {
         io,
       },
       body: {
+        projectMaterial: 1,
         projectType: 100,
         comment: "test",
         groupNumber: 1,
@@ -1479,6 +1666,7 @@ describe("POST /api/ticket/", () => {
         io,
       },
       body: {
+        projectMaterial: 1,
         projectType: 100,
         comment: "test",
         groupNumber: 1,
@@ -1508,6 +1696,7 @@ describe("POST /api/ticket/", () => {
         io,
       },
       body: {
+        projectMaterial: 1,
         projectType: 1,
         comment: "test",
         groupNumber: 1,

@@ -1,9 +1,9 @@
-version: "3"
+version: '3.9'
 
 services:
   mariadb:
     image: mariadb
-    container_name: Myfab_db
+    container_name: ${ENV}_Myfab_Db
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -24,7 +24,7 @@ services:
       context: back
       dockerfile: Dockerfile
     restart: always
-    container_name: Myfab_Back
+    container_name: ${ENV}_Myfab_Back
     depends_on:
       - "mariadb"
     volumes:
@@ -42,7 +42,7 @@ services:
       context: front
       dockerfile: Dockerfile
     restart: always
-    container_name: Myfab_Front
+    container_name: ${ENV}_Myfab_Front
     depends_on:
       - "back"
     volumes:
@@ -60,6 +60,7 @@ networks:
   MyFab:
     driver: bridge
     ipam:
-     config:
-       - subnet: ${SUBNET}
-         gateway: ${GATEWAY}
+      config:
+        - subnet: ${SUBNET}
+          gateway: ${GATEWAY}
+

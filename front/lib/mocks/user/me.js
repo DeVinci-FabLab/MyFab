@@ -16,6 +16,7 @@ export function mock(path, jwt, options) {
           isMicrosoft: 0,
           acceptedRule: 1,
           mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
         },
       };
     case "modo":
@@ -34,6 +35,7 @@ export function mock(path, jwt, options) {
           isMicrosoft: 0,
           acceptedRule: 1,
           mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
         },
       };
     case "user":
@@ -52,6 +54,7 @@ export function mock(path, jwt, options) {
           isMicrosoft: 0,
           acceptedRule: 1,
           mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
         },
       };
     case "user_test_school_panel":
@@ -70,6 +73,7 @@ export function mock(path, jwt, options) {
           isMicrosoft: 0,
           acceptedRule: 1,
           mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
         },
       };
     case "user_need_to_accept_rule":
@@ -88,6 +92,27 @@ export function mock(path, jwt, options) {
           isMicrosoft: 0,
           acceptedRule: 0,
           mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
+        },
+      };
+    case "1410":
+    case "1212":
+      return {
+        status: 200,
+        data: {
+          id: 4,
+          firstName: "fireworks",
+          lastName: "fireworks",
+          email: "fireworks@test.com",
+          creationDate: "2015-10-19T22:24:66.212Z",
+          discordid: null,
+          language: "fr",
+          title: "Test",
+          schoolValid: true,
+          isMicrosoft: 0,
+          acceptedRule: 1,
+          mailValidated: 1,
+          darkMode: process.env.DARK_MODE_IN_TEST_MODE === "true" ? 1 : 0,
         },
       };
 

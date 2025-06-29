@@ -5,7 +5,7 @@ describe("Page random", () => {
   beforeEach(() => {
     cy.visit(
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/pageRandom",
-      { failOnStatusCode: false }
+      { failOnStatusCode: false },
     );
   });
 
@@ -19,7 +19,7 @@ describe("Page random", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 });

@@ -9,16 +9,10 @@ describe("Page panel/admin/history", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
-    cy.location("href").should(
-      "eq",
-      "http://" +
-        path
-          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
-    );
+    cy.location("pathname").should("eq", Cypress.env().BASE_PATH + "/auth");
   });
 
   it("User is not allowed", () => {
@@ -29,7 +23,7 @@ describe("Page panel/admin/history", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("La page que vous recherchez actuellement n'existe pas");
@@ -43,7 +37,7 @@ describe("Page panel/admin/history", () => {
         "/panel/admin/history",
       {
         failOnStatusCode: false,
-      }
+      },
     );
   });
 });

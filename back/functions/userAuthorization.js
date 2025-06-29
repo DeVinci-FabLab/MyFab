@@ -14,6 +14,7 @@ const authReducer = (previousValue, currentValue) => {
 module.exports.getUserAuth = getUserAuth;
 async function getUserAuth(app, userId) {
   const resDescGdRole = await app.executeQuery(app.db, "DESC `gd_roles`", []);
+
   // Error with the sql request
   if (resDescGdRole[0]) {
     console.log(resDescGdRole[0]);
@@ -50,6 +51,12 @@ async function getUserAuth(app, userId) {
     }
   }
 
+  const emptyRes = {};
+  for (const column of resDescGdRole[1]) {
+    if (!banColumn.includes(column.Field))
+      emptyRes[column.Field.split("_")[1]] = 0;
+  }
+
   const resTestIfCorrelationExist = await app.executeQuery(
     app.db,
     "SELECT " +
@@ -62,15 +69,27 @@ async function getUserAuth(app, userId) {
     console.log(resTestIfCorrelationExist[0]);
     return;
   }
-  if (resTestIfCorrelationExist[1].length === 0) {
-    const emptyRes = {};
-    for (const column of resDescGdRole[1]) {
-      if (!banColumn.includes(column.Field))
-        emptyRes[column.Field.split("_")[1]] = 0;
-    }
-    return emptyRes;
+
+  const userAuth =
+    resTestIfCorrelationExist[1].length === 0
+      ? emptyRes
+      : resTestIfCorrelationExist[1].reduce(authReducer);
+  const resGetRulesValid = await app.executeQuery(
+    app.db,
+    `SELECT
+      CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
+      FROM users AS u
+      WHERE u.i_id = ?`,
+    [userId]
+  );
+
+  if (resGetRulesValid[0] || resGetRulesValid[1].length !== 1) {
+    console.log(resGetRulesValid[0]);
+    return;
   }
-  const userAuth = resTestIfCorrelationExist[1].reduce(authReducer);
+
+  userAuth.acceptedRule = resGetRulesValid[1][0].acceptedRule;
+
   return userAuth;
 }
 

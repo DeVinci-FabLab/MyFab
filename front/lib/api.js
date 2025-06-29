@@ -8,10 +8,10 @@ export function getURL(path = "") {
 
 export async function fetchAPIAuth(path, jwt) {
   const isFetch = typeof path === "string";
-  if (process.env.IS_TEST_MODE) {
+  if (process.env.IS_TEST_MODE === "true") {
     return mockApi(path, jwt);
   } else {
-    return await new Promise((resolve, reject) => {
+    return await new Promise(async (resolve, reject) => {
       const options = isFetch
         ? {
             method: "GET",
@@ -21,15 +21,13 @@ export async function fetchAPIAuth(path, jwt) {
             url: getURL(path),
           }
         : path;
-      axios(options)
-        .then(async (response) => {
-          if (!isFetch) return resolve(response);
 
-          resolve(response);
-        })
-        .catch((e) => {
-          resolve({ error: e });
-        });
+      try {
+        const response = await axios(options);
+        return resolve(response);
+      } catch (error) {
+        return resolve({ error });
+      }
     });
   }
 }

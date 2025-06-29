@@ -7,8 +7,9 @@ function chooseLogo(isEdu) {
     ? {
         img: process.env.BASE_PATH + "/logoPaint.png",
         link: process.env.BASE_PATH + "/youClickedOnTheLogo",
+        className: "cursor-pointer",
       }
-    : { img: process.env.BASE_PATH + "/logo.png" };
+    : { img: process.env.BASE_PATH + "/logo.png", className: "" };
 }
 
 function LogoDvfl({ user = null }) {
@@ -17,7 +18,11 @@ function LogoDvfl({ user = null }) {
 
   return (
     <a href={logo.link} target="_blank">
-      <img className="h-8 w-auto" src={logo.img} alt="Fablab" />
+      <img
+        className={`h-8 w-auto ${logo.className}`}
+        src={logo.img}
+        alt="Fablab"
+      />
     </a>
   );
 }

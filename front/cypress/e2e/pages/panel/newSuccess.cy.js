@@ -9,15 +9,12 @@ describe("Page panel/newSuccess", () => {
         "/panel/newSuccess/?id=1",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
-    cy.location("href").should(
+    cy.location("pathname").should(
       "eq",
-      "http://" +
-        path
-          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/"),
     );
   });
 
@@ -29,12 +26,12 @@ describe("Page panel/newSuccess", () => {
         "/panel/newSuccess/?id=1",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".file-button").click();
     cy.get(".comment-textarea").type(
-      "Salut il est 10h pile quand j'écris ce message"
+      "Salut il est 10h pile quand j'écris ce message",
     );
     cy.get(".close-button").click();
     cy.contains("Le commentaire du fichier a été enregistré");
@@ -48,7 +45,7 @@ describe("Page panel/newSuccess", () => {
         "/panel/newSuccess/?id=1",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".continue-button").click();
@@ -58,7 +55,7 @@ describe("Page panel/newSuccess", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 });

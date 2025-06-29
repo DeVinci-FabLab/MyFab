@@ -36,7 +36,7 @@ export default function Forget() {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
-            }
+            },
           );
           router.push("/auth");
         }
@@ -55,7 +55,7 @@ export default function Forget() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
+          },
         );
       });
   };

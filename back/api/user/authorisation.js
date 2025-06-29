@@ -35,6 +35,7 @@ async function getAuth(data) {
     data.app,
     userIdAgent
   );
+
   return {
     type: "json",
     code: 200,

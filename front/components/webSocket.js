@@ -5,7 +5,7 @@ class WebSocket extends Component {
   socket = null;
 
   componentDidMount() {
-    if (!process.env.IS_TEST_MODE) {
+    if (process.env.IS_TEST_MODE !== "true") {
       this.socket = io(process.env.API, {
         transports: ["websocket", "polling"],
         autoConnect: false,

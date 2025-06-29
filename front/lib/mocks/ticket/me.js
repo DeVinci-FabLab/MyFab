@@ -1,7 +1,8 @@
 export function mock(path, jwt, options) {
-  const page = options?.data?.page;
+  const page = options?.params?.page;
   const date = new Date();
   switch (jwt) {
+    case "admin":
     case "user":
       if (page !== 0)
         return {
@@ -58,6 +59,7 @@ export function mock(path, jwt, options) {
               statusName: "Ouvert",
               title: "Etudiant1",
               userName: "Etudiant 1",
+              material: "FDM",
             },
             {
               creationDate: "2023-06-18T08:00:24.000Z",
@@ -72,6 +74,7 @@ export function mock(path, jwt, options) {
               statusName: "Ouvert",
               title: "Etudiant1",
               userName: "Etudiant 1",
+              material: "FDM",
             },
           ],
         },

@@ -19,7 +19,7 @@ export function mockApi(path, jwt) {
     return require(__dirname + "/mocks" + pathRegexResult).mock(
       path,
       jwt,
-      options
+      options,
     );
   } catch (error) {
     console.log(pathRegexResult);

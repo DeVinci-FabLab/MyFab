@@ -1,4 +1,6 @@
-node_modules
+.npmrc
+node_modules/
+coverage/
 coverage
 .env
 config.json

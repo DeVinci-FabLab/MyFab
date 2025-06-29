@@ -30,6 +30,17 @@ sendForgetPasswordMail({
   testFile: "forgotPasswordMail.html",
 });
 
+// Password changed mail
+const sendPasswordChangedMail =
+  require("./functions/sendMail/passwordChanged").sendPasswordChangedMail;
+
+sendPasswordChangedMail({
+  userMail: email,
+  firstName: "TestUser",
+  token: "token",
+  testFile: "passwordChanged.html",
+});
+
 // New message to ticket mail
 const sendTicketMessageMail =
   require("./functions/sendMail/ticketMessage").sendTicketMessageMail;
@@ -73,4 +84,15 @@ sendTicketMessageMail({
   ticketId: 212,
   messages,
   testFile: "ticketMessageMail.html",
+});
+
+// Notify new ticket
+const sendNotifyNewEmail =
+  require("./functions/sendMail/notifyNewTicket").sendNotifyNewEmail;
+
+sendNotifyNewEmail({
+  emailList: [email, email],
+  ticketId: "1",
+  projectMaterial: "FDM",
+  testFile: "notifyNewTicket.html",
 });

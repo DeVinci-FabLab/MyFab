@@ -18,7 +18,7 @@ describe("Page 403", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 });

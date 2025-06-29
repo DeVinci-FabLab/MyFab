@@ -165,10 +165,12 @@ async function userGetAll(data) {
                 u.v_firstName AS firstName,
                 u.v_lastName AS lastName,
                 u.v_email AS email,
-                COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
+                CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                 u.b_isMicrosoft AS "isMicrosoft"
                 FROM users AS u
                 LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
                 WHERE u.b_deleted = 0
                 AND u.b_visible = 1
                 AND (
@@ -289,13 +291,15 @@ async function userGetMe(data) {
                       u.v_discordid AS "discordid",
                       u.v_language AS "language",
                       u.b_darkMode AS "darkMode",
-                      COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                      COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
+                      CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                       CASE WHEN u.v_title IS NULL AND (sch.v_name IS NULL OR u.i_schoolyear IS NULL) THEN FALSE ELSE TRUE END AS "schoolValid",
                       u.b_isMicrosoft AS "isMicrosoft",
                       CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule",
                       u.b_mailValidated AS "mailValidated"
                       FROM users AS u
                       LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                      LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
                       WHERE u.i_id = ?
                       AND b_deleted = 0`;
 
@@ -401,12 +405,14 @@ async function userGetById(data) {
                     u.dt_creationdate AS "creationDate",
                     u.v_discordid AS "discordid",
                     u.v_language AS "language",
-                    COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                    COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
+                    CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                     u.b_isMicrosoft AS "isMicrosoft",
                     (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
                     u.b_mailValidated AS "mailValidated"
                     FROM users AS u
                     LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                    LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
                     WHERE u.i_id = ?
                     AND u.b_deleted = 0`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [

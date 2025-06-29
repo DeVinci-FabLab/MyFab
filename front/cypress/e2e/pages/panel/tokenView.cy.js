@@ -7,7 +7,7 @@ describe("Page panel/tokenView", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/tokenView",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.location("href").should(
@@ -15,7 +15,7 @@ describe("Page panel/tokenView", () => {
       "http://" +
         path
           .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
+          .replace(/\\/g, "/"),
     );
   });
 
@@ -25,7 +25,7 @@ describe("Page panel/tokenView", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/tokenView",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("Token");

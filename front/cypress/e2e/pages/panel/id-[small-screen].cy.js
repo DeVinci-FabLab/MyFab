@@ -1,6 +1,10 @@
 /// <reference types="cypress" />
 
 describe("Page panel/:id", () => {
+  beforeEach(() => {
+    cy.viewport(800, 1200);
+  });
+
   it("Show user infos", () => {
     cy.setCookie("jwt", "admin");
     cy.visit("http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/1", {
@@ -83,11 +87,14 @@ describe("Page panel/:id", () => {
 
     cy.get(".see-file-button").first().click();
     cy.get(".close-button").first().click();
+    cy.reload();
     cy.get(".see-file-button").first().click();
     cy.get("body").click(100, 100);
+    cy.reload();
     cy.get(".see-file-button").first().click();
     cy.get(".comment-file-textarea").type("Comment test");
     cy.get(".close-button").first().click();
+    cy.reload();
     cy.get(".see-file-button").first().click();
     cy.get(".printer-select").select("Cody");
     cy.get(".close-button").first().click();
@@ -104,7 +111,7 @@ describe("Page panel/:id", () => {
 
     cy.get(".download-button").first().click();
     cy.readFile(downloadsFolder + "/Test.stl", { timeout: 15000 }).should(
-      "exist"
+      "exist",
     );
   });
 });

@@ -1,7 +1,7 @@
 {
   "name": "myfabultimate_back",
   "description": "The BackEnd for MyFab",
-  "version": "1.0.7",
+  "version": "1.2.0",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -33,6 +33,7 @@
     "express-header": "^1.1.1",
     "express-session": "^1.17.3",
     "fs": "^0.0.1-security",
+    "json-2-csv": "^5.5.9",
     "jwt-decode": "^3.1.2",
     "jwt-encode": "^1.0.1",
     "mysql": "^2.18.1",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "@alex_neo/jest-expect-message": "^1.0.5",
     "jest": "^27.5.1",
+    "nodemon": "^3.1.7",
     "prettier": "2.8.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3"

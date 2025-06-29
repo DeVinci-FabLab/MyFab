@@ -1,4 +1,4 @@
-export default function Rules() {
+export default function Rules({ darkMode }) {
   return (
     <div>
       <p>
@@ -18,20 +18,28 @@ export default function Rules() {
         Le DeVinci FabLab se réserve le droit de modifier unilatéralement et à
         tout moment le contenu des présentes CGU.
       </p>
-      <h3>Les mentions légales</h3>
+      <h3 className={darkMode ? "text-gray-200" : ""}>Les mentions légales</h3>
       <p className="m-0">
         L'édition de ce site est assurée par l'association DeVinci FabLab régie
         par la loi de 1901.
       </p>
       <p className="m-0">
-        <strong>Numéro RNA : </strong>W922009573
+        <strong className={darkMode ? "text-gray-200" : ""}>
+          Numéro RNA :{" "}
+        </strong>
+        W922009573
       </p>
       <p className="m-0">
-        <strong>Siège Social : </strong>12, avenue Léonard de Vinci, 92400
-        Courbevoie
+        <strong className={darkMode ? "text-gray-200" : ""}>
+          Siège Social :{" "}
+        </strong>
+        12, avenue Léonard de Vinci, 92400 Courbevoie
       </p>
       <p className="m-0">
-        <strong>Adresse email : </strong>fablab@devinci.fr
+        <strong className={darkMode ? "text-gray-200" : ""}>
+          Adresse email :{" "}
+        </strong>
+        fablab@devinci.fr
       </p>
       <p className="m-0">
         <a
@@ -45,7 +53,7 @@ export default function Rules() {
         L'hébergeur du site est la société OVH, dont le siège social est situé
         au 2 rue Kellermann, 59100 Roubaix, France
       </p>
-      <h3>Objectif</h3>
+      <h3 className={darkMode ? "text-gray-200" : ""}>Objectif</h3>
       <p>
         Le site{" "}
         <a className="text-blue-500" href="https://my.devinci-fablab.fr">
@@ -55,7 +63,9 @@ export default function Rules() {
         étudiants et au personnel des écoles ESILV, EMLV et IIM. Ces impressions
         3D sont réalisées par les membres de l'association du DeVinci FabLab.
       </p>
-      <h3>Qui peut utiliser le service ?</h3>
+      <h3 className={darkMode ? "text-gray-200" : ""}>
+        Qui peut utiliser le service ?
+      </h3>
       <p>
         Pour utiliser le service, l'utilisateur doit être étudiant ou membre du
         personnel d'une des écoles ESILV, EMLV ou IIM. L'utilisateur peut
@@ -64,7 +74,7 @@ export default function Rules() {
         DeVinci FabLab se réserve le droit de bannir cet utilisateur sans
         préavis.
       </p>
-      <h3>Données personnelles</h3>
+      <h3 className={darkMode ? "text-gray-200" : ""}>Données personnelles</h3>
       <p className="mb-0">
         Le site du{" "}
         <a className="text-blue-500" href="https://my.devinci-fablab.fr">
@@ -73,7 +83,9 @@ export default function Rules() {
         enregistre des données pour le fonctionnement du site. Elles sont de
         plusieurs type.
       </p>
-      <h4 className="mt-2 mb-0">Données utilisateurs</h4>
+      <h4 className={`mt-2 mb-0 ${darkMode ? "text-gray-200" : ""}`}>
+        Données utilisateurs
+      </h4>
       <ul className="m-0">
         <li className="m-0">Nom</li>
         <li className="m-0">Prénom</li>
@@ -81,13 +93,17 @@ export default function Rules() {
         <li className="m-0">Ecole</li>
         <li className="m-0">Année</li>
       </ul>
-      <h4 className="mt-2 mb-0">Contenu utilisateurs</h4>
+      <h4 className={`mt-2 mb-0 ${darkMode ? "text-gray-200" : ""}`}>
+        Contenu utilisateurs
+      </h4>
       <ul className="m-0">
         <li className="m-0">Tickets</li>
         <li className="m-0">Messages</li>
         <li className="m-0">Fichiers 3D</li>
       </ul>
-      <h4 className="mt-2 mb-0">Données hardware</h4>
+      <h4 className={`mt-2 mb-0 ${darkMode ? "text-gray-200" : ""}`}>
+        Données hardware
+      </h4>
       <ul className="m-0">
         <li className="m-0">Adresse(s) IP</li>
         <li className="m-0">Navigateur(s)</li>
@@ -97,7 +113,9 @@ export default function Rules() {
         Il est possible de demander l'anonymisation ou la modification des
         données de votre compte utilisateur par mail : fablab@devinci.fr.
       </p>
-      <h3>Votre contenu et votre conduite</h3>
+      <h3 className={darkMode ? "text-gray-200" : ""}>
+        Votre contenu et votre conduite
+      </h3>
       <p>
         Le contenu que vous soumettez ne doit en aucun cas contenir la propriété
         intellectuelle d'un tiers, tels que des éléments protégés par le droit
@@ -142,7 +160,9 @@ export default function Rules() {
         être supprimé totalement ou partie et votre accès à nos services
         pourrait être suspendu ou bloqué.{" "}
       </p>
-      <h3>Limitation de responsabilité</h3>
+      <h3 className={darkMode ? "text-gray-200" : ""}>
+        Limitation de responsabilité
+      </h3>
       <p>
         Le DeVinci FabLab décline toute responsabilité quant à l'exactitude, la
         fiabilité, l'exhaustivité ou la pertinence des informations fournies sur

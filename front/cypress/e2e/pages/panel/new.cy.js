@@ -8,15 +8,12 @@ describe("Page panel/new", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
-    cy.location("href").should(
+    cy.location("pathname").should(
       "eq",
-      "http://" +
-        path
-          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/"),
     );
   });
 
@@ -26,13 +23,14 @@ describe("Page panel/new", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".description-textarea").type(
-      "Yo je suis Cody et je savais pas quoi écrire en description pour le test End to End, donc j'écris ce qu'il me passe par la tête en plus il est 00:30 tout pile donc je réfléchis pas trop."
+      "Yo je suis Cody et je savais pas quoi écrire en description pour le test End to End, donc j'écris ce qu'il me passe par la tête en plus il est 00:30 tout pile donc je réfléchis pas trop.",
     );
     cy.get(".projectType-select").select("Autre");
+    cy.get(".material-select").select("FDM");
     cy.get(".group-number-input").type("212");
     cy.get("#file-upload").attachFile("test.stl");
     cy.get(".submit-button").click();
@@ -44,7 +42,7 @@ describe("Page panel/new", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".projectType-select").select("Autre");
@@ -59,7 +57,7 @@ describe("Page panel/new", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".group-number-input").type("NaN");
@@ -72,11 +70,11 @@ describe("Page panel/new", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".group-number-input").type(
-      "{uparrow}{uparrow}{uparrow}{uparrow}{uparrow}"
+      "{uparrow}{uparrow}{uparrow}{uparrow}{uparrow}",
     );
     cy.get(".group-number-input").should("have.value", 5);
     cy.get(".group-number-input").type("{downarrow}{downarrow}");

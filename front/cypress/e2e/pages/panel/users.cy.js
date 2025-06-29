@@ -7,15 +7,12 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
-    cy.location("href").should(
+    cy.location("pathname").should(
       "eq",
-      "http://" +
-        path
-          .normalize("localhost:3000/" + Cypress.env().BASE_PATH + "/auth")
-          .replace(/\\/g, "/")
+      path.normalize(Cypress.env().BASE_PATH + "/auth").replace(/\\/g, "/"),
     );
   });
 
@@ -25,7 +22,7 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.contains("La page que vous recherchez actuellement n'existe pas");
@@ -37,7 +34,7 @@ describe("Page panel/admin", () => {
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/users",
       {
         failOnStatusCode: false,
-      }
+      },
     );
 
     cy.get(".roles-list-button").click();

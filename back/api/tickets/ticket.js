@@ -1,5 +1,7 @@
 const fs = require("fs");
 const updateTicketDate = require("../../functions/stats").updateTicketDate;
+const sendMailFunction =
+  require("../../functions/sendMail/notifyNewTicket").sendNotifyNewEmail;
 const maxTicket = 30;
 module.exports.maxTicket = maxTicket;
 
@@ -121,16 +123,20 @@ async function getTicketAllFromUser(data) {
   const page = data.query && data.query.page ? data.query.page : 0;
   const query = `SELECT pt.i_id AS 'id',
             CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
-            tpt.v_name AS 'projectType', 
-            COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+            tpt.v_name AS 'projectType',
+            COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
+            CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
             pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
             stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
-            tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor' 
-            FROM printstickets AS pt 
-            INNER JOIN users AS u ON pt.i_idUser = u.i_id 
-            INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
+            tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor',
+            pm.v_name AS 'material'
+            FROM printstickets AS pt
+            INNER JOIN users AS u ON pt.i_idUser = u.i_id
+            INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id
             INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-            LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+            INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+            LEFT JOIN gd_school AS sch ON pt.i_useridschool = sch.i_id
+            LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
             LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
             WHERE pt.i_idUser = ? 
             AND pt.b_isDeleted = 0 
@@ -268,17 +274,21 @@ async function getTicketAll(data) {
   const query = `SELECT pt.i_id AS 'id',
               CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
               tpt.v_name AS 'projectType',
-              COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+              COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
+              CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
               pt.i_groupNumber AS 'groupNumber',
               pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
               stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
               stat.b_isOpen AS 'isOpen',
-              tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
+              tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
+              pm.v_name AS 'material'
               FROM printstickets AS pt 
               INNER JOIN users AS u ON pt.i_idUser = u.i_id 
               INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
               INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-              LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+              INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+              LEFT JOIN gd_school AS sch ON pt.i_useridschool = sch.i_id
+              LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
               LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
               WHERE pt.b_isDeleted = 0
              ${selectOpenOnly ? "AND stat.b_isOpen = 1" : ""}
@@ -461,16 +471,20 @@ async function getTicketById(data) {
   const querySelect = `SELECT pt.i_id AS 'id', pt.i_idUser AS 'idUser',CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS 'userName',
                 u.v_firstName AS 'userFirstName', u.v_lastName AS 'userLastName',
                 tpt.v_name AS 'projectType', pt.i_projecttype AS 'idProjectType', 
-                COALESCE(u.v_title, CONCAT(sch.v_name, " A", CAST(u.i_schoolyear AS CHAR))) AS "title",
+                COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
+                CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
                 u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
                 pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
                 stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
-                tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor' 
+                tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
+                pm.v_name AS 'material'
                 FROM printstickets AS pt 
                 INNER JOIN users AS u ON pt.i_idUser = u.i_id 
                 INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
                 INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
-                LEFT JOIN gd_school AS sch ON u.i_idschool = sch.i_id
+                INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+                LEFT JOIN gd_school AS sch ON pt.i_useridschool = sch.i_id
+                LEFT JOIN gd_school AS schp ON u.i_idschoolprevious = schp.i_id
                 LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
                 WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
   const dbRes = await data.app.executeQuery(data.app.db, querySelect, [
@@ -659,6 +673,10 @@ async function getTicketById(data) {
  *              groupNumber:
  *                type: "integer"
  *                format: "int64"
+ *              projectMaterial:
+ *                type: "integer"
+ *                format: "int64"
+ *                required: true
  *              comment:
  *                type: "string"
  *                required: true
@@ -697,7 +715,10 @@ async function postTicket(data) {
     !data.body.projectType ||
     isNaN(data.body.projectType) ||
     isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) ||
-    !data.body.comment
+    !data.body.projectMaterial ||
+    isNaN(data.body.projectMaterial) ||
+    !data.body.comment ||
+    data.body.comment.length > 1050
   ) {
     return {
       type: "code",
@@ -761,12 +782,15 @@ async function postTicket(data) {
     };
   }
 
-  const queryCreateTicket = `INSERT INTO printstickets (i_idUser, i_projecttype, i_groupNumber, i_priority, i_status)
-                            VALUES (?, ?, ?, (SELECT i_id FROM gd_ticketpriority WHERE v_name = 'Normal'), (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert'));`;
+  const queryCreateTicket = `INSERT INTO printstickets (i_idUser, i_useridschool, i_userschoolyear, i_projecttype, i_groupNumber, i_priority, i_status, i_material)
+                            VALUES (?, (SELECT i_idschool FROM users WHERE i_id = ?), (SELECT i_schoolyear FROM users WHERE i_id = ?), ?, ?, (SELECT i_id FROM gd_ticketpriority WHERE v_name = 'Normal'), (SELECT i_id FROM gd_status WHERE v_name = 'Ouvert'), ?);`;
   const dbRes = await data.app.executeQuery(data.app.db, queryCreateTicket, [
+    userId,
+    userId,
     userId,
     data.body.projectType,
     data.body.groupNumber === "" ? null : data.body.groupNumber,
+    data.body.projectMaterial,
   ]);
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -854,6 +878,37 @@ async function postTicket(data) {
   /* c8 ignore stop */
 
   data.app.io.emit("event-reload-tickets"); // Reload ticket menu on client
+  const querySelectNotifyEmail = `SELECT DISTINCT u.v_email AS email,
+                                        pm.v_name AS name
+                                  FROM rolescorrelation AS rc
+                                  LEFT JOIN gd_roles AS r ON rc.i_idRole = r.i_id
+                                  LEFT JOIN gd_printmaterial AS pm ON r.i_id = pm.i_idRoleNotify
+                                  LEFT JOIN users AS u ON rc.i_idUser = u.i_id
+                                  WHERE pm.i_id = ?;`;
+  const resSelectNotifyEmail = await data.app.executeQuery(
+    data.app.db,
+    querySelectNotifyEmail,
+    [data.body.projectMaterial]
+  );
+  /* c8 ignore start */
+  if (resSelectNotifyEmail[0]) {
+    console.log(resSelectNotifyEmail[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+
+  if (resSelectNotifyEmail[1].length !== 0) {
+    const emailList = resSelectNotifyEmail[1].map((row) => row.email);
+
+    await data.sendMailFunction({
+      emailList,
+      ticketId: lastIdentityRes[1][0].id,
+      projectMaterial: resSelectNotifyEmail[1][0].name,
+    });
+  }
 
   return {
     type: "json",
@@ -1544,6 +1599,7 @@ async function startApi(app) {
         req,
         res
       );
+      data.sendMailFunction = sendMailFunction;
       const result = await postTicket(data);
       await require("../../functions/apiActions").sendResponse(
         req,

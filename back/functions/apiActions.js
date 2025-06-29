@@ -9,8 +9,10 @@ const jwtSecret = process.env.SPECIALTOKEN;
 
 const reIpAddress = new RegExp("(?:[0-9]{1,3}.){3}[0-9]{1,3}");
 function getIpAddress(remoteAddress) {
-  const result = remoteAddress.match(reIpAddress);
-  if (result) return result[0];
+  if (remoteAddress) {
+    const result = remoteAddress.match(reIpAddress);
+    if (result) return result[0];
+  }
   return "127.0.0.1";
 }
 
