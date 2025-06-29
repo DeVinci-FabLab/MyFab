@@ -16,8 +16,7 @@ services:
     expose:
       - "3306"
     networks:
-      MyFab:
-        ipv4_address: ${MARIA_IP}
+      - traefik-network
 
   back:
     build:
@@ -34,8 +33,7 @@ services:
     expose:
       - "5000"
     networks:
-      MyFab:
-        ipv4_address: ${BACK_IP}
+      - traefik-network
 
   front:
     build:
@@ -50,17 +48,19 @@ services:
     expose:
       - "3000"
     networks:
-      MyFab:
-        ipv4_address: ${FRONT_IP}
+      - traefik-network
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.homer.rule=Host(`${HOST}`)'
+      - 'traefik.http.routers.homer.entrypoints=websecure'
+      - 'traefik.http.routers.homer.tls.certresolver=myresolver'
+      - 'traefik.http.services.homer.loadbalancer.server.port=3000'
+      #- 'com.centurylinklabs.watchtower.enable=true'
 
 volumes:
   mariaDb:
-
+  
 networks:
-  MyFab:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: ${SUBNET}
-          gateway: ${GATEWAY}
+  traefik-network:
+    external: true
 
