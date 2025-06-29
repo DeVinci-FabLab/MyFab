@@ -51,10 +51,10 @@ services:
       - traefik-network
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.homer.rule=Host(`${HOST}`)'
-      - 'traefik.http.routers.homer.entrypoints=websecure'
-      - 'traefik.http.routers.homer.tls.certresolver=myresolver'
-      - 'traefik.http.services.homer.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.myfab.rule=Host(`${HOST}`)'
+      - 'traefik.http.routers.myfab.entrypoints=websecure'
+      - 'traefik.http.routers.myfab.tls.certresolver=myresolver'
+      - 'traefik.http.services.myfab.loadbalancer.server.port=3000'
       #- 'com.centurylinklabs.watchtower.enable=true'
 
 volumes:
