@@ -1,18 +1,16 @@
-version: '3.9'
-
 services:
   mariadb:
     image: mariadb
     container_name: ${ENV}_Myfab_Db
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD}
       MARIADB_DATABASE: ${DB_DATABASE}
     volumes:
-      - mariaDb:/var/lib/mysql
+      - ${VOLUMES_PATH}/myfab-tickets/mariaDB/:/var/lib/mysql
     expose:
       - "3306"
     networks:
@@ -22,13 +20,13 @@ services:
     build:
       context: back
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     container_name: ${ENV}_Myfab_Back
     depends_on:
       - "mariadb"
     volumes:
-      - ./back/data/:/home/node/MyFab_Back/data/
-      - ./back/logs/:/home/node/MyFab_Back/logs/
+      - ${VOLUMES_PATH}/myfab-tickets/back/data/:/home/node/MyFab_Back/data/
+      - ${VOLUMES_PATH}/myfab-tickets/back/logs/:/home/node/MyFab_Back/logs/
       - ./.env:/home/node/MyFab_Back/.env
     expose:
       - "5000"
@@ -39,7 +37,7 @@ services:
     build:
       context: front
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     container_name: ${ENV}_Myfab_Front
     depends_on:
       - "back"
@@ -57,9 +55,6 @@ services:
       - 'traefik.http.services.myfab.loadbalancer.server.port=3000'
       #- 'com.centurylinklabs.watchtower.enable=true'
 
-volumes:
-  mariaDb:
-  
 networks:
   traefik-network:
     external: true
