@@ -1,53 +1,44 @@
-version: '3.9'
-
 services:
   mariadb:
     image: mariadb
     container_name: ${ENV}_Myfab_Db
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD}
       MARIADB_DATABASE: ${DB_DATABASE}
     volumes:
-      - mariaDb:/var/lib/mysql
-    expose:
-      - "3306"
+      - ${VOLUMES_PATH}/myfab-tickets/mariaDB/:/var/lib/mysql
     networks:
-      - traefik-network
+      - myfab-internal-network
 
   back:
-    build:
-      context: back
-      dockerfile: Dockerfile
-    restart: always
+    image: ghcr.io/devinci-fablab/myfab-tickets-backend:latest
+    restart: unless-stopped
     container_name: ${ENV}_Myfab_Back
     depends_on:
-      - "mariadb"
+      - 'mariadb'
     volumes:
-      - ./back/data/:/home/node/MyFab_Back/data/
-      - ./back/logs/:/home/node/MyFab_Back/logs/
+      - ${VOLUMES_PATH}/myfab-tickets/back/data/:/home/node/MyFab_Back/data/
+      - ${VOLUMES_PATH}/myfab-tickets/back/logs/:/home/node/MyFab_Back/logs/
       - ./.env:/home/node/MyFab_Back/.env
-    expose:
-      - "5000"
     networks:
-      - traefik-network
+      - myfab-internal-network
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=true'
 
   front:
-    build:
-      context: front
-      dockerfile: Dockerfile
-    restart: always
+    image: ghcr.io/devinci-fablab/myfab-tickets-frontend:latest
+    restart: unless-stopped
     container_name: ${ENV}_Myfab_Front
     depends_on:
-      - "back"
+      - 'back'
     volumes:
       - ./.env:/home/node/MyFab_Front/.env
-    expose:
-      - "3000"
     networks:
+      - myfab-internal-network
       - traefik-network
     labels:
       - 'traefik.enable=true'
@@ -55,12 +46,10 @@ services:
       - 'traefik.http.routers.myfab.entrypoints=websecure'
       - 'traefik.http.routers.myfab.tls.certresolver=myresolver'
       - 'traefik.http.services.myfab.loadbalancer.server.port=3000'
-      #- 'com.centurylinklabs.watchtower.enable=true'
+      - 'com.centurylinklabs.watchtower.enable=true'
 
-volumes:
-  mariaDb:
-  
 networks:
   traefik-network:
     external: true
-
+  myfab-internal-network:
+    driver: bridge
