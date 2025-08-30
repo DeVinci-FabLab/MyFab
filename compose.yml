@@ -17,7 +17,7 @@ services:
   back:
     image: ghcr.io/devinci-fablab/myfab-tickets-backend:latest
     restart: unless-stopped
-    container_name: ${ENV}_Myfab_Back
+    container_name: prod_Myfab_Back
     depends_on:
       - 'mariadb'
     volumes:
@@ -26,22 +26,39 @@ services:
       - ./.env:/home/node/MyFab_Back/.env
     networks:
       - myfab-internal-network
+      - traefik-network
+    expose:
+      - 5000
     labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=traefik-network'
+      - 'traefik.http.routers.myfab.rule=Host(`${HOST}`) && PathPrefix(`/api/`)'
+      - 'traefik.http.middlewares.myfabapi.stripprefix.prefixes=/api'
+      - 'traefik.http.routers.myfab.entrypoints=websecure'
+      - 'traefik.http.routers.myfab.tls.certresolver=myresolver'
+      - 'traefik.http.services.myfab.loadbalancer.server.port=5000'
       - 'com.centurylinklabs.watchtower.enable=true'
 
   front:
-    image: ghcr.io/devinci-fablab/myfab-tickets-frontend:latest
+    #    image: ghcr.io/devinci-fablab/myfab-tickets-frontend:latest
+    build:
+      context: front
+      dockerfile: Dockerfile
     restart: unless-stopped
-    container_name: ${ENV}_Myfab_Front
+    container_name: prod_Myfab_Front
     depends_on:
       - 'back'
+      - 'mariadb'
     volumes:
       - ./.env:/home/node/MyFab_Front/.env
     networks:
       - myfab-internal-network
       - traefik-network
+    expose:
+      - 3000
     labels:
       - 'traefik.enable=true'
+      - 'traefik.docker.network=traefik-network'
       - 'traefik.http.routers.myfab.rule=Host(`${HOST}`)'
       - 'traefik.http.routers.myfab.entrypoints=websecure'
       - 'traefik.http.routers.myfab.tls.certresolver=myresolver'
