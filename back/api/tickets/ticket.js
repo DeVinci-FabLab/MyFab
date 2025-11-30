@@ -336,8 +336,6 @@ async function getTicketAll(data) {
   }
   /* c8 ignore stop */
 
-  console.log(dbRes[1]);
-
   const queryCount = `SELECT COUNT(1) AS 'count'
             FROM printstickets AS pt
             INNER JOIN users AS u ON pt.i_idUser = u.i_id 
