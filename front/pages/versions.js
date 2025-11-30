@@ -116,6 +116,14 @@ const versions = [
       "Création de l'option matériau pour les tickets",
     ],
   },
+  {
+    version: "1.2.1",
+    date: "30-11-2025",
+    changes: [
+      "Création d'un status 'Fermé' pour les tickets fermés",
+      "Suppression des fichiers de tickets fermés après 2 ans",
+    ],
+  },
 ];
 
 const versionsToShow = versions.reverse();

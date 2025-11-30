@@ -10,6 +10,7 @@ const colors = {
   "2274e0": "text-gray-700 bg-gray-200",
   e9d41d: "text-amber-700 bg-amber-200",
   f30b0b: "text-white bg-gradient-to-r from-amber-400 to-red-500",
+  626262: "text-white bg-gray-600",
 };
 
 function getChevron(collumnState, type) {

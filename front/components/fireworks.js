@@ -438,19 +438,6 @@ function codyChallenge({
                       Le but de ce mini jeu est de détruire les droïdes GONK en
                       cliquant dessus en 60 secondes. Voilà fin des règles.
                     </p>
-                    <p
-                      className={`pt-2 text-justify ${darkMode ? "text-gray-200" : "text-gray-900"}`}
-                    >
-                      Ah, aussi, il ne s'agit pas d'une compétition, mais il y
-                      aura un classement en fin de journée.
-                    </p>
-                    <p
-                      className={`pt-2 text-justify text-xs ${darkMode ? "text-gray-200" : "text-gray-900"}`}
-                    >
-                      * Le classement est envoyé manuellement donc il ne sera
-                      pas envoyé quand je dors ou que je suis au taf, donc
-                      calmos !
-                    </p>
                   </div>
                 </div>
                 <div className="flex items-center justify-center">

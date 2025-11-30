@@ -280,7 +280,16 @@ async function getTicketAll(data) {
               pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
               stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
               stat.b_isOpen AS 'isOpen',
-              tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
+              CASE
+                WHEN stat.b_isOpen = 0 
+                  THEN "Fermé"
+                  ELSE tp.v_name
+              END AS 'priorityName',
+              CASE
+                WHEN stat.b_isOpen = 0 
+                  THEN "626262"
+                  ELSE tp.v_color
+              END AS 'priorityColor',
               pm.v_name AS 'material'
               FROM printstickets AS pt 
               INNER JOIN users AS u ON pt.i_idUser = u.i_id 
