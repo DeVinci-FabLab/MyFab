@@ -124,6 +124,11 @@ const versions = [
       "Suppression des fichiers de tickets fermés après 2 ans",
     ],
   },
+  {
+    version: "1.2.2",
+    date: "13-12-2025",
+    changes: ["Création d'une api pour compter le nombre de tickets ouverts"],
+  },
 ];
 
 const versionsToShow = versions.reverse();
