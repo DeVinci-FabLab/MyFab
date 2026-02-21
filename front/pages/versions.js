@@ -129,6 +129,14 @@ const versions = [
     date: "13-12-2025",
     changes: ["Création d'une api pour compter le nombre de tickets ouverts"],
   },
+  {
+    version: "1.2.3",
+    date: "21-02-2026",
+    changes: [
+      "Ajout de la possibilité d'envoyer des fichiers .obj et .step lors de la création d'un ticket",
+      "L'historique des tickets affiche maintenant les fichiers du plus récent au plus ancien",
+    ],
+  },
 ];
 
 const versionsToShow = versions.reverse();

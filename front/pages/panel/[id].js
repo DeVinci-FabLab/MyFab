@@ -979,7 +979,11 @@ const GestionTicket = ({
                     darkMode ? "text-gray-100" : ""
                   }`}
                 >
-                  Aperçu du fichier STL:
+                  Aperçu du fichier{" "}
+                  {ticketFile?.filename
+                    ?.split(".")
+                    [ticketFile.filename.split(".").length - 1].toLowerCase()}
+                  :
                 </p>
                 <p
                   className={`text-sm text-center ${
@@ -988,24 +992,48 @@ const GestionTicket = ({
                 >
                   {ticketFile.filename}
                 </p>
+                <p
+                  className={`text-sm text-center ${
+                    darkMode ? "text-gray-200" : "text-gray-500"
+                  }`}
+                ></p>
+
                 <center>
-                  <StlViewer
-                    style={{
-                      top: 0,
-                      left: 0,
-                      width:
-                        typeof window !== "undefined"
-                          ? (window.innerWidth / 100) * 45
-                          : 300,
-                      height:
-                        typeof window !== "undefined"
-                          ? window.innerHeight / 2.2
-                          : 200,
-                    }}
-                    modelProps={{ color: STLColor }}
-                    orbitControls={true}
-                    url={urlStl}
-                  />
+                  {ticketFile?.filename
+                    ?.split(".")
+                    [
+                      ticketFile.filename.split(".").length - 1
+                    ].toLowerCase() === "stl" ? (
+                    <StlViewer
+                      style={{
+                        top: 0,
+                        left: 0,
+                        width:
+                          typeof window !== "undefined"
+                            ? (window.innerWidth / 100) * 45
+                            : 300,
+                        height:
+                          typeof window !== "undefined"
+                            ? window.innerHeight / 2.2
+                            : 200,
+                      }}
+                      modelProps={{ color: STLColor }}
+                      orbitControls={true}
+                      url={urlStl}
+                    />
+                  ) : (
+                    <div>
+                      <p
+                        className={`text-sm text-center align-middle ${
+                          darkMode ? "text-gray-200" : "text-gray-500"
+                        }`}
+                        style={{ padding: "40px" }}
+                      >
+                        La prévisualisation n'est pas disponible pour ce type de
+                        fichier.
+                      </p>
+                    </div>
+                  )}
 
                   {authorizations.myFabAgent ? (
                     <div>
