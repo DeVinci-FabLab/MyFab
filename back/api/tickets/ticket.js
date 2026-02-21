@@ -835,7 +835,10 @@ async function postTicket(data) {
   //loop all files
   for (const file of files) {
     const fileNameSplited = file.name.split(".");
-    if (fileNameSplited[fileNameSplited.length - 1].toLowerCase() === "stl") {
+    const allowedExtension = ["stl", "obj", "step"];
+    const fileExtension =
+      fileNameSplited[fileNameSplited.length - 1].toLowerCase();
+    if (allowedExtension.includes(fileExtension)) {
       await new Promise(async (resolve) => {
         const newFileName = makeid(10, file.name);
         fs.copyFile(

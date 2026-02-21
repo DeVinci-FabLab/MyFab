@@ -502,7 +502,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                                   id="file-upload"
                                   name="file-upload"
                                   type="file"
-                                  accept=".stl"
+                                  accept=".stl, .obj, .step"
                                   className="sr-only"
                                 />
                               </label>
@@ -515,7 +515,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                                 darkMode ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              STL jusqu'à 20MB
+                              STL, obj, STEP jusqu'à 20MB
                             </p>
                           </div>
                         </div>
