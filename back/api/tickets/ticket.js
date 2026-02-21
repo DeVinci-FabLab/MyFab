@@ -266,11 +266,17 @@ async function getTicketAll(data) {
   if (data.query === undefined) data.query = {};
   const inputText = data.query.inputValue ? data.query.inputValue : "";
   const page = data.query.page ? data.query.page : 0;
-  const selectOpenOnly = data.query.selectOpenOnly
+  const selectOpenOnlyString = data.query.selectOpenOnly
     ? data.query.selectOpenOnly
-    : false;
+    : "false";
+  const selectOpenOnly = selectOpenOnlyString === "true";
   const orderCollumn = getOrderCollumnName(data.query.collumnName);
-  const order = data.query.order === "false" ? "DESC" : "ASC";
+  const order =
+    data.query.order === undefined && selectOpenOnly === false
+      ? "DESC"
+      : data.query.order === "false"
+      ? "DESC"
+      : "ASC";
   const query = `SELECT pt.i_id AS 'id',
               CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
               tpt.v_name AS 'projectType',
