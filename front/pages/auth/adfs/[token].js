@@ -2,6 +2,7 @@ import axios from "axios";
 import { setCookies } from "cookies-next";
 import router from "next/router";
 import { useEffect } from "react";
+import { getApi } from "../../../lib/runtimeEnv";
 
 export default function Forget({}) {
   useEffect(function () {
@@ -14,7 +15,7 @@ export default function Forget({}) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      url: process.env.API + "/api/user/login/adfs/",
+      url: getApi() + "/api/user/login/adfs/",
       data: {
         token,
       },

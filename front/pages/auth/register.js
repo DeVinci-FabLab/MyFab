@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import router from "next/router";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 import sha256 from "sha256";
 
 export default function Register() {
@@ -71,7 +72,7 @@ export default function Register() {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        url: process.env.API + "/api/user/register",
+        url: getApi() + "/api/user/register",
         data: {
           firstName,
           lastName: name,

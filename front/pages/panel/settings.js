@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 import { toast } from "react-toastify";
 import { getCookie } from "cookies-next";
 import Seo from "../../components/seo";
@@ -54,7 +55,7 @@ export default function Settings({ authorizations }) {
           "Content-Type": "application/json",
           dvflCookie: cookie,
         },
-        url: process.env.API + "/api/user/password/",
+        url: getApi() + "/api/user/password/",
         data: {
           actualPassword: sha256(actualPassword),
           newPassword: sha256(newPassword),

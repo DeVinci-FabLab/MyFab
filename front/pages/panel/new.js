@@ -5,6 +5,7 @@ import LayoutPanel from "../../components/layoutPanel";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 import { toast } from "react-toastify";
 import router from "next/router";
 import Seo from "../../components/seo";
@@ -94,7 +95,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
         dvflCookie: jwt,
       },
 
-      url: process.env.API + "/api/ticket",
+      url: getApi() + "/api/ticket",
       data,
       onUploadProgress: (progress) =>
         setPercent(percents(progress.loaded, progress.total)),

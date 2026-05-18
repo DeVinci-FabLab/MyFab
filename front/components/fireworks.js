@@ -5,6 +5,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import sha256 from "sha256";
 
 import { UserUse } from "../context/provider";
+import { getApi } from "../lib/runtimeEnv";
 
 const FallingEmojis = ({ children }) => {
   const [emojiList, setEmojiList] = useState([]);
@@ -223,7 +224,7 @@ function codyChallenge({
         "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-      url: process.env.API + "/api/codyChallenge",
+      url: getApi() + "/api/codyChallenge",
       data: {
         score: score,
         key: calculateKey(cookie, score),

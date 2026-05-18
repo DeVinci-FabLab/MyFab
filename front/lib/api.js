@@ -1,9 +1,10 @@
 import axios from "axios";
 import cookie from "cookie";
 import { mockApi } from "./mockApi";
+import { getApi } from "./runtimeEnv";
 
 export function getURL(path = "") {
-  return `${process.env.API + "/api"}${path}`;
+  return `${getApi() + "/api"}${path}`;
 }
 
 export async function fetchAPIAuth(path, jwt) {

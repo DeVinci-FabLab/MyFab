@@ -4,6 +4,7 @@ import router from "next/router";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 import sha256 from "sha256";
 
 import { UserUse } from "../../context/provider";
@@ -84,7 +85,7 @@ export default function Auth() {
     } else {
       // Connection avec le DVIC
       const adfs = getCookie("adfs");
-      if (adfs) router.push(process.env.API + "/api/user/login/adfs/");
+      if (adfs) router.push(getApi() + "/api/user/login/adfs/");
     }
 
     const handleKeyPress = (e) => {
@@ -113,7 +114,7 @@ export default function Auth() {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      url: process.env.API + "/api/user/login",
+      url: getApi() + "/api/user/login",
       data: {
         email,
         password: sha256(password),
@@ -131,7 +132,7 @@ export default function Auth() {
         headers: {
           dvflCookie: responseLogin.data.dvflCookie,
         },
-        url: process.env.API + "/api/user/authorization",
+        url: getApi() + "/api/user/authorization",
       });
 
       if (responseAuth.data.myFabAgent == 1) {

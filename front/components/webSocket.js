@@ -1,12 +1,13 @@
 import { Component } from "react";
 import { io } from "socket.io-client";
+import { getApi } from "../lib/runtimeEnv";
 
 class WebSocket extends Component {
   socket = null;
 
   componentDidMount() {
     if (process.env.IS_TEST_MODE !== "true") {
-      this.socket = io(process.env.API, {
+      this.socket = io(getApi(), {
         transports: ["websocket", "polling"],
         autoConnect: false,
         multiplex: false,

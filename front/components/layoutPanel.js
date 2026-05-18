@@ -13,6 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import ButtonLayoutPanel from "./buttonLayoutPanel";
 import { ChevronUpDownIcon } from "@heroicons/react/24/solid";
+import { getApi } from "../lib/runtimeEnv";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
@@ -140,7 +141,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         "Content-Type": "application/json",
         dvflCookie: jwt,
       },
-      url: process.env.API + "/api/user/darkmode/",
+      url: getApi() + "/api/user/darkmode/",
       params: {
         darkmode: user.darkMode,
       },
@@ -171,7 +172,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         "Content-Type": "application/json",
         dvflCookie: jwt,
       },
-      url: process.env.API + "/api/user/school/",
+      url: getApi() + "/api/user/school/",
       data: {
         idSchool: selectedSchool,
         year: selectedYear,

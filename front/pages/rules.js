@@ -1,6 +1,7 @@
 import "moment/locale/fr";
 
 import { fetchAPIAuth, parseCookies } from "../lib/api";
+import { getApi } from "../lib/runtimeEnv";
 import router from "next/router";
 import { getCookie } from "cookies-next";
 import axios from "axios";
@@ -15,7 +16,7 @@ async function validateRules() {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    url: process.env.API + "/api/user/validateRules/",
+    url: getApi() + "/api/user/validateRules/",
     headers: {
       dvflCookie: jwt,
     },
@@ -59,7 +60,7 @@ async function validateRules() {
       headers: {
         dvflCookie: jwt,
       },
-      url: process.env.API + "/api/user/authorization",
+      url: getApi() + "/api/user/authorization",
     });
 
     if (responseAuth.data.myFabAgent == 1) {

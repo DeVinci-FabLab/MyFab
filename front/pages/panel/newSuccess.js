@@ -13,6 +13,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import router from "next/router";
 import WebSocket from "../../components/webSocket";
+import { getApi } from "../../lib/runtimeEnv";
 
 import { UserUse } from "../../context/provider";
 
@@ -43,7 +44,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
         "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-      url: process.env.API + "/api/file/" + ticketFile.id,
+      url: getApi() + "/api/file/" + ticketFile.id,
       data: {
         comment: ticketFile.comment,
         idprinter: ticketFile.idprinter,
@@ -83,12 +84,12 @@ export default function NewPanel({ ticket, file, authorizations }) {
     const cookie = getCookie("jwt");
     await axios({
       method: "GET",
-      url: process.env.API + "/api/file/" + id + "/getToken",
+      url: getApi() + "/api/file/" + id + "/getToken",
       headers: {
         dvflCookie: cookie,
       },
     }).then((response) => {
-      setUrlStl(process.env.API + "/api/file/" + response.data);
+      setUrlStl(getApi() + "/api/file/" + response.data);
     });
   }
 

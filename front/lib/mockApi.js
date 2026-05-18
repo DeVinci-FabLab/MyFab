@@ -1,3 +1,5 @@
+import { getApi } from "./runtimeEnv";
+
 function applyRegex(path) {
   let pathRegexResult = path.replace(/\d/, "[value]");
 
@@ -11,7 +13,7 @@ export function mockApi(path, jwt) {
   path =
     typeof path === "string"
       ? path
-      : path.url.replace(process.env.API + "/api", "");
+      : path.url.replace(getApi() + "/api", "");
   if (path[path.length - 1] === "/") path = path.slice(0, -1);
   const pathRegexResult = applyRegex(path);
 
