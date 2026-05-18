@@ -20,10 +20,24 @@ services:
     container_name: prod_Myfab_Back
     depends_on:
       - 'mariadb'
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      API: ${API}
+      FRONT_URL: ${FRONT_URL}
+      SPECIALTOKEN: ${SPECIALTOKEN}
+      SHOWSWAGGER: ${SHOWSWAGGER}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      ADSF_ENTRYPOINT: ${ADSF_ENTRYPOINT}
+      ADSF_ISSUER: ${ADSF_ISSUER}
+      ADFS_FRONT_URL: ${ADFS_FRONT_URL}
     volumes:
       - ${VOLUMES_PATH}/myfab-tickets/back/data/:/home/node/MyFab_Back/data/
       - ${VOLUMES_PATH}/myfab-tickets/back/logs/:/home/node/MyFab_Back/logs/
-      - ./.env:/home/node/MyFab_Back/.env
     networks:
       - myfab-internal-network
       - traefik-network
@@ -40,17 +54,17 @@ services:
       - 'com.centurylinklabs.watchtower.enable=true'
 
   front:
-    #    image: ghcr.io/devinci-fablab/myfab-tickets-frontend:latest
-    build:
-      context: front
-      dockerfile: Dockerfile
+    image: ghcr.io/devinci-fablab/myfab-tickets-frontend:latest
     restart: unless-stopped
     container_name: prod_Myfab_Front
     depends_on:
       - 'back'
       - 'mariadb'
-    volumes:
-      - ./.env:/home/node/MyFab_Front/.env
+    environment:
+      API: ${API}
+      BASE_PATH: ${BASE_PATH}
+      IS_TEST_MODE: ${IS_TEST_MODE}
+      DARK_MODE_IN_TEST_MODE: ${DARK_MODE_IN_TEST_MODE}
     networks:
       - myfab-internal-network
       - traefik-network

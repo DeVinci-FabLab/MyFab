@@ -13,6 +13,7 @@ import { Fragment } from "react";
 import { Dialog, DialogPanel, Transition, Disclosure } from "@headlessui/react";
 import { getCookie } from "cookies-next";
 import { setZero, isUserConnected } from "../../lib/function";
+import { getApi } from "../../lib/runtimeEnv";
 import { toast } from "react-toastify";
 import Seo from "../../components/seo";
 import { PlusIcon } from "@heroicons/react/24/solid";
@@ -79,7 +80,7 @@ export default function Settings({ authorizations, rolesList }) {
         dvflCookie: cookie,
       },
 
-      url: process.env.API + "/api/user",
+      url: getApi() + "/api/user",
       params,
     });
 
@@ -401,7 +402,7 @@ export default function Settings({ authorizations, rolesList }) {
                                             },
 
                                             url:
-                                              process.env.API +
+                                              getApi() +
                                               "/api/user/" +
                                               data.id +
                                               "/role/" +
@@ -626,7 +627,7 @@ export default function Settings({ authorizations, rolesList }) {
                                                     },
 
                                                     url:
-                                                      process.env.API +
+                                                      getApi() +
                                                       "/api/user/" +
                                                       data.id +
                                                       "/role/" +

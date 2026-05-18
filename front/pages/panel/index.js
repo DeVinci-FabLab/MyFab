@@ -6,6 +6,7 @@ import "moment/locale/fr";
 
 import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 import { useRouter } from "next/router";
 import Moment from "react-moment";
 import { setZero } from "../../lib/function";
@@ -78,7 +79,7 @@ export default function NewPanel({ authorizations, highDemand }) {
         dvflCookie: cookie,
       },
 
-      url: process.env.API + "/api/ticket/me",
+      url: getApi() + "/api/ticket/me",
       params: { page: newActualPage },
     });
 
@@ -108,7 +109,7 @@ export default function NewPanel({ authorizations, highDemand }) {
         dvflCookie: cookie,
       },
 
-      url: process.env.API + "/api/ticket/" + id,
+      url: getApi() + "/api/ticket/" + id,
       data: { page: newActualPage },
     });
 

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
+import { getApi } from "../../../lib/runtimeEnv";
 
 export default function Verify() {
   return (
@@ -52,7 +53,7 @@ export async function getServerSideProps({ req, params }) {
   var success = false;
   await axios({
     method: "PUT",
-    url: process.env.API + "/api/user/mailValidation/" + params.token,
+    url: getApi() + "/api/user/mailValidation/" + params.token,
   })
     .then((response) => {
       if (response.status == 200) {

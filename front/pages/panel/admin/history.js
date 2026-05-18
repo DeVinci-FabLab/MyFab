@@ -7,6 +7,7 @@ import Error from "../../404";
 import Seo from "../../../components/seo";
 import TablesAdmin from "../../../components/tablesAdmin";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
+import { getApi } from "../../../lib/runtimeEnv";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
@@ -86,7 +87,7 @@ export default function OverviewAdmin({ authorizations }) {
         "Content-Type": "application/json",
         dvflCookie: jwt,
       },
-      url: process.env.API + "/api/ticket",
+      url: getApi() + "/api/ticket",
       params,
     });
 

@@ -3,6 +3,7 @@ import { useState } from "react";
 import router from "next/router";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 
 export default function Forget() {
   const [email, setEmail] = useState(null);
@@ -17,7 +18,7 @@ export default function Forget() {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      url: process.env.API + "/api/user/forgottenPassword",
+      url: getApi() + "/api/user/forgottenPassword",
       data: {
         email,
       },

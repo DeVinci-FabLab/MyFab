@@ -3,6 +3,7 @@ import router from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
+import { getApi } from "../../../lib/runtimeEnv";
 import sha256 from "sha256";
 
 export default function Forget({ params }) {
@@ -18,7 +19,7 @@ export default function Forget({ params }) {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        url: process.env.API + "/api/user/resetPassword/" + token,
+        url: getApi() + "/api/user/resetPassword/" + token,
         data: {
           newPassword: sha256(password),
         },

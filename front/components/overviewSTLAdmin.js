@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import axios from "axios";
+import { getApi } from "../lib/runtimeEnv";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -14,7 +15,7 @@ export default function OverviewSTLAdmin({ tickets }) {
     const cookie = getCookie("jwt");
     const response = await axios({
       method: "GET",
-      url: process.env.API + "/api/ticket/" + id + "/file",
+      url: getApi() + "/api/ticket/" + id + "/file",
       headers: {
         dvflCookie: cookie,
       },

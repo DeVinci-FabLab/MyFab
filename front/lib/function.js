@@ -1,6 +1,7 @@
 import { getCookie, deleteCookie } from "cookies-next";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getApi } from "./runtimeEnv";
 
 export function setZero(number) {
   if (!number) return "";
@@ -25,7 +26,7 @@ export function logout(user) {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    url: process.env.API + "/api/user/logout/",
+    url: getApi() + "/api/user/logout/",
     headers: {
       dvflCookie: getCookie("jwt"),
     },

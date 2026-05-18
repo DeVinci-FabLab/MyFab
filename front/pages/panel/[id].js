@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { setZero, isUserConnected } from "../../lib/function";
 import { format } from "../../lib/date";
+import { getApi } from "../../lib/runtimeEnv";
 
 import { UserUse } from "../../context/provider";
 
@@ -92,7 +93,7 @@ const GestionTicket = ({
         dvflCookie: cookie,
       },
       url:
-        process.env.API +
+        getApi() +
         "/api/ticket/" +
         params.id +
         "/" +
@@ -140,7 +141,7 @@ const GestionTicket = ({
         "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-      url: process.env.API + "/api/ticket/" + params.id + "/setCancelStatus/",
+      url: getApi() + "/api/ticket/" + params.id + "/setCancelStatus/",
       params,
     });
 
@@ -175,7 +176,7 @@ const GestionTicket = ({
         ? {
             method: "GET",
             responseType: "blob",
-            url: process.env.API + "/api/file/" + id,
+            url: getApi() + "/api/file/" + id,
             headers: {
               dvflCookie: cookie,
             },
@@ -206,7 +207,7 @@ const GestionTicket = ({
         "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-      url: process.env.API + "/api/ticket/" + params.id + "/message",
+      url: getApi() + "/api/ticket/" + params.id + "/message",
       data: {
         content: comment,
       },
@@ -246,10 +247,10 @@ const GestionTicket = ({
         "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-      url: process.env.API + "/api/file/" + id + "/getToken",
+      url: getApi() + "/api/file/" + id + "/getToken",
     });
 
-    setUrlStl(process.env.API + "/api/file/" + responseGetUrlSTL.data);
+    setUrlStl(getApi() + "/api/file/" + responseGetUrlSTL.data);
   }
 
   async function changeSTLColor() {
@@ -267,7 +268,7 @@ const GestionTicket = ({
         "Content-Type": "application/json",
         dvflCookie: cookie,
       },
-      url: process.env.API + "/api/file/" + ticketFile.id,
+      url: getApi() + "/api/file/" + ticketFile.id,
       data: {
         comment: ticketFile.comment,
         idprinter: ticketFile.idprinter,

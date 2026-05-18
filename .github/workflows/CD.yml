@@ -34,6 +34,10 @@ jobs:
           build-args: |
             VERSION=${{ github.ref_name }}
             BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            BASE_PATH=${{ vars.BASE_PATH }}
+            IS_TEST_MODE=${{ vars.IS_TEST_MODE }}
+            DARK_MODE_IN_TEST_MODE=${{ vars.DARK_MODE_IN_TEST_MODE }}
+            ANALYZE=${{ vars.ANALYZE }}
 
   build-and-push-backend:
     runs-on: ubuntu-latest

@@ -6,6 +6,7 @@ import OverviewAdmin from "../../../components/overviewAdmin";
 import WebSocket from "../../../components/webSocket";
 import Seo from "../../../components/seo";
 import { fetchAPIAuth, parseCookies } from "../../../lib/api";
+import { getApi } from "../../../lib/runtimeEnv";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 
@@ -80,7 +81,7 @@ export default function Admin({ authorizations }) {
         "Content-Type": "application/json",
         dvflCookie: jwt,
       },
-      url: process.env.API + "/api/ticket",
+      url: getApi() + "/api/ticket",
       params,
     });
     if (!responseTickets.error) {
