@@ -54,6 +54,7 @@ services:
     restart: unless-stopped
     tmpfs:
       - /tmp
+      - /home/node/MyFab_Back/tmp
     mem_limit: 512m
     cpus: 1.0
     pids_limit: 200
