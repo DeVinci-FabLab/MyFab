@@ -3,9 +3,18 @@ const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const expressHeader = require("express-header");
 const session = require("express-session");
+const helmet = require("helmet");
 const fs = require("fs");
 const app = express();
 require("dotenv").config();
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   transports: ["websocket", "polling"],
@@ -38,7 +47,11 @@ app.use(
   expressHeader([
     {
       key: "Access-Control-Allow-Origin",
-      value: "*",
+      value: process.env.FRONT_URL || "",
+    },
+    {
+      key: "Access-Control-Allow-Credentials",
+      value: "true",
     },
     {
       key: "Access-Control-Allow-Methods",

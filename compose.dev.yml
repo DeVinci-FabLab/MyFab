@@ -1,9 +1,34 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '3'
+
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 10s
+  timeout: 5s
+  retries: 10
+
+x-app-security: &app-security
+  user: '1000:1000'
+  read_only: true
+  security_opt:
+    - 'no-new-privileges:true'
+  cap_drop:
+    - ALL
+
 services:
   mariadb:
-    image: mariadb
-    container_name: ${ENV}_Myfab_Db
+    image: mariadb:latest
+    container_name: myfab-db-${SLUG:-prod}
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
+    security_opt:
+      - 'no-new-privileges:true'
+    mem_limit: 1g
+    cpus: 1.5
+    pids_limit: 500
+    logging: *default-logging
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_USER: ${DB_USER}
@@ -14,49 +39,83 @@ services:
     expose:
       - '3306'
     networks:
-      - traefik-network
+      - myfab-internal-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      start_period: 30s
 
   back:
+    <<: *app-security
     build:
       context: back
       dockerfile: Dockerfile
+    container_name: myfab-back-${SLUG:-prod}
     restart: unless-stopped
-    container_name: ${ENV}_Myfab_Back
+    tmpfs:
+      - /tmp
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 200
+    logging: *default-logging
     depends_on:
-      - 'mariadb'
+      mariadb:
+        condition: service_healthy
     volumes:
       - ./back/data/:/home/node/MyFab_Back/data/
       - ./back/logs/:/home/node/MyFab_Back/logs/
       - ./.env:/home/node/MyFab_Back/.env
+    networks:
+      - myfab-internal-network
+      - pangolin
     expose:
       - '5000'
-    networks:
-      - traefik-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      test:
+        - 'CMD'
+        - 'node'
+        - '-e'
+        - "require('http').get('http://localhost:5000/api/ping/', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+      start_period: 60s
 
   front:
+    <<: *app-security
     build:
       context: front
       dockerfile: Dockerfile
+    container_name: myfab-front-${SLUG:-prod}
     restart: unless-stopped
-    container_name: ${ENV}_Myfab_Front
+    tmpfs:
+      - /tmp
+      - /app/.next/cache
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 200
+    logging: *default-logging
     depends_on:
-      - 'back'
+      back:
+        condition: service_healthy
     volumes:
       - ./.env:/home/node/MyFab_Front/.env
+    networks:
+      - pangolin
     expose:
       - '3000'
-    networks:
-      - traefik-network
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.myfab.rule=Host(`${HOST}`)'
-      - 'traefik.http.routers.myfab.entrypoints=websecure'
-      - 'traefik.http.routers.myfab.tls.certresolver=myresolver'
-      - 'traefik.http.services.myfab.loadbalancer.server.port=3000'
+    healthcheck:
+      <<: *healthcheck-defaults
+      test:
+        - 'CMD'
+        - 'node'
+        - '-e'
+        - "require('http').get('http://localhost:3000/', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
+      start_period: 30s
 
 volumes:
   mariaDb:
 
 networks:
-  traefik-network:
+  myfab-internal-network:
+    driver: bridge
+  pangolin:
     external: true
