@@ -37,7 +37,7 @@ services:
     volumes:
       - ${VOLUMES_PATH}/myfab-tickets/mariaDB/:/var/lib/mysql
     networks:
-      - myfab-internal-network
+      - myfab-internal
     healthcheck:
       <<: *healthcheck-defaults
       test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
@@ -50,6 +50,7 @@ services:
     restart: unless-stopped
     tmpfs:
       - /tmp
+      - /home/node/MyFab_Back/tmp
     mem_limit: 512m
     cpus: 1.0
     pids_limit: 200
@@ -73,7 +74,7 @@ services:
       - ${VOLUMES_PATH}/myfab-tickets/back/data/:/home/node/MyFab_Back/data/
       - ${VOLUMES_PATH}/myfab-tickets/back/logs/:/home/node/MyFab_Back/logs/
     networks:
-      - myfab-internal-network
+      - myfab-internal
       - pangolin
     expose:
       - 5000
@@ -120,7 +121,8 @@ services:
       start_period: 30s
 
 networks:
-  myfab-internal-network:
+  myfab-internal:
+    name: myfab-internal-${SLUG:-prod}
     driver: bridge
   pangolin:
     external: true

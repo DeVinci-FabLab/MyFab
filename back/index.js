@@ -5,6 +5,7 @@ const expressHeader = require("express-header");
 const session = require("express-session");
 const helmet = require("helmet");
 const fs = require("fs");
+const path = require("path");
 const app = express();
 require("dotenv").config();
 
@@ -40,7 +41,7 @@ app.use(
   fileUpload({
     createParentPath: true,
     useTempFiles: true,
-    tempFileDir: __dirname + "\\tmp\\",
+    tempFileDir: path.join(__dirname, "tmp"),
   })
 );
 app.use(
