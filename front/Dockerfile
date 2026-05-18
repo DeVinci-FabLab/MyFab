@@ -1,10 +1,17 @@
-FROM node:20.17.0-alpine
+# =============================================================================
+# Stage 1: build (full dev deps, produces .next/ artifacts)
+# =============================================================================
+FROM node:20.17.0-alpine AS builder
 RUN npm install -g npm@10.8.2
 
 WORKDIR /app
-COPY ./package*.json ./
+RUN chown -R node:node /app
+
+USER node
+
+COPY --chown=node:node ./package*.json ./
 RUN npm install
-COPY . .
+COPY --chown=node:node . .
 
 ARG BASE_PATH
 ARG IS_TEST_MODE
@@ -17,35 +24,24 @@ ENV ANALYZE=$ANALYZE
 
 RUN npm run build
 
+# =============================================================================
+# Stage 2: runtime (only prod deps + build artifacts)
+# =============================================================================
+FROM node:20.17.0-alpine AS runner
+RUN npm install -g npm@10.8.2
+
+WORKDIR /app
+RUN chown -R node:node /app
+
+USER node
+
+COPY --chown=node:node --from=builder /app/package*.json ./
+RUN npm install --omit=dev
+
+COPY --chown=node:node --from=builder /app/.next ./.next
+COPY --chown=node:node --from=builder /app/public ./public
+COPY --chown=node:node --from=builder /app/next.config.js ./
+
 EXPOSE 3000
 ENV PORT=3000
 CMD ["npm", "run", "start"]
-
-#FROM ubuntu:23.04
-
-#RUN apt-get update
-#RUN apt-get install -y git sudo
-#RUN apt install -y curl iproute2
-
-#USER ubuntu
-#ENV NODE_VERSION=20.16.0
-#RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-#ENV NVM_DIR=/home/ubuntu/.nvm
-#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-#RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-#RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-#ENV PATH="/home/ubuntu/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-#RUN npm install -g npm@10.8.2
-#RUN npm install -g yarn
-
-#USER root
-#COPY . /home/ubuntu/MyFab_Front/
-#RUN chown -R ubuntu /home/ubuntu/MyFab_Front/
-#RUN chgrp -R ubuntu /home/ubuntu/MyFab_Front/
-#USER ubuntu
-#WORKDIR /home/ubuntu/MyFab_Front/
-
-#RUN npm install
-#RUN npm run build
-
-#CMD ["npm", "run", "start"]

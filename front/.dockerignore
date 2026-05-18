@@ -1,2 +1,13 @@
+.dockerignore
+.env
+.env.*
+.git
+.gitignore
 .next
+.prettierignore
+.prettierrc.json
+coverage
+cypress
 node_modules
+npm-debug.log
+*.md
