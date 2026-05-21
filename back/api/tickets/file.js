@@ -566,8 +566,8 @@ async function ticketFilePost(data) {
   //loop all files
   for (const file of files) {
     const fileNameSplited = file.name.split(".");
-    const fileExt = fileNameSplited[fileNameSplited.length -1].toLowerCase();
-    if (fileExt === "stl" || fileExt === "dxf") {
+    
+    if (fileNameSplited[fileNameSplited.length -1].toLowerCase() === "stl" || fileNameSplited[fileNameSplited.length -1].toLowerCase() === "dxf") {
       const res = await new Promise(async (resolve) => {
         const newFileName = makeid(10, file.name);
         fs.copyFile(
