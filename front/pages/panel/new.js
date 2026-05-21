@@ -446,7 +446,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                         <label
                           className={`${user.specialFont} small text-gray-500`}
                         >
-                          Fichier STL
+                          Fichier STL 
                         </label>
                       ) : (
                         ""
@@ -503,7 +503,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                                   id="file-upload"
                                   name="file-upload"
                                   type="file"
-                                  accept=".stl, .obj, .step"
+                                  accept=".stl, .obj, .step, .dxf"
                                   className="sr-only"
                                 />
                               </label>
@@ -516,7 +516,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                                 darkMode ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
-                              STL, obj, STEP jusqu'à 20MB
+                              STL, obj, STEP, DXF jusqu'à 20MB
                             </p>
                           </div>
                         </div>
