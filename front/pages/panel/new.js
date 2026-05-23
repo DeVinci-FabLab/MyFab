@@ -59,7 +59,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
   const handleSubmit = async (e) => {
     const validGroup = noGroup
       ? projectType[type].groupCanBeNull === 1
-      : !isNaN(parseInt(group));
+      : /^\d{1,4}[A-Za-z]?$/.test(group.trim());
     if (description == "" || !validGroup || file.length < 1) {
       setShowMissingField(true);
       setTimeout(() => setShowMissingField(false), 5000);
@@ -306,7 +306,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                           showMissingField &&
                           !(noGroup
                             ? projectType[type].groupCanBeNull === 1
-                            : !isNaN(parseInt(group)))
+                            : /^\d{1,4}[A-Za-z]?$/.test(group.trim()))
                             ? "text-red-500"
                             : darkMode
                               ? "text-gray-200"
@@ -330,17 +330,15 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                             setGroup(e.target.value);
                             setNoGroup(false);
                           }}
-                          type="number"
+                          type="text"
                           name="group"
                           value={group}
                           id="group"
-                          min="0"
-                          max="1000"
                           className={`group-number-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md ${
                             showMissingField &&
                             !(noGroup
                               ? projectType[type].groupCanBeNull === 1
-                              : !isNaN(parseInt(group)))
+                              : /^\d{1,4}[A-Za-z]?$/.test(group.trim()))
                               ? darkMode
                                 ? "border-red-500 placeholder-red-400 bg-gray-700 text-gray-200"
                                 : "border-red-500 placeholder-red-400"
@@ -440,13 +438,13 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                               : "text-gray-700"
                         }`}
                       >
-                        Fichier STL
+                        Fichier STL / DXF
                       </label>
                       {user.specialFont ? (
                         <label
                           className={`${user.specialFont} small text-gray-500`}
                         >
-                          Fichier STL 
+                          Fichier STL / DXF
                         </label>
                       ) : (
                         ""

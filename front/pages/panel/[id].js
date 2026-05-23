@@ -52,6 +52,8 @@ const GestionTicket = ({
   const [ticketFile, setTicketFile] = useState({});
   const [comment, setComment] = useState("");
   const [STLColor, setSTLColor] = useState("#FF0000");
+  const [agentNote, setAgentNote] = useState(ticket.agentNote || "");
+  const [noteSaved, setNoteSaved] = useState(false);
 
   const router = useRouter();
   function realodPage() {
@@ -68,14 +70,10 @@ const GestionTicket = ({
 
   // Si l'id du ticket est invalid (un string par exemple) la page 404 va être affiché
   useEffect(function () {
-    if (ticket.error) {
-      if (isNaN(id)) {
-        router.push("/404");
-      } else {
-        router.push("/403");
-      }
-      return;
-    }
+  if (ticket.error) {
+    router.push("/404");
+    return;
+  }
   }, []);
   if (file.error) file = [];
   if (message.error) message = [];
@@ -167,6 +165,12 @@ const GestionTicket = ({
         progress: undefined,
       });
     }
+  }
+  async function downloadAll() {
+  for (const f of file) {
+    await download(f.id, f.filename);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
   }
 
   async function download(id, name) {
@@ -288,6 +292,34 @@ const GestionTicket = ({
     }
   }
 
+  async function saveNote() {
+    const cookie = getCookie("jwt");
+    const response = await fetchAPIAuth({
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
+      url: getApi() + "/api/ticket/" + params.id + "/note",
+      data: { note: agentNote },
+    });
+    if (!response.error) {
+      setNoteSaved(true);
+      setTimeout(() => setNoteSaved(false), 2000);
+    } else {
+      toast.error("Erreur lors de la sauvegarde de la note.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
   return (
     <LayoutPanel
       authorizations={authorizations}
@@ -351,16 +383,24 @@ const GestionTicket = ({
                             darkMode ? "text-gray-200" : "text-gray-500"
                           }`}
                         >
-                          <p>Fichier(s) stl</p>
+                          <p>Fichier(s)</p>
                           {user.specialFont ? (
                             <p
                               className={`${user.specialFont} small text-gray-500`}
                             >
-                              Fichier(s) stl
+                              Fichier(s)
                             </p>
                           ) : (
                             ""
                           )}
+                          {file.length > 1 ? (
+                            <button
+                              onClick={downloadAll}
+                              className="mt-2 text-xs font-medium text-indigo-600 hover:text-indigo-500"
+                            >
+                              Tout télécharger
+                            </button>
+                          ) : ""}
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul
@@ -934,6 +974,37 @@ const GestionTicket = ({
                         ) : (
                           ""
                         )}
+                        {authorizations.myFabAgent ? (
+                          <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt
+                              className={`text-sm font-medium ${
+                                darkMode ? "text-gray-200" : "text-gray-500"
+                              }`}
+                            >
+                              <p>Notes internes</p>
+                            </dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                              <textarea
+                                rows={4}
+                                maxLength="1000"
+                                onChange={(e) => setAgentNote(e.target.value)}
+                                defaultValue={ticket.agentNote || ""}
+                                className={`shadow-sm block w-full sm:text-sm border rounded-md ${
+                                  darkMode
+                                    ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
+                                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                }`}
+                                placeholder="Notes visibles uniquement par les agents..."
+                              />
+                              <button
+                                onClick={saveNote}
+                                className="mt-2 inline-flex justify-center py-1 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                              >
+                                {noteSaved ? "✓ Sauvegardé" : "Sauvegarder"}
+                              </button>
+                            </dd>
+                          </div>
+                        ) : ""}
                       </dl>
                     </div>
                   </div>
