@@ -126,7 +126,6 @@ async function getTicketAllFromUser(data) {
             tpt.v_name AS 'projectType',
             COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(pt.i_userschoolyear, u.i_idschoolprevious) AS CHAR))) AS "title",
             CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
-            pt.v_agentNote AS 'agentNote',
             pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
             stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
             tp.v_name AS 'priorityName', tp.i_id AS 'priorityId', tp.v_color AS 'priorityColor',
