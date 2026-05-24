@@ -490,6 +490,7 @@ async function getTicketById(data) {
                 CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
                 u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
                 pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
+                pt.v_agentNote AS 'agentNote',
                 stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
                 tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
                 pm.v_name AS 'material'
@@ -1545,17 +1546,9 @@ async function putTicketNote(data) {
   if (!authViewResult) {
     return { type: "code", code: 403 };
   }
-  if (
-    !data.body ||
-    typeof data.body.note !== "string" ||
-    data.body.note.length > 1000
-  ) {
-    return { type: "code", code: 400 };
-  }
-  const note = data.body.note;
   const queryUpdate = `UPDATE printstickets SET v_agentNote = ? WHERE i_id = ?`;
   const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
-    note,
+    data.body.note,
     data.params.id,
   ]);
   if (resUpdate[0]) {
