@@ -70,10 +70,10 @@ const GestionTicket = ({
 
   // Si l'id du ticket est invalid (un string par exemple) la page 404 va être affiché
   useEffect(function () {
-  if (ticket.error) {
-    router.push("/404");
-    return;
-  }
+    if (ticket.error) {
+      router.push("/404");
+      return;
+    }
   }, []);
   if (file.error) file = [];
   if (message.error) message = [];
@@ -167,10 +167,10 @@ const GestionTicket = ({
     }
   }
   async function downloadAll() {
-  for (const f of file) {
-    await download(f.id, f.filename);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
+    for (const f of file) {
+      await download(f.id, f.filename);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
   }
 
   async function download(id, name) {
@@ -400,7 +400,9 @@ const GestionTicket = ({
                             >
                               Tout télécharger
                             </button>
-                          ) : ""}
+                          ) : (
+                            ""
+                          )}
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                           <ul
@@ -1004,7 +1006,9 @@ const GestionTicket = ({
                               </button>
                             </dd>
                           </div>
-                        ) : ""}
+                        ) : (
+                          ""
+                        )}
                       </dl>
                     </div>
                   </div>
