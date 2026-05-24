@@ -597,13 +597,18 @@ async function ticketFilePost(data) {
           }
         );
       });
+      fs.unlinkSync(file.tempFilePath);
       /* c8 ignore start */
       if (res) {
-        // return 500
         return res;
       }
       /* c8 ignore stop */
+    } else {
       fs.unlinkSync(file.tempFilePath);
+      return {
+        type: "code",
+        code: 400,
+      };
     }
   }
 
