@@ -1545,9 +1545,17 @@ async function putTicketNote(data) {
   if (!authViewResult) {
     return { type: "code", code: 403 };
   }
+  if (
+    !data.body ||
+    typeof data.body.note !== "string" ||
+    data.body.note.length > 1000
+  ) {
+    return { type: "code", code: 400 };
+  }
+  const note = data.body.note;
   const queryUpdate = `UPDATE printstickets SET v_agentNote = ? WHERE i_id = ?`;
   const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
-    data.body.note,
+    note,
     data.params.id,
   ]);
   if (resUpdate[0]) {
