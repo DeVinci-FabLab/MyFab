@@ -6,7 +6,7 @@ WORKDIR /home/node/MyFab_Back
 USER node
 
 COPY --chown=node:node ./package*.json ./
-RUN npm install --omit=dev && npm cache clean --force
+RUN npm install --omit=dev && npm cache clean --force && rm -rf /home/node/.npm
 
 COPY --chown=node:node . .
 
