@@ -490,6 +490,7 @@ async function getTicketById(data) {
                 CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
                 u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
                 pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
+                pt.v_agentNote AS 'agentNote',
                 stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
                 tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
                 pm.v_name AS 'material'
@@ -729,7 +730,8 @@ async function postTicket(data) {
     !data.body ||
     !data.body.projectType ||
     isNaN(data.body.projectType) ||
-    isNaN(data.body && data.body.groupNumber ? data.body.groupNumber : 1) ||
+    (data.body.groupNumber &&
+      !/^\d{1,4}[A-Za-z]?$/.test(data.body.groupNumber)) ||
     !data.body.projectMaterial ||
     isNaN(data.body.projectMaterial) ||
     !data.body.comment ||
@@ -841,7 +843,7 @@ async function postTicket(data) {
   //loop all files
   for (const file of files) {
     const fileNameSplited = file.name.split(".");
-    const allowedExtension = ["stl", "obj", "step"];
+    const allowedExtension = ["stl", "obj", "step", "dxf"];
     const fileExtension =
       fileNameSplited[fileNameSplited.length - 1].toLowerCase();
     if (allowedExtension.includes(fileExtension)) {
@@ -1527,9 +1529,57 @@ async function getHighDemand(data) {
   };
 }
 
+module.exports.putTicketNote = putTicketNote;
+async function putTicketNote(data) {
+  if (!data.params || !data.params.id || isNaN(data.params.id)) {
+    return { type: "code", code: 400 };
+  }
+  const userIdAgent = data.userId;
+  if (!userIdAgent) {
+    return { type: "code", code: 401 };
+  }
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent"
+  );
+  if (!authViewResult) {
+    return { type: "code", code: 403 };
+  }
+  const queryUpdate = `UPDATE printstickets SET v_agentNote = ? WHERE i_id = ?`;
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    data.body.note,
+    data.params.id,
+  ]);
+  if (resUpdate[0]) {
+    return { type: "code", code: 500 };
+  }
+  return { type: "code", code: 200 };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
+  app.put("/api/ticket/:id/note", async function (req, res) {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await putTicketNote(data);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result
+      );
+    } catch (error) {
+      console.log("ERROR: PUT /api/ticket/:id/note");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
   app.get("/api/ticket/highDemand/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
