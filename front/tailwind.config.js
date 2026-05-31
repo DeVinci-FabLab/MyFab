@@ -2,6 +2,7 @@ const plugin = require("tailwindcss/plugin");
 const colors = require("tailwindcss/colors");
 
 module.exports = {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -15,6 +16,24 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: {
+          magenta: "#E6007E",
+          "magenta-dark": "#C0006A",
+          orange: "#F39200",
+          blue: "#00AEEF",
+          yellow: "#FACC15",
+        },
+        // Palette "bleu nuit de marque" pour le dark mode (teinte bleue subtile)
+        night: {
+          600: "#2a4068",
+          700: "#1e3050",
+          800: "#16294a",
+          850: "#13213a",
+          900: "#0f1b30",
+          950: "#0a1120",
+        },
+      },
       animation: {
         "gradient-x": "gradient-x 3s ease infinite",
         "gradient-y": "gradient-y 15s ease infinite",
@@ -84,7 +103,8 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ["Quicksand", "sans-serif"],
+      sans: ['"Space Grotesk"', "sans-serif"],
+      mono: ['"JetBrains Mono"', "monospace"],
     },
   },
   plugins: [
