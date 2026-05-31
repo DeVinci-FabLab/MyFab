@@ -51,7 +51,7 @@ describe("Page panel/new", () => {
     cy.contains("Tous les champs ne sont pas");
   });
 
-  it("Group is NaN", () => {
+  it("Group is invalid format", () => {
     cy.setCookie("jwt", "admin");
     cy.visit(
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
@@ -60,11 +60,12 @@ describe("Page panel/new", () => {
       },
     );
 
-    cy.get(".group-number-input").type("NaN");
-    cy.get(".group-number-input").should("have.value", "");
+    cy.get(".group-number-input").type("ABC");
+    cy.get(".submit-button").click();
+    cy.contains("Tous les champs ne sont pas");
   });
 
-  it("Group change with arrow", () => {
+  it("Group valid with letter", () => {
     cy.setCookie("jwt", "admin");
     cy.visit(
       "http://localhost:3000/" + Cypress.env().BASE_PATH + "/panel/new",
@@ -73,11 +74,7 @@ describe("Page panel/new", () => {
       },
     );
 
-    cy.get(".group-number-input").type(
-      "{uparrow}{uparrow}{uparrow}{uparrow}{uparrow}",
-    );
-    cy.get(".group-number-input").should("have.value", 5);
-    cy.get(".group-number-input").type("{downarrow}{downarrow}");
-    cy.get(".group-number-input").should("have.value", 3);
+    cy.get(".group-number-input").type("401E");
+    cy.get(".group-number-input").should("have.value", "401E");
   });
 });
