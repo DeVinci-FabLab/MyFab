@@ -408,6 +408,7 @@ async function userGetById(data) {
                     COALESCE(u.v_title, CONCAT(COALESCE(sch.v_name, schp.v_name), " A", CAST(COALESCE(u.i_schoolyear, u.i_schoolyearprevious) AS CHAR))) AS "title",
                     CASE WHEN sch.v_name IS NULL AND u.i_idschool IS NULL THEN 1 ELSE 0 END AS 'isold',
                     u.b_isMicrosoft AS "isMicrosoft",
+                    u.v_internalNote AS "internalNote",
                     (SELECT CASE WHEN u.dt_ruleSignature IS NULL THEN FALSE ELSE TRUE END FROM users AS u WHERE u.i_id = ?) AS "acceptedRule",
                     u.b_mailValidated AS "mailValidated"
                     FROM users AS u
@@ -709,6 +710,156 @@ async function putUserDarkMode(data) {
   };
 }
 
+/**
+ * @swagger
+ * /user/{id}/tickets:
+ *   get:
+ *     summary: Get all tickets of a given user (moderation). The user need 'viewUsers'.
+ *     tags: [User]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       required: true
+ *       type: string
+ *     - name: "id"
+ *       in: "path"
+ *       required: true
+ *       type: "integer"
+ *     responses:
+ *       "200":
+ *         description: "List of the user's tickets"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.getUserTickets = getUserTickets;
+async function getUserTickets(data) {
+  const userIdAgent = data.userId;
+  const idUserTarget = data.params.id;
+  if (isNaN(idUserTarget)) {
+    return { type: "code", code: 400 };
+  }
+  if (!userIdAgent) {
+    return { type: "code", code: 401 };
+  }
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
+  if (!authViewResult) {
+    return { type: "code", code: 403 };
+  }
+
+  const query = `SELECT pt.i_id AS 'id',
+              tpt.v_name AS 'projectType',
+              pt.i_groupNumber AS 'groupNumber',
+              pt.dt_creationdate AS 'creationDate',
+              pt.dt_modificationdate AS 'modificationDate',
+              stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
+              stat.b_isOpen AS 'isOpen',
+              tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
+              pm.v_name AS 'material'
+              FROM printstickets AS pt
+              INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id
+              INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+              INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+              LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
+              WHERE pt.i_idUser = ? AND pt.b_isDeleted = 0
+              ORDER BY pt.i_id DESC;`;
+  const dbRes = await data.app.executeQuery(data.app.db, query, [idUserTarget]);
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  return {
+    type: "json",
+    code: 200,
+    json: dbRes[1],
+  };
+}
+
+/**
+ * @swagger
+ * /user/{id}/note:
+ *   put:
+ *     summary: Set the internal moderation note of a user. The user need 'viewUsers'.
+ *     tags: [User]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       required: true
+ *       type: string
+ *     - name: "id"
+ *       in: "path"
+ *       required: true
+ *       type: "integer"
+ *     responses:
+ *       "200":
+ *         description: "The note has been saved"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.putUserNote = putUserNote;
+async function putUserNote(data) {
+  const userIdAgent = data.userId;
+  const idUserTarget = data.params.id;
+  if (isNaN(idUserTarget)) {
+    return { type: "code", code: 400 };
+  }
+  if (!userIdAgent) {
+    return { type: "code", code: 401 };
+  }
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "viewUsers"
+  );
+  if (!authViewResult) {
+    return { type: "code", code: 403 };
+  }
+  const note = data.body && data.body.note ? data.body.note : null;
+  const queryUpdate = `UPDATE users SET v_internalNote = ? WHERE i_id = ?`;
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    note,
+    idUserTarget,
+  ]);
+  /* c8 ignore start */
+  if (resUpdate[0]) {
+    console.log(resUpdate[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  const queryLog = `INSERT INTO log_userschange (i_idUserAdmin, i_idUserTarget, v_action, v_newValue)
+                    VALUES (?, ?, 'upd_note', ?)`;
+  const resLog = await data.app.executeQuery(data.app.db, queryLog, [
+    userIdAgent,
+    idUserTarget,
+    note ? note.substring(0, 255) : null,
+  ]);
+  /* c8 ignore start */
+  if (resLog[0]) {
+    console.log(resLog[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  return { type: "code", code: 200 };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
@@ -755,6 +906,38 @@ async function startApi(app) {
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
       console.log("ERROR: GET /api/user/:id");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/user/:id/tickets", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await getUserTickets(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: GET /api/user/:id/tickets");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.put("/api/user/:id/note", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res
+      );
+      const result = await putUserNote(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: PUT /api/user/:id/note");
       console.log(error);
       res.sendStatus(500);
     }
