@@ -326,6 +326,13 @@ async function postTicketMessage(data) {
       });
       statsIncrement(data.app.db, "mailSent");
     }
+    // Notification in-site pour le demandeur
+    await require("../../functions/notification").createNotification(
+      data.app,
+      idTicketUser,
+      `Nouveau message sur la demande #${data.params.id}`,
+      `/panel/${data.params.id}`
+    );
   }
 
   return {

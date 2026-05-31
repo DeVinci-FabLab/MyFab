@@ -566,7 +566,8 @@ async function ticketFilePost(data) {
   //loop all files
   for (const file of files) {
     const fileNameSplited = file.name.split(".");
-    if (fileNameSplited[fileNameSplited.length - 1].toLowerCase() === "stl") {
+    const fileExt = fileNameSplited[fileNameSplited.length - 1].toLowerCase();
+    if (fileExt === "stl" || fileExt === "dxf") {
       const res = await new Promise(async (resolve) => {
         const newFileName = makeid(10, file.name);
         fs.copyFile(
@@ -596,13 +597,18 @@ async function ticketFilePost(data) {
           }
         );
       });
+      fs.unlinkSync(file.tempFilePath);
       /* c8 ignore start */
       if (res) {
-        // return 500
         return res;
       }
       /* c8 ignore stop */
+    } else {
       fs.unlinkSync(file.tempFilePath);
+      return {
+        type: "code",
+        code: 400,
+      };
     }
   }
 
