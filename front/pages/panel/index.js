@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import "moment/locale/fr";
 
 import LayoutPanel from "../../components/layoutPanel";
@@ -161,31 +162,31 @@ export default function NewPanel({ authorizations, highDemand }) {
               <Faq className="w-full" darkMode={darkMode} questions={faq} />
             </nav>
           </div>
-          <hr
-            className={`mb-5 mt-5 block lg:hidden ${
-              darkMode ? "border-gray-600" : ""
-            }`}
-          />
+          <hr className="mb-5 mt-5 block lg:hidden border-gray-200 dark:border-night-800" />
           <main className="col-span-9">
             {highDemand ? (
               <div
-                className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4"
+                className="flex items-start gap-3 rounded-md border-l-4 border-brand-yellow bg-brand-yellow/10 p-4"
                 role="alert"
               >
-                <p className="font-bold">Attention</p>
-                <p>
-                  Il y a actuellement beaucoup de demandes d'impression 3D.
-                  Merci pour votre patience.
-                </p>
+                <ExclamationTriangleIcon className="h-5 w-5 flex-shrink-0 text-brand-yellow mt-0.5" />
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    Attention
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Il y a actuellement beaucoup de demandes d'impression 3D.
+                    Merci pour votre patience.
+                  </p>
+                </div>
               </div>
             ) : (
               <div></div>
             )}
-            <h1
-              className={`text-lg font-medium leading-6 sm:truncate mt-5 ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <p className="font-mono text-xs uppercase tracking-wider text-brand-magenta mt-5">
+              // Vos demandes
+            </p>
+            <h1 className="text-lg font-semibold leading-6 sm:truncate text-gray-900 dark:text-white">
               Vos demandes d'impressions 3D
             </h1>
             {user.specialFont ? (
@@ -197,68 +198,26 @@ export default function NewPanel({ authorizations, highDemand }) {
             )}
             <div className="block mt-5">
               {/* big projects */}
-              <div
-                className={`align-middle inline-block min-w-full border-b hidden sm:block ${
-                  darkMode ? "border-gray-800" : "border-gray-200"
-                }`}
-              >
+              <div className="align-middle inline-block min-w-full hidden sm:block">
                 {userTicketResult.length > 0 ? (
                   <div>
-                    <div
-                      className={`border rounded overflow-x-auto min-w-full ${
-                        darkMode ? "border-gray-600" : "border-gray-200"
-                      }`}
-                    >
+                    <div className="border border-gray-200 dark:border-night-800 rounded-md overflow-x-auto min-w-full bg-white dark:bg-night-900">
                       <table className="min-w-full text-sm align-middle whitespace-nowrap">
                         <thead>
-                          <tr
-                            className={`border-b ${
-                              darkMode ? "border-gray-700" : "border-gray-200"
-                            }`}
-                          >
-                            <th
-                              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode
-                                  ? "text-white bg-gray-600"
-                                  : "text-gray-700 bg-gray-100"
-                              }`}
-                            >
+                          <tr className="border-b border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-900/60">
+                            <th className="px-4 py-3 text-left font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
                               Id
                             </th>
-                            <th
-                              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode
-                                  ? "text-white bg-gray-600"
-                                  : "text-gray-700 bg-gray-100"
-                              }`}
-                            >
+                            <th className="px-4 py-3 text-left font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
                               Dernière mise à jour
                             </th>
-                            <th
-                              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode
-                                  ? "text-white bg-gray-600"
-                                  : "text-gray-700 bg-gray-100"
-                              }`}
-                            >
+                            <th className="px-4 py-3 text-left font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
                               Type
                             </th>
-                            <th
-                              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode
-                                  ? "text-white bg-gray-600"
-                                  : "text-gray-700 bg-gray-100"
-                              }`}
-                            >
-                              Etat
+                            <th className="px-4 py-3 text-left font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                              État
                             </th>
-                            <th
-                              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                                darkMode
-                                  ? "text-white bg-gray-600"
-                                  : "text-gray-700 bg-gray-100"
-                              }`}
-                            ></th>
+                            <th className="px-4 py-3 text-left font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400"></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -266,67 +225,61 @@ export default function NewPanel({ authorizations, highDemand }) {
                             return (
                               <tr
                                 key={`ticket-${index}`}
-                                className={`ticket-element border-b cursor-pointer ${
-                                  darkMode
-                                    ? "border-gray-700 hover:bg-gray-700 bg-gray-800 text-white"
-                                    : "border-gray-200 hover:bg-gray-50"
-                                }`}
+                                className="ticket-element border-b border-gray-100 dark:border-night-800 last:border-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-night-800/50 transition-colors"
                               >
                                 <td
-                                  className={`p-3 text-center`}
+                                  className="px-4 py-3"
                                   onClick={() => router.push(`/panel/${r.id}`)}
                                 >
-                                  <span className="font-medium">
+                                  <span className="font-mono text-sm text-gray-400 dark:text-gray-500">
                                     #{setZero(r.id)}
                                   </span>
                                 </td>
                                 <td
-                                  className={`p-3 text-center`}
+                                  className="px-4 py-3"
                                   onClick={() => router.push(`/panel/${r.id}`)}
                                 >
-                                  <div
-                                    className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
-                                  >
+                                  <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
                                     <Moment
                                       format="Do MMM YYYY à HH:mm"
                                       locale="fr"
                                     >
                                       {r.modificationDate}
                                     </Moment>
-                                  </div>
+                                  </span>
                                 </td>
                                 <td
-                                  className={`p-3 text-center`}
+                                  className="px-4 py-3"
                                   onClick={() => router.push(`/panel/${r.id}`)}
                                 >
-                                  <div
-                                    className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
-                                  >
+                                  <span className="font-mono text-xs text-gray-700 dark:text-gray-300">
                                     {r.projectType}
-                                  </div>
+                                  </span>
                                 </td>
                                 <td
-                                  className={`p-3 text-center`}
+                                  className="px-4 py-3"
                                   onClick={() => router.push(`/panel/${r.id}`)}
                                 >
-                                  <div
-                                    className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-ful`}
-                                  >
-                                    {r.statusName}
-                                  </div>
+                                  <span className="inline-flex items-center gap-2">
+                                    <span
+                                      className="h-2 w-2 rounded-full flex-shrink-0"
+                                      style={{
+                                        backgroundColor: r.statusColor
+                                          ? `#${r.statusColor}`
+                                          : "#9ca3af",
+                                      }}
+                                    />
+                                    <span className="text-gray-700 dark:text-gray-300">
+                                      {r.statusName}
+                                    </span>
+                                  </span>
                                 </td>
-                                <td className={`p-3 text-center`}>
+                                <td className="px-4 py-3 text-right">
                                   <Menu
                                     as="div"
                                     className="relative flex justify-end items-center"
                                   >
-                                    <Menu.Button
-                                      className={`open-delete-button w-8 h-8 inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 ${
-                                        darkMode
-                                          ? "bg-gray-600 hover:bg-gray-500 text-gray-200 hover:text-gray-100"
-                                          : "bg-white text-gray-400 hover:text-gray-500"
-                                      }`}
-                                    >
+                                    <Menu.Button className="open-delete-button w-8 h-8 inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta bg-white dark:bg-night-800 text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-100">
                                       <span className="sr-only">
                                         Open options
                                       </span>
@@ -344,9 +297,7 @@ export default function NewPanel({ authorizations, highDemand }) {
                                       leaveFrom="transform opacity-100 scale-100"
                                       leaveTo="transform opacity-0 scale-95"
                                     >
-                                      <Menu.Items
-                                        className={`mx-3 origin-top-right absolute right-7 w-48 mt-1 rounded-md shadow-lg z-10 ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none ${darkMode ? "bg-gray-700" : "bg-gray-50"}`}
-                                      >
+                                      <Menu.Items className="mx-3 origin-top-right absolute right-7 w-48 mt-1 rounded-md shadow-lg z-10 ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 dark:divide-night-700 focus:outline-none bg-white dark:bg-night-800">
                                         <div className="py-1">
                                           <Menu.Item>
                                             {({ active }) => (
@@ -356,17 +307,13 @@ export default function NewPanel({ authorizations, highDemand }) {
                                                 }
                                                 className={classNames(
                                                   active
-                                                    ? darkMode
-                                                      ? "bg-gray-600 text-gray-100"
-                                                      : "bg-gray-100 text-gray-800"
-                                                    : darkMode
-                                                      ? "bg-gray-700 text-gray-200"
-                                                      : "bg-gray-50 text-gray-700",
+                                                    ? "bg-gray-100 dark:bg-night-700 text-gray-800 dark:text-gray-100"
+                                                    : "text-gray-700 dark:text-gray-200",
                                                   "delete-button group flex items-center px-4 py-2 text-sm",
                                                 )}
                                               >
                                                 <TrashIcon
-                                                  className={`mr-3 h-5 w-5 group-hover:cursor-pointer ${darkMode ? "text-gray-200 group-hover:text-gray-300" : "text-gray-400 group-hover:text-gray-500"}`}
+                                                  className="mr-3 h-5 w-5 group-hover:cursor-pointer text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-200"
                                                   aria-hidden="true"
                                                 />
                                                 Supprimer
@@ -385,35 +332,25 @@ export default function NewPanel({ authorizations, highDemand }) {
                       </table>
                     </div>
                     <div className="grid place-items-center mb-10">
-                      <div className="inline-flex mt-3">
+                      <div className="inline-flex items-center mt-4 gap-2">
                         <button
-                          className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 ${
-                            darkMode
-                              ? "bg-gray-600 hover:bg-gray-500 text-gray-300"
-                              : "bg-gray-300 hover:bg-gray-400"
-                          }`}
+                          className="prev-page-button h-9 w-9 inline-flex items-center justify-center rounded-md border border-gray-200 dark:border-night-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-night-800 transition-colors"
                           onClick={() => nextPrevPage(-1)}
                         >
                           &lt;
                         </button>
-                        <div
-                          className={`inline-flex py-2 px-4 ${
-                            darkMode ? "text-gray-200" : ""
-                          }`}
-                        >
-                          Pages&nbsp;
-                          <p className="font-bold">{actualPage + 1}</p>
-                          &nbsp;sur&nbsp;
-                          <p className="font-bold">
+                        <div className="inline-flex items-center px-3 text-sm text-gray-600 dark:text-gray-300">
+                          Page&nbsp;
+                          <span className="font-mono font-semibold text-brand-blue">
+                            {actualPage + 1}
+                          </span>
+                          &nbsp;/&nbsp;
+                          <span className="font-mono font-semibold text-gray-900 dark:text-white">
                             {maxPage != 0 ? maxPage : 1}
-                          </p>
+                          </span>
                         </div>
                         <button
-                          className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 ${
-                            darkMode
-                              ? "bg-gray-600 hover:bg-gray-500 text-gray-300"
-                              : "bg-gray-300 hover:bg-gray-400"
-                          }`}
+                          className="next-page-button h-9 w-9 inline-flex items-center justify-center rounded-md border border-gray-200 dark:border-night-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-night-800 transition-colors"
                           onClick={() => nextPrevPage(1)}
                         >
                           &gt;
@@ -422,30 +359,16 @@ export default function NewPanel({ authorizations, highDemand }) {
                     </div>
                   </div>
                 ) : (
-                  <div
-                    className={`p-4 md:p-5 rounded flex justify-between ${
-                      darkMode
-                        ? "text-white bg-gray-700"
-                        : "text-gray-700 bg-gray-100"
-                    }`}
-                  >
+                  <div className="p-4 md:p-5 rounded-md flex justify-between border border-gray-200 dark:border-night-800 text-gray-700 dark:text-gray-200 bg-white dark:bg-night-900">
                     <p>
                       Les demandes d'impressions apparaîteront ici. Pour en
                       créer une, cliquez sur le bouton suivant.
                     </p>
                     <Link href="/panel/new/">
-                      <div
-                        className={`inline-flex items-center space-x-1 font-semibold ml-2 ${
-                          darkMode
-                            ? "text-indigo-500 hover:text-indigo-300"
-                            : "text-indigo-600 hover:text-indigo-400"
-                        }`}
-                      >
+                      <div className="inline-flex items-center space-x-1 font-semibold ml-2 text-brand-magenta hover:text-brand-magenta-dark">
                         <span>Créer une demande</span>
                         <svg
-                          className={`hi-solid hi-arrow-right inline-block w-4 h-4 ${
-                            darkMode ? "fill-white" : ""
-                          }`}
+                          className="hi-solid hi-arrow-right inline-block w-4 h-4"
                           fillname="currentColor"
                           viewBox="0 0 20 20"
                           xmlns="http://www.w3.org/2000/svg"

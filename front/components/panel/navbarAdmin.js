@@ -27,6 +27,13 @@ function NavbarAdmin({ router }) {
       current: pn.split("/")[3] == "history",
       show: true,
     },
+    {
+      name: "Logs",
+      classNames: "goTo-logs-button",
+      href: "/panel/admin/logs",
+      current: pn.split("/")[3] == "logs",
+      show: true,
+    },
   ];
 
   return (
@@ -38,11 +45,7 @@ function NavbarAdmin({ router }) {
         <select
           id="tabs"
           name="tabs"
-          className={`block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ${
-            darkMode
-              ? "border-gray-600 bg-gray-800 text-white"
-              : "border-gray-200 bg-white"
-          }`}
+          className="block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-brand-magenta focus:border-brand-magenta sm:text-sm rounded-md border border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-white"
           defaultValue={
             tabs.find((tab) => tab.current) !== undefined
               ? tabs.find((tab) => tab.current).name
@@ -60,11 +63,7 @@ function NavbarAdmin({ router }) {
         </select>
       </div>
       <div className="hidden sm:block">
-        <div
-          className={`border-b ${
-            darkMode ? "border-gray-600" : "border-gray-200"
-          }`}
-        >
+        <div className="border-b border-gray-200 dark:border-night-800">
           <nav className="-mb-px flex space-x-8 px-8" aria-label="Tabs">
             {tabs.map((tab, index) => {
               if (tab.show == true) {
@@ -74,12 +73,8 @@ function NavbarAdmin({ router }) {
                       key={tab.name}
                       className={classNames(
                         tab.current
-                          ? darkMode
-                            ? "border-indigo-300 text-indigo-400"
-                            : "border-indigo-500 text-indigo-600"
-                          : darkMode
-                            ? "border-transparent hover:border-gray-300 text-gray-200 hover:text-gray-100"
-                            : "border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700",
+                          ? "border-brand-magenta text-brand-magenta"
+                          : "border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-night-600",
                         "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm " +
                           tab.classNames,
                       )}

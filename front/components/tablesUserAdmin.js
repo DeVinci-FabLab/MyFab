@@ -6,9 +6,9 @@ import { UserUse } from "../context/provider";
 function getChevron(collumnState, type) {
   if (!collumnState) return null;
   if (collumnState[type] === true)
-    return <ChevronUpIcon className="w-5 h-5 m-auto" />;
+    return <ChevronUpIcon className="w-4 h-4" />;
   if (collumnState[type] === false)
-    return <ChevronDownIcon className="w-5 h-5 m-auto" />;
+    return <ChevronDownIcon className="w-4 h-4" />;
   return null;
 }
 
@@ -20,7 +20,6 @@ export default function UserTablesAdmin({
   nextPrevPage,
   collumnState,
   changeCollumnState,
-  darkMode,
 }) {
   const jwt = getCookie("jwt");
   const { user } = UserUse(jwt);
@@ -28,131 +27,35 @@ export default function UserTablesAdmin({
   if (users.error) users = [];
   const changeCollumnDefined = changeCollumnState ? true : false;
   if (!changeCollumnState) changeCollumnState = function () {};
+
+  function Th({ label, sortKey }) {
+    return (
+      <th className="px-4 py-3 text-left">
+        <div
+          className={`inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 ${
+            changeCollumnDefined ? "cursor-pointer select-none" : ""
+          }`}
+          onClick={() => sortKey && changeCollumnState(sortKey)}
+        >
+          <span>{label}</span>
+          {user.specialFont ? (
+            <span className={`${user.specialFont} normal-case`}>{label}</span>
+          ) : null}
+          {sortKey ? getChevron(collumnState, sortKey) : null}
+        </div>
+      </th>
+    );
+  }
+
   return (
-    <div
-      className={`border rounded overflow-x-auto min-w-full ${
-        darkMode ? "border-gray-600" : "border-gray-200 bg-white"
-      }`}
-    >
+    <div className="border border-gray-200 dark:border-night-800 rounded-md overflow-x-auto min-w-full bg-white dark:bg-night-900">
       <table className="min-w-full text-sm align-middle whitespace-nowrap">
         <thead>
-          <tr
-            className={`border-b ${
-              darkMode ? "border-gray-700" : "border-gray-200"
-            }`}
-          >
-            <th
-              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                changeCollumnDefined ? "cursor-pointer select-none" : ""
-              } ${
-                darkMode
-                  ? "text-white bg-gray-600"
-                  : "text-gray-700 bg-gray-100"
-              }`}
-            >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("firstname")}
-              >
-                <div>
-                  <div>Prénom</div>
-                  {user.specialFont ? (
-                    <div
-                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                    >
-                      Prénom
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                {getChevron(collumnState, "firstname")}
-              </div>
-            </th>
-            <th
-              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                changeCollumnDefined ? "cursor-pointer select-none" : ""
-              } ${
-                darkMode
-                  ? "text-white bg-gray-600"
-                  : "text-gray-700 bg-gray-100"
-              }`}
-            >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("lastname")}
-              >
-                <div>
-                  <div>Nom</div>
-                  {user.specialFont ? (
-                    <div
-                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                    >
-                      Nom
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                {getChevron(collumnState, "lastname")}
-              </div>
-            </th>
-            <th
-              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                changeCollumnDefined ? "cursor-pointer select-none" : ""
-              } ${
-                darkMode
-                  ? "text-white bg-gray-600"
-                  : "text-gray-700 bg-gray-100"
-              }`}
-            >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("email")}
-              >
-                <div>
-                  <div>E-mail</div>
-                  {user.specialFont ? (
-                    <div
-                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                    >
-                      E-mail
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                {getChevron(collumnState, "email")}
-              </div>
-            </th>
-            <th
-              className={`p-3 font-medium text-sm tracking-wider uppercase text-center ${
-                changeCollumnDefined ? "cursor-pointer select-none" : ""
-              } ${
-                darkMode
-                  ? "text-white bg-gray-600"
-                  : "text-gray-700 bg-gray-100"
-              }`}
-            >
-              <div
-                className="inline-flex"
-                onClick={() => changeCollumnState("title")}
-              >
-                <div>
-                  <div>Ecole et année</div>
-                  {user.specialFont ? (
-                    <div
-                      className={`${user.specialFont} text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                    >
-                      Ecole et année
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                {getChevron(collumnState, "title")}
-              </div>
-            </th>
+          <tr className="border-b border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-900/60">
+            <Th label="Prénom" sortKey="firstname" />
+            <Th label="Nom" sortKey="lastname" />
+            <Th label="E-mail" sortKey="email" />
+            <Th label="École et année" sortKey="title" />
           </tr>
         </thead>
         <tbody>
@@ -160,38 +63,30 @@ export default function UserTablesAdmin({
             return (
               <tr
                 key={`user-${index}`}
-                className={`user-${index} border-b cursor-pointer ${
-                  darkMode
-                    ? "border-gray-700 hover:bg-gray-700 bg-gray-800 text-white"
-                    : "border-gray-200 hover:bg-gray-50"
-                }`}
+                className={`user-${index} border-b border-gray-100 dark:border-night-800 last:border-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-night-800/50 transition-colors`}
                 onClick={() => {
                   id(r.id);
                 }}
               >
-                <td className="p-3 text-center">
-                  <p className="font-medium">{r.firstName}</p>
+                <td className="px-4 py-3">
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {r.firstName}
+                  </span>
                 </td>
-                <td className="p-3 text-center">
-                  <div
-                    className={`font-medium inline-flex leading-4 rounded-full uppercase`}
-                  >
+                <td className="px-4 py-3">
+                  <span className="font-medium uppercase text-gray-900 dark:text-white">
                     {r.lastName}
-                  </div>
+                  </span>
                 </td>
-                <td className="p-3 text-center">
-                  <div
-                    className={`font-medium inline-flex py-1 leading-4 rounded-full`}
-                  >
+                <td className="px-4 py-3">
+                  <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
                     {r.email}
-                  </div>
+                  </span>
                 </td>
-                <td className="p-3 text-center">
-                  <div
-                    className={`font-medium inline-flex py-1 leading-4 rounded-full`}
-                  >
+                <td className="px-4 py-3">
+                  <span className="text-gray-700 dark:text-gray-300">
                     {r.title ? r.title : "Ancien compte"}
-                  </div>
+                  </span>
                 </td>
               </tr>
             );
@@ -199,32 +94,25 @@ export default function UserTablesAdmin({
         </tbody>
       </table>
       <div className="grid place-items-center mb-10">
-        <div className="inline-flex mt-3">
+        <div className="inline-flex items-center mt-4 gap-2">
           <button
-            className={`prev-page-button font-bold py-2 px-4 rounded-l rounded-r mr-2 text-gray-800 ${
-              darkMode
-                ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
+            className="prev-page-button h-9 w-9 inline-flex items-center justify-center rounded-md border border-gray-200 dark:border-night-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-night-800 transition-colors"
             onClick={() => nextPrevPage(-1)}
           >
             &lt;
           </button>
-          <div
-            className={`inline-flex py-2 px-4 ${
-              darkMode ? "text-gray-200" : ""
-            }`}
-          >
-            Pages&nbsp;<p className="font-bold">{actualPage + 1}</p>
-            &nbsp;sur&nbsp;
-            <p className="font-bold">{maxPage != 0 ? maxPage : 1}</p>
+          <div className="inline-flex items-center px-3 text-sm text-gray-600 dark:text-gray-300">
+            Page&nbsp;
+            <span className="font-mono font-semibold text-brand-blue">
+              {actualPage + 1}
+            </span>
+            &nbsp;/&nbsp;
+            <span className="font-mono font-semibold text-gray-900 dark:text-white">
+              {maxPage != 0 ? maxPage : 1}
+            </span>
           </div>
           <button
-            className={`next-page-button font-bold py-2 px-4 rounded-l rounded-r ml-2 mr-6 text-gray-800 ${
-              darkMode
-                ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
+            className="next-page-button h-9 w-9 inline-flex items-center justify-center rounded-md border border-gray-200 dark:border-night-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-night-800 transition-colors"
             onClick={() => nextPrevPage(1)}
           >
             &gt;
