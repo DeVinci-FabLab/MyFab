@@ -3,7 +3,7 @@ export default function TableTokensAdmin({ token, darkMode }) {
   return (
     <div
       className={`border rounded overflow-x-auto min-w-full ${
-        darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        darkMode ? "bg-night-800 border-night-700" : "bg-white border-gray-200"
       }`}
     >
       <table className="min-w-full text-sm align-middle whitespace-nowrap">
@@ -11,7 +11,7 @@ export default function TableTokensAdmin({ token, darkMode }) {
           <tr
             className={`border-b ${
               darkMode
-                ? "border-gray-600 text-white bg-gray-600"
+                ? "border-night-600 text-white bg-night-600"
                 : "border-gray-200 text-gray-700 bg-gray-100"
             }`}
           >
@@ -29,7 +29,7 @@ export default function TableTokensAdmin({ token, darkMode }) {
               <tr
                 className={`border-b ${
                   darkMode
-                    ? "border-gray-600 hover:bg-gray-700 text-gray-200"
+                    ? "border-night-600 hover:bg-night-700 text-gray-200"
                     : "border-gray-200 hover:bg-gray-50"
                 }`}
                 key={`token-${index}`}

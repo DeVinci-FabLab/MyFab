@@ -125,7 +125,10 @@ export default function Register() {
               src={process.env.BASE_PATH + "/logo.png"}
               alt="Workflow"
             />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            <p className="mt-6 font-mono text-xs uppercase tracking-wider text-brand-magenta">
+              // Création de compte
+            </p>
+            <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
               Enregistrez-vous sur MyFab
             </h2>
           </div>
@@ -152,7 +155,7 @@ export default function Register() {
                         required
                         className={`lastname appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300" : "border-gray-300"
-                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-magenta focus:border-brand-magenta sm:text-sm`}
                       />
                     </div>
                   </div>
@@ -174,7 +177,7 @@ export default function Register() {
                         required
                         className={`firstname appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300" : "border-gray-300"
-                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-magenta focus:border-brand-magenta sm:text-sm`}
                       />
                     </div>
                   </div>
@@ -197,7 +200,7 @@ export default function Register() {
                         required
                         className={`email appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300 " : "border-gray-300"
-                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-magenta focus:border-brand-magenta sm:text-sm`}
                       />
                     </div>
                   </div>
@@ -222,7 +225,7 @@ export default function Register() {
                         ref={password1Ref}
                         className={`password1 appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300" : "border-gray-300"
-                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-magenta focus:border-brand-magenta sm:text-sm`}
                       />
                     </div>
                   </div>
@@ -246,7 +249,7 @@ export default function Register() {
                         ref={password2Ref}
                         className={`password2 appearance-none block w-full px-3 py-2 border ${
                           error ? "border-red-300" : "border-gray-300"
-                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-magenta focus:border-brand-magenta sm:text-sm`}
                       />
                     </div>
                   </div>
@@ -258,7 +261,7 @@ export default function Register() {
                         name="show-password"
                         type="checkbox"
                         onChange={() => setChecked(!checked)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-brand-magenta focus:ring-brand-magenta border-gray-300 rounded"
                       />
                       <label
                         htmlFor="show-password"
@@ -272,7 +275,7 @@ export default function Register() {
                   <div>
                     <button
                       type="submit"
-                      className="submit-button w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="submit-button w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
                     >
                       S'enregistrer
                     </button>

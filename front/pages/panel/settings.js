@@ -111,17 +111,16 @@ export default function Settings({ authorizations }) {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
+                <p className="font-mono text-xs uppercase tracking-wider text-brand-blue mb-2">
+                  // Paramètres
+                </p>
                 <h3
-                  className={`text-lg font-medium leading-6 ${
-                    darkMode ? "text-gray-200" : "text-gray-900"
-                  }`}
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
                 >
                   Mes informations
                 </h3>
                 <p
-                  className={`mt-1 text-sm ${
-                    darkMode ? "text-gray-300" : "text-gray-600"
-                  }`}
+                  className="mt-1 text-sm text-gray-600 dark:text-gray-300"
                 >
                   Vous pouvez éditer sur cette page votre mot de passe. Si vous
                   souhaitez modifier un autre paramètre, merci de nous contacter
@@ -131,18 +130,12 @@ export default function Settings({ authorizations }) {
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
               <div>
-                <div className="shadow sm:rounded-md sm:overflow-hidden">
-                  <div
-                    className={`px-4 py-5 space-y-6 sm:p-6 ${
-                      darkMode ? "bg-gray-800" : "bg-white"
-                    }`}
-                  >
+                <div className="rounded-md overflow-hidden border border-gray-200 dark:border-night-800">
+                  <div className="px-4 py-5 space-y-6 sm:p-6 bg-white dark:bg-night-900">
                     <div>
                       <label
                         htmlFor="lastName"
-                        className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
-                        }`}
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                       >
                         Nom
                       </label>
@@ -161,11 +154,7 @@ export default function Settings({ authorizations }) {
                           type="text"
                           name="lastName"
                           id="lastName"
-                          className={`shadow-sm block w-full sm:text-sm rounded-md ${
-                            darkMode
-                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                          }`}
+                          className="shadow-sm block w-full sm:text-sm rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                           value={user.lastName}
                         />
                       </div>
@@ -173,9 +162,7 @@ export default function Settings({ authorizations }) {
                     <div>
                       <label
                         htmlFor="firstName"
-                        className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
-                        }`}
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                       >
                         Prénom
                       </label>
@@ -194,11 +181,7 @@ export default function Settings({ authorizations }) {
                           type="text"
                           name="firstName"
                           id="firstName"
-                          className={`shadow-sm block w-full sm:text-sm rounded-md ${
-                            darkMode
-                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                          }`}
+                          className="shadow-sm block w-full sm:text-sm rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                           value={user.firstName}
                         />
                       </div>
@@ -206,9 +189,7 @@ export default function Settings({ authorizations }) {
                     <div>
                       <label
                         htmlFor="email"
-                        className={`block text-sm font-medium ${
-                          darkMode ? "text-gray-200" : "text-gray-700"
-                        }`}
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                       >
                         E-mail
                       </label>
@@ -227,21 +208,13 @@ export default function Settings({ authorizations }) {
                           type="email"
                           name="email"
                           id="email"
-                          className={`shadow-sm block w-full sm:text-sm rounded-md ${
-                            darkMode
-                              ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                              : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                          }`}
+                          className="shadow-sm block w-full sm:text-sm rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                           value={user.email}
                         />
                       </div>
                     </div>
                     <div>
-                      <h1
-                        className={`text-lg font-medium leading-6 ${
-                          darkMode ? "text-gray-200" : "text-gray-900"
-                        }`}
-                      >
+                      <h1 className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200">
                         Changer mon mot de passe
                       </h1>
                       {user.specialFont ? (
@@ -256,9 +229,7 @@ export default function Settings({ authorizations }) {
                       <div>
                         <label
                           htmlFor="actualPassword"
-                          className={`block text-sm mt-2 font-medium ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          }`}
+                          className="block text-sm mt-2 font-medium text-gray-700 dark:text-gray-300"
                         >
                           Mot de passe actuel
                         </label>
@@ -278,20 +249,14 @@ export default function Settings({ authorizations }) {
                             name="actualPassword"
                             id="actualPassword"
                             ref={actualPasswordRef}
-                            className={`actual-password-input shadow-sm block w-full sm:text-sm rounded-md ${
-                              darkMode
-                                ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                            }`}
+                            className="actual-password-input shadow-sm block w-full sm:text-sm rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                           />
                         </div>
                       </div>
                       <div>
                         <label
                           htmlFor="password"
-                          className={`block text-sm mt-6 font-medium ${
-                            darkMode ? "text-white" : "text-gray-700"
-                          }`}
+                          className="block text-sm mt-6 font-medium text-gray-700 dark:text-gray-200"
                         >
                           Mot de passe
                         </label>
@@ -311,20 +276,14 @@ export default function Settings({ authorizations }) {
                             name="password"
                             id="password"
                             ref={password1Ref}
-                            className={`new-password-input shadow-sm block w-full sm:text-sm rounded-md ${
-                              darkMode
-                                ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                            }`}
+                            className="new-password-input shadow-sm block w-full sm:text-sm rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                           />
                         </div>
                       </div>
                       <div>
                         <label
                           htmlFor="confirmPassword"
-                          className={`block text-sm mt-6 font-medium ${
-                            darkMode ? "text-gray-200" : "text-gray-700"
-                          }`}
+                          className="block text-sm mt-6 font-medium text-gray-700 dark:text-gray-200"
                         >
                           Confirmer votre mot de passe
                         </label>
@@ -346,11 +305,7 @@ export default function Settings({ authorizations }) {
                             name="confirmPassword"
                             id="confirmPassword"
                             ref={password2Ref}
-                            className={`confirm-new-password-input shadow-sm block w-full sm:text-sm rounded-md ${
-                              darkMode
-                                ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                            }`}
+                            className="confirm-new-password-input shadow-sm block w-full sm:text-sm rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                           />
                         </div>
                       </div>
@@ -364,12 +319,12 @@ export default function Settings({ authorizations }) {
                     <button
                       onClick={() => changePassword()}
                       type="submit"
-                      className="validate-button justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="validate-button justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
                     >
                       <p>Valider et changer mon mot de passe</p>
                       {user.specialFont ? (
                         <p
-                          className={`${user.specialFont} small text-violet-200`}
+                          className={`${user.specialFont} small text-white/80`}
                         >
                           Valider et changer mon mot de passe
                         </p>
@@ -388,11 +343,7 @@ export default function Settings({ authorizations }) {
 
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
-            <div
-              className={`border-t ${
-                darkMode ? "border-gray-600" : "border-gray-200"
-              }`}
-            />
+            <div className="border-t border-gray-200 dark:border-night-800" />
           </div>
         </div>
       </div>

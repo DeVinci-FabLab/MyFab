@@ -2,8 +2,8 @@ import React from "react";
 
 const Error = () => {
   return (
-    <div className="flex h-screen">
-      <div className="text-center m-auto">
+    <div className="flex h-screen bg-gray-50 dark:bg-night-950">
+      <div className="text-center m-auto px-4">
         <img
           className="text-center m-auto"
           src="https://cdn.dribbble.com/users/1192256/screenshots/6290585/1._friday.gif"
@@ -11,13 +11,18 @@ const Error = () => {
           width="65%"
           height="65%"
         />
-        <h1 className="font-medium text-xl text-indigo-700">
+        <p className="font-mono text-xs uppercase tracking-wider text-brand-magenta mt-4">
+          // Erreur 403
+        </p>
+        <h1 className="font-semibold text-xl text-gray-900 dark:text-white mt-1">
           Oups, vous n'êtes pas autorisé à accéder à cette ressource.
         </h1>
-        <p>Demander à votre administrateur pour y avoir accès</p>
+        <p className="text-gray-600 dark:text-gray-300">
+          Demander à votre administrateur pour y avoir accès
+        </p>
         <button
           onClick={() => (window.location.href = process.env.BASE_PATH + "/")}
-          className="bg-indigo-700 text-white p-2 rounded-md hover:bg-indigo-500 mt-5 back-button"
+          className="back-button bg-brand-magenta hover:bg-brand-magenta-dark text-white font-medium p-2 px-4 rounded-md mt-5"
         >
           Retourner sur la page d'accueil
         </button>

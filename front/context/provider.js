@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { fetchAPIAuth } from "../lib/api";
 
 const UserContext = createContext();
@@ -23,6 +23,13 @@ export function Provider({ children }) {
   const [darkMode, setDarkMode] = useState(false);
   const [roles, setRoles] = useState([]);
   const value = { user, setUser, darkMode, setDarkMode, roles, setRoles };
+
+  // Synchronise la classe `dark` sur <html> avec l'état du contexte, pour que
+  // les variantes `dark:` de Tailwind fonctionnent (migration progressive des
+  // anciens ternaires darkMode ? ... : ...).
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", Boolean(darkMode));
+  }, [darkMode]);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
