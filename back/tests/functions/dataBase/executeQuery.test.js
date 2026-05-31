@@ -11,7 +11,7 @@ describe("executeQuery", () => {
       await require("../../../functions/dataBase/executeQuery").run(
         connection,
         query,
-        []
+        [],
       );
 
     expect(queryFonction).toHaveBeenCalledTimes(1);

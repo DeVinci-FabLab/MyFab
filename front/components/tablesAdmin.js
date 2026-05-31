@@ -78,8 +78,7 @@ function openTicket(e, id) {
 
 function getChevron(collumnState, type) {
   if (!collumnState) return null;
-  if (collumnState[type] === true)
-    return <ChevronUpIcon className="w-4 h-4" />;
+  if (collumnState[type] === true) return <ChevronUpIcon className="w-4 h-4" />;
   if (collumnState[type] === false)
     return <ChevronDownIcon className="w-4 h-4" />;
   return null;

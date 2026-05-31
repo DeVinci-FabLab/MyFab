@@ -105,7 +105,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getNotifications(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -121,7 +121,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putNotificationsRead(data);
       await require("../functions/apiActions").sendResponse(req, res, result);

@@ -380,13 +380,9 @@ export default function NewPanel({ ticket, file, authorizations }) {
               &#8203;
             </span>
 
-            <div
-              className="inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900"
-            >
+            <div className="inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
               <div>
-                <p
-                  className="text-center font-medium text-gray-900 dark:text-gray-100"
-                >
+                <p className="text-center font-medium text-gray-900 dark:text-gray-100">
                   Aperçu du fichier STL:
                 </p>
                 <p className="text-sm text-center text-gray-500 dark:text-gray-200">

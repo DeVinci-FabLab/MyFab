@@ -85,7 +85,7 @@ async function getTicketMessage(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelectTicket,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
@@ -101,7 +101,7 @@ async function getTicketMessage(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -121,7 +121,7 @@ async function getTicketMessage(data) {
   const dbRes = await data.app.executeQuery(
     data.app.db,
     querySelectTicketMessage,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbRes[0]) {
@@ -215,7 +215,7 @@ async function postTicketMessage(data) {
   const resSelectUserValidRules = await data.app.executeQuery(
     data.app.db,
     querySelectUserValidRules,
-    [userIdAgent]
+    [userIdAgent],
   );
   /* c8 ignore start */
   if (resSelectUserValidRules[0]) {
@@ -243,7 +243,7 @@ async function postTicketMessage(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
@@ -259,7 +259,7 @@ async function postTicketMessage(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -272,7 +272,7 @@ async function postTicketMessage(data) {
     const resSetNormalStatus = await data.app.executeQuery(
       data.app.db,
       querySetNormalStatus,
-      [data.params.id]
+      [data.params.id],
     );
     /* c8 ignore start */
     if (resSetNormalStatus[0]) {
@@ -312,7 +312,7 @@ async function postTicketMessage(data) {
     const resGetMessagesTicket = await data.app.executeQuery(
       data.app.db,
       querySelectMessages,
-      [idTicketUser, data.params.id]
+      [idTicketUser, data.params.id],
     );
     /* c8 ignore start */
     if (resGetMessagesTicket[0]) {
@@ -331,7 +331,7 @@ async function postTicketMessage(data) {
       data.app,
       idTicketUser,
       `Nouveau message sur la demande #${data.params.id}`,
-      `/panel/${data.params.id}`
+      `/panel/${data.params.id}`,
     );
   }
 
@@ -349,13 +349,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketMessage(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/:id/message/");
@@ -369,7 +369,7 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
 
       data.sendMailFunction = sendTicketMessageMail;
@@ -377,7 +377,7 @@ async function startApi(app) {
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/ticket/:id/message/");

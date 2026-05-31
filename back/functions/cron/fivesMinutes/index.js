@@ -14,6 +14,6 @@ module.exports.run = async (app) => {
       action(app);
     },
     null,
-    true
+    true,
   );
 };

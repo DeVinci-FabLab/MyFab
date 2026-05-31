@@ -92,10 +92,7 @@ export default function NotificationBell({ userId }) {
       {open ? (
         <>
           {/* backdrop pour fermer au clic extérieur */}
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-          />
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute left-0 mt-2 w-80 max-w-[calc(100vw-2rem)] max-h-96 overflow-y-auto z-50 rounded-md border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900 shadow-lg">
             <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100 dark:border-night-800">
               <p className="font-mono text-xs uppercase tracking-wider text-brand-magenta">

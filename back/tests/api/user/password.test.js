@@ -25,7 +25,7 @@ describe("PUT /user/password/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
-      data
+      data,
     );
 
     //Tests
@@ -43,7 +43,7 @@ describe("PUT /user/password/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
-      data
+      data,
     );
 
     //Tests
@@ -64,7 +64,7 @@ describe("PUT /user/password/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
-      data
+      data,
     );
 
     //Tests
@@ -85,7 +85,7 @@ describe("PUT /user/password/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
-      data
+      data,
     );
 
     //Tests
@@ -106,7 +106,7 @@ describe("PUT /user/password/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
-      data
+      data,
     );
 
     //Tests
@@ -131,7 +131,7 @@ describe("PUT /user/password/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/user/password").putPasswordMe(
-      data
+      data,
     );
 
     //Tests

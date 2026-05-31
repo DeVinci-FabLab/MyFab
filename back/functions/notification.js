@@ -5,7 +5,7 @@ module.exports.createNotification = async function createNotification(
   app,
   idUser,
   message,
-  link
+  link,
 ) {
   try {
     if (!idUser || !message) return;

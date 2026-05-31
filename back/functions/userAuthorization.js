@@ -62,7 +62,7 @@ async function getUserAuth(app, userId) {
     "SELECT " +
       columnToSee +
       " FROM `rolescorrelation` INNER JOIN gd_roles ON rolescorrelation.i_idRole = gd_roles.i_id WHERE rolescorrelation.i_idUser = ?",
-    [userId]
+    [userId],
   );
   // Error with the sql request
   if (resTestIfCorrelationExist[0]) {
@@ -80,7 +80,7 @@ async function getUserAuth(app, userId) {
       CASE WHEN dt_ruleSignature IS NULL THEN FALSE ELSE DATE_FORMAT(DATE_ADD(dt_ruleSignature, INTERVAL 4 MONTH),'%Y') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 4 MONTH),'%Y') END AS "acceptedRule"
       FROM users AS u
       WHERE u.i_id = ?`,
-    [userId]
+    [userId],
   );
 
   if (resGetRulesValid[0] || resGetRulesValid[1].length !== 1) {
@@ -109,7 +109,7 @@ function generateCode(date) {
       Math.trunc(date.getUTCSeconds() / 10) +
       date.getUTCFullYear() +
       date.getUTCMinutes() +
-      date.getUTCHours()
+      date.getUTCHours(),
   );
   return tocken;
 }

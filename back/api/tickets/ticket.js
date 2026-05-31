@@ -16,7 +16,7 @@ function makeid(length, filename) {
   }
   if (
     fs.existsSync(
-      __dirname + "/../../data/files/stl/" + result + "_" + filename
+      __dirname + "/../../data/files/stl/" + result + "_" + filename,
     )
   ) {
     return makeid(length, filename);
@@ -255,7 +255,7 @@ async function getTicketAll(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -275,8 +275,8 @@ async function getTicketAll(data) {
     data.query.order === undefined && selectOpenOnly === false
       ? "DESC"
       : data.query.order === "false"
-      ? "DESC"
-      : "ASC";
+        ? "DESC"
+        : "ASC";
 
   // Filtres optionnels (matériau / type de projet / priorité / statut)
   const filterClauses = [];
@@ -480,7 +480,7 @@ async function getTicketById(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelectUser,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0]) {
@@ -501,7 +501,7 @@ async function getTicketById(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -562,7 +562,7 @@ async function getTicketById(data) {
   const dbResSelectCounterUser = await data.app.executeQuery(
     data.app.db,
     querySelectCountUser,
-    [result.idUser, result.id]
+    [result.idUser, result.id],
   );
   /* c8 ignore start */
   if (dbResSelectCounterUser[0]) {
@@ -588,7 +588,7 @@ async function getTicketById(data) {
     const dbResSelectCounterGroup = await data.app.executeQuery(
       data.app.db,
       querySelectCountGroup,
-      [result.groupNumber, result.idProjectType, result.id]
+      [result.groupNumber, result.idProjectType, result.id],
     );
     /* c8 ignore start */
     if (dbResSelectCounterGroup[0]) {
@@ -615,7 +615,7 @@ async function getTicketById(data) {
   const dbResSelectLogUpdProjectType = await data.app.executeQuery(
     data.app.db,
     querySelectLogUpdProjectType,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbResSelectLogUpdProjectType[0]) {
@@ -639,7 +639,7 @@ async function getTicketById(data) {
   const dbResSelectLogStatus = await data.app.executeQuery(
     data.app.db,
     querySelectLogUpdStatus,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbResSelectLogStatus[0]) {
@@ -663,7 +663,7 @@ async function getTicketById(data) {
   const dbResSelectLogPriority = await data.app.executeQuery(
     data.app.db,
     querySelectLogPriority,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbResSelectLogPriority[0]) {
@@ -786,7 +786,7 @@ async function postTicket(data) {
   const resSelectUserValidRules = await data.app.executeQuery(
     data.app.db,
     querySelectUserValidRules,
-    [userId]
+    [userId],
   );
   /* c8 ignore start */
   if (resSelectUserValidRules[0]) {
@@ -810,7 +810,7 @@ async function postTicket(data) {
   const resSelectProjectType = await data.app.executeQuery(
     data.app.db,
     querySelectProjectType,
-    [data.body.projectType]
+    [data.body.projectType],
   );
   /* c8 ignore start */
   if (resSelectProjectType[0]) {
@@ -850,7 +850,7 @@ async function postTicket(data) {
   const lastIdentityRes = await data.app.executeQuery(
     data.app.db,
     querySelectLastId,
-    []
+    [],
   );
   /* c8 ignore start */
   if (lastIdentityRes[0] || lastIdentityRes[1].length !== 1) {
@@ -889,7 +889,7 @@ async function postTicket(data) {
             const resInsertFile = await data.app.executeQuery(
               data.app.db,
               queryInsertFile,
-              [userId, lastIdentityRes[1][0].id, file.name, newFileName]
+              [userId, lastIdentityRes[1][0].id, file.name, newFileName],
             );
             /* c8 ignore start */
             if (resInsertFile[0]) {
@@ -901,7 +901,7 @@ async function postTicket(data) {
             }
             /* c8 ignore stop */
             resolve();
-          }
+          },
         );
       });
     }
@@ -913,7 +913,7 @@ async function postTicket(data) {
   const resCommentInsert = await data.app.executeQuery(
     data.app.db,
     queryInsert,
-    [userId, lastIdentityRes[1][0].id, data.body.comment]
+    [userId, lastIdentityRes[1][0].id, data.body.comment],
   );
   /* c8 ignore start */
   if (resCommentInsert[0]) {
@@ -936,7 +936,7 @@ async function postTicket(data) {
   const resSelectNotifyEmail = await data.app.executeQuery(
     data.app.db,
     querySelectNotifyEmail,
-    [data.body.projectMaterial]
+    [data.body.projectMaterial],
   );
   /* c8 ignore start */
   if (resSelectNotifyEmail[0]) {
@@ -1020,7 +1020,7 @@ async function deleteTicketWithId(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
@@ -1042,7 +1042,7 @@ async function deleteTicketWithId(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -1058,7 +1058,7 @@ async function deleteTicketWithId(data) {
   const resDeleteTicket = await data.app.executeQuery(
     data.app.db,
     queryUpdate,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resDeleteTicket[0]) {
@@ -1149,7 +1149,7 @@ async function putTicketNewProjectType(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -1164,7 +1164,7 @@ async function putTicketNewProjectType(data) {
   const resTestIfRoleExist = await data.app.executeQuery(
     data.app.db,
     querySelect,
-    [data.query.projecttype]
+    [data.query.projecttype],
   );
   /* c8 ignore start */
   if (resTestIfRoleExist[0]) {
@@ -1206,7 +1206,7 @@ async function putTicketNewProjectType(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, data.params.id, data.query.projecttype]
+    [userIdAgent, data.params.id, data.query.projecttype],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1296,7 +1296,7 @@ async function putTicketNewStatus(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -1335,7 +1335,7 @@ async function putTicketNewStatus(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, idTicket, idStatus]
+    [userIdAgent, idTicket, idStatus],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1370,7 +1370,7 @@ async function putTicketNewStatus(data) {
         data.app,
         ownerId,
         `Demande #${idTicket} : ${statusName}`,
-        `/panel/${idTicket}`
+        `/panel/${idTicket}`,
       );
     }
   }
@@ -1439,7 +1439,7 @@ async function putTicketCancelStatus(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelectTicket,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
@@ -1495,7 +1495,7 @@ async function putTicketCancelStatus(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, idTicket]
+    [userIdAgent, idTicket],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1569,7 +1569,7 @@ async function putTicketSetPinned(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -1608,7 +1608,7 @@ async function putTicketSetPinned(data) {
   const resSelectPinned = await data.app.executeQuery(
     data.app.db,
     querySelectPinned,
-    [idTicket]
+    [idTicket],
   );
   /* c8 ignore start */
   if (resSelectPinned[0] || resSelectPinned[1].length !== 1) {
@@ -1673,7 +1673,7 @@ async function putTicketNote(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return { type: "code", code: 403 };
@@ -1755,7 +1755,7 @@ async function putTicketToggleNoProcess(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return { type: "code", code: 403 };
@@ -1803,7 +1803,7 @@ async function putTicketToggleNoProcess(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, idTicket, targetName]
+    [userIdAgent, idTicket, targetName],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1919,7 +1919,7 @@ async function getTicketCounts(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return { type: "code", code: 403 };
@@ -1985,7 +1985,7 @@ async function getTicketExportCsv(data) {
   const auth = await data.userAuthorization.validateUserAuth(
     data.app,
     userId,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!auth) {
     return { type: "code", code: 403 };
@@ -2095,13 +2095,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getHighDemand(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/highDemand/");
@@ -2115,13 +2115,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketCounts(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/counts/");
@@ -2135,13 +2135,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketExportCsv(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/export/csv");
@@ -2155,13 +2155,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketAllFromUser(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/me/");
@@ -2175,13 +2175,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketAll(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/");
@@ -2195,13 +2195,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketById(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/:id/");
@@ -2215,14 +2215,14 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       data.sendMailFunction = sendMailFunction;
       const result = await postTicket(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/ticket/");
@@ -2236,13 +2236,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await deleteTicketWithId(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: DELETE /api/ticket/:id");
@@ -2256,13 +2256,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketNewProjectType(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setProjecttype/");
@@ -2276,13 +2276,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketNewStatus(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setStatus");
@@ -2296,13 +2296,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketCancelStatus(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setCancelStatus");
@@ -2316,13 +2316,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketSetPinned(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setPinned");
@@ -2336,13 +2336,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketNote(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/note");
@@ -2356,13 +2356,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketToggleNoProcess(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/toggleNoProcess");

@@ -136,7 +136,7 @@ async function startApi(app) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
-      res
+      res,
     );
     try {
       const result = await pingGet(data);
@@ -152,7 +152,7 @@ async function startApi(app) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
-      res
+      res,
     );
     try {
       const result = await pingPost(data);
@@ -168,7 +168,7 @@ async function startApi(app) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
-      res
+      res,
     );
     try {
       const result = await pingDelete(data);
@@ -184,7 +184,7 @@ async function startApi(app) {
     const data = await require("../functions/apiActions").prepareData(
       app,
       req,
-      res
+      res,
     );
     try {
       const result = await pingDelete(data);

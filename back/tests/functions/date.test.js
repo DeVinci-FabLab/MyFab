@@ -8,7 +8,7 @@ describe("show return string date", () => {
   test("Unknown style", async () => {
     const response = await require("../../functions/date").format(
       new Date(),
-      "cody"
+      "cody",
     );
 
     expect(typeof response).toBe("string");
@@ -17,7 +17,7 @@ describe("show return string date", () => {
   test("Style fr", async () => {
     const response = await require("../../functions/date").format(
       new Date(),
-      "fr"
+      "fr",
     );
 
     expect(typeof response).toBe("string");
@@ -26,7 +26,7 @@ describe("show return string date", () => {
   test("Style frAt", async () => {
     const response = await require("../../functions/date").format(
       new Date(),
-      "frAt"
+      "frAt",
     );
 
     expect(typeof response).toBe("string");
@@ -35,7 +35,7 @@ describe("show return string date", () => {
   test("Style us", async () => {
     const response = await require("../../functions/date").format(
       new Date(),
-      "us"
+      "us",
     );
 
     expect(typeof response).toBe("string");
@@ -44,7 +44,7 @@ describe("show return string date", () => {
   test("Style usAt", async () => {
     const response = await require("../../functions/date").format(
       new Date(),
-      "usAt"
+      "usAt",
     );
 
     expect(typeof response).toBe("string");

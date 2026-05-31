@@ -142,7 +142,7 @@ async function userGetAll(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "viewUsers",
   );
   if (!authViewResult) {
     return {
@@ -158,7 +158,7 @@ async function userGetAll(data) {
   const orderCollumn =
     "u." +
     getOrderCollumnName(
-      data.query && data.query.collumnName ? data.query.collumnName : "i_id"
+      data.query && data.query.collumnName ? data.query.collumnName : "i_id",
     );
   const order = data.query && data.query.order === "false" ? "DESC" : "ASC";
   const querySelect = `SELECT u.i_id AS id,
@@ -390,7 +390,7 @@ async function userGetById(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "viewUsers",
   );
   if (!authViewResult) {
     return {
@@ -493,7 +493,7 @@ async function userDeleteById(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "viewUsers",
   );
   if (!authViewResult) {
     return {
@@ -504,7 +504,7 @@ async function userDeleteById(data) {
   const authManageUserResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "manageUser"
+    "manageUser",
   );
   if (!authManageUserResult) {
     return {
@@ -555,7 +555,7 @@ module.exports.userRenamePut = userRenamePut;
 async function userRenamePut(data) {
   const idUserTarget = data.params ? data.params.id : undefined;
   const resCheckCode = await data.userAuthorization.checkSpecialCode(
-    data.specialcode
+    data.specialcode,
   );
   // Id is not a number
   if (isNaN(idUserTarget) || !resCheckCode || !data.body) {
@@ -680,8 +680,8 @@ async function putUserDarkMode(data) {
     data.query.darkmode === "true"
       ? "1"
       : data.query.darkmode === "false"
-      ? "0"
-      : null;
+        ? "0"
+        : null;
   if (darkmode === null)
     return {
       type: "code",
@@ -749,7 +749,7 @@ async function getUserTickets(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "viewUsers",
   );
   if (!authViewResult) {
     return { type: "code", code: 403 };
@@ -825,7 +825,7 @@ async function putUserNote(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "viewUsers",
   );
   if (!authViewResult) {
     return { type: "code", code: 403 };
@@ -868,7 +868,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await userGetAll(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -884,7 +884,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await userGetMe(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -900,7 +900,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await userGetById(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -916,7 +916,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getUserTickets(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -932,7 +932,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putUserNote(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -948,7 +948,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await userDeleteById(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -964,7 +964,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putUserSchool(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -980,7 +980,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putUserDarkMode(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -996,7 +996,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await userRenamePut(data);
       await require("../functions/apiActions").sendResponse(req, res, result);

@@ -38,7 +38,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(200);
@@ -83,7 +83,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(200);
@@ -129,7 +129,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(200);
@@ -176,7 +176,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(200);
@@ -207,7 +207,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(403);
@@ -234,7 +234,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(400);
@@ -262,7 +262,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(400);
@@ -292,7 +292,7 @@ describe("POST /api/user/login/adfs/", () => {
     };
 
     const response = await require("../../../api/user/adfs").postLoginADFS(
-      data
+      data,
     );
 
     expect(response.code).toBe(404);

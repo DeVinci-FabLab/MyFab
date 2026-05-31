@@ -36,7 +36,7 @@ describe("Stats increment", () => {
       1,
       mockDb,
       expect.any(String),
-      [incrementation, name, "2023"]
+      [incrementation, name, "2023"],
     );
   });
 
@@ -58,13 +58,13 @@ describe("Stats increment", () => {
       1,
       mockDb,
       expect.any(String),
-      [1, name, "2023"]
+      [1, name, "2023"],
     );
     expect(executeQuery.run).toHaveBeenNthCalledWith(
       2,
       mockDb,
       expect.any(String),
-      [name, 1, "2023"]
+      [name, 1, "2023"],
     );
   });
 });
@@ -80,7 +80,7 @@ describe("Update ticket date", () => {
     await require("../../functions/stats").updateTicketDate(
       db,
       executeQuery,
-      idTicket
+      idTicket,
     );
 
     //Tests
@@ -88,7 +88,7 @@ describe("Update ticket date", () => {
     expect(executeQuery).toHaveBeenCalledWith(
       db,
       expect.any(String),
-      expect.any(Array)
+      expect.any(Array),
     );
   });
 });

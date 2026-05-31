@@ -3,7 +3,7 @@ const fs = require("fs");
 module.exports.changeOpenMyFab = changeOpenMyFab;
 async function changeOpenMyFab(data) {
   const resCheckCode = await data.userAuthorization.checkSpecialCode(
-    data.specialcode
+    data.specialcode,
   );
   if (!resCheckCode || !data.body || typeof data.body.status !== "boolean") {
     return {
@@ -18,12 +18,12 @@ async function changeOpenMyFab(data) {
   }
 
   const serviceData = JSON.parse(
-    fs.readFileSync(__dirname + "/../../data/serviceData.json")
+    fs.readFileSync(__dirname + "/../../data/serviceData.json"),
   );
   serviceData.myFabOpen = data.body.status;
   fs.writeFileSync(
     __dirname + "/../../data/serviceData.json",
-    JSON.stringify(serviceData)
+    JSON.stringify(serviceData),
   );
 
   return {
@@ -39,13 +39,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await changeOpenMyFab(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/setMyFabOpen/");

@@ -38,14 +38,14 @@ module.exports.open = async ({ callback, dontNeedToUse, isTest } = {}) => {
               return;
             } else {
               console.log(
-                "Can not use database : '" + process.env.DB_DATABASE + "'"
+                "Can not use database : '" + process.env.DB_DATABASE + "'",
               );
               process.exit(1);
             }
           }
           if (callback) callback(db);
           resolve(db);
-        }
+        },
       );
     });
   });

@@ -86,10 +86,7 @@ export default function NewPanel({ authorizations, stats }) {
   }
 
   function exportRaw() {
-    downloadCsv(
-      getApi() + "/api/stats/prints/csv",
-      "myfab_demandes_brut.csv",
-    );
+    downloadCsv(getApi() + "/api/stats/prints/csv", "myfab_demandes_brut.csv");
   }
 
   useEffect(function () {

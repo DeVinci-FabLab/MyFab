@@ -40,7 +40,7 @@ async function getLogs(data) {
   const authResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authResult) {
     return { type: "code", code: 403 };
@@ -138,7 +138,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getLogs(data);
       await require("../functions/apiActions").sendResponse(req, res, result);

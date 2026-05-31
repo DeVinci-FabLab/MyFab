@@ -2,7 +2,7 @@ describe("sendApiRequest", () => {
   test("service up", async () => {
     const response =
       await require("../../functions/sendApiRequest").sendApiRequest(
-        "https://github.com/"
+        "https://github.com/",
       );
 
     expect(response).toBe(true);
@@ -11,7 +11,7 @@ describe("sendApiRequest", () => {
   test("service down", async () => {
     const response =
       await require("../../functions/sendApiRequest").sendApiRequest(
-        "ThisServiceIsDown"
+        "ThisServiceIsDown",
       );
 
     expect(response).toBe(false);

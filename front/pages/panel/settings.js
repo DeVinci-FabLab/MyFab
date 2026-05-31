@@ -114,14 +114,10 @@ export default function Settings({ authorizations }) {
                 <p className="font-mono text-xs uppercase tracking-wider text-brand-blue mb-2">
                   // Paramètres
                 </p>
-                <h3
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
-                >
+                <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200">
                   Mes informations
                 </h3>
-                <p
-                  className="mt-1 text-sm text-gray-600 dark:text-gray-300"
-                >
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                   Vous pouvez éditer sur cette page votre mot de passe. Si vous
                   souhaitez modifier un autre paramètre, merci de nous contacter
                   directement par mail à fablab@devinci.fr.

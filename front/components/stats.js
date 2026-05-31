@@ -48,8 +48,10 @@ function periodOf(nav) {
 function aggregate(rows, period) {
   rows = Array.isArray(rows) ? rows : [];
   let filtered = rows;
-  if (period.type === "month") filtered = rows.filter((r) => r.month === period.key);
-  else if (period.type === "year") filtered = rows.filter((r) => r.year === period.key);
+  if (period.type === "month")
+    filtered = rows.filter((r) => r.month === period.key);
+  else if (period.type === "year")
+    filtered = rows.filter((r) => r.year === period.key);
   const map = {};
   for (const r of filtered) {
     if (r.name === null || r.name === undefined || r.name === "") continue;
@@ -62,18 +64,27 @@ function aggregate(rows, period) {
 
 function pickTicketStats(stats, period) {
   if (period.type === "year")
-    return (stats.ticketStatsByYears || []).find((y) => y.year === period.key) || {};
+    return (
+      (stats.ticketStatsByYears || []).find((y) => y.year === period.key) || {}
+    );
   if (period.type === "month")
-    return (stats.ticketStatsByMonths || []).find((m) => m.month === period.key) || {};
+    return (
+      (stats.ticketStatsByMonths || []).find((m) => m.month === period.key) ||
+      {}
+    );
   return (stats.ticketStatsAllTime && stats.ticketStatsAllTime[0]) || {};
 }
 
 function pickStatus(stats, period) {
   if (period.type === "month")
-    return (stats.ticketStatusByMonths || []).filter((r) => r.month === period.key);
+    return (stats.ticketStatusByMonths || []).filter(
+      (r) => r.month === period.key,
+    );
   if (period.type === "year") {
     const all = stats.ticketStatusByYears || [];
-    return all.some((r) => r.year) ? all.filter((r) => r.year === period.key) : all;
+    return all.some((r) => r.year)
+      ? all.filter((r) => r.year === period.key)
+      : all;
   }
   return stats.ticketStatusAllTime || [];
 }
@@ -81,9 +92,13 @@ function pickStatus(stats, period) {
 function pickSchools(stats, period) {
   let rows;
   if (period.type === "year")
-    rows = (stats.ticketStatsForSchoolsByYears || []).filter((r) => r.year === period.key);
+    rows = (stats.ticketStatsForSchoolsByYears || []).filter(
+      (r) => r.year === period.key,
+    );
   else if (period.type === "month")
-    rows = (stats.ticketStatsForSchoolsByMonths || []).filter((r) => r.month === period.key);
+    rows = (stats.ticketStatsForSchoolsByMonths || []).filter(
+      (r) => r.month === period.key,
+    );
   else rows = stats.ticketStatsForSchoolsAllTime || [];
   const pick = (name) =>
     rows.reduce((acc, cur) => (cur.v_name === name ? cur : acc), {
@@ -112,7 +127,9 @@ function StatBig({ label, value, color = "text-brand-blue", sub }) {
         {label}
       </p>
       <div>
-        <p className={`mt-2 font-mono text-3xl font-semibold ${color}`}>{value}</p>
+        <p className={`mt-2 font-mono text-3xl font-semibold ${color}`}>
+          {value}
+        </p>
         {sub ? (
           <p className="text-xs text-gray-500 dark:text-gray-400">{sub}</p>
         ) : null}
@@ -170,7 +187,10 @@ function BarBreakdown({ items, color = "#00AEEF", limit }) {
           <div className="flex-1 h-3 rounded bg-gray-100 dark:bg-night-800 overflow-hidden">
             <div
               className="h-full"
-              style={{ width: `${(it.count / max) * 100}%`, backgroundColor: color }}
+              style={{
+                width: `${(it.count / max) * 100}%`,
+                backgroundColor: color,
+              }}
             />
           </div>
           <span className="font-mono text-xs font-semibold text-gray-900 dark:text-white w-16 text-right whitespace-nowrap">
@@ -209,7 +229,10 @@ function MonthlyBar({ months, darkMode }) {
               },
               y: {
                 beginAtZero: true,
-                ticks: { color: darkMode ? "#9ca3af" : "#6b7280", precision: 0 },
+                ticks: {
+                  color: darkMode ? "#9ca3af" : "#6b7280",
+                  precision: 0,
+                },
                 grid: { color: darkMode ? "#1f2937" : "#f3f4f6" },
               },
             },
@@ -326,7 +349,9 @@ function Stats({ nav, stats }) {
           />
           <StatBig
             label="// Utilisateurs"
-            value={stats.users && stats.users[0] ? stats.users[0].total_users : 0}
+            value={
+              stats.users && stats.users[0] ? stats.users[0].total_users : 0
+            }
             color="text-brand-blue"
             sub={
               stats.users && stats.users[0]

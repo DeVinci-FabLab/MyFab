@@ -234,9 +234,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                           placeholder="Bonjour, pourriez-vous l'imprimer avec du PLA lila ? Merci."
                         />
                       </div>
-                      <p
-                        className="mt-2 text-sm text-gray-500 dark:text-gray-300"
-                      >
+                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
                         Description détaillée de la demande d'impression du
                         fichier.
                       </p>
@@ -372,9 +370,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                           );
                         })}
                       </select>
-                      <p
-                        className="mt-2 text-sm text-gray-500 dark:text-gray-300"
-                      >
+                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
                         Si vous souhaitez une impression standard en plastique,
                         selectionnez FDM. Vidéo exemple du{" "}
                         <a
@@ -434,9 +430,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                                     : "text-gray-400 dark:text-gray-300"
                               }`}
                             />
-                            <div
-                              className="flex text-sm text-gray-600 dark:text-gray-300"
-                            >
+                            <div className="flex text-sm text-gray-600 dark:text-gray-300">
                               <label
                                 htmlFor="file-upload"
                                 className="relative cursor-pointer rounded-md font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand-magenta text-brand-magenta hover:text-brand-magenta-dark"
@@ -455,9 +449,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                                 ou déposez-le
                               </p>
                             </div>
-                            <p
-                              className="text-xs text-gray-500 dark:text-gray-400"
-                            >
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                               STL, obj, STEP, DXF jusqu'à 20MB
                             </p>
                           </div>
@@ -486,9 +478,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                             if (r[0] == null) return null;
                             return (
                               <div key={`file-${index}`} className="block mt-3">
-                                <p
-                                  className="text-md font-semibold text-gray-700 dark:text-white"
-                                >
+                                <p className="text-md font-semibold text-gray-700 dark:text-white">
                                   {r[0].name}
                                 </p>
                                 <button
@@ -525,9 +515,7 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                   >
                     <p>Valider et envoyer mon fichier</p>
                     {user.specialFont ? (
-                      <p
-                        className={`${user.specialFont} small text-white/80`}
-                      >
+                      <p className={`${user.specialFont} small text-white/80`}>
                         Type de matériaux
                       </p>
                     ) : (

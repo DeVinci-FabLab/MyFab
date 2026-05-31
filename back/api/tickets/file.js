@@ -12,7 +12,7 @@ function makeid(length, filename) {
   /* c8 ignore start */
   if (
     fs.existsSync(
-      __dirname + "/../../data/files/stl/" + result + "_" + filename
+      __dirname + "/../../data/files/stl/" + result + "_" + filename,
     )
   ) {
     // Test ignoré parce que cette fonction n'est pas idempotent. Cette condition gère les fichiers qui ont le même nom et id
@@ -99,7 +99,7 @@ async function ticketFileGetListOfFile(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     queryGetUserTicket,
-    [idTicket]
+    [idTicket],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0]) {
@@ -122,7 +122,7 @@ async function ticketFileGetListOfFile(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -249,7 +249,7 @@ async function ticketFileGetToken(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -262,7 +262,7 @@ async function ticketFileGetToken(data) {
     fs.existsSync(
       __dirname +
         "/../../data/files/stl/" +
-        resGetUserTicket[1][0].fileServerName
+        resGetUserTicket[1][0].fileServerName,
     )
   ) {
     let result = "";
@@ -397,7 +397,7 @@ async function ticketFileGetOneFile(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -410,7 +410,7 @@ async function ticketFileGetOneFile(data) {
     fs.existsSync(
       __dirname +
         "/../../data/files/stl/" +
-        resGetUserTicket[1][0].fileServerName
+        resGetUserTicket[1][0].fileServerName,
     )
   ) {
     return {
@@ -522,7 +522,7 @@ async function ticketFilePost(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
-    [idTicket]
+    [idTicket],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
@@ -550,7 +550,7 @@ async function ticketFilePost(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       for (const file of files) {
@@ -582,7 +582,7 @@ async function ticketFilePost(data) {
             const resInsertFile = await data.app.executeQuery(
               data.app.db,
               queryInsert,
-              [userIdAgent, idTicket, file.name, newFileName]
+              [userIdAgent, idTicket, file.name, newFileName],
             );
             /* c8 ignore start */
             if (resInsertFile[0]) {
@@ -594,7 +594,7 @@ async function ticketFilePost(data) {
             }
             /* c8 ignore stop */
             resolve();
-          }
+          },
         );
       });
       fs.unlinkSync(file.tempFilePath);
@@ -690,7 +690,7 @@ async function ticketFilePut(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     queryGetUserTicket,
-    [idTicketFile]
+    [idTicketFile],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0]) {
@@ -713,7 +713,7 @@ async function ticketFilePut(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -738,7 +738,7 @@ async function ticketFilePut(data) {
   const resUpdateFile = await data.app.executeQuery(
     data.app.db,
     queryUpdate,
-    options
+    options,
   );
   /* c8 ignore start */
   if (resUpdateFile[0]) {
@@ -769,13 +769,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await ticketFileGetListOfFile(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (err) {
       console.log("ERROR: GET /api/ticket/:id/file/");
@@ -789,13 +789,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await ticketFileGetToken(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (err) {
       console.log("ERROR: GET /api/file/:id/getToken");
@@ -809,13 +809,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await ticketFileGetOneFile(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (err) {
       console.log("ERROR: GET /api/file/:id/");
@@ -829,13 +829,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await ticketFilePost(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (err) {
       console.log("ERROR: POST /api/ticket/:id/file/");
@@ -849,13 +849,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await ticketFilePut(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (err) {
       console.log("ERROR: PUT /api/file/:id/");

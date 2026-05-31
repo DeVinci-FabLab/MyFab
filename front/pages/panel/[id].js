@@ -366,7 +366,6 @@ const GestionTicket = ({
             <div className="container px-4 mx-auto">
               <div className="flex flex-wrap -mx-4">
                 <div className="overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
-
                   <div className="px-4 py-5 sm:px-6">
                     <h3
                       className={`text-lg leading-6 font-medium ${
@@ -678,7 +677,6 @@ const GestionTicket = ({
 
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
                   <div className="overflow-hidden sm:rounded-lg border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
-
                     <div className="px-4 py-5 sm:px-6">
                       <h3
                         className={`text-lg leading-6 font-medium ${
@@ -721,7 +719,9 @@ const GestionTicket = ({
                     >
                       <dl
                         className={`sm:divide-y ${
-                          darkMode ? "sm:divide-night-700" : "sm:divide-gray-200"
+                          darkMode
+                            ? "sm:divide-night-700"
+                            : "sm:divide-gray-200"
                         }`}
                       >
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

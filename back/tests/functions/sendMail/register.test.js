@@ -41,7 +41,7 @@ describe("sendRegisterMail function", () => {
         subject: expect.any(String),
         text: expect.any(String),
         html: expect.any(String),
-      })
+      }),
     );
   });
 });

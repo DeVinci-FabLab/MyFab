@@ -61,7 +61,7 @@ async function putMailValidation(data) {
   const resDeleteEmailTocken = await data.app.executeQuery(
     data.app.db,
     queryDelete,
-    [token]
+    [token],
   );
   // Error with the sql request
   /* c8 ignore start */
@@ -106,13 +106,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putMailValidation(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /user/mailValidation/:tocken");

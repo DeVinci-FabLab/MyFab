@@ -148,7 +148,9 @@ export default function Settings({ authorizations, rolesList }) {
     setUserRole(userRole);
     setAllRole(allRoles);
     setUserTickets(Array.isArray(tickets.data) ? tickets.data : []);
-    setUserNote(user.data && user.data.internalNote ? user.data.internalNote : "");
+    setUserNote(
+      user.data && user.data.internalNote ? user.data.internalNote : "",
+    );
     setData(user.data);
     setOpen(true);
   }
@@ -520,7 +522,8 @@ export default function Settings({ authorizations, rolesList }) {
                           <span className="inline-flex items-center gap-1.5">
                             <span className="h-2 w-2 rounded-full flex-shrink-0 bg-gray-400" />
                             <span className="text-gray-600 dark:text-gray-300">
-                              {ticketsClosed} fermée{ticketsClosed > 1 ? "s" : ""}
+                              {ticketsClosed} fermée
+                              {ticketsClosed > 1 ? "s" : ""}
                             </span>
                           </span>
                         </div>
@@ -601,7 +604,9 @@ export default function Settings({ authorizations, rolesList }) {
                           onClick={saveUserNote}
                           className="save-user-note-button mt-2 inline-flex justify-center py-1 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
                         >
-                          {userNoteSaved ? "✓ Sauvegardé" : "Sauvegarder la note"}
+                          {userNoteSaved
+                            ? "✓ Sauvegardé"
+                            : "Sauvegarder la note"}
                         </button>
                       </div>
 
@@ -611,9 +616,7 @@ export default function Settings({ authorizations, rolesList }) {
                             <div className="pt-8 space-y-6 sm:pt-10 sm:space-y-5">
                               <div className="space-y-6 sm:space-y-5">
                                 <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                  <label
-                                    className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200"
-                                  >
+                                  <label className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200">
                                     <p>Prénom</p>
                                     {me.specialFont ? (
                                       <p
@@ -627,16 +630,13 @@ export default function Settings({ authorizations, rolesList }) {
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                                     <p className="text-left self-end justify-end text-gray-700 dark:text-gray-200">
-
                                       {data.firstName}
                                     </p>
                                   </div>
                                 </div>
 
                                 <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                  <label
-                                    className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200"
-                                  >
+                                  <label className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200">
                                     <p>Nom</p>
                                     {me.specialFont ? (
                                       <p
@@ -650,16 +650,13 @@ export default function Settings({ authorizations, rolesList }) {
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                                     <p className="text-left self-end justify-end text-gray-700 dark:text-gray-200">
-
                                       {data.lastName}
                                     </p>
                                   </div>
                                 </div>
 
                                 <div className="sm:grid sm:grid-cols-3  sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                  <label
-                                    className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200"
-                                  >
+                                  <label className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200">
                                     <p>E-mail</p>
                                     {me.specialFont ? (
                                       <p
@@ -673,16 +670,13 @@ export default function Settings({ authorizations, rolesList }) {
                                   </label>
                                   <div className="mt-1 sm:mt-0 sm:col-span-2">
                                     <p className="text-left self-end justify-end text-gray-700 dark:text-gray-200">
-
                                       {data.email}
                                     </p>
                                   </div>
                                 </div>
 
                                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                  <label
-                                    className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200"
-                                  >
+                                  <label className="block text-sm font-medium sm:pt-1 text-gray-900 dark:text-gray-200">
                                     <p>Rôle disponible</p>
                                     {me.specialFont ? (
                                       <p

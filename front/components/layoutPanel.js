@@ -258,9 +258,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
               className="px-3 mt-6 relative inline-block text-left"
             >
               <div>
-                <Menu.Button
-                  className="group w-full rounded-md px-3.5 py-2 text-sm text-left font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 focus:ring-brand-magenta hover:bg-gray-100 dark:hover:bg-night-800"
-                >
+                <Menu.Button className="group w-full rounded-md px-3.5 py-2 text-sm text-left font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 focus:ring-brand-magenta hover:bg-gray-100 dark:hover:bg-night-800">
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <div

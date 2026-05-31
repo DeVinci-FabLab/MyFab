@@ -33,7 +33,7 @@ async function getAuth(data) {
   }
   const result = await data.userAuthorization.getUserAuth(
     data.app,
-    userIdAgent
+    userIdAgent,
   );
 
   return {
@@ -51,13 +51,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getAuth(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/user/authorization/");

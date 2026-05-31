@@ -33,7 +33,7 @@ async function importSqlTables(file) {
               const resAutoIncrement = await executeQuery(
                 db,
                 getAutoIncrement,
-                [table]
+                [table],
               );
               const autoIncrement = resAutoIncrement[1][0].AUTO_INCREMENT;
 
@@ -76,7 +76,7 @@ async function addRootUser() {
   const selectRoot = await executeQuery(
     db,
     `SELECT 1 FROM users WHERE v_email = "root@root.com"`,
-    []
+    [],
   );
   if (selectRoot[1].length === 0) {
     const rootPassword = require("./functions/makeid").makeid(30);
@@ -97,7 +97,7 @@ async function addRootUser() {
     const resInserRoleRootUser = await executeQuery(
       db,
       queryInsertRoolRole,
-      []
+      [],
     );
     if (!resInserRoleRootUser[0])
       await fs.writeFileSync("./data/defaultRootPassword", rootPassword + "\n");
@@ -107,7 +107,7 @@ async function addRootUser() {
   const selectSystem = await executeQuery(
     db,
     `SELECT 1 FROM users WHERE v_email = "system@system.com"`,
-    []
+    [],
   );
   if (selectSystem[1].length === 0) {
     const systemPassword = require("./functions/makeid").makeid(60);
