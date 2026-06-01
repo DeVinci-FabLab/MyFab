@@ -4,7 +4,6 @@ import { BellIcon } from "@heroicons/react/24/outline";
 import { getCookie } from "cookies-next";
 import { fetchAPIAuth } from "../lib/api";
 import { getApi } from "../lib/runtimeEnv";
-import WebSocket from "./webSocket";
 
 function shortDate(dt) {
   try {
@@ -42,13 +41,21 @@ export default function NotificationBell({ userId }) {
     }
   }
 
+  // Rafraîchit au montage et à chaque changement de page.
   useEffect(() => {
     fetchNotifs();
+  }, [router.asPath]);
+
+  // Polling léger (la cloche n'ouvre pas sa propre connexion socket).
+  useEffect(() => {
+    if (process.env.IS_TEST_MODE === "true") return;
+    const interval = setInterval(fetchNotifs, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   async function markAllRead() {
     const jwt = getCookie("jwt");
-    await fetchAPIAuth({
+    const res = await fetchAPIAuth({
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -57,6 +64,8 @@ export default function NotificationBell({ userId }) {
       },
       url: getApi() + "/api/notification/read",
     });
+    // Ne pas désynchroniser l'UI si le backend a échoué.
+    if (res.error) return;
     setUnread(0);
     setItems((prev) => prev.map((i) => ({ ...i, isRead: 1 })));
   }
@@ -69,12 +78,6 @@ export default function NotificationBell({ userId }) {
 
   return (
     <div className="relative">
-      <WebSocket
-        userId={userId}
-        realodPage={fetchNotifs}
-        event={[{ name: "new-notification", action: fetchNotifs }]}
-      />
-
       <button
         type="button"
         aria-label="Notifications"
