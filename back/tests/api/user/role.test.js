@@ -315,7 +315,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -342,7 +342,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -371,7 +371,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -400,7 +400,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -431,7 +431,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -461,7 +461,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -490,7 +490,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -520,7 +520,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -550,7 +550,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -593,7 +593,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -626,7 +626,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -669,7 +669,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -716,7 +716,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests
@@ -759,7 +759,7 @@ describe("POST /api/user/:idUser/role/:idRole/", () => {
 
     //Execute
     const response = await require("../../../api/user/role").postAddRoleForUser(
-      data
+      data,
     );
 
     //Tests

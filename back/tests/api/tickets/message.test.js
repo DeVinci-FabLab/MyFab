@@ -77,7 +77,7 @@ describe("GET /api/ticket/:id/message/", () => {
     expect(typeof response.json[0].content).toBe("string");
     expect(
       Object.prototype.toString.call(response.json[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
   });
 
@@ -130,7 +130,7 @@ describe("GET /api/ticket/:id/message/", () => {
     expect(typeof response.json[0].content).toBe("string");
     expect(
       Object.prototype.toString.call(response.json[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
   });
 

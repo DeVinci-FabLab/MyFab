@@ -13,7 +13,7 @@ const io = { emit: emptyFunction, to: emptyFunction };
 beforeAll(async () => {
   await fs.copyFileSync(
     __dirname + "/../../pyramid.stl",
-    __dirname + "/../../../data/files/stl/token-test.STL"
+    __dirname + "/../../../data/files/stl/token-test.STL",
   );
 });
 
@@ -77,11 +77,11 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(response.json[0].isValid == null).toBe(true);
     expect(
       Object.prototype.toString.call(response.json[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(response.json[0].modificationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
   });
 
@@ -140,11 +140,11 @@ describe("GET /api/ticket/:id/file/", () => {
     expect(response.json[0].isValid == null).toBe(true);
     expect(
       Object.prototype.toString.call(response.json[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(response.json[0].modificationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
   });
 
@@ -600,7 +600,7 @@ describe("GET /api/file/:id/", () => {
     expect(response.type).toBe("download");
     expect(response.path != null).toBe(true);
     expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(
-      true
+      true,
     );
   });
 
@@ -640,7 +640,7 @@ describe("GET /api/file/:id/", () => {
     expect(response.type).toBe("download");
     expect(response.path != null).toBe(true);
     expect(response.fileName.endsWith("oneFileTest200UserOwner.stl")).toBe(
-      true
+      true,
     );
   });
 
@@ -866,7 +866,7 @@ describe("GET /api/file/:id/", () => {
     expect(response.type).toBe("download");
     expect(response.path != null).toBe(true);
     expect(response.fileName.endsWith("oneFileTest200UserAgent.stl")).toBe(
-      true
+      true,
     );
   });
 
@@ -978,7 +978,7 @@ describe("POST /api/ticket/:id/file/", () => {
       files: null,
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1041,7 +1041,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1059,8 +1059,8 @@ describe("POST /api/ticket/:id/file/", () => {
       .createReadStream(__dirname + "/../../pyramid.stl")
       .pipe(
         fs.createWriteStream(
-          __dirname + "/../../../tmp/test1-200_multiplesFiles"
-        )
+          __dirname + "/../../../tmp/test1-200_multiplesFiles",
+        ),
       );
     //wait end copy of file
     await new Promise((resolve) => {
@@ -1072,8 +1072,8 @@ describe("POST /api/ticket/:id/file/", () => {
       .createReadStream(__dirname + "/../../pyramid.stl")
       .pipe(
         fs.createWriteStream(
-          __dirname + "/../../../tmp/test2-200_multiplesFiles"
-        )
+          __dirname + "/../../../tmp/test2-200_multiplesFiles",
+        ),
       );
     //wait end copy of file
     await new Promise((resolve) => {
@@ -1128,7 +1128,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1145,7 +1145,7 @@ describe("POST /api/ticket/:id/file/", () => {
     const fileStream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
       .pipe(
-        fs.createWriteStream(__dirname + "/../../../tmp/test-200_myFabAgent")
+        fs.createWriteStream(__dirname + "/../../../tmp/test-200_myFabAgent"),
       );
     //wait end copy of file
     await new Promise((resolve) => {
@@ -1192,7 +1192,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1238,7 +1238,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1285,7 +1285,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1334,7 +1334,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1352,8 +1352,8 @@ describe("POST /api/ticket/:id/file/", () => {
       .createReadStream(__dirname + "/../../pyramid.stl")
       .pipe(
         fs.createWriteStream(
-          __dirname + "/../../../tmp/test-401unauthenticatedUser"
-        )
+          __dirname + "/../../../tmp/test-401unauthenticatedUser",
+        ),
       );
     //wait end copy of file
     await new Promise((resolve) => {
@@ -1386,7 +1386,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1403,7 +1403,7 @@ describe("POST /api/ticket/:id/file/", () => {
     const fileStream = await fs
       .createReadStream(__dirname + "/../../pyramid.stl")
       .pipe(
-        fs.createWriteStream(__dirname + "/../../../tmp/test-400unknownTicket")
+        fs.createWriteStream(__dirname + "/../../../tmp/test-400unknownTicket"),
       );
     //wait end copy of file
     await new Promise((resolve) => {
@@ -1440,7 +1440,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1458,8 +1458,8 @@ describe("POST /api/ticket/:id/file/", () => {
       .createReadStream(__dirname + "/../../pyramid.stl")
       .pipe(
         fs.createWriteStream(
-          __dirname + "/../../../tmp/test-403unauthorizedUser"
-        )
+          __dirname + "/../../../tmp/test-403unauthorizedUser",
+        ),
       );
     //wait end copy of file
     await new Promise((resolve) => {
@@ -1504,7 +1504,7 @@ describe("POST /api/ticket/:id/file/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePost(
-      data
+      data,
     );
 
     //Tests
@@ -1556,7 +1556,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1601,7 +1601,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1646,7 +1646,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1698,7 +1698,7 @@ describe("PUT /api/file/:id/", () => {
     await require("../../../api/tickets/file").ticketFilePut(data);
     expect(updateTicketDateMock).toHaveBeenCalledTimes(1);
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1728,7 +1728,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1759,7 +1759,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1792,7 +1792,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1821,7 +1821,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1851,7 +1851,7 @@ describe("PUT /api/file/:id/", () => {
       body: {},
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1883,7 +1883,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1915,7 +1915,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1951,7 +1951,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -1987,7 +1987,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests
@@ -2022,7 +2022,7 @@ describe("PUT /api/file/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/file").ticketFilePut(
-      data
+      data,
     );
 
     //Tests

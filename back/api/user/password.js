@@ -183,7 +183,7 @@ async function putPasswordUser(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "viewUsers",
   );
   if (!authViewResult) {
     return {
@@ -194,7 +194,7 @@ async function putPasswordUser(data) {
   const authManageUsersResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "manageUser"
+    "manageUser",
   );
   if (!authManageUsersResult) {
     return {
@@ -453,13 +453,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putPasswordMe(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /user/password/");
@@ -473,13 +473,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putPasswordUser(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /user/password/:id");
@@ -493,14 +493,14 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       data.sendMailFunction = sendMailFunction;
       const result = await postForgottenPassword(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/user/forgottenPassword/");
@@ -514,13 +514,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putResetPassword(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/user/resetPassword/:tocken");

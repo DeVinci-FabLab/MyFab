@@ -42,7 +42,7 @@ describe("sendRegisterMail function", () => {
         subject: expect.any(String),
         text: expect.any(String),
         html: expect.any(String),
-      })
+      }),
     );
   });
 
@@ -71,7 +71,7 @@ describe("sendRegisterMail function", () => {
 
     expect(writeMailContentMock).toHaveBeenCalledWith(
       "./data/" + testFile,
-      expect.any(String)
+      expect.any(String),
     );
   });
 });

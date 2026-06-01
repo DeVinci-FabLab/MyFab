@@ -7,7 +7,7 @@ export default function VersionBlock({ version }) {
   const { darkMode } = UserUse(jwt);
 
   return (
-    <li className={`border-b mt-4 ${darkMode ? "border-gray-500" : ""}`}>
+    <li className={`border-b mt-4 ${darkMode ? "border-night-600" : ""}`}>
       <div className="pb-2">
         <div className="flex justify-between">
           <h2
@@ -34,7 +34,7 @@ export default function VersionBlock({ version }) {
           <div
             className={`rounded-lg p-4 ${
               darkMode
-                ? "text-gray-300 bg-gray-600"
+                ? "text-gray-300 bg-night-600"
                 : "text-gray-500 bg-gray-200"
             }`}
           >

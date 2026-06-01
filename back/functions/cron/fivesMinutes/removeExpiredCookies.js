@@ -4,7 +4,7 @@ async function action(app) {
   const dbResLastUsed = await app.executeQuery(
     app.db,
     querySelectLastUsedUsers,
-    []
+    [],
   );
   if (!dbResLastUsed[0]) {
     for (const element of dbResLastUsed[1]) {

@@ -76,12 +76,12 @@ describe("GET /api/ticket/me/", () => {
     expect(typeof response.json.values[0].userName).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.values[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(
-        response.json.values[0].modificationDate
-      ) === "[object Date]"
+        response.json.values[0].modificationDate,
+      ) === "[object Date]",
     ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
@@ -148,12 +148,12 @@ describe("GET /api/ticket/me/", () => {
     expect(typeof response.json.values[0].userName).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.values[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(
-        response.json.values[0].modificationDate
-      ) === "[object Date]"
+        response.json.values[0].modificationDate,
+      ) === "[object Date]",
     ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
@@ -221,12 +221,12 @@ describe("GET /api/ticket/me/", () => {
     expect(typeof response.json.values[0].userName).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.values[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(
-        response.json.values[0].modificationDate
-      ) === "[object Date]"
+        response.json.values[0].modificationDate,
+      ) === "[object Date]",
     ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
@@ -306,7 +306,7 @@ describe("GET /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketAll(
-      data
+      data,
     );
 
     //Tests
@@ -318,12 +318,12 @@ describe("GET /api/ticket/", () => {
     expect(typeof response.json.values[0].userName).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.values[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(
-        response.json.values[0].modificationDate
-      ) === "[object Date]"
+        response.json.values[0].modificationDate,
+      ) === "[object Date]",
     ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
@@ -381,7 +381,7 @@ describe("GET /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketAll(
-      data
+      data,
     );
 
     //Tests
@@ -393,12 +393,12 @@ describe("GET /api/ticket/", () => {
     expect(typeof response.json.values[0].userName).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.values[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(
-        response.json.values[0].modificationDate
-      ) === "[object Date]"
+        response.json.values[0].modificationDate,
+      ) === "[object Date]",
     ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
@@ -463,7 +463,7 @@ describe("GET /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketAll(
-      data
+      data,
     );
 
     //Tests
@@ -475,12 +475,12 @@ describe("GET /api/ticket/", () => {
     expect(typeof response.json.values[0].userName).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.values[0].creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(
-        response.json.values[0].modificationDate
-      ) === "[object Date]"
+        response.json.values[0].modificationDate,
+      ) === "[object Date]",
     ).toBe(true);
     expect(typeof response.json.values[0].priorityName).toBe("string");
     expect(typeof response.json.values[0].priorityColor).toBe("string");
@@ -499,7 +499,7 @@ describe("GET /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketAll(
-      data
+      data,
     );
 
     //Tests
@@ -521,7 +521,7 @@ describe("GET /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketAll(
-      data
+      data,
     );
 
     //Tests
@@ -604,7 +604,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -615,11 +615,11 @@ describe("GET /api/ticket/:id/", () => {
     expect(typeof response.json.email).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(response.json.modificationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(typeof response.json.priorityName).toBe("string");
     expect(typeof response.json.priorityColor).toBe("string");
@@ -686,7 +686,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -697,11 +697,11 @@ describe("GET /api/ticket/:id/", () => {
     expect(typeof response.json.email).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(response.json.modificationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(typeof response.json.priorityName).toBe("string");
     expect(typeof response.json.priorityColor).toBe("string");
@@ -770,7 +770,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -781,11 +781,11 @@ describe("GET /api/ticket/:id/", () => {
     expect(typeof response.json.email).toBe("string");
     expect(
       Object.prototype.toString.call(response.json.creationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(
       Object.prototype.toString.call(response.json.modificationDate) ===
-        "[object Date]"
+        "[object Date]",
     ).toBe(true);
     expect(typeof response.json.priorityName).toBe("string");
     expect(typeof response.json.priorityColor).toBe("string");
@@ -805,7 +805,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -828,7 +828,7 @@ describe("GET /api/ticket/:id/", () => {
       params: {},
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -853,7 +853,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -877,7 +877,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -905,7 +905,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -933,7 +933,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -971,7 +971,7 @@ describe("GET /api/ticket/:id/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getTicketById(
-      data
+      data,
     );
 
     //Tests
@@ -1023,7 +1023,7 @@ describe("POST /api/ticket/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1093,7 +1093,7 @@ describe("POST /api/ticket/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1180,7 +1180,7 @@ describe("POST /api/ticket/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1232,7 +1232,7 @@ describe("POST /api/ticket/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1284,7 +1284,7 @@ describe("POST /api/ticket/", () => {
       sendMailFunction: emptyFunction,
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1310,7 +1310,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1339,7 +1339,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1369,7 +1369,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1434,7 +1434,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1500,7 +1500,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1529,7 +1529,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1560,7 +1560,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1591,7 +1591,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1634,7 +1634,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1676,7 +1676,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1706,7 +1706,7 @@ describe("POST /api/ticket/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").postTicket(
-      data
+      data,
     );
 
     //Tests
@@ -1991,7 +1991,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2021,7 +2021,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2052,7 +2052,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2085,7 +2085,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2115,7 +2115,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2146,7 +2146,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2179,7 +2179,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2211,7 +2211,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2244,7 +2244,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2290,7 +2290,7 @@ describe("PUT /api/ticket/:id/setProjecttype/", () => {
     };
     const response =
       await require("../../../api/tickets/ticket").putTicketNewProjectType(
-        data
+        data,
       );
 
     //Tests
@@ -2876,7 +2876,7 @@ describe("GET /api/ticket/highDemand/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getHighDemand(
-      data
+      data,
     );
 
     //Tests
@@ -2900,7 +2900,7 @@ describe("GET /api/ticket/highDemand/", () => {
       },
     };
     const response = await require("../../../api/tickets/ticket").getHighDemand(
-      data
+      data,
     );
 
     //Tests

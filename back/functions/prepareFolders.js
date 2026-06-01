@@ -22,7 +22,7 @@ module.exports.prepareFolders = () => {
   if (!fs.existsSync(__dirname + "/../data/serviceData.json"))
     fs.writeFileSync(
       __dirname + "/../data/serviceData.json",
-      JSON.stringify({ myFabOpen: true })
+      JSON.stringify({ myFabOpen: true }),
     );
   if (fs.existsSync(__dirname + "/../data/samlResult.json"))
     fs.unlinkSync(__dirname + "/../data/samlResult.json"); //DELETE THIS

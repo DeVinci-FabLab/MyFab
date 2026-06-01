@@ -411,7 +411,7 @@ function codyChallenge({
           <DialogPanel
             transition
             className={`w-full max-w-md rounded-xl p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
-              darkMode ? "bg-gray-700" : "bg-white"
+              darkMode ? "bg-night-700" : "bg-white"
             }`}
           >
             {score === 0 ? (
@@ -445,7 +445,7 @@ function codyChallenge({
                   <button
                     className={`approve-button back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
                       darkMode
-                        ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                        ? "bg-night-600 hover:bg-night-600 border-night-600 text-gray-200 hover:text-gray-300"
                         : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
                     }`}
                     onClick={() => startGame()}
@@ -483,7 +483,7 @@ function codyChallenge({
                   <button
                     className={`approve-button back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
                       darkMode
-                        ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                        ? "bg-night-600 hover:bg-night-600 border-night-600 text-gray-200 hover:text-gray-300"
                         : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
                     }`}
                     onClick={() => {

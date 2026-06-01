@@ -10,6 +10,7 @@ import {
   CubeIcon,
   UsersIcon,
   MoonIcon,
+  ChartBarIcon,
 } from "@heroicons/react/24/outline";
 import ButtonLayoutPanel from "./buttonLayoutPanel";
 import { ChevronUpDownIcon } from "@heroicons/react/24/solid";
@@ -17,6 +18,7 @@ import { getApi } from "../lib/runtimeEnv";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import LogoDvfl from "./logoDvfl";
+import NotificationBell from "./notificationBell";
 import { logout } from "../lib/function";
 import { getTextForClick } from "../lib/layoutClickText";
 import { fetchAPIAuth } from "../lib/api";
@@ -82,6 +84,14 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       icon: UsersIcon,
       current: pn === "/panel/users",
       show: authorizations.myFabAgent == 1,
+    },
+    {
+      name: "Statistiques",
+      className: ["stats-button"],
+      href: "/panel/stats",
+      icon: ChartBarIcon,
+      current: pn === "/panel/stats",
+      show: authorizations.manageUser == 1,
     },
     {
       name: "Pannel d'administration",
@@ -215,34 +225,31 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
   function LayoutMenu({ size, className }) {
     return (
       <div className={className}>
-        <div
-          className={`flex flex-col w-64 border-r pt-5 pb-4 ${
-            darkMode
-              ? "bg-gray-700 border-gray-600"
-              : "bg-gray-100 border-gray-200"
-          }`}
-        >
-          <div className="flex items-center flex-shrink-0 px-6 justify-between">
+        <div className="flex flex-col w-64 border-r pb-4 bg-white dark:bg-night-900 border-gray-200 dark:border-night-800">
+          <div className="flex items-center flex-shrink-0 px-6 h-16 justify-between border-b border-gray-100 dark:border-night-800">
             <LogoDvfl user={user} />
 
-            <label className="relative inline-flex items-center cursor-pointer pr-0">
-              <input
-                type="checkbox"
-                value=""
-                className="sr-only peer"
-                onChange={() => {
-                  toggleDarkMode();
-                }}
-                checked={user.darkMode}
-              />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-              <div className="pl-2" />
-              <MoonIcon
-                className={`flex-shrink-0 h-5 w-5 ${
-                  user.darkMode ? "text-indigo-500" : "text-gray-500"
-                }`}
-              />
-            </label>
+            <div className="flex items-center gap-3">
+              <NotificationBell userId={user.id} />
+              <label className="relative inline-flex items-center cursor-pointer pr-0">
+                <input
+                  type="checkbox"
+                  value=""
+                  className="sr-only peer"
+                  onChange={() => {
+                    toggleDarkMode();
+                  }}
+                  checked={user.darkMode}
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-night-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-night-600 peer-checked:bg-blue-600"></div>
+                <div className="pl-2" />
+                <MoonIcon
+                  className={`flex-shrink-0 h-5 w-5 ${
+                    user.darkMode ? "text-indigo-500" : "text-gray-500"
+                  }`}
+                />
+              </label>
+            </div>
           </div>
 
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
@@ -251,21 +258,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
               className="px-3 mt-6 relative inline-block text-left"
             >
               <div>
-                <Menu.Button
-                  className={`group w-full rounded-md px-3.5 py-2 text-sm text-left font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 ${
-                    darkMode
-                      ? "bg-gray-700 hover:bg-gray-800"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                >
+                <Menu.Button className="group w-full rounded-md px-3.5 py-2 text-sm text-left font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 focus:ring-brand-magenta hover:bg-gray-100 dark:hover:bg-night-800">
                   <span className="flex w-full justify-between items-center">
                     <span className="flex min-w-0 items-center justify-between space-x-3">
                       <div
-                        className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${
-                          darkMode
-                            ? "bg-gray-500 text-gray-100"
-                            : "bg-gray-200 text-gray-500"
-                        } ${user.specialFont ? user.specialFont : ""}`}
+                        className={`inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-night-700 text-gray-700 dark:text-gray-200 ${user.specialFont ? user.specialFont : ""}`}
                       >
                         {name[0].toString().toUpperCase() +
                           " " +
@@ -273,16 +270,12 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
                         <span
-                          className={`text-sm font-medium truncate ${
-                            darkMode ? "text-gray-100" : "text-gray-900"
-                          } ${user.specialFont ? user.specialFont + " small" : ""}`}
+                          className={`text-sm font-medium truncate text-gray-900 dark:text-gray-100 ${user.specialFont ? user.specialFont + " small" : ""}`}
                         >
                           {name + " " + surname.toUpperCase()}
                         </span>
                         <span
-                          className={`text-sm truncate ${
-                            darkMode ? "text-gray-400" : "text-gray-500"
-                          } ${user.specialFont ? user.specialFont + " small" : ""}`}
+                          className={`text-sm truncate text-gray-500 dark:text-gray-400 ${user.specialFont ? user.specialFont + " small" : ""}`}
                         >
                           {user.title || "Ancien compte"}
                         </span>
@@ -320,7 +313,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
               >
                 <Menu.Items
                   className={`z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none ${
-                    user.darkMode ? "bg-gray-600" : "bg-white"
+                    user.darkMode ? "bg-night-600" : "bg-white"
                   }`}
                 >
                   <div className="py-1">
@@ -331,7 +324,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                           className={classNames(
                             active
                               ? user.darkMode
-                                ? "bg-gray-500 text-gray-100"
+                                ? "bg-night-600 text-gray-100"
                                 : "bg-gray-100 text-gray-900"
                               : user.darkMode
                                 ? "text-gray-200"
@@ -352,7 +345,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                           className={classNames(
                             active
                               ? user.darkMode
-                                ? "bg-gray-500 text-gray-100"
+                                ? "bg-night-600 text-gray-100"
                                 : "bg-gray-100 text-gray-900"
                               : user.darkMode
                                 ? "text-gray-200"
@@ -437,11 +430,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
   }
 
   return (
-    <div
-      className={`relative h-screen flex overflow-hidden ${
-        darkMode ? "bg-gray-800" : "bg-white"
-      }`}
-    >
+    <div className="relative h-screen flex overflow-hidden bg-gray-50 dark:bg-night-950">
       <LayoutMenu
         size={"large"}
         className={`${sidebarOpen ? "flex flex-shrink-0 transition-opacity duration-500 ease-in-out" : "hidden lg:flex lg:flex-shrink-0"}`}
@@ -450,14 +439,14 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <div
           className={`relative flex-shrink-0 flex h-16 border-b border-gray-200 lg:hidden ${
-            darkMode ? "bg-gray-700 border-gray-500" : "bg-white"
+            darkMode ? "bg-night-700 border-night-600" : "bg-white"
           }`}
         >
           <button
             type="button"
             className={`open-layout-button px-4 border-r  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 lg:hidden ${
               darkMode
-                ? "text-gray-100 border-gray-600"
+                ? "text-gray-100 border-night-600"
                 : "text-gray-500 border-gray-200"
             }`}
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -467,17 +456,10 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
           </button>
         </div>
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
-          <div
-            className={`border-b px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 ${
-              darkMode ? "border-gray-600" : "border-gray-200"
-            }`}
-          >
+          <div className="relative border-b px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 bg-white dark:bg-night-900 border-gray-200 dark:border-night-800">
+            <span className="absolute left-0 bottom-0 h-0.5 w-24 bg-brand-magenta" />
             <div className="flex-1 min-w-0">
-              <h1
-                className={`text-lg font-medium leading-6 sm:truncate ${
-                  darkMode ? "text-white" : "text-gray-900"
-                }`}
-              >
+              <h1 className="text-lg font-semibold leading-6 sm:truncate text-gray-900 dark:text-white">
                 {title}
               </h1>
               {user.specialFont ? (
@@ -496,7 +478,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                   type="button"
                   className={`${
                     pn.split("/")[2] == "new" ? "hidden" : "block"
-                  } order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                  } order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-semibold rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:order-1 sm:ml-3`}
                 >
                   <div className="inline-flex">
                     <CubeIcon width="16" height="16" className="mr-1" />
@@ -528,7 +510,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
         <DialogPanel
           transition
           className={`w-full max-w-md rounded-xl p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
-            darkMode ? "bg-gray-700" : "bg-white"
+            darkMode ? "bg-night-700" : "bg-white"
           }`}
         >
           <div className="flex items-center justify-center">
@@ -553,7 +535,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                 name="type"
                 className={`school-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
                   darkMode
-                    ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                    ? "text-gray-200 border-night-600 bg-night-600 focus:border-indigo-700 focus:ring-indigo-700"
                     : "text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
                 }`}
               >
@@ -583,7 +565,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                 name="type"
                 className={`year-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
                   darkMode
-                    ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
+                    ? "text-gray-200 border-night-600 bg-night-600 focus:border-indigo-700 focus:ring-indigo-700"
                     : "text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
                 }`}
               >
@@ -604,7 +586,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
             <button
               className={`approve-button back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
                 darkMode
-                  ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                  ? "bg-night-600 hover:bg-night-600 border-night-600 text-gray-200 hover:text-gray-300"
                   : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
               }`}
               onClick={() => validSchool()}

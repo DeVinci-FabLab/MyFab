@@ -145,7 +145,7 @@ const ProjectVersions = () => {
   const jwt = getCookie("jwt");
   const { darkMode } = UserUse(jwt);
   return (
-    <div className={` ${darkMode ? "bg-gray-800" : ""}`}>
+    <div className={` ${darkMode ? "bg-night-800" : ""}`}>
       <div
         className="max-w-3xl mx-auto py-10 text-center space-y-3"
         style={{ minWidth: "50%" }}
@@ -186,7 +186,7 @@ const ProjectVersions = () => {
                   <div
                     className={`rounded-lg p-4 ${
                       darkMode
-                        ? "text-gray-300 bg-gray-600"
+                        ? "text-gray-300 bg-night-600"
                         : "text-gray-500 bg-gray-200"
                     }`}
                   >

@@ -16,7 +16,7 @@ function makeid(length, filename) {
   }
   if (
     fs.existsSync(
-      __dirname + "/../../data/files/stl/" + result + "_" + filename
+      __dirname + "/../../data/files/stl/" + result + "_" + filename,
     )
   ) {
     return makeid(length, filename);
@@ -120,7 +120,8 @@ async function getTicketAllFromUser(data) {
     };
   }
 
-  const page = data.query && data.query.page ? data.query.page : 0;
+  let page = data.query && data.query.page ? parseInt(data.query.page, 10) : 0;
+  if (isNaN(page) || page < 0) page = 0;
   const query = `SELECT pt.i_id AS 'id',
             CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
             tpt.v_name AS 'projectType',
@@ -255,7 +256,7 @@ async function getTicketAll(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -265,7 +266,8 @@ async function getTicketAll(data) {
   }
   if (data.query === undefined) data.query = {};
   const inputText = data.query.inputValue ? data.query.inputValue : "";
-  const page = data.query.page ? data.query.page : 0;
+  let page = data.query.page ? parseInt(data.query.page, 10) : 0;
+  if (isNaN(page) || page < 0) page = 0;
   const selectOpenOnlyString = data.query.selectOpenOnly
     ? data.query.selectOpenOnly
     : "false";
@@ -275,8 +277,30 @@ async function getTicketAll(data) {
     data.query.order === undefined && selectOpenOnly === false
       ? "DESC"
       : data.query.order === "false"
-      ? "DESC"
-      : "ASC";
+        ? "DESC"
+        : "ASC";
+
+  // Filtres optionnels (matériau / type de projet / priorité / statut)
+  const filterClauses = [];
+  const filterParams = [];
+  if (data.query.idMaterial && !isNaN(data.query.idMaterial)) {
+    filterClauses.push("AND pt.i_material = ?");
+    filterParams.push(data.query.idMaterial);
+  }
+  if (data.query.idProjectType && !isNaN(data.query.idProjectType)) {
+    filterClauses.push("AND pt.i_projecttype = ?");
+    filterParams.push(data.query.idProjectType);
+  }
+  if (data.query.idPriority && !isNaN(data.query.idPriority)) {
+    filterClauses.push("AND pt.i_priority = ?");
+    filterParams.push(data.query.idPriority);
+  }
+  if (data.query.idStatus && !isNaN(data.query.idStatus)) {
+    filterClauses.push("AND pt.i_status = ?");
+    filterParams.push(data.query.idStatus);
+  }
+  const filterClause = filterClauses.join("\n             ");
+
   const query = `SELECT pt.i_id AS 'id',
               CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
               tpt.v_name AS 'projectType',
@@ -284,7 +308,7 @@ async function getTicketAll(data) {
               CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
               pt.i_groupNumber AS 'groupNumber',
               pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-              stat.v_name AS 'statusName', stat.v_color AS 'statusColor',
+              stat.v_name AS 'statusName', stat.i_id AS 'statusId', stat.v_color AS 'statusColor',
               stat.b_isOpen AS 'isOpen',
               CASE
                 WHEN stat.b_isOpen = 0 
@@ -292,12 +316,13 @@ async function getTicketAll(data) {
                   ELSE tp.v_name
               END AS 'priorityName',
               CASE
-                WHEN stat.b_isOpen = 0 
+                WHEN stat.b_isOpen = 0
                   THEN "626262"
                   ELSE tp.v_color
               END AS 'priorityColor',
-              pm.v_name AS 'material'
-              FROM printstickets AS pt 
+              pm.v_name AS 'material',
+              pt.b_pinned AS 'pinned'
+              FROM printstickets AS pt
               INNER JOIN users AS u ON pt.i_idUser = u.i_id 
               INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
               INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
@@ -317,7 +342,8 @@ async function getTicketAll(data) {
                 OR stat.v_name LIKE CONCAT("%", ?, "%")
                 OR tp.v_name LIKE CONCAT("%", ?, "%")
                 )
-             ORDER BY ${orderCollumn} ${order}
+             ${filterClause}
+             ORDER BY pt.b_pinned DESC, ${orderCollumn} ${order}
              ${data.query.all ? "" : "LIMIT ? OFFSET ?"};`;
 
   const dbRes = await data.app.executeQuery(data.app.db, query, [
@@ -329,6 +355,7 @@ async function getTicketAll(data) {
     inputText,
     inputText,
     inputText,
+    ...filterParams,
     maxTicket,
     maxTicket * page,
   ]);
@@ -359,7 +386,8 @@ async function getTicketAll(data) {
                 OR tpt.v_name LIKE CONCAT("%", ?, "%")
                 OR stat.v_name LIKE CONCAT("%", ?, "%")
                 OR tp.v_name LIKE CONCAT("%", ?, "%")
-                );`;
+                )
+            ${filterClause};`;
 
   const dbResCount = await data.app.executeQuery(data.app.db, queryCount, [
     inputText,
@@ -370,6 +398,7 @@ async function getTicketAll(data) {
     inputText,
     inputText,
     inputText,
+    ...filterParams,
   ]);
   /* c8 ignore start */
   if (dbResCount[0]) {
@@ -453,7 +482,7 @@ async function getTicketById(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelectUser,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0]) {
@@ -474,7 +503,7 @@ async function getTicketById(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -490,11 +519,12 @@ async function getTicketById(data) {
                 CASE WHEN sch.v_name IS NULL AND pt.i_userschoolyear IS NULL THEN 1 ELSE 0 END AS 'isold',
                 u.v_email AS 'email' , pt.i_groupNumber AS 'groupNumber' ,
                 pt.dt_creationdate AS 'creationDate', pt.dt_modificationdate AS 'modificationDate',
-                pt.v_agentNote AS 'agentNote',
                 stat.v_name AS 'statusName', stat.i_id AS 'idStatus', stat.b_isCancel AS 'isCancel', stat.v_color AS 'statusColor',
                 tp.v_name AS 'priorityName', tp.v_color AS 'priorityColor',
-                pm.v_name AS 'material'
-                FROM printstickets AS pt 
+                pm.v_name AS 'material',
+                pt.b_pinned AS 'pinned',
+                pt.v_agentNote AS 'agentNote'
+                FROM printstickets AS pt
                 INNER JOIN users AS u ON pt.i_idUser = u.i_id 
                 INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id 
                 INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
@@ -534,7 +564,7 @@ async function getTicketById(data) {
   const dbResSelectCounterUser = await data.app.executeQuery(
     data.app.db,
     querySelectCountUser,
-    [result.idUser, result.id]
+    [result.idUser, result.id],
   );
   /* c8 ignore start */
   if (dbResSelectCounterUser[0]) {
@@ -560,7 +590,7 @@ async function getTicketById(data) {
     const dbResSelectCounterGroup = await data.app.executeQuery(
       data.app.db,
       querySelectCountGroup,
-      [result.groupNumber, result.idProjectType, result.id]
+      [result.groupNumber, result.idProjectType, result.id],
     );
     /* c8 ignore start */
     if (dbResSelectCounterGroup[0]) {
@@ -587,7 +617,7 @@ async function getTicketById(data) {
   const dbResSelectLogUpdProjectType = await data.app.executeQuery(
     data.app.db,
     querySelectLogUpdProjectType,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbResSelectLogUpdProjectType[0]) {
@@ -611,7 +641,7 @@ async function getTicketById(data) {
   const dbResSelectLogStatus = await data.app.executeQuery(
     data.app.db,
     querySelectLogUpdStatus,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbResSelectLogStatus[0]) {
@@ -635,7 +665,7 @@ async function getTicketById(data) {
   const dbResSelectLogPriority = await data.app.executeQuery(
     data.app.db,
     querySelectLogPriority,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (dbResSelectLogPriority[0]) {
@@ -758,7 +788,7 @@ async function postTicket(data) {
   const resSelectUserValidRules = await data.app.executeQuery(
     data.app.db,
     querySelectUserValidRules,
-    [userId]
+    [userId],
   );
   /* c8 ignore start */
   if (resSelectUserValidRules[0]) {
@@ -782,7 +812,7 @@ async function postTicket(data) {
   const resSelectProjectType = await data.app.executeQuery(
     data.app.db,
     querySelectProjectType,
-    [data.body.projectType]
+    [data.body.projectType],
   );
   /* c8 ignore start */
   if (resSelectProjectType[0]) {
@@ -822,7 +852,7 @@ async function postTicket(data) {
   const lastIdentityRes = await data.app.executeQuery(
     data.app.db,
     querySelectLastId,
-    []
+    [],
   );
   /* c8 ignore start */
   if (lastIdentityRes[0] || lastIdentityRes[1].length !== 1) {
@@ -861,7 +891,7 @@ async function postTicket(data) {
             const resInsertFile = await data.app.executeQuery(
               data.app.db,
               queryInsertFile,
-              [userId, lastIdentityRes[1][0].id, file.name, newFileName]
+              [userId, lastIdentityRes[1][0].id, file.name, newFileName],
             );
             /* c8 ignore start */
             if (resInsertFile[0]) {
@@ -873,7 +903,7 @@ async function postTicket(data) {
             }
             /* c8 ignore stop */
             resolve();
-          }
+          },
         );
       });
     }
@@ -885,7 +915,7 @@ async function postTicket(data) {
   const resCommentInsert = await data.app.executeQuery(
     data.app.db,
     queryInsert,
-    [userId, lastIdentityRes[1][0].id, data.body.comment]
+    [userId, lastIdentityRes[1][0].id, data.body.comment],
   );
   /* c8 ignore start */
   if (resCommentInsert[0]) {
@@ -908,7 +938,7 @@ async function postTicket(data) {
   const resSelectNotifyEmail = await data.app.executeQuery(
     data.app.db,
     querySelectNotifyEmail,
-    [data.body.projectMaterial]
+    [data.body.projectMaterial],
   );
   /* c8 ignore start */
   if (resSelectNotifyEmail[0]) {
@@ -992,7 +1022,7 @@ async function deleteTicketWithId(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelect,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length > 1) {
@@ -1014,7 +1044,7 @@ async function deleteTicketWithId(data) {
     const authViewResult = await data.userAuthorization.validateUserAuth(
       data.app,
       userIdAgent,
-      "myFabAgent"
+      "myFabAgent",
     );
     if (!authViewResult) {
       return {
@@ -1030,7 +1060,7 @@ async function deleteTicketWithId(data) {
   const resDeleteTicket = await data.app.executeQuery(
     data.app.db,
     queryUpdate,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resDeleteTicket[0]) {
@@ -1121,7 +1151,7 @@ async function putTicketNewProjectType(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -1136,7 +1166,7 @@ async function putTicketNewProjectType(data) {
   const resTestIfRoleExist = await data.app.executeQuery(
     data.app.db,
     querySelect,
-    [data.query.projecttype]
+    [data.query.projecttype],
   );
   /* c8 ignore start */
   if (resTestIfRoleExist[0]) {
@@ -1178,7 +1208,7 @@ async function putTicketNewProjectType(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, data.params.id, data.query.projecttype]
+    [userIdAgent, data.params.id, data.query.projecttype],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1268,7 +1298,7 @@ async function putTicketNewStatus(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return {
@@ -1307,7 +1337,7 @@ async function putTicketNewStatus(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, idTicket, idStatus]
+    [userIdAgent, idTicket, idStatus],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1322,6 +1352,30 @@ async function putTicketNewStatus(data) {
   data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
   data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
   updateTicketDate(data.app.db, data.app.executeQuery, idTicket); // Update last modified for ticket
+
+  // Notification in-site pour le demandeur (si l'agent n'est pas le demandeur)
+  const queryOwner = `SELECT pt.i_idUser AS ownerId, st.v_name AS statusName
+                      FROM printstickets AS pt
+                      LEFT JOIN gd_status AS st ON st.i_id = ?
+                      WHERE pt.i_id = ?`;
+  const resOwner = await data.app.executeQuery(data.app.db, queryOwner, [
+    idStatus,
+    idTicket,
+  ]);
+  /* c8 ignore start */
+  if (resOwner && !resOwner[0] && resOwner[1] && resOwner[1][0]) {
+    /* c8 ignore stop */
+    const ownerId = resOwner[1][0].ownerId;
+    const statusName = resOwner[1][0].statusName;
+    if (ownerId && ownerId != userIdAgent) {
+      await require("../../functions/notification").createNotification(
+        data.app,
+        ownerId,
+        `Demande #${idTicket} : ${statusName}`,
+        `/panel/${idTicket}`,
+      );
+    }
+  }
 
   return {
     type: "code",
@@ -1387,7 +1441,7 @@ async function putTicketCancelStatus(data) {
   const resGetUserTicket = await data.app.executeQuery(
     data.app.db,
     querySelectTicket,
-    [data.params.id]
+    [data.params.id],
   );
   /* c8 ignore start */
   if (resGetUserTicket[0] || resGetUserTicket[1].length !== 1) {
@@ -1443,7 +1497,7 @@ async function putTicketCancelStatus(data) {
   const resInsertLog = await data.app.executeQuery(
     data.app.db,
     queryInsertLog,
-    [userIdAgent, idTicket]
+    [userIdAgent, idTicket],
   );
   /* c8 ignore start */
   if (resInsertLog[0]) {
@@ -1462,6 +1516,312 @@ async function putTicketCancelStatus(data) {
   return {
     type: "code",
     code: 200,
+  };
+}
+
+/**
+ * @swagger
+ * /ticket/{id}/setPinned:
+ *   put:
+ *     summary: Toggle the pinned state of the ticket. The user need to be a 'myFabAgent'
+ *     tags: [Ticket]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       description: Cookie of the user making the request
+ *       required: true
+ *       type: string
+ *     - name: "id"
+ *       in: "path"
+ *       description: "Id of the ticket"
+ *       required: true
+ *       type: "integer"
+ *       format: "int64"
+ *     responses:
+ *       200:
+ *        description: "The pinned state has been toggled"
+ *       400:
+ *        description: "Parameters or body not valid"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.putTicketSetPinned = putTicketSetPinned;
+async function putTicketSetPinned(data) {
+  // parameters or body not valid
+  if (!data.params || !data.params.id || isNaN(data.params.id)) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+  const idTicket = data.params.id;
+  // if the user is not allowed
+  const userIdAgent = data.userId;
+  if (!userIdAgent) {
+    return {
+      type: "code",
+      code: 401,
+    };
+  }
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent",
+  );
+  if (!authViewResult) {
+    return {
+      type: "code",
+      code: 403,
+    };
+  }
+
+  // Toggle the pinned state in a single query to avoid a read/write race
+  const queryUpdate = `UPDATE printstickets
+                        SET b_pinned = NOT b_pinned
+                        WHERE i_id = ? AND b_isDeleted = 0`;
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    idTicket,
+  ]);
+  /* c8 ignore start */
+  if (resUpdate[0]) {
+    console.log(resUpdate[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+  // No ticket matched the id
+  if (resUpdate[1].affectedRows < 1) {
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+
+  const querySelectPinned = `SELECT b_pinned AS 'pinned'
+                        FROM printstickets
+                        WHERE i_id = ?`;
+  const resSelectPinned = await data.app.executeQuery(
+    data.app.db,
+    querySelectPinned,
+    [idTicket],
+  );
+  /* c8 ignore start */
+  if (resSelectPinned[0] || resSelectPinned[1].length !== 1) {
+    console.log(resSelectPinned[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+
+  data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
+  data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+
+  return {
+    type: "json",
+    code: 200,
+    json: { pinned: resSelectPinned[1][0].pinned === 1 },
+  };
+}
+
+/**
+ * @swagger
+ * /ticket/{id}/note:
+ *   put:
+ *     summary: Set the internal agent note of the ticket. The user need to be a 'myFabAgent'
+ *     tags: [Ticket]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       description: Cookie of the user making the request
+ *       required: true
+ *       type: string
+ *     - name: "id"
+ *       in: "path"
+ *       description: "Id of the ticket"
+ *       required: true
+ *       type: "integer"
+ *       format: "int64"
+ *     responses:
+ *       200:
+ *        description: "The note has been saved"
+ *       400:
+ *        description: "Parameters or body not valid"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.putTicketNote = putTicketNote;
+async function putTicketNote(data) {
+  if (!data.params || !data.params.id || isNaN(data.params.id)) {
+    return { type: "code", code: 400 };
+  }
+  const userIdAgent = data.userId;
+  if (!userIdAgent) {
+    return { type: "code", code: 401 };
+  }
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent",
+  );
+  if (!authViewResult) {
+    return { type: "code", code: 403 };
+  }
+  const noteValue = data.body && data.body.note ? data.body.note : null;
+  const queryUpdate = `UPDATE printstickets SET v_agentNote = ? WHERE i_id = ?`;
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    noteValue,
+    data.params.id,
+  ]);
+  /* c8 ignore start */
+  if (resUpdate[0]) {
+    console.log(resUpdate[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  const queryLog = `INSERT INTO log_ticketschange
+            (i_idUser, i_idTicket, v_action, v_newValue)
+            VALUES (?, ?, 'upd_note', ?)`;
+  const resLog = await data.app.executeQuery(data.app.db, queryLog, [
+    userIdAgent,
+    data.params.id,
+    noteValue ? noteValue.substring(0, 100) : null,
+  ]);
+  /* c8 ignore start */
+  if (resLog[0]) {
+    console.log(resLog[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  data.app.io.to(`ticket-${data.params.id}`).emit("reload-ticket");
+
+  return { type: "code", code: 200 };
+}
+
+/**
+ * @swagger
+ * /ticket/{id}/toggleNoProcess:
+ *   put:
+ *     summary: Toggle the 'Ne pas traiter' priority of the ticket. The user need to be a 'myFabAgent'
+ *     tags: [Ticket]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       description: Cookie of the user making the request
+ *       required: true
+ *       type: string
+ *     - name: "id"
+ *       in: "path"
+ *       description: "Id of the ticket"
+ *       required: true
+ *       type: "integer"
+ *       format: "int64"
+ *     responses:
+ *       200:
+ *        description: "The priority has been toggled"
+ *       400:
+ *        description: "Parameters or body not valid"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.putTicketToggleNoProcess = putTicketToggleNoProcess;
+async function putTicketToggleNoProcess(data) {
+  if (!data.params || !data.params.id || isNaN(data.params.id)) {
+    return { type: "code", code: 400 };
+  }
+  const idTicket = data.params.id;
+  const userIdAgent = data.userId;
+  if (!userIdAgent) {
+    return { type: "code", code: 401 };
+  }
+  const authViewResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent",
+  );
+  if (!authViewResult) {
+    return { type: "code", code: 403 };
+  }
+
+  // Lis la priorité actuelle pour décider de la cible du toggle
+  const querySelect = `SELECT tp.v_name AS 'priorityName'
+                        FROM printstickets AS pt
+                        INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+                        WHERE pt.i_id = ? AND pt.b_isDeleted = 0`;
+  const resSelect = await data.app.executeQuery(data.app.db, querySelect, [
+    idTicket,
+  ]);
+  /* c8 ignore start */
+  if (resSelect[0]) {
+    console.log(resSelect[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+  if (resSelect[1].length !== 1) {
+    return { type: "code", code: 400 };
+  }
+  const targetName =
+    resSelect[1][0].priorityName === "Ne pas traiter"
+      ? "Normal"
+      : "Ne pas traiter";
+
+  const queryUpdate = `UPDATE printstickets
+                        SET i_priority = (SELECT i_id FROM gd_ticketpriority WHERE v_name = ?)
+                        WHERE i_id = ?`;
+  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
+    targetName,
+    idTicket,
+  ]);
+  /* c8 ignore start */
+  if (resUpdate[0]) {
+    console.log(resUpdate[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  const queryInsertLog = `INSERT INTO log_ticketschange
+            (i_idUser, i_idTicket, v_action, v_newValue)
+            VALUES (?, ?, 'upd_priority', (SELECT i_id FROM gd_ticketpriority WHERE v_name = ?))`;
+  const resInsertLog = await data.app.executeQuery(
+    data.app.db,
+    queryInsertLog,
+    [userIdAgent, idTicket, targetName],
+  );
+  /* c8 ignore start */
+  if (resInsertLog[0]) {
+    console.log(resInsertLog[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  data.app.io.emit("event-reload-tickets"); // reload ticket menu on client
+  data.app.io.to(`ticket-${idTicket}`).emit("reload-ticket");
+  updateTicketDate(data.app.db, data.app.executeQuery, idTicket);
+
+  return {
+    type: "json",
+    code: 200,
+    json: { noProcess: targetName === "Ne pas traiter" },
   };
 }
 
@@ -1529,11 +1889,31 @@ async function getHighDemand(data) {
   };
 }
 
-module.exports.putTicketNote = putTicketNote;
-async function putTicketNote(data) {
-  if (!data.params || !data.params.id || isNaN(data.params.id)) {
-    return { type: "code", code: 400 };
-  }
+/**
+ * @swagger
+ * /ticket/counts/:
+ *   get:
+ *     summary: Get KPI counts of open tickets. The user need to be a 'myFabAgent'
+ *     tags: [Ticket]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       description: Cookie of the user making the request
+ *       required: true
+ *       type: string
+ *     responses:
+ *       "200":
+ *         description: "Counts of open tickets by priority/status"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.getTicketCounts = getTicketCounts;
+async function getTicketCounts(data) {
   const userIdAgent = data.userId;
   if (!userIdAgent) {
     return { type: "code", code: 401 };
@@ -1541,60 +1921,232 @@ async function putTicketNote(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "myFabAgent"
+    "myFabAgent",
   );
   if (!authViewResult) {
     return { type: "code", code: 403 };
   }
-  const queryUpdate = `UPDATE printstickets SET v_agentNote = ? WHERE i_id = ?`;
-  const resUpdate = await data.app.executeQuery(data.app.db, queryUpdate, [
-    data.body.note,
-    data.params.id,
-  ]);
-  if (resUpdate[0]) {
+
+  const query = `SELECT
+              COUNT(*) AS 'open',
+              SUM(CASE WHEN tp.v_name = 'A traiter' THEN 1 ELSE 0 END) AS 'aTraiter',
+              SUM(CASE WHEN tp.v_name = 'Urgent' THEN 1 ELSE 0 END) AS 'urgent',
+              SUM(CASE WHEN stat.v_name = 'En attente de récupération' THEN 1 ELSE 0 END) AS 'waitingPickup'
+              FROM printstickets AS pt
+              INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+              LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
+              WHERE pt.b_isDeleted = 0 AND stat.b_isOpen = 1;`;
+  const dbRes = await data.app.executeQuery(data.app.db, query, []);
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
     return { type: "code", code: 500 };
   }
-  return { type: "code", code: 200 };
+  /* c8 ignore stop */
+  const r = dbRes[1][0];
+  return {
+    type: "json",
+    code: 200,
+    json: {
+      open: Number(r.open) || 0,
+      aTraiter: Number(r.aTraiter) || 0,
+      urgent: Number(r.urgent) || 0,
+      waitingPickup: Number(r.waitingPickup) || 0,
+    },
+  };
+}
+
+/**
+ * @swagger
+ * /ticket/export/csv:
+ *   get:
+ *     summary: Export the (filtered) tickets list as CSV. The user need to be a 'myFabAgent'.
+ *     tags: [Ticket]
+ *     parameters:
+ *     - name: dvflCookie
+ *       in: header
+ *       required: true
+ *       type: string
+ *     responses:
+ *       "200":
+ *         description: "CSV file"
+ *       401:
+ *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
+ *       500:
+ *        description: "Internal error with the request"
+ */
+
+module.exports.getTicketExportCsv = getTicketExportCsv;
+async function getTicketExportCsv(data) {
+  const userId = data.userId;
+  if (!userId) {
+    return { type: "code", code: 401 };
+  }
+  const auth = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userId,
+    "myFabAgent",
+  );
+  if (!auth) {
+    return { type: "code", code: 403 };
+  }
+
+  if (data.query === undefined) data.query = {};
+  const inputText = data.query.inputValue ? data.query.inputValue : "";
+  const selectOpenOnly = data.query.selectOpenOnly === "true";
+
+  const filterClauses = [];
+  const filterParams = [];
+  if (data.query.idMaterial && !isNaN(data.query.idMaterial)) {
+    filterClauses.push("AND pt.i_material = ?");
+    filterParams.push(data.query.idMaterial);
+  }
+  if (data.query.idProjectType && !isNaN(data.query.idProjectType)) {
+    filterClauses.push("AND pt.i_projecttype = ?");
+    filterParams.push(data.query.idProjectType);
+  }
+  if (data.query.idPriority && !isNaN(data.query.idPriority)) {
+    filterClauses.push("AND pt.i_priority = ?");
+    filterParams.push(data.query.idPriority);
+  }
+  if (data.query.idStatus && !isNaN(data.query.idStatus)) {
+    filterClauses.push("AND pt.i_status = ?");
+    filterParams.push(data.query.idStatus);
+  }
+  const filterClause = filterClauses.join("\n             ");
+
+  const query = `SELECT pt.i_id AS 'id',
+              CONCAT(u.v_firstName, ' ', u.v_lastName) AS 'demandeur',
+              u.v_email AS 'email',
+              tpt.v_name AS 'module',
+              pt.i_groupNumber AS 'groupe',
+              pm.v_name AS 'materiau',
+              tp.v_name AS 'priorite',
+              stat.v_name AS 'statut',
+              pt.dt_creationdate AS 'creation',
+              pt.dt_modificationdate AS 'modification'
+              FROM printstickets AS pt
+              INNER JOIN users AS u ON pt.i_idUser = u.i_id
+              INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id
+              INNER JOIN gd_ticketpriority AS tp ON pt.i_priority = tp.i_id
+              INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+              LEFT JOIN gd_status AS stat ON pt.i_status = stat.i_id
+              WHERE pt.b_isDeleted = 0
+             ${selectOpenOnly ? "AND stat.b_isOpen = 1" : ""}
+             AND (
+                "" = ?
+                OR pt.i_id LIKE CONCAT("%", ?, "%")
+                OR u.v_firstName LIKE CONCAT("%", ?, "%")
+                OR u.v_lastName LIKE CONCAT("%", ?, "%")
+                OR u.v_title LIKE CONCAT("%", ?, "%")
+                OR tpt.v_name LIKE CONCAT("%", ?, "%")
+                OR stat.v_name LIKE CONCAT("%", ?, "%")
+                OR tp.v_name LIKE CONCAT("%", ?, "%")
+                )
+             ${filterClause}
+             ORDER BY pt.i_id DESC;`;
+  const dbRes = await data.app.executeQuery(data.app.db, query, [
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    inputText,
+    ...filterParams,
+  ]);
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+
+  const csvConverter = require("json-2-csv");
+  const fmt = (d) => (d ? new Date(d).toLocaleString("fr-FR") : "");
+  const rows = dbRes[1].map((r) => ({
+    ...r,
+    creation: fmt(r.creation),
+    modification: fmt(r.modification),
+  }));
+  const csv = rows.length
+    ? csvConverter.json2csv(rows)
+    : "id,demandeur,email,module,groupe,materiau,priorite,statut,creation,modification";
+
+  const fileName = `export_${makeid(20)}.csv`;
+  const filePath = __dirname + "/../../tmp/" + fileName;
+  // BOM UTF-8 pour qu'Excel affiche correctement les accents
+  fs.writeFileSync(filePath, "﻿" + csv);
+
+  return {
+    type: "download",
+    code: 200,
+    path: filePath,
+    fileName: "myfab_demandes.csv",
+  };
 }
 
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
-  app.put("/api/ticket/:id/note", async function (req, res) {
-    try {
-      const data = await require("../../functions/apiActions").prepareData(
-        app,
-        req,
-        res
-      );
-      const result = await putTicketNote(data);
-      await require("../../functions/apiActions").sendResponse(
-        req,
-        res,
-        result
-      );
-    } catch (error) {
-      console.log("ERROR: PUT /api/ticket/:id/note");
-      console.log(error);
-      res.sendStatus(500);
-    }
-  });
-
   app.get("/api/ticket/highDemand/", async function (req, res) {
     try {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getHighDemand(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/highDemand/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/ticket/counts/", async function (req, res) {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await getTicketCounts(data);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result,
+      );
+    } catch (error) {
+      console.log("ERROR: GET /api/ticket/counts/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/ticket/export/csv", async function (req, res) {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await getTicketExportCsv(data);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result,
+      );
+    } catch (error) {
+      console.log("ERROR: GET /api/ticket/export/csv");
       console.log(error);
       res.sendStatus(500);
     }
@@ -1605,13 +2157,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketAllFromUser(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/me/");
@@ -1625,13 +2177,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketAll(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/");
@@ -1645,13 +2197,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getTicketById(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: GET /api/ticket/:id/");
@@ -1665,14 +2217,14 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       data.sendMailFunction = sendMailFunction;
       const result = await postTicket(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/ticket/");
@@ -1686,13 +2238,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await deleteTicketWithId(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: DELETE /api/ticket/:id");
@@ -1706,13 +2258,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketNewProjectType(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setProjecttype/");
@@ -1726,13 +2278,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketNewStatus(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setStatus");
@@ -1746,16 +2298,76 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await putTicketCancelStatus(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: PUT /api/ticket/:id/setCancelStatus");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.put("/api/ticket/:id/setPinned", async function (req, res) {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await putTicketSetPinned(data);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result,
+      );
+    } catch (error) {
+      console.log("ERROR: PUT /api/ticket/:id/setPinned");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.put("/api/ticket/:id/note", async function (req, res) {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await putTicketNote(data);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result,
+      );
+    } catch (error) {
+      console.log("ERROR: PUT /api/ticket/:id/note");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.put("/api/ticket/:id/toggleNoProcess", async function (req, res) {
+    try {
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await putTicketToggleNoProcess(data);
+      await require("../../functions/apiActions").sendResponse(
+        req,
+        res,
+        result,
+      );
+    } catch (error) {
+      console.log("ERROR: PUT /api/ticket/:id/toggleNoProcess");
       console.log(error);
       res.sendStatus(500);
     }

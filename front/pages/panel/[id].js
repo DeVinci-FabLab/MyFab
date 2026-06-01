@@ -21,11 +21,6 @@ import { getApi } from "../../lib/runtimeEnv";
 
 import { UserUse } from "../../context/provider";
 
-const colors = {
-  "2274e0": "text-gray-700 bg-gray-200",
-  e9d41d: "text-amber-700 bg-amber-200",
-  f30b0b: "text-white bg-gradient-to-r from-amber-400 to-red-500",
-};
 const fabColor = ["D51D65", "F5841D", "2CA0BB"];
 
 const GestionTicket = ({
@@ -166,13 +161,6 @@ const GestionTicket = ({
       });
     }
   }
-  async function downloadAll() {
-    for (const f of file) {
-      await download(f.id, f.filename);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-  }
-
   async function download(id, name) {
     const cookie = getCookie("jwt");
     const options =
@@ -198,7 +186,70 @@ const GestionTicket = ({
       link.setAttribute("download", name); //or any other extension
       document.body.appendChild(link);
       link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     });
+  }
+
+  async function downloadAll() {
+    for (const f of file) {
+      await download(f.id, f.filename);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }
+
+  async function saveNote() {
+    const cookie = getCookie("jwt");
+    const response = await fetchAPIAuth({
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
+      url: getApi() + "/api/ticket/" + params.id + "/note",
+      data: { note: agentNote },
+    });
+    if (!response.error) {
+      setNoteSaved(true);
+      setTimeout(() => setNoteSaved(false), 2000);
+    } else {
+      toast.error("Erreur lors de la sauvegarde de la note.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
+  async function toggleNoProcess() {
+    const cookie = getCookie("jwt");
+    const response = await fetchAPIAuth({
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        dvflCookie: cookie,
+      },
+      url: getApi() + "/api/ticket/" + params.id + "/toggleNoProcess",
+    });
+    if (response.error) {
+      toast.error("Erreur lors du changement de priorité.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      realodPage();
+    }
   }
 
   async function sendComment(e) {
@@ -339,11 +390,7 @@ const GestionTicket = ({
           <main className="col-span-9">
             <div className="container px-4 mx-auto">
               <div className="flex flex-wrap -mx-4">
-                <div
-                  className={`shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 ${
-                    darkMode ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
+                <div className="overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
                   <div className="px-4 py-5 sm:px-6">
                     <h3
                       className={`text-lg leading-6 font-medium ${
@@ -369,12 +416,12 @@ const GestionTicket = ({
                   </div>
                   <div
                     className={`border-t px-4 py-5 sm:p-0 ${
-                      darkMode ? "border-gray-700" : "border-gray-200"
+                      darkMode ? "border-night-700" : "border-gray-200"
                     }`}
                   >
                     <dl
                       className={`sm:divide-y ${
-                        darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
+                        darkMode ? "sm:divide-night-700" : "sm:divide-gray-200"
                       }`}
                     >
                       <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -409,7 +456,7 @@ const GestionTicket = ({
                             role="list"
                             className={`border rounded-md divide-y ${
                               darkMode
-                                ? "border-gray-700 divide-gray-700"
+                                ? "border-night-700 divide-night-700"
                                 : "border-gray-200 divide-gray-200"
                             }`}
                           >
@@ -435,7 +482,7 @@ const GestionTicket = ({
                                         onClick={() =>
                                           download(r.id, r.filename)
                                         }
-                                        className="download-button font-medium text-indigo-600 hover:text-indigo-500"
+                                        className="download-button font-medium text-brand-magenta hover:text-brand-magenta-dark"
                                       >
                                         Télécharger
                                       </button>
@@ -504,6 +551,16 @@ const GestionTicket = ({
                               );
                             })}
                           </ul>
+                          {file.length > 1 ? (
+                            <button
+                              onClick={downloadAll}
+                              className="download-all-button mt-2 text-xs font-medium text-brand-magenta hover:text-brand-magenta-dark"
+                            >
+                              Tout télécharger
+                            </button>
+                          ) : (
+                            ""
+                          )}
                         </dd>
                       </div>
                       <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -527,7 +584,7 @@ const GestionTicket = ({
                           <ul
                             role="list"
                             className={`divide-y ${
-                              darkMode ? "divide-gray-700" : "divide-gray-200"
+                              darkMode ? "divide-night-700" : "divide-gray-200"
                             }`}
                           >
                             {message.map((r, index) => (
@@ -535,7 +592,7 @@ const GestionTicket = ({
                                 key={`message-${index}`}
                                 className={`relative py-5 px-4 ${
                                   darkMode
-                                    ? "bg-gray-800 hover:bg-gray-700"
+                                    ? "bg-night-800 hover:bg-night-700"
                                     : "bg-white hover:bg-gray-50"
                                 }`}
                               >
@@ -602,8 +659,8 @@ const GestionTicket = ({
                                 onChange={(e) => setComment(e.target.value)}
                                 className={`chat-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
                                   darkMode
-                                    ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                    ? "border-night-600 bg-night-600 text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
+                                    : "border-gray-300 focus:border-brand-magenta focus:ring-brand-magenta"
                                 }`}
                                 defaultValue={""}
                               />
@@ -621,12 +678,12 @@ const GestionTicket = ({
                                   document.getElementById("comment").value = "";
                                   sendComment(e);
                                 }}
-                                className="send-message-button mt-3 justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
+                                className="send-message-button mt-3 justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded-md border-brand-magenta bg-brand-magenta text-white hover:text-white hover:bg-brand-magenta-dark hover:border-brand-magenta-dark focus:ring focus:ring-brand-magenta focus:ring-opacity-50"
                               >
                                 <p>Envoyer le message</p>
                                 {user.specialFont ? (
                                   <p
-                                    className={`${user.specialFont} small text-violet-200`}
+                                    className={`${user.specialFont} small text-white/80`}
                                   >
                                     Envoyer le message
                                   </p>
@@ -654,11 +711,7 @@ const GestionTicket = ({
                 </div>
 
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
-                  <div
-                    className={`shadow overflow-hidden sm:rounded-lg ${
-                      darkMode ? "bg-gray-800" : "bg-white"
-                    }`}
-                  >
+                  <div className="overflow-hidden sm:rounded-lg border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
                     <div className="px-4 py-5 sm:px-6">
                       <h3
                         className={`text-lg leading-6 font-medium ${
@@ -696,12 +749,14 @@ const GestionTicket = ({
                     </div>
                     <div
                       className={`border-t px-4 py-5 sm:p-0 ${
-                        darkMode ? "border-gray-700" : "border-gray-200"
+                        darkMode ? "border-night-700" : "border-gray-200"
                       }`}
                     >
                       <dl
                         className={`sm:divide-y ${
-                          darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
+                          darkMode
+                            ? "sm:divide-night-700"
+                            : "sm:divide-gray-200"
                         }`}
                       >
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -747,7 +802,7 @@ const GestionTicket = ({
                               <button
                                 className={`user-button font-bold py-2 px-4 rounded ${
                                   darkMode
-                                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-gray-200"
+                                    ? "bg-night-700 hover:bg-night-600 text-gray-300 hover:text-gray-200"
                                     : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600"
                                 }`}
                                 onClick={() => {
@@ -849,7 +904,7 @@ const GestionTicket = ({
                               <button
                                 className={`change-type-button font-bold py-2 px-4 rounded ${
                                   darkMode
-                                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-gray-200"
+                                    ? "bg-night-700 hover:bg-night-600 text-gray-300 hover:text-gray-200"
                                     : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600"
                                 }`}
                                 onClick={() => {
@@ -917,7 +972,7 @@ const GestionTicket = ({
                               <button
                                 className={`change-status-button font-bold py-2 px-4 rounded ${
                                   darkMode
-                                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-gray-200"
+                                    ? "bg-night-700 hover:bg-night-600 text-gray-300 hover:text-gray-200"
                                     : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-600"
                                 }`}
                                 onClick={() => {
@@ -963,14 +1018,56 @@ const GestionTicket = ({
                                 ""
                               )}
                             </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <div
-                                className={`font-medium inline-flex px-2 py-1 leading-4 text-md rounded-full ${
-                                  colors[ticket.priorityColor]
-                                }`}
+                            <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                              <span className="inline-flex items-center gap-2">
+                                <span
+                                  className="h-2 w-2 rounded-full flex-shrink-0"
+                                  style={{
+                                    backgroundColor: ticket.priorityColor
+                                      ? `#${ticket.priorityColor}`
+                                      : "#9ca3af",
+                                  }}
+                                />
+                                <span className="text-gray-700 dark:text-gray-300">
+                                  {ticket.priorityName}
+                                </span>
+                              </span>
+                              <button
+                                onClick={toggleNoProcess}
+                                className="no-process-button mt-2 block text-xs font-medium text-brand-magenta hover:text-brand-magenta-dark"
                               >
-                                {ticket.priorityName}
-                              </div>
+                                {ticket.priorityName === "Ne pas traiter"
+                                  ? "Réactiver le ticket"
+                                  : "Marquer « Ne pas traiter »"}
+                              </button>
+                            </dd>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {authorizations.myFabAgent ? (
+                          <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">
+                              <p>Notes internes</p>
+                              <p className="font-mono text-[10px] uppercase tracking-wider text-brand-blue">
+                                // Agents uniquement
+                              </p>
+                            </dt>
+                            <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                              <textarea
+                                rows={4}
+                                maxLength="1000"
+                                onChange={(e) => setAgentNote(e.target.value)}
+                                defaultValue={ticket.agentNote || ""}
+                                className="agent-note-textarea shadow-sm block w-full sm:text-sm border rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
+                                placeholder="Notes visibles uniquement par les agents..."
+                              />
+                              <button
+                                onClick={saveNote}
+                                className="save-note-button mt-2 inline-flex justify-center py-1 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
+                              >
+                                {noteSaved ? "✓ Sauvegardé" : "Sauvegarder"}
+                              </button>
                             </dd>
                           </div>
                         ) : (
@@ -1045,9 +1142,7 @@ const GestionTicket = ({
             </span>
 
             <div
-              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:min-w-[45%] sm:w-full sm:p-6 ${
-                darkMode ? "bg-gray-600" : "bg-white"
-              }`}
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:min-w-[45%] sm:w-full sm:p-6 bg-white dark:bg-night-900 border border-gray-200 dark:border-night-800`}
             >
               <div>
                 <p
@@ -1140,8 +1235,8 @@ const GestionTicket = ({
                             }}
                             className={`comment-file-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
                               darkMode
-                                ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                ? "border-night-600 bg-night-600 text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
+                                : "border-gray-300 focus:border-brand-magenta focus:ring-brand-magenta"
                             }`}
                             defaultValue={ticketFile.comment}
                           />
@@ -1161,8 +1256,8 @@ const GestionTicket = ({
                             name="type"
                             className={`printer-select mt-5 block w-full pl-3 pr-10 py-2 focus:outline-none sm:text-sm rounded-md cursor-pointer ${
                               darkMode
-                                ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
-                                : "text-base border-gray-200 focus:ring-indigo-500 focus:border-indigo-500"
+                                ? "text-gray-200 border-night-600 bg-night-600 focus:border-brand-magenta focus:ring-brand-magenta"
+                                : "text-base border-gray-200 focus:ring-brand-magenta focus:border-brand-magenta"
                             }`}
                           >
                             <option
@@ -1212,8 +1307,8 @@ const GestionTicket = ({
                         }}
                         className={`comment-file-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
                           darkMode
-                            ? "border-gray-500 bg-gray-600 text-white focus:border-indigo-700 focus:ring-indigo-700"
-                            : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            ? "border-night-600 bg-night-600 text-white focus:border-brand-magenta focus:ring-brand-magenta"
+                            : "border-gray-300 focus:border-brand-magenta focus:ring-brand-magenta"
                         }`}
                         defaultValue={ticketFile.comment}
                       />
@@ -1224,7 +1319,7 @@ const GestionTicket = ({
               <div className="mt-5 sm:mt-6 justify-center">
                 <button
                   type="button"
-                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-magenta text-base font-semibold text-white hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:text-sm"
                   onClick={() => {
                     saveFileData();
                   }}
@@ -1261,9 +1356,7 @@ const GestionTicket = ({
               &#8203;
             </span>
             <div
-              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:min-w-[45%] sm:w-full sm:p-6 ${
-                darkMode ? "bg-gray-600" : "bg-white"
-              }`}
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[50%] sm:min-w-[45%] sm:w-full sm:p-6 bg-white dark:bg-night-900 border border-gray-200 dark:border-night-800`}
             >
               <div>
                 <div
@@ -1284,7 +1377,7 @@ const GestionTicket = ({
                 </div>
                 <dl
                   className={`sm:divide-y ${
-                    darkMode ? "sm:divide-gray-500" : "sm:divide-gray-200"
+                    darkMode ? "sm:divide-night-600" : "sm:divide-gray-200"
                   }`}
                 >
                   <div className="py-4 sm:py-5 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-6">
@@ -1332,7 +1425,12 @@ const GestionTicket = ({
                         darkMode ? "text-gray-300" : "text-gray-900"
                       }`}
                     >
-                      {ticket.email}
+                      <a
+                        href={`mailto:${ticket.email}`}
+                        className="text-brand-blue hover:underline"
+                      >
+                        {ticket.email}
+                      </a>
                     </div>
                     <div
                       className={`text-sm font-medium whitespace-nowrap ${
@@ -1354,7 +1452,7 @@ const GestionTicket = ({
               <div className="mt-5 sm:mt-6">
                 <button
                   type="button"
-                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-magenta text-base font-semibold text-white hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:text-sm"
                   onClick={() => setOpenUser(false)}
                 >
                   Fermer
@@ -1389,9 +1487,7 @@ const GestionTicket = ({
               &#8203;
             </span>
             <div
-              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 ${
-                darkMode ? "bg-gray-600" : "bg-white"
-              }`}
+              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[500px] sm:w-full sm:p-6 bg-white dark:bg-night-900 border border-gray-200 dark:border-night-800`}
             >
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -1461,8 +1557,8 @@ const GestionTicket = ({
                         name="type"
                         className={`statusType-select mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none sm:text-sm rounded-md cursor-pointer ${
                           darkMode
-                            ? "text-gray-200 border-gray-500 bg-gray-600 focus:border-indigo-700 focus:ring-indigo-700"
-                            : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                            ? "text-gray-200 border-night-600 bg-night-600 focus:border-brand-magenta focus:ring-brand-magenta"
+                            : "border-gray-300 focus:ring-brand-magenta focus:border-brand-magenta"
                         }`}
                         defaultValue={
                           paramType === "status"
@@ -1498,9 +1594,9 @@ const GestionTicket = ({
                       Annuler
                     </button>
                     <button
-                      className={`back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
+                      className={`back-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:mt-0 sm:w-auto sm:text-sm sm:col-span-2 ${
                         darkMode
-                          ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                          ? "bg-night-600 hover:bg-night-600 border-night-600 text-gray-200 hover:text-gray-300"
                           : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
                       }`}
                       onClick={() => setOpenStatus(false)}
@@ -1523,9 +1619,9 @@ const GestionTicket = ({
                   </button>
                   <button
                     type="button"
-                    className={`cancel-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm ${
+                    className={`cancel-button mt-3 w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:mt-0 sm:w-auto sm:text-sm ${
                       darkMode
-                        ? "bg-gray-600 hover:bg-gray-500 border-gray-500 text-gray-200 hover:text-gray-300"
+                        ? "bg-night-600 hover:bg-night-600 border-night-600 text-gray-200 hover:text-gray-300"
                         : "bg-white hover:bg-gray-100 border-gray-300 text-gray-700 hover:text-gray-500"
                     }`}
                     onClick={() => setOpenStatus(false)}

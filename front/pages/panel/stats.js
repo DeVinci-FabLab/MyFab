@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import "moment/locale/fr";
+import axios from "axios";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 import LayoutPanel from "../../components/layoutPanel";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
+import { getApi } from "../../lib/runtimeEnv";
 import { useRouter } from "next/router";
 import { getCookie } from "cookies-next";
 import Seo from "../../components/seo";
@@ -54,6 +57,39 @@ export default function NewPanel({ authorizations, stats }) {
     router.replace(router.asPath);
   }
 
+  async function downloadCsv(url, filename) {
+    try {
+      const response = await axios({
+        method: "GET",
+        url,
+        responseType: "blob",
+        headers: { dvflCookie: getCookie("jwt") },
+      });
+      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      // silencieux : l'utilisateur peut réessayer
+    }
+  }
+
+  function exportReport() {
+    const period = nav === "general" || nav === "alltime" ? "all" : nav;
+    downloadCsv(
+      getApi() + "/api/stats/report/csv?period=" + encodeURIComponent(period),
+      `myfab_stats_${period}.csv`,
+    );
+  }
+
+  function exportRaw() {
+    downloadCsv(getApi() + "/api/stats/prints/csv", "myfab_demandes_brut.csv");
+  }
+
   useEffect(function () {
     if (user.error != undefined) {
       router.push("/404");
@@ -68,12 +104,34 @@ export default function NewPanel({ authorizations, stats }) {
       <Seo title={"Panel"} />
       <WebSocket realodPage={realodPage} event={[]} userId={user.id} />
 
-      {/* Dernières activités */}
+      <div className="pt-6">
+        <div className="container px-4 mx-auto flex flex-wrap items-center justify-between gap-2">
+          <p className="font-mono text-xs uppercase tracking-wider text-brand-magenta">
+            // Statistiques
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={exportReport}
+              className="export-report-button inline-flex items-center gap-1.5 text-sm font-medium text-brand-magenta border border-gray-200 dark:border-night-700 rounded-md px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-night-800 transition-colors"
+            >
+              <ArrowDownTrayIcon className="h-4 w-4" />
+              Export rapport
+            </button>
+            <button
+              onClick={exportRaw}
+              className="export-raw-button inline-flex items-center gap-1.5 text-sm font-medium text-brand-blue border border-gray-200 dark:border-night-700 rounded-md px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-night-800 transition-colors"
+            >
+              <ArrowDownTrayIcon className="h-4 w-4" />
+              Données brutes
+            </button>
+          </div>
+        </div>
+      </div>
 
       <nav className="">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
-          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 dark:border-gray-700">
+          <div className="w-full md:w-auto" id="navbar-default">
+            <ul className="font-medium flex flex-row flex-wrap items-center gap-x-6 gap-y-2 p-0 mt-0 rounded-lg rtl:space-x-reverse dark:border-night-700">
               <li>
                 <a
                   onClick={() => {
@@ -82,35 +140,12 @@ export default function NewPanel({ authorizations, stats }) {
                   }}
                   className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
                     nav === "general"
-                      ? darkMode
-                        ? "text-blue-700"
-                        : "text-blue-500"
-                      : darkMode
-                        ? "text-gray-300 hover:text-gray-100"
-                        : "text-gray-900 hover:text-gray-500"
+                      ? "text-brand-magenta font-semibold"
+                      : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                   } `}
                   aria-current="page"
                 >
-                  Général
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() => {
-                    setNavMonth([]);
-                    setNav("alltime");
-                  }}
-                  className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
-                    nav === "alltime"
-                      ? darkMode
-                        ? "text-blue-700"
-                        : "text-blue-500"
-                      : darkMode
-                        ? "text-gray-300 hover:text-gray-100"
-                        : "text-gray-900 hover:text-gray-500"
-                  } `}
-                >
-                  All time
+                  Vue d'ensemble
                 </a>
               </li>
 
@@ -131,12 +166,8 @@ export default function NewPanel({ authorizations, stats }) {
                         nav === statByYear.year ||
                         (navMonth.length !== 0 &&
                           navMonth[0].year === statByYear.year)
-                          ? darkMode
-                            ? "text-blue-700"
-                            : "text-blue-500"
-                          : darkMode
-                            ? "text-gray-300 hover:text-gray-100"
-                            : "text-gray-900 hover:text-gray-500"
+                          ? "text-brand-magenta font-semibold"
+                          : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                       } `}
                     >
                       {statByYear.year}
@@ -147,7 +178,7 @@ export default function NewPanel({ authorizations, stats }) {
             </ul>
 
             {navMonth.length !== 0 ? (
-              <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 dark:border-gray-700">
+              <ul className="font-medium flex flex-row flex-wrap items-center gap-x-5 gap-y-1 mt-2 rounded-lg rtl:space-x-reverse text-sm dark:border-night-700">
                 {navMonth.map((month, index) => {
                   return (
                     <li key={"month_" + month.month}>
@@ -155,12 +186,8 @@ export default function NewPanel({ authorizations, stats }) {
                         onClick={() => setNav(month.month)}
                         className={`block py-2 px-3 md:p-0 rounded cursor-pointer ${
                           nav === month.month
-                            ? darkMode
-                              ? "text-blue-700"
-                              : "text-blue-500"
-                            : darkMode
-                              ? "text-gray-300 hover:text-gray-100"
-                              : "text-gray-900 hover:text-gray-500"
+                            ? "text-brand-magenta font-semibold"
+                            : "text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                         } `}
                       >
                         {getMonthName(month.month.split("-")[1])}
@@ -188,7 +215,7 @@ export async function getServerSideProps({ req }) {
     : null;
   const stats = cookies.jwt ? await fetchAPIAuth("/stats/", cookies.jwt) : null;
 
-  if (!cookies.jwt || !authorizations.data || !authorizations.data.viewUsers) {
+  if (!cookies.jwt || !authorizations.data || !authorizations.data.manageUser) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);
     return {

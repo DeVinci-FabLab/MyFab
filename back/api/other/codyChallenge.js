@@ -121,7 +121,7 @@ async function startApi(app) {
     const data = await require("../../functions/apiActions").prepareData(
       app,
       req,
-      res
+      res,
     );
     data.jwt = req.headers.dvflcookie;
     try {
@@ -129,7 +129,7 @@ async function startApi(app) {
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/codyChallenge/");

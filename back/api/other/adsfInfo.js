@@ -4,7 +4,7 @@ const fs = require("fs");
 module.exports.changeOpenMyFab = changeOpenMyFab;
 async function changeOpenMyFab(data) {
   const resCheckCode = await data.userAuthorization.checkSpecialCode(
-    data.specialcode
+    data.specialcode,
   );
   if (!resCheckCode) {
     return {
@@ -30,13 +30,13 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await changeOpenMyFab(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/setMyFabOpen/");

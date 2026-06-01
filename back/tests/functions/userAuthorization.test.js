@@ -2,7 +2,7 @@ describe("generateCode", () => {
   test("Test one code", async () => {
     const code =
       await require("../../functions/userAuthorization").generateCode(
-        new Date()
+        new Date(),
       );
 
     expect(code != null).toBe(true);
@@ -32,7 +32,7 @@ describe("checkSpecialCode", () => {
   test("Check code now", async () => {
     const code =
       await require("../../functions/userAuthorization").generateCode(
-        new Date()
+        new Date(),
       );
 
     const res =
@@ -56,7 +56,7 @@ describe("checkSpecialCode", () => {
   test("Check bad code", async () => {
     const res =
       await require("../../functions/userAuthorization").checkSpecialCode(
-        "wrongCode"
+        "wrongCode",
       );
 
     expect(res).toBe(false);

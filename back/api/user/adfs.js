@@ -42,7 +42,7 @@ const samlStrategy = !certIsPresent
       },
       function (profile, done) {
         return done(null, profile);
-      }
+      },
     );
 if (certIsPresent) passport.use(samlStrategy);
 /* c8 ignore stop */
@@ -118,7 +118,7 @@ async function postLoginADFS(data) {
     console.log(pendingUsers[data.body.token]); //DELETE THIS
     await fs.writeFileSync(
       __dirname + "/../../data/samlResult.json",
-      JSON.stringify(pendingUsers[data.body.token])
+      JSON.stringify(pendingUsers[data.body.token]),
     ); //DELETE THIS
     return {
       type: "code",
@@ -130,7 +130,7 @@ async function postLoginADFS(data) {
   const dbRes = await data.app.executeQuery(
     data.app.db,
     "SELECT `i_id` AS 'id', `v_title` AS 'title' FROM `users` WHERE `v_email` = ?;",
-    [email]
+    [email],
   );
   // Error with the sql request
   /* c8 ignore start */
@@ -149,7 +149,7 @@ async function postLoginADFS(data) {
     const resInsertNewAccount = await data.app.executeQuery(
       data.app.db,
       "INSERT INTO `users` (`v_firstName`, `v_lastName`, `v_email`, `v_password`, `v_language`, `v_title`, `b_isMicrosoft`, `b_mailValidated`) VALUES (?, ?, ?, ?, ?, ?, 1, 1);",
-      [firstName, lastName, email, sha256(data.body.token), language, title]
+      [firstName, lastName, email, sha256(data.body.token), language, title],
     );
     // Error with the sql request
     /* c8 ignore start */
@@ -164,7 +164,7 @@ async function postLoginADFS(data) {
     const resGetIdUserInserted = await data.app.executeQuery(
       data.app.db,
       "SELECT LAST_INSERT_ID() AS 'id';",
-      []
+      [],
     );
     // Error with the sql request
     /* c8 ignore start */
@@ -183,7 +183,7 @@ async function postLoginADFS(data) {
     const idNewUser = resGetIdUserInserted[1][0].id;
     const cookie = await require("../../functions/apiActions").saveNewCookie(
       data.app,
-      { id: idNewUser, email: email }
+      { id: idNewUser, email: email },
     );
 
     return {
@@ -210,13 +210,13 @@ async function postLoginADFS(data) {
     await data.app.executeQuery(
       data.app.db,
       "UPDATE `users` SET `v_title` = ? WHERE `i_id` = ?;",
-      [title, id]
+      [title, id],
     );
   }
 
   const cookie = await require("../../functions/apiActions").saveNewCookie(
     data.app,
-    { id, email }
+    { id, email },
   );
 
   return {
@@ -239,7 +239,7 @@ async function startApi(app) {
       passport.authenticate("saml", { failureRedirect: "/login/fail" }),
       function (req, res) {
         res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/`);
-      }
+      },
     );
   } else {
     app.get("/api/user/login/adfs/", function (req, res) {
@@ -252,16 +252,16 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       data.myFabOpen = JSON.parse(
-        fs.readFileSync(__dirname + "/../../data/serviceData.json")
+        fs.readFileSync(__dirname + "/../../data/serviceData.json"),
       ).myFabOpen;
       const result = await postLoginADFS(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/user/login/adfs/");
@@ -278,7 +278,7 @@ async function startApi(app) {
       pendingUsers[id] = req.session.passport;
       pendingUsers[id].timestamp = Date.now();
       res.redirect(`${process.env.ADFS_FRONT_URL}/auth/adfs/${id}`);
-    }
+    },
   );
 }
 /* c8 ignore stop */

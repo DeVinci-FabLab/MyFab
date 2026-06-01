@@ -11,7 +11,7 @@ describe("POST /api/clickonlogopaint/", () => {
 
     const response =
       await require("../../../api/other/clickonlogopaint").clickOnLogoPaintPost(
-        data
+        data,
       );
 
     expect(response.code).toBe(200);
@@ -25,7 +25,7 @@ describe("POST /api/clickonlogopaint/", () => {
 
     const response =
       await require("../../../api/other/clickonlogopaint").clickOnLogoPaintPost(
-        data
+        data,
       );
 
     expect(response.code).toBe(401);

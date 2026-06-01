@@ -14,7 +14,7 @@ app.use(
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
+  }),
 );
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
@@ -25,7 +25,7 @@ app.io = io;
 app.use(
   bodyParser.urlencoded({
     extended: true,
-  })
+  }),
 );
 app.use(bodyParser.json());
 app.use(
@@ -34,7 +34,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true, maxAge: 1000 * 60 * 60 },
-  })
+  }),
 );
 app.use(express.static("public"));
 app.use(
@@ -42,7 +42,7 @@ app.use(
     createParentPath: true,
     useTempFiles: true,
     tempFileDir: path.join(__dirname, "tmp"),
-  })
+  }),
 );
 app.use(
   expressHeader([
@@ -63,7 +63,7 @@ app.use(
       value:
         "Origin, Content-Type, X-Auth-Token, dvflCookie, Authorization, specialCode",
     },
-  ])
+  ]),
 );
 
 if (process.env.SHOWSWAGGER === "true") {
@@ -109,7 +109,7 @@ async function start() {
   console.log("Server is now listening port " + port);
   if (process.env.SHOWSWAGGER === "true")
     console.log(
-      "Swagger documentation available here : " + process.env.API + "/api-docs"
+      "Swagger documentation available here : " + process.env.API + "/api-docs",
     );
 
   fs.readdirSync(__dirname + "/functions/cron/").forEach(async (file) => {

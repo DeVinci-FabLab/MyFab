@@ -106,17 +106,9 @@ export default function NewPanel({ ticket, file, authorizations }) {
           <main className="col-span-9">
             <div className="container px-4 mx-auto">
               <div className="flex flex-wrap -mx-4">
-                <div
-                  className={`shadow overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 ${
-                    darkMode ? "bg-gray-800" : "bg-white"
-                  }`}
-                >
+                <div className="overflow-hidden sm:rounded-lg w-full lg:w-2/3 px-4 border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
                   <div className="px-4 py-5 sm:px-6">
-                    <h3
-                      className={`text-lg leading-6 font-medium ${
-                        darkMode ? "text-gray-200" : "text-gray-900"
-                      }`}
-                    >
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
                       La demande {"#" + setZero(ticket.id)} à été créé
                     </h3>
                     {user.specialFont ? (
@@ -127,17 +119,13 @@ export default function NewPanel({ ticket, file, authorizations }) {
                       ""
                     )}
                   </div>
-                  <div
-                    className={`border-t px-4 py-5 sm:p-0 ${
-                      darkMode ? "border-gray-600" : "border-gray-200"
-                    }`}
-                  >
-                    <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
+                  <div className="border-t px-4 py-5 sm:p-0 border-gray-200 dark:border-night-800">
+                    <p className="p-5 text-gray-700 dark:text-gray-200">
                       Les membres du DeVinci FabLab traiterons la demande le dès
                       que possible. Vous pouvez suivre l'avancée de la demande
                       sur cette plateforme.
                     </p>
-                    <p className={`p-5 ${darkMode ? "text-gray-200" : ""}`}>
+                    <p className="p-5 text-gray-700 dark:text-gray-200">
                       Vous pouvez rajouter des notes sur les fichiers stl pour
                       par exemple demander plusieurs impression pour un même
                       fichier, une couleur d'impression spécifique, ...
@@ -146,12 +134,12 @@ export default function NewPanel({ ticket, file, authorizations }) {
                       <Link href={ticketLink}>
                         <button
                           type="button"
-                          className={`continue-button order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                          className="continue-button order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:order-1 sm:ml-3"
                         >
                           <p>Continuer</p>
                           {user.specialFont ? (
                             <p
-                              className={`${user.specialFont} small text-violet-200`}
+                              className={`${user.specialFont} small text-white/80`}
                             >
                               Continuer
                             </p>
@@ -167,24 +155,14 @@ export default function NewPanel({ ticket, file, authorizations }) {
                         return (
                           <div
                             key={`file-${index}`}
-                            className={`col-span-6 mt-5 bg-opacity-50 border rounded shadow-lg cursor-pointer backdrop-blur-20 to-gray-50 md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3 ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-600"
-                                : "border-gray-100"
-                            }`}
+                            className="col-span-6 mt-5 border rounded-md cursor-pointer md:col-span-3 lg:col-span-2 pl-3 pr-4 py-3 border-gray-200 dark:border-night-700 bg-gray-50 dark:bg-night-800"
                           >
                             <div className="w-0 flex-1 flex items-center">
                               <CubeIcon
-                                className={`flex-shrink-0 h-5 w-5 ${
-                                  darkMode ? "text-gray-200" : "text-gray-400"
-                                }`}
+                                className="flex-shrink-0 h-5 w-5 text-gray-400 dark:text-gray-200"
                                 aria-hidden="true"
                               />
-                              <span
-                                className={`ml-2 flex-1 ${
-                                  darkMode ? "text-gray-100" : ""
-                                }`}
-                              >
+                              <span className="ml-2 flex-1 text-gray-900 dark:text-gray-100">
                                 {r.filename}
                               </span>
                             </div>
@@ -197,12 +175,12 @@ export default function NewPanel({ ticket, file, authorizations }) {
                                   getUrlSTL(r.id);
                                   setOpen(true);
                                 }}
-                                className={`file-button order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 sm:order-1 sm:ml-3`}
+                                className="file-button order-0 items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:order-1 sm:ml-3"
                               >
                                 <p>Mettre un commentaire</p>
                                 {user.specialFont ? (
                                   <p
-                                    className={`${user.specialFont} small text-violet-200`}
+                                    className={`${user.specialFont} small text-white/80`}
                                   >
                                     Mettre un commentaire
                                   </p>
@@ -213,11 +191,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                             </div>
                             {r.comment != "" ? (
                               <div className="pl-3 pr-4 flex mb-3 items-center justify-between text-sm mt-2">
-                                <p
-                                  className={`text-ellipsis overflow-hidden ${
-                                    darkMode ? "text-gray-100" : ""
-                                  }`}
-                                >
+                                <p className="text-ellipsis overflow-hidden text-gray-700 dark:text-gray-100">
                                   <span className="font-medium">
                                     Commentaire{" "}
                                   </span>
@@ -235,17 +209,9 @@ export default function NewPanel({ ticket, file, authorizations }) {
                 </div>
 
                 <div className="w-full lg:w-1/3 px-4 space-y-4">
-                  <div
-                    className={`shadow overflow-hidden sm:rounded-lg ${
-                      darkMode ? "bg-gray-800" : "bg-white"
-                    }`}
-                  >
+                  <div className="overflow-hidden sm:rounded-lg border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
                     <div className="px-4 py-5 sm:px-6">
-                      <h3
-                        className={`text-lg leading-6 font-medium ${
-                          darkMode ? "text-white" : "text-gray-900"
-                        }`}
-                      >
+                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                         Détails de la demande d'impression
                       </h3>
                       {user.specialFont ? (
@@ -257,30 +223,14 @@ export default function NewPanel({ ticket, file, authorizations }) {
                       ) : (
                         ""
                       )}
-                      <p
-                        className={`mt-1 max-w-2xl text-sm ${
-                          darkMode ? "text-gray-200" : "text-gray-500"
-                        }`}
-                      >
+                      <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200">
                         Ticket n° {ticket.id}
                       </p>
                     </div>
-                    <div
-                      className={`border-t px-4 py-5 sm:p-0 ${
-                        darkMode ? "border-gray-700" : "border-gray-200"
-                      }`}
-                    >
-                      <dl
-                        className={`sm:divide-y ${
-                          darkMode ? "sm:divide-gray-700" : "sm:divide-gray-200"
-                        }`}
-                      >
+                    <div className="border-t px-4 py-5 sm:p-0 border-gray-200 dark:border-night-800">
+                      <dl className="sm:divide-y sm:divide-gray-200 dark:sm:divide-night-800">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">
                             <p>Utilisateur</p>
                             <p>
                               {user.specialFont ? (
@@ -294,29 +244,17 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               )}
                             </p>
                           </dt>
-                          <dd
-                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
+                          <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between text-gray-900 dark:text-white">
                             <div>
                               {ticket.userName}
-                              <p
-                                className={`mt-1 max-w-2xl text-sm ${
-                                  darkMode ? "text-gray-200" : "text-gray-500"
-                                }`}
-                              >
+                              <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200">
                                 {ticket.title || "Ancien compte"}
                               </p>
                             </div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">
                             <p>Numéro de groupe</p>
                             <p>
                               {user.specialFont ? (
@@ -330,22 +268,14 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               )}
                             </p>
                           </dt>
-                          <dd
-                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
+                          <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between text-gray-900 dark:text-white">
                             {ticket.groupNumber
                               ? ticket.groupNumber
                               : "Ce projet n'est pas en groupe"}
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">
                             <p>Type</p>
                             <p>
                               {user.specialFont ? (
@@ -359,20 +289,12 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               )}
                             </p>
                           </dt>
-                          <dd
-                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
+                          <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between text-gray-900 dark:text-white">
                             <div>{ticket.projectType}</div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">
                             <p>Status</p>
                             <p>
                               {user.specialFont ? (
@@ -386,20 +308,12 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               )}
                             </p>
                           </dt>
-                          <dd
-                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
+                          <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between text-gray-900 dark:text-white">
                             <div>{ticket.statusName}</div>
                           </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                          <dt
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-gray-200" : "text-gray-500"
-                            }`}
-                          >
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-200">
                             <p>Fichiers</p>
                             <p>
                               {user.specialFont ? (
@@ -413,11 +327,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                               )}
                             </p>
                           </dt>
-                          <dd
-                            className={`mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
+                          <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2 flex justify-between text-gray-900 dark:text-white">
                             <div>
                               Ce ticket comporte {file.length} fichier
                               {file.length > 1 ? "s" : ""} :
@@ -425,11 +335,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                                 return (
                                   <p
                                     key={`fileName-${index}`}
-                                    className={`mt-1 max-w-2xl text-sm ${
-                                      darkMode
-                                        ? "text-gray-200"
-                                        : "text-gray-500"
-                                    }`}
+                                    className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200"
                                   >
                                     - {r.filename}
                                   </p>
@@ -474,24 +380,12 @@ export default function NewPanel({ ticket, file, authorizations }) {
               &#8203;
             </span>
 
-            <div
-              className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 ${
-                darkMode ? "bg-gray-600" : "bg-white"
-              }`}
-            >
+            <div className="inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-h-max sm:h-full sm:p-6 border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900">
               <div>
-                <p
-                  className={`text-center font-medium ${
-                    darkMode ? "text-gray-100" : ""
-                  }`}
-                >
+                <p className="text-center font-medium text-gray-900 dark:text-gray-100">
                   Aperçu du fichier STL:
                 </p>
-                <p
-                  className={`text-sm text-center ${
-                    darkMode ? "text-gray-200" : "text-gray-500"
-                  }`}
-                >
+                <p className="text-sm text-center text-gray-500 dark:text-gray-200">
                   {ticketFile.filename}
                 </p>
                 <center>
@@ -514,11 +408,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                   />
 
                   <div>
-                    <p
-                      className={`text-center font-medium ${
-                        darkMode ? "text-gray-100" : ""
-                      }`}
-                    >
+                    <p className="text-center font-medium text-gray-900 dark:text-gray-100">
                       Commentaire:
                     </p>
                     <textarea
@@ -530,11 +420,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
                         ticketFile.comment = e.target.value;
                         setTicketFile(ticketFile);
                       }}
-                      className={`comment-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md ${
-                        darkMode
-                          ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                          : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                      }`}
+                      className="comment-textarea mt-5 max-w-lg shadow-sm block w-full sm:text-sm border rounded-md placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                       defaultValue={ticketFile.comment}
                     />
                   </div>
@@ -543,7 +429,7 @@ export default function NewPanel({ ticket, file, authorizations }) {
               <div className="mt-5 sm:mt-6 justify-center">
                 <button
                   type="button"
-                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  className="close-button inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-magenta text-base font-medium text-white hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta sm:text-sm"
                   onClick={() => {
                     saveFileData();
                   }}

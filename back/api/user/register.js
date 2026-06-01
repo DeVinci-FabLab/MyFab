@@ -6,7 +6,7 @@ const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
     .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     );
 };
 
@@ -75,7 +75,7 @@ async function postRegister(data) {
   const resTestIfAccountExist = await data.app.executeQuery(
     data.app.db,
     queryCheckIfEmailExist,
-    [data.body.email]
+    [data.body.email],
   );
   // Error with the sql request
   /* c8 ignore start */
@@ -106,7 +106,7 @@ async function postRegister(data) {
       data.body.email,
       sha256(data.body.password),
       language,
-    ]
+    ],
   );
   // Error with the sql request
   /* c8 ignore start */
@@ -122,7 +122,7 @@ async function postRegister(data) {
   const resGetIdUserInserted = await data.app.executeQuery(
     data.app.db,
     queryLastInsert,
-    []
+    [],
   );
   // Error with the sql request
   /* c8 ignore start */
@@ -148,7 +148,7 @@ async function postRegister(data) {
     const resTestToken = await data.app.executeQuery(
       data.app.db,
       querySelectToken,
-      [testToken]
+      [testToken],
     );
     /* c8 ignore start */
     if (resTestToken[0]) {
@@ -169,7 +169,7 @@ async function postRegister(data) {
   const resInsertToken = await data.app.executeQuery(
     data.app.db,
     queryInsertToken,
-    [idNewUser, token, sendMail ? "1" : "0"]
+    [idNewUser, token, sendMail ? "1" : "0"],
   );
 
   await data.sendMailFunction({
@@ -204,14 +204,14 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       data.sendMailFunction = sendMailFunction;
       const result = await postRegister(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /user/register/");

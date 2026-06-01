@@ -75,20 +75,15 @@ const date = new Date();
 
 export default function Rules({ userNeedToAccept, darkMode }) {
   return (
-    <div className={`flex h-screen ${darkMode ? "bg-gray-800" : "bg-gray-50"}`}>
+    <div className="flex h-screen bg-gray-50 dark:bg-night-950">
       <div className="max-w-3xl m-auto text-center space-y-3 ">
-        <h1
-          className={`font-semibold leading-6 text-xl ${
-            darkMode ? "text-gray-200" : ""
-          }`}
-        >
+        <p className="font-mono text-xs uppercase tracking-wider text-brand-magenta">
+          // Règlement
+        </p>
+        <h1 className="font-semibold leading-6 text-xl text-gray-900 dark:text-gray-200">
           Avant d'accéder à MyFab, vous devez accepter notre règlement.
         </h1>
-        <p
-          className={`font-light text-md ${
-            darkMode ? "text-gray-200" : "text-gray-500"
-          }`}
-        >
+        <p className="font-light text-md text-gray-500 dark:text-gray-300">
           Les présentes conditions générales d'utilisation (dites « CGU ») ont
           pour objet l'encadrement juridique des modalités de mise à disposition
           du site et des services par le DeVinci FabLab et de définir les
@@ -97,16 +92,12 @@ export default function Rules({ userNeedToAccept, darkMode }) {
           vous souhaitez faire valoir vos droits.
         </p>
 
-        <div
-          className={`prose max-w-4xl overflow-y-auto max-h-96 mx-5 p-5 shadow-sm block w-full ring-indigo-500 border-indigo-500 sm:text-sm border rounded-md text-left text-justify ${
-            darkMode ? "text-gray-200 bg-gray-700" : ""
-          }`}
-        >
+        <div className="prose max-w-4xl overflow-y-auto max-h-96 mx-5 p-5 shadow-sm block w-full sm:text-sm border rounded-md text-left text-justify border-gray-200 dark:border-night-800 bg-white dark:bg-night-900 text-gray-700 dark:text-gray-200">
           <RulesText darkMode={darkMode} />
         </div>
         {userNeedToAccept ? (
           <div>
-            <p className={`pb-4 ${darkMode ? "text-gray-200" : ""}`}>
+            <p className="pb-4 text-gray-700 dark:text-gray-300">
               L'acceptation des règles a une validité jusqu'au 31 août{" "}
               {date.getMonth() >= 8
                 ? date.getFullYear() + 1
@@ -115,7 +106,7 @@ export default function Rules({ userNeedToAccept, darkMode }) {
             </p>
             <button
               type="button"
-              className="accept-button inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="accept-button inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
               onClick={() => {
                 validateRules();
               }}
@@ -126,7 +117,7 @@ export default function Rules({ userNeedToAccept, darkMode }) {
         ) : (
           <a
             href="/"
-            className="back-button inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="back-button inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
           >
             Retour
           </a>

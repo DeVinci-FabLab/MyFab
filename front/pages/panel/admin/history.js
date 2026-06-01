@@ -129,22 +129,17 @@ export default function OverviewAdmin({ authorizations }) {
                 <div className="flex flex-wrap -mx-4">
                   {/* Tickets à traiter */}
                   <div className="w-full md:px-6 mt-5 mb-8 lg:mb-0">
-                    <div
-                      className={`flex flex-col rounded shadow-sm overflow-hidden ${
-                        darkMode ? "bg-gray-800" : "bg-white"
-                      }`}
-                    >
+                    <div className="flex flex-col rounded-md overflow-hidden border border-gray-200 dark:border-night-800 bg-white dark:bg-night-900 p-3">
+                      <p className="font-mono text-xs uppercase tracking-wider text-brand-blue mb-2">
+                        // Historique des demandes
+                      </p>
                       <div className="mb-3 grow">
                         <div className="space-x-2">
                           <form
                             onSubmit={handleSubmit}
                             className="relative grow"
                           >
-                            <div
-                              className={`absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l ${
-                                darkMode ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
+                            <div className="absolute inset-y-0 left-0 w-10 my-px ml-px flex items-center justify-center pointer-events-none rounded-l text-gray-500 dark:text-gray-400">
                               <svg
                                 className="hi-solid hi-search inline-block w-5 h-5"
                                 fill="currentColor"
@@ -163,17 +158,13 @@ export default function OverviewAdmin({ authorizations }) {
                                 onChange={(e) => {
                                   setInputValue(e.target.value);
                                 }}
-                                className={`filterInput block border pr-3 py-2 leading-6 w-full rounded focus:ring focus:ring-opacity-50 pl-10 mr-2 ${
-                                  darkMode
-                                    ? "placeholder-gray-300 bg-gray-700 border-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                    : "placeholder-gray-400 border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
-                                }`}
+                                className="filterInput block border pr-3 py-2 leading-6 w-full rounded-md focus:ring focus:ring-opacity-50 pl-10 mr-2 placeholder-gray-400 dark:placeholder-gray-500 border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-900 dark:text-gray-200 focus:border-brand-magenta focus:ring-brand-magenta"
                                 type="text"
                                 placeholder="Rechercher un ticket"
                               />
                               <button
                                 type="submit"
-                                className="w-2/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                className="w-2/12 bg-brand-magenta hover:bg-brand-magenta-dark text-white font-semibold py-2 px-4 rounded-md"
                                 onClick={() => update(true)}
                               >
                                 Rechercher

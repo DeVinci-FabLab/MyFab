@@ -80,7 +80,7 @@ async function getStats(data) {
   const authViewResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "viewUsers"
+    "manageUser",
   );
   if (!authViewResult) {
     return {
@@ -101,7 +101,7 @@ async function getStats(data) {
           CASE WHEN b_darkMode = true 
               THEN 1 ELSE 0 END
         ) AS dark_mode_users 
-      FROM users;`
+      FROM users;`,
   );
 
   // Get total users BY schools
@@ -113,7 +113,7 @@ async function getStats(data) {
         COUNT(DISTINCT u.i_id) AS 'count_user'
       FROM users AS u
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
-      GROUP BY u.i_idschool`
+      GROUP BY u.i_idschool`,
   );
 
   // Get total users BY schools AND years
@@ -126,7 +126,7 @@ async function getStats(data) {
         COUNT(DISTINCT u.i_id) AS 'count_user'
       FROM users AS u 
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
-      GROUP BY u.i_idschool, 2;`
+      GROUP BY u.i_idschool, 2;`,
   );
 
   // Get stats tickets (ALL TIME)
@@ -146,7 +146,7 @@ async function getStats(data) {
         COUNT(DISTINCT i_id) AS 'count_ticket',
         COUNT(DISTINCT i_idUser) AS 'count_user',
         SUM(count_file) AS count_file
-      FROM (${queryStatsTicket}) AS stats`
+      FROM (${queryStatsTicket}) AS stats`,
   );
 
   // Get stats tickets (BY years)
@@ -169,7 +169,7 @@ async function getStats(data) {
         SUM(count_file) AS count_file
       FROM (${queryStatsTicket}) AS stats
       GROUP BY 1
-      ORDER BY 1`
+      ORDER BY 1`,
   );
 
   // Get stats tickets (BY months)
@@ -193,7 +193,7 @@ async function getStats(data) {
         SUM(count_file) AS count_file
       FROM (${queryStatsTicket}) AS stats
       GROUP BY 1
-      ORDER BY 1`
+      ORDER BY 1`,
   );
 
   // Get stats tickets (BY weeks)
@@ -218,7 +218,7 @@ async function getStats(data) {
         SUM(count_file) AS count_file
       FROM (${queryStatsTicket}) AS stats
       GROUP BY 1
-      ORDER BY 2,1`
+      ORDER BY 2,1`,
   );
 
   // Get status from tickets (ALL TIME)
@@ -237,7 +237,7 @@ async function getStats(data) {
             s.v_color AS color
           FROM printstickets AS p
           INNER JOIN gd_status AS s ON p.i_status = s.i_id)
-        AS s GROUP BY s.id;`
+        AS s GROUP BY s.id;`,
   );
 
   // Get status from tickets (BY years)
@@ -257,7 +257,7 @@ async function getStats(data) {
             s.v_color AS color
           FROM printstickets AS p
           INNER JOIN gd_status AS s ON p.i_status = s.i_id)
-        AS s GROUP BY 1, s.id;`
+        AS s GROUP BY 1, s.id;`,
   );
 
   // Get status from tickets (BY months)
@@ -278,7 +278,7 @@ async function getStats(data) {
             s.v_color AS color
           FROM printstickets AS p
           INNER JOIN gd_status AS s ON p.i_status = s.i_id)
-        AS s GROUP BY 1, s.id;`
+        AS s GROUP BY 1, s.id;`,
   );
 
   // Get status from tickets (BY weeks)
@@ -300,7 +300,7 @@ async function getStats(data) {
             s.v_color AS color
           FROM printstickets AS p
           INNER JOIN gd_status AS s ON p.i_status = s.i_id)
-        AS s GROUP BY 1, s.id;`
+        AS s GROUP BY 1, s.id;`,
   );
 
   // Get stats tickets for SCHOOL (ALL TIME)
@@ -314,7 +314,7 @@ async function getStats(data) {
       FROM printstickets AS p
       INNER JOIN users AS u ON p.i_idUser = u.i_id
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
-      GROUP BY u.i_idschool;`
+      GROUP BY u.i_idschool;`,
   );
 
   // Get stats tickets for SCHOOL (BY years)
@@ -329,7 +329,7 @@ async function getStats(data) {
       FROM printstickets AS p
       INNER JOIN users AS u ON p.i_idUser = u.i_id
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
-      GROUP BY 1, u.i_idschool;`
+      GROUP BY 1, u.i_idschool;`,
   );
 
   // Get stats tickets for SCHOOL (BY months)
@@ -345,7 +345,7 @@ async function getStats(data) {
       FROM printstickets AS p
       INNER JOIN users AS u ON p.i_idUser = u.i_id
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
-      GROUP BY 1, u.i_idschool;`
+      GROUP BY 1, u.i_idschool;`,
   );
 
   // Get stats tickets for SCHOOL (BY weeks)
@@ -362,7 +362,114 @@ async function getStats(data) {
       FROM printstickets AS p
       INNER JOIN users AS u ON p.i_idUser = u.i_id
       INNER JOIN gd_school AS s ON u.i_idschool = s.i_id
-      GROUP BY 1, u.i_idschool;`
+      GROUP BY 1, u.i_idschool;`,
+  );
+
+  // Répartition des demandes par matériau (all time)
+  result.ticketStatsByMaterial = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT pm.v_name AS name, COUNT(*) AS count
+      FROM printstickets AS pt
+      INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+      GROUP BY pt.i_material
+      ORDER BY count DESC;`,
+  );
+
+  // Répartition des demandes par type de projet (all time)
+  result.ticketStatsByProjectType = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT tpt.v_name AS name, COUNT(*) AS count
+      FROM printstickets AS pt
+      INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+      GROUP BY pt.i_projecttype
+      ORDER BY count DESC;`,
+  );
+
+  // Top groupes par nombre de demandes (all time)
+  result.topGroups = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT pt.i_groupNumber AS groupNumber, COUNT(*) AS count
+      FROM printstickets AS pt
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+        AND pt.i_groupNumber IS NOT NULL AND pt.i_groupNumber != ''
+      GROUP BY pt.i_groupNumber
+      ORDER BY count DESC
+      LIMIT 8;`,
+  );
+
+  // Expression "année universitaire" (bascule en septembre, comme ailleurs)
+  const academicYear = `CONCAT(DATE_FORMAT(DATE_ADD(DATE_ADD(pt.dt_creationdate, INTERVAL -1 YEAR), INTERVAL 4 MONTH), '%Y'), '-', DATE_FORMAT(DATE_ADD(pt.dt_creationdate, INTERVAL 4 MONTH), '%Y'))`;
+
+  // Répartition matériau détaillée (par mois + année) — agrégée côté front selon la période
+  result.statsByMaterialDetailed = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT DATE_FORMAT(pt.dt_creationdate,'%Y-%m') AS month,
+        ${academicYear} AS year,
+        pm.v_name AS name,
+        COUNT(*) AS count
+      FROM printstickets AS pt
+      INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+      GROUP BY 1, 3;`,
+  );
+
+  // Répartition type de projet détaillée (par mois + année)
+  result.statsByTypeDetailed = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT DATE_FORMAT(pt.dt_creationdate,'%Y-%m') AS month,
+        ${academicYear} AS year,
+        tpt.v_name AS name,
+        COUNT(*) AS count
+      FROM printstickets AS pt
+      INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+      GROUP BY 1, 3;`,
+  );
+
+  // Top groupes détaillé (par mois + année)
+  result.statsByGroupDetailed = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT DATE_FORMAT(pt.dt_creationdate,'%Y-%m') AS month,
+        ${academicYear} AS year,
+        pt.i_groupNumber AS name,
+        COUNT(*) AS count
+      FROM printstickets AS pt
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+        AND pt.i_groupNumber IS NOT NULL AND pt.i_groupNumber != ''
+      GROUP BY 1, 3;`,
+  );
+
+  // KPI globaux : total / fermés / ouverts (taux de traitement, en attente)
+  result.ticketKpis = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN st.b_isOpen = 0 THEN 1 ELSE 0 END) AS closed,
+        SUM(CASE WHEN st.b_isOpen = 1 THEN 1 ELSE 0 END) AS open
+      FROM printstickets AS pt
+      LEFT JOIN gd_status AS st ON pt.i_status = st.i_id
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted;`,
+  );
+
+  // Jour de la semaine le plus chargé (1 = Dimanche ... 7 = Samedi)
+  result.busiestWeekday = await runQuerryStats(
+    data.app.db,
+    data.app.executeQuery,
+    `SELECT DAYOFWEEK(pt.dt_creationdate) AS weekday, COUNT(*) AS count
+      FROM printstickets AS pt
+      WHERE pt.i_status != 7 AND NOT pt.b_isDeleted
+      GROUP BY 1
+      ORDER BY count DESC
+      LIMIT 1;`,
   );
 
   return {
@@ -420,7 +527,7 @@ async function getStatsPrintCsv(data) {
   const authChangeRoleResult = await data.userAuthorization.validateUserAuth(
     data.app,
     userIdAgent,
-    "changeUserRole"
+    "manageUser",
   );
   if (!authChangeRoleResult) {
     return {
@@ -437,15 +544,17 @@ async function getStatsPrintCsv(data) {
     data.app.executeQuery,
     `SELECT
         p.i_id AS 'id',
+        CONCAT(u.v_firstName, ' ', u.v_lastName) AS 'demandeur',
         p.i_groupNumber AS 'groupNumber',
         p.dt_creationdate AS 'creationDate',
         stats.dt_enddate AS 'enddate',
         tpt.v_name AS projectType,
         s.v_name AS status
       FROM printstickets AS p
+      INNER JOIN users AS u ON p.i_idUser = u.i_id
       INNER JOIN gd_ticketprojecttype AS tpt ON p.i_projecttype = tpt.i_id
       INNER JOIN gd_status AS s ON p.i_status = s.i_id
-      INNER JOIN (${queryStatsTicket}) AS stats ON p.i_id = stats.i_id`
+      INNER JOIN (${queryStatsTicket}) AS stats ON p.i_id = stats.i_id`,
   );
 
   const formatDate = (date) => {
@@ -478,6 +587,108 @@ async function getStatsPrintCsv(data) {
   };
 }
 
+module.exports.getStatsReportCsv = getStatsReportCsv;
+async function getStatsReportCsv(data) {
+  const userIdAgent = data.userId;
+  if (!userIdAgent) {
+    return { type: "code", code: 401 };
+  }
+  const auth = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "manageUser",
+  );
+  if (!auth) {
+    return { type: "code", code: 403 };
+  }
+
+  const period =
+    data.query && data.query.period ? String(data.query.period) : "all";
+  const isMonth = /^\d{4}-\d{2}$/.test(period);
+  const isYear = /^\d{4}-\d{4}$/.test(period);
+
+  const academicYear = `CONCAT(DATE_FORMAT(DATE_ADD(DATE_ADD(pt.dt_creationdate, INTERVAL -1 YEAR), INTERVAL 4 MONTH), '%Y'), '-', DATE_FORMAT(DATE_ADD(pt.dt_creationdate, INTERVAL 4 MONTH), '%Y'))`;
+  const baseWhere = `WHERE pt.i_status != 7 AND NOT pt.b_isDeleted`;
+
+  const runDetailed = (selectName, join) =>
+    runQuerryStats(
+      data.app.db,
+      data.app.executeQuery,
+      `SELECT DATE_FORMAT(pt.dt_creationdate,'%Y-%m') AS month,
+          ${academicYear} AS year,
+          ${selectName} AS name,
+          COUNT(*) AS count
+        FROM printstickets AS pt
+        ${join}
+        ${baseWhere}
+        GROUP BY 1, 3;`,
+    );
+
+  const matRows = await runDetailed(
+    "pm.v_name",
+    "INNER JOIN gd_printmaterial AS pm ON pt.i_material = pm.i_id",
+  );
+  const typeRows = await runDetailed(
+    "tpt.v_name",
+    "INNER JOIN gd_ticketprojecttype AS tpt ON pt.i_projecttype = tpt.i_id",
+  );
+  const grpRows = await runDetailed("pt.i_groupNumber", "");
+
+  const filterByPeriod = (rows) => {
+    if (isMonth) return rows.filter((r) => r.month === period);
+    if (isYear) return rows.filter((r) => r.year === period);
+    return rows;
+  };
+  const aggregate = (rows) => {
+    const map = {};
+    for (const r of filterByPeriod(rows)) {
+      if (r.name === null || r.name === undefined || r.name === "") continue;
+      map[r.name] = (map[r.name] || 0) + Number(r.count);
+    }
+    return Object.entries(map)
+      .map(([valeur, nombre]) => ({ valeur, nombre }))
+      .sort((a, b) => b.nombre - a.nombre);
+  };
+
+  const out = [];
+  const total = aggregate(matRows).reduce((s, x) => s + x.nombre, 0);
+  out.push({ categorie: "total", valeur: "demandes", nombre: total });
+  // Par mois (sauf si une période "mois" précise est demandée)
+  if (!isMonth) {
+    const monthRows = filterByPeriod(matRows).reduce((acc, r) => {
+      acc[r.month] = (acc[r.month] || 0) + Number(r.count);
+      return acc;
+    }, {});
+    Object.keys(monthRows)
+      .sort()
+      .forEach((m) =>
+        out.push({ categorie: "mois", valeur: m, nombre: monthRows[m] }),
+      );
+  }
+  aggregate(matRows).forEach((x) =>
+    out.push({ categorie: "materiau", valeur: x.valeur, nombre: x.nombre }),
+  );
+  aggregate(typeRows).forEach((x) =>
+    out.push({ categorie: "type", valeur: x.valeur, nombre: x.nombre }),
+  );
+  aggregate(grpRows).forEach((x) =>
+    out.push({ categorie: "groupe", valeur: x.valeur, nombre: x.nombre }),
+  );
+
+  const csv =
+    out.length > 1 ? csvConverter.json2csv(out) : "categorie,valeur,nombre";
+  const fileName = `report_${makeid(20)}.csv`;
+  const filePath = __dirname + "/../tmp/" + fileName;
+  fs.writeFileSync(filePath, "﻿" + csv);
+
+  return {
+    type: "download",
+    code: 200,
+    path: filePath,
+    fileName: `myfab_stats_${period}.csv`,
+  };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
@@ -486,7 +697,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getStats(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -502,12 +713,28 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getStatsPrintCsv(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
     } catch (error) {
       console.log("ERROR: GET /api/stats/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/api/stats/report/csv", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await getStatsReportCsv(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: GET /api/stats/report/csv");
       console.log(error);
       res.sendStatus(500);
     }

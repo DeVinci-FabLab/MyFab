@@ -264,7 +264,7 @@ async function getMaterial(data) {
 module.exports.getMyFabOpen = getMyFabOpen;
 async function getMyFabOpen(data) {
   const myFabOpen = JSON.parse(
-    fs.readFileSync(__dirname + "/../data/serviceData.json")
+    fs.readFileSync(__dirname + "/../data/serviceData.json"),
   ).myFabOpen;
   return {
     type: "json",
@@ -298,6 +298,42 @@ async function getVersion(data) {
   };
 }
 
+/**
+ * @swagger
+ * /priority/:
+ *   get:
+ *     summary: Get the list of ticket priorities.
+ *     tags: [GlobalData]
+ *     responses:
+ *       "200":
+ *         description: "Get the list of ticket priorities."
+ */
+
+module.exports.getPriority = getPriority;
+async function getPriority(data) {
+  const query = `SELECT i_id AS id,
+            v_name AS name,
+            v_color AS color
+            FROM gd_ticketpriority`;
+
+  const dbRes = await data.app.executeQuery(data.app.db, query, []);
+  /* c8 ignore start */
+  if (dbRes[0]) {
+    console.log(dbRes[0]);
+    return {
+      type: "code",
+      code: 500,
+    };
+  }
+  /* c8 ignore stop */
+
+  return {
+    type: "json",
+    code: 200,
+    json: dbRes[1],
+  };
+}
+
 /* c8 ignore start */
 module.exports.startApi = startApi;
 async function startApi(app) {
@@ -306,7 +342,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getStatus(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -322,7 +358,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getProjectType(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -338,7 +374,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getPrinter(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -354,7 +390,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getSchool(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -370,7 +406,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getMaterial(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -381,12 +417,28 @@ async function startApi(app) {
     }
   });
 
+  app.get("/api/priority/", async function (req, res) {
+    try {
+      const data = await require("../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
+      const result = await getPriority(data);
+      await require("../functions/apiActions").sendResponse(req, res, result);
+    } catch (error) {
+      console.log("ERROR: GET /api/priority/");
+      console.log(error);
+      res.sendStatus(500);
+    }
+  });
+
   app.get("/api/version/", async function (req, res) {
     try {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getVersion(data);
       await require("../functions/apiActions").sendResponse(req, res, result);
@@ -402,7 +454,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getMyFabOpen(data);
       await require("../functions/apiActions").sendResponse(req, res, result);

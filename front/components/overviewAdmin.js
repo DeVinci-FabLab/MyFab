@@ -11,7 +11,7 @@ const faqs = [
   {
     question: "Comment fonctionnent le système de priorité ?",
     answer:
-      "Le système de priorité fonctionne automatiquement et il n'est pas possible de modifier une priorité manuellement. Ce sont des indicateurs de temps, 'normal' signifie que la demande a été créé il y a moins d'une semaine, 'A traiter' plus d'une semaine et 'Urgent' plus de deux semaines.",
+      "Le système de priorité fonctionne automatiquement : ce sont des indicateurs de temps, 'Normal' signifie que la demande a été créée il y a moins d'une semaine, 'A traiter' plus d'une semaine et 'Urgent' plus de deux semaines. Un agent peut toutefois marquer une demande 'Ne pas traiter' (depuis la fiche du ticket) pour la mettre de côté : elle n'est alors plus remontée automatiquement.",
   },
   {
     question: "Quelles sont étapes pour réaliser une demande ?",
@@ -33,6 +33,7 @@ export default function OverviewAdmin({
   nextPrevPage,
   collumnState,
   changeCollumnState,
+  statuses,
   darkMode,
 }) {
   return (
@@ -50,21 +51,18 @@ export default function OverviewAdmin({
                 isDone={true}
                 collumnState={collumnState}
                 changeCollumnState={changeCollumnState}
+                statuses={statuses}
                 darkMode={darkMode}
               />
             ) : (
-              <div
-                className={`p-4 md:p-5 rounded flex justify-between ${darkMode ? "text-gray-200 bg-gray-700" : "text-gray-700 bg-gray-100"}`}
-              >
+              <div className="p-4 md:p-5 rounded-md flex justify-between border border-gray-200 dark:border-night-800 text-gray-700 dark:text-gray-200 bg-white dark:bg-night-900">
                 <p>
                   Il n'y a aucun ticket à traiter. Vous pouvez accéder à
                   l'historique des tickets déjà traités en cliquant sur le
                   bouton suivant.
                 </p>
                 <Link href="/panel/admin/history">
-                  <p
-                    className={`inline-flex items-center space-x-1 font-semibold ml-2 ${darkMode ? "text-indigo-500 hover:text-indigo-300" : "text-indigo-600 hover:text-indigo-400"}`}
-                  >
+                  <p className="inline-flex items-center space-x-1 font-semibold ml-2 text-brand-magenta hover:text-brand-magenta-dark">
                     <span>Accéder à l'historique</span>
                     <svg
                       className="hi-solid hi-arrow-right inline-block w-4 h-4"

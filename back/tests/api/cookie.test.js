@@ -10,7 +10,7 @@ describe("GET /api/cookie/", () => {
       app: {},
     };
     const response = await require("../../api/cookie.js").cookieTestSpecialCode(
-      data
+      data,
     );
 
     expect(response.code).toBe(200);
@@ -28,7 +28,7 @@ describe("GET /api/cookie/", () => {
       app: {},
     };
     const response = await require("../../api/cookie.js").cookieTestSpecialCode(
-      data
+      data,
     );
 
     expect(response.code).toBe(404);

@@ -17,7 +17,7 @@ describe("GET /api/user/authorization/", () => {
       app: {},
     };
     const response = await require("../../../api/user/authorisation").getAuth(
-      data
+      data,
     );
 
     expect(response.code).toBe(200);
@@ -31,7 +31,7 @@ describe("GET /api/user/authorization/", () => {
     const data = {};
 
     const response = await require("../../../api/user/authorisation").getAuth(
-      data
+      data,
     );
 
     expect(response.code).toBe(401);

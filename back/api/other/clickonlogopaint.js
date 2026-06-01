@@ -34,7 +34,7 @@ async function clickOnLogoPaintPost(data) {
   const resUpdateRickRoll = await data.app.executeQuery(
     data.app.db,
     queryUpdateRickRoll,
-    [userIdAgent]
+    [userIdAgent],
   );
   /* c8 ignore start */
   if (resUpdateRickRoll[0]) {
@@ -59,14 +59,14 @@ async function startApi(app) {
     const data = await require("../../functions/apiActions").prepareData(
       app,
       req,
-      res
+      res,
     );
     try {
       const result = await clickOnLogoPaintPost(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: POST /api/clickonlogopaint/");

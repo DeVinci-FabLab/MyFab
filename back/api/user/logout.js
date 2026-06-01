@@ -51,14 +51,14 @@ async function startApi(app) {
       const data = await require("../../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       data.dvflcookie = req.headers.dvflcookie;
       const result = await deleteLogout(data);
       await require("../../functions/apiActions").sendResponse(
         req,
         res,
-        result
+        result,
       );
     } catch (error) {
       console.log("ERROR: DELETE /api/user/logout/");

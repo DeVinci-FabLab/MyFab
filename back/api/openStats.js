@@ -52,7 +52,7 @@ async function startApi(app) {
       const data = await require("../functions/apiActions").prepareData(
         app,
         req,
-        res
+        res,
       );
       const result = await getStats(data);
       await require("../functions/apiActions").sendResponse(req, res, result);

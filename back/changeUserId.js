@@ -11,14 +11,18 @@ const red = "\x1b[31m";
 
 // Imprimer en rouge
 console.log(
-  red + "⚠️  WARNING This script should be used with caution WARNING ⚠️" + reset
+  red +
+    "⚠️  WARNING This script should be used with caution WARNING ⚠️" +
+    reset,
 );
 console.log("This script can be used to change user ids in the database.");
 console.log(
-  "If the database ids are not correct, data can be modified and alter MyFab's operation."
+  "If the database ids are not correct, data can be modified and alter MyFab's operation.",
 );
 console.log(
-  red + "⚠️  WARNING This script should be used with caution WARNING ⚠️" + reset
+  red +
+    "⚠️  WARNING This script should be used with caution WARNING ⚠️" +
+    reset,
 );
 
 const swapUserId = "(SELECT i_id FROM `users` WHERE v_email = 'deleteme')";
