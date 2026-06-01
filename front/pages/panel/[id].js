@@ -343,34 +343,6 @@ const GestionTicket = ({
     }
   }
 
-  async function saveNote() {
-    const cookie = getCookie("jwt");
-    const response = await fetchAPIAuth({
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        dvflCookie: cookie,
-      },
-      url: getApi() + "/api/ticket/" + params.id + "/note",
-      data: { note: agentNote },
-    });
-    if (!response.error) {
-      setNoteSaved(true);
-      setTimeout(() => setNoteSaved(false), 2000);
-    } else {
-      toast.error("Erreur lors de la sauvegarde de la note.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  }
-
   return (
     <LayoutPanel
       authorizations={authorizations}
@@ -1065,39 +1037,6 @@ const GestionTicket = ({
                               <button
                                 onClick={saveNote}
                                 className="save-note-button mt-2 inline-flex justify-center py-1 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
-                              >
-                                {noteSaved ? "✓ Sauvegardé" : "Sauvegarder"}
-                              </button>
-                            </dd>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                        {authorizations.myFabAgent ? (
-                          <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt
-                              className={`text-sm font-medium ${
-                                darkMode ? "text-gray-200" : "text-gray-500"
-                              }`}
-                            >
-                              <p>Notes internes</p>
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              <textarea
-                                rows={4}
-                                maxLength="1000"
-                                onChange={(e) => setAgentNote(e.target.value)}
-                                defaultValue={ticket.agentNote || ""}
-                                className={`shadow-sm block w-full sm:text-sm border rounded-md ${
-                                  darkMode
-                                    ? "border-gray-500 bg-gray-600 text-gray-200 focus:border-indigo-700 focus:ring-indigo-700"
-                                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                }`}
-                                placeholder="Notes visibles uniquement par les agents..."
-                              />
-                              <button
-                                onClick={saveNote}
-                                className="mt-2 inline-flex justify-center py-1 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
                               >
                                 {noteSaved ? "✓ Sauvegardé" : "Sauvegarder"}
                               </button>
