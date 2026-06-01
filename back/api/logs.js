@@ -47,8 +47,9 @@ async function getLogs(data) {
   }
 
   if (data.query === undefined) data.query = {};
-  const page =
+  let page =
     data.query.page && !isNaN(data.query.page) ? parseInt(data.query.page) : 0;
+  if (page < 0) page = 0;
 
   const subQueries = {
     ticket: `SELECT lt.dt_timeStamp AS dt, 'ticket' AS category,

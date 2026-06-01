@@ -191,6 +191,8 @@ const GestionTicket = ({
       link.setAttribute("download", name); //or any other extension
       document.body.appendChild(link);
       link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     });
   }
 

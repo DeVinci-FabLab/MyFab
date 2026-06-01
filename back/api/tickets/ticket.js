@@ -120,7 +120,8 @@ async function getTicketAllFromUser(data) {
     };
   }
 
-  const page = data.query && data.query.page ? data.query.page : 0;
+  let page = data.query && data.query.page ? parseInt(data.query.page, 10) : 0;
+  if (isNaN(page) || page < 0) page = 0;
   const query = `SELECT pt.i_id AS 'id',
             CONCAT(u.v_firstName, (CASE WHEN u.v_lastName != "" THEN CONCAT(' ', LEFT(u.v_lastName, 1), '.') ELSE "" END)) AS 'userName',
             tpt.v_name AS 'projectType',
@@ -265,7 +266,8 @@ async function getTicketAll(data) {
   }
   if (data.query === undefined) data.query = {};
   const inputText = data.query.inputValue ? data.query.inputValue : "";
-  const page = data.query.page ? data.query.page : 0;
+  let page = data.query.page ? parseInt(data.query.page, 10) : 0;
+  if (isNaN(page) || page < 0) page = 0;
   const selectOpenOnlyString = data.query.selectOpenOnly
     ? data.query.selectOpenOnly
     : "false";

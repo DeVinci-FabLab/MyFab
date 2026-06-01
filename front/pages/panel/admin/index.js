@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import LayoutPanel from "../../../components/layoutPanel";
 import NavbarAdmin from "../../../components/panel/navbarAdmin";
 import OverviewAdmin from "../../../components/overviewAdmin";
@@ -51,7 +51,7 @@ export default function Admin({
   const [maxPage, setMaxPage] = useState(1);
   const [actualPage, setActualPage] = useState(0);
   const [collumnState, setCollumnState] = useState({});
-  let newActualPage = 0;
+  const newActualPage = useRef(0);
   const [ticketResult, setTicketResult] = useState([]);
   const [counts, setCounts] = useState({
     open: 0,
@@ -78,26 +78,30 @@ export default function Admin({
     }
   }
 
-  useEffect(function () {
-    if (user.error != undefined) {
-      router.push("/404");
-    }
-    if (authorizations.myFabAgent) {
-      // Initialise les filtres depuis l'URL (partage / rechargement)
-      const q = router.query;
-      const initFilters = {
-        idMaterial: q.idMaterial || "",
-        idProjectType: q.idProjectType || "",
-        idPriority: q.idPriority || "",
-        idStatus: q.idStatus || "",
-      };
-      const initOpen = q.all !== "1";
-      setFilters(initFilters);
-      setOpenOnly(initOpen);
-      update(true, null, { filters: initFilters, openOnly: initOpen });
-      fetchCounts();
-    }
-  }, []);
+  useEffect(
+    function () {
+      if (!router.isReady) return;
+      if (user.error != undefined) {
+        router.push("/404");
+      }
+      if (authorizations.myFabAgent) {
+        // Initialise les filtres depuis l'URL (partage / rechargement)
+        const q = router.query;
+        const initFilters = {
+          idMaterial: q.idMaterial || "",
+          idProjectType: q.idProjectType || "",
+          idPriority: q.idPriority || "",
+          idStatus: q.idStatus || "",
+        };
+        const initOpen = q.all !== "1";
+        setFilters(initFilters);
+        setOpenOnly(initOpen);
+        update(true, null, { filters: initFilters, openOnly: initOpen });
+        fetchCounts();
+      }
+    },
+    [router.isReady],
+  );
 
   function syncUrl(f, oo) {
     const query = {};
@@ -114,7 +118,7 @@ export default function Admin({
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     setActualPage(0);
-    newActualPage = 0;
+    newActualPage.current = 0;
     update(true, null, { filters: newFilters });
     syncUrl(newFilters, openOnly);
   }
@@ -123,7 +127,7 @@ export default function Admin({
     const oo = !openOnly;
     setOpenOnly(oo);
     setActualPage(0);
-    newActualPage = 0;
+    newActualPage.current = 0;
     update(true, null, { openOnly: oo });
     syncUrl(filters, oo);
   }
@@ -132,7 +136,7 @@ export default function Admin({
     setFilters(EMPTY_FILTERS);
     setOpenOnly(true);
     setActualPage(0);
-    newActualPage = 0;
+    newActualPage.current = 0;
     update(true, null, { filters: EMPTY_FILTERS, openOnly: true });
     syncUrl(EMPTY_FILTERS, true);
   }
@@ -140,7 +144,7 @@ export default function Admin({
   function nextPrevPage(addPage) {
     if (actualPage + addPage < 0 || actualPage + addPage >= maxPage) return;
     setActualPage(actualPage + addPage);
-    newActualPage = actualPage + addPage;
+    newActualPage.current = actualPage + addPage;
     update();
   }
 
@@ -176,6 +180,7 @@ export default function Admin({
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (e) {
       toast.error("Une erreur est survenue lors de l'export.", {
         position: "top-right",
@@ -210,7 +215,7 @@ export default function Admin({
     const f = opts.filters ? opts.filters : filters;
     const oo = opts.openOnly !== undefined ? opts.openOnly : openOnly;
     const jwt = getCookie("jwt");
-    const params = { page: newActualPage };
+    const params = { page: newActualPage.current };
     // Le filtre "ouverts uniquement" est ignoré si un statut précis est choisi
     if (oo && !f.idStatus) params.selectOpenOnly = true;
     if (f.idMaterial) params.idMaterial = f.idMaterial;

@@ -75,7 +75,7 @@ export default function Forget() {
               // Mot de passe oublié
             </p>
             <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
-              Rénitialisez votre mot de passe
+              Réinitialisez votre mot de passe
             </h2>
           </div>
 
@@ -113,7 +113,7 @@ export default function Forget() {
                     type="submit"
                     className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-magenta hover:bg-brand-magenta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-magenta"
                   >
-                    Rénitialiser mon mot de passe
+                    Réinitialiser mon mot de passe
                   </button>
                 </div>
               </div>

@@ -41,7 +41,7 @@ export default function Forget({ params }) {
             router.push("/auth");
           } else {
             toast.warning(
-              "Votre mot de passe n'a pas pu rénitialisé. Vérifiez que vous ayez bien cliqué sur le bon lien de rénitialisation, ou que votre nouveau mot de passe est valide.",
+              "Votre mot de passe n'a pas pu être réinitialisé. Vérifiez que vous ayez bien cliqué sur le bon lien de réinitialisation, ou que votre nouveau mot de passe est valide.",
               {
                 position: "top-right",
                 autoClose: 10000,
@@ -57,7 +57,7 @@ export default function Forget({ params }) {
         .catch((error) => {
           console.log(error);
           toast.error(
-            "Votre mot de passe n'a pas pu rénitialisé. Vérifiez que vous ayez bien cliqué sur le bon e-mail, ou que votre nouveau mot de passe est valide.",
+            "Votre mot de passe n'a pas pu être réinitialisé. Vérifiez que vous ayez bien cliqué sur le bon e-mail, ou que votre nouveau mot de passe est valide.",
             {
               position: "top-right",
               autoClose: 3000,
@@ -92,7 +92,7 @@ export default function Forget({ params }) {
               // Nouveau mot de passe
             </p>
             <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
-              Rénitialiser mon mot de passe
+              Réinitialiser mon mot de passe
             </h2>
           </div>
 

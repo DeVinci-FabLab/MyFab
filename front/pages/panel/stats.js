@@ -72,6 +72,7 @@ export default function NewPanel({ authorizations, stats }) {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(blobUrl);
     } catch (e) {
       // silencieux : l'utilisateur peut réessayer
     }

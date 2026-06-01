@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import LayoutPanel from "../../../components/layoutPanel";
 import NavbarAdmin from "../../../components/panel/navbarAdmin";
@@ -61,7 +61,7 @@ export default function Logs({ authorizations }) {
   const [maxPage, setMaxPage] = useState(1);
   const [actualPage, setActualPage] = useState(0);
   const [category, setCategory] = useState("");
-  let newActualPage = 0;
+  const newActualPage = useRef(0);
 
   function realodPage() {
     router.replace(router.asPath);
@@ -74,7 +74,7 @@ export default function Logs({ authorizations }) {
   async function update(opts = {}) {
     const cat = opts.category !== undefined ? opts.category : category;
     const jwt = getCookie("jwt");
-    const params = { page: newActualPage };
+    const params = { page: newActualPage.current };
     if (cat) params.category = cat;
     const response = await fetchAPIAuth({
       method: "GET",
@@ -105,14 +105,14 @@ export default function Logs({ authorizations }) {
   function selectCategory(cat) {
     setCategory(cat);
     setActualPage(0);
-    newActualPage = 0;
+    newActualPage.current = 0;
     update({ category: cat });
   }
 
   function nextPrevPage(addPage) {
     if (actualPage + addPage < 0 || actualPage + addPage >= maxPage) return;
     setActualPage(actualPage + addPage);
-    newActualPage = actualPage + addPage;
+    newActualPage.current = actualPage + addPage;
     update();
   }
 
