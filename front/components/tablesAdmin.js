@@ -14,7 +14,7 @@ import { getCookie } from "cookies-next";
 
 import { UserUse } from "../context/provider";
 
-async function togglePin(e, id) {
+async function togglePin(e, id, onReload) {
   e.stopPropagation();
   const jwt = getCookie("jwt");
   const response = await fetchAPIAuth({
@@ -36,11 +36,14 @@ async function togglePin(e, id) {
       draggable: true,
       progress: undefined,
     });
+    return;
   }
-  // La liste se rafraîchit via l'event socket "event-reload-tickets".
+  // Re-fetch direct de la liste : ne pas dépendre de l'event socket
+  // (qui peut ne pas arriver jusqu'au client en prod derrière un reverse-proxy).
+  if (onReload) onReload();
 }
 
-async function changeStatus(id, idStatus) {
+async function changeStatus(id, idStatus, onReload) {
   const jwt = getCookie("jwt");
   const response = await fetchAPIAuth({
     method: "PUT",
@@ -62,8 +65,10 @@ async function changeStatus(id, idStatus) {
       draggable: true,
       progress: undefined,
     });
+    return;
   }
-  // La liste se rafraîchit via l'event socket "event-reload-tickets".
+  // Re-fetch direct (idem épingle : indépendant du socket).
+  if (onReload) onReload();
 }
 
 // Ouvre le ticket ; gère le clic-milieu / ctrl-clic (nouvel onglet).
@@ -104,6 +109,7 @@ export default function TablesAdmin({
   collumnState,
   changeCollumnState,
   statuses,
+  onReload,
 }) {
   const jwt = getCookie("jwt");
   const { user } = UserUse(jwt);
@@ -168,7 +174,7 @@ export default function TablesAdmin({
                   >
                     <button
                       type="button"
-                      onClick={(e) => togglePin(e, r.id)}
+                      onClick={(e) => togglePin(e, r.id, onReload)}
                       title={r.pinned ? "Désépingler" : "Épingler en haut"}
                       aria-label={r.pinned ? "Désépingler" : "Épingler"}
                       className="pin-button flex items-center justify-center rounded p-1 focus:outline-none focus:ring-2 focus:ring-brand-yellow"
@@ -220,7 +226,9 @@ export default function TablesAdmin({
                         />
                         <select
                           value={r.statusId || ""}
-                          onChange={(e) => changeStatus(r.id, e.target.value)}
+                          onChange={(e) =>
+                            changeStatus(r.id, e.target.value, onReload)
+                          }
                           className="quick-status-select rounded-md border-gray-200 dark:border-night-700 bg-white dark:bg-night-800 text-gray-700 dark:text-gray-300 text-sm py-1 pl-1.5 pr-7 focus:border-brand-magenta focus:ring-brand-magenta"
                         >
                           {statuses.map((s) => (

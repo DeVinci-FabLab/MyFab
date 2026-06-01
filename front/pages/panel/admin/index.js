@@ -409,6 +409,10 @@ export default function Admin({
           changeCollumnState={changeCollumnState}
           statuses={statuses}
           darkMode={darkMode}
+          onReload={() => {
+            update();
+            fetchCounts();
+          }}
         />
       </LayoutPanel>
     </div>

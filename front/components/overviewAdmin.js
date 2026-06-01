@@ -35,6 +35,7 @@ export default function OverviewAdmin({
   changeCollumnState,
   statuses,
   darkMode,
+  onReload,
 }) {
   return (
     <section className="">
@@ -53,6 +54,7 @@ export default function OverviewAdmin({
                 changeCollumnState={changeCollumnState}
                 statuses={statuses}
                 darkMode={darkMode}
+                onReload={onReload}
               />
             ) : (
               <div className="p-4 md:p-5 rounded-md flex justify-between border border-gray-200 dark:border-night-800 text-gray-700 dark:text-gray-200 bg-white dark:bg-night-900">
