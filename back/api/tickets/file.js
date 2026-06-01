@@ -563,53 +563,57 @@ async function ticketFilePost(data) {
     }
   }
 
-  //loop all files
-  for (const file of files) {
-    const fileNameSplited = file.name.split(".");
-    const fileExt = fileNameSplited[fileNameSplited.length - 1].toLowerCase();
-    if (fileExt === "stl" || fileExt === "dxf") {
-      const res = await new Promise(async (resolve) => {
-        const newFileName = makeid(10, file.name);
-        fs.copyFile(
-          file.tempFilePath,
-          __dirname + "/../../data/files/stl/" + newFileName,
-          async (err) => {
-            /* c8 ignore start */
-            if (err) throw err;
-            /* c8 ignore stop */
-            const queryInsert = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
-                                        VALUES (?, ?, ?, ?);`;
-            const resInsertFile = await data.app.executeQuery(
-              data.app.db,
-              queryInsert,
-              [userIdAgent, idTicket, file.name, newFileName],
-            );
-            /* c8 ignore start */
-            if (resInsertFile[0]) {
-              console.log(resInsertFile[0]);
-              resolve({
-                type: "code",
-                code: 500,
-              });
-            }
-            /* c8 ignore stop */
-            resolve();
-          },
-        );
-      });
+  // Pré-validation : si une seule extension est invalide, on rejette TOUT le lot
+  // avant de copier/insérer quoi que ce soit (évite un état partiellement appliqué).
+  const allowedExtension = ["stl", "dxf"];
+  const getExt = (name) => name.split(".").pop().toLowerCase();
+  if (files.some((file) => !allowedExtension.includes(getExt(file.name)))) {
+    for (const file of files) {
       fs.unlinkSync(file.tempFilePath);
-      /* c8 ignore start */
-      if (res) {
-        return res;
-      }
-      /* c8 ignore stop */
-    } else {
-      fs.unlinkSync(file.tempFilePath);
-      return {
-        type: "code",
-        code: 400,
-      };
     }
+    return {
+      type: "code",
+      code: 400,
+    };
+  }
+
+  //loop all files (toutes les extensions sont valides à ce stade)
+  for (const file of files) {
+    const res = await new Promise(async (resolve) => {
+      const newFileName = makeid(10, file.name);
+      fs.copyFile(
+        file.tempFilePath,
+        __dirname + "/../../data/files/stl/" + newFileName,
+        async (err) => {
+          /* c8 ignore start */
+          if (err) throw err;
+          /* c8 ignore stop */
+          const queryInsert = `INSERT INTO ticketfiles (i_idUser, i_idTicket, v_fileName, v_fileServerName)
+                                      VALUES (?, ?, ?, ?);`;
+          const resInsertFile = await data.app.executeQuery(
+            data.app.db,
+            queryInsert,
+            [userIdAgent, idTicket, file.name, newFileName],
+          );
+          /* c8 ignore start */
+          if (resInsertFile[0]) {
+            console.log(resInsertFile[0]);
+            resolve({
+              type: "code",
+              code: 500,
+            });
+          }
+          /* c8 ignore stop */
+          resolve();
+        },
+      );
+    });
+    fs.unlinkSync(file.tempFilePath);
+    /* c8 ignore start */
+    if (res) {
+      return res;
+    }
+    /* c8 ignore stop */
   }
 
   //return response
