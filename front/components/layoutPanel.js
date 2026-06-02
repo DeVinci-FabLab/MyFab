@@ -11,6 +11,7 @@ import {
   UsersIcon,
   MoonIcon,
   ChartBarIcon,
+  PrinterIcon,
 } from "@heroicons/react/24/outline";
 import ButtonLayoutPanel from "./buttonLayoutPanel";
 import { ChevronUpDownIcon } from "@heroicons/react/24/solid";
@@ -83,6 +84,14 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       href: "/panel/users",
       icon: UsersIcon,
       current: pn === "/panel/users",
+      show: authorizations.myFabAgent == 1,
+    },
+    {
+      name: "Imprimantes",
+      className: ["printers-button"],
+      href: "/panel/printers",
+      icon: PrinterIcon,
+      current: pn === "/panel/printers",
       show: authorizations.myFabAgent == 1,
     },
     {
