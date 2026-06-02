@@ -11,6 +11,7 @@ import {
   UsersIcon,
   MoonIcon,
   ChartBarIcon,
+  TrophyIcon,
 } from "@heroicons/react/24/outline";
 import ButtonLayoutPanel from "./buttonLayoutPanel";
 import { ChevronUpDownIcon } from "@heroicons/react/24/solid";
@@ -92,6 +93,14 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       icon: ChartBarIcon,
       current: pn === "/panel/stats",
       show: authorizations.manageUser == 1,
+    },
+    {
+      name: "Classement",
+      className: ["ranking-button"],
+      href: "/panel/classement",
+      icon: TrophyIcon,
+      current: pn === "/panel/classement",
+      show: true,
     },
     {
       name: "Pannel d'administration",
