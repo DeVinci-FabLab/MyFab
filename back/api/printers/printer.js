@@ -26,7 +26,11 @@ async function startApi(app) {
   // GET /api/printers/ — liste les imprimantes configurées + leur statut
   app.get("/api/printers/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
       if (!data.userId) return res.sendStatus(401);
 
       const querySelect = `SELECT
@@ -58,7 +62,9 @@ async function startApi(app) {
       const printers = dbRes[1].map((p) => ({
         ...p,
         status: printerStatusCache[p.serial] || null,
-        currentTicket: p.ticketId ? { id: p.ticketId, user: p.ticketUser, file: p.ticketFile } : null,
+        currentTicket: p.ticketId
+          ? { id: p.ticketId, user: p.ticketUser, file: p.ticketFile }
+          : null,
         ticketId: undefined,
         ticketUser: undefined,
         ticketFile: undefined,
@@ -75,7 +81,11 @@ async function startApi(app) {
   // POST /api/printers/ — ajouter une imprimante (admin seulement)
   app.post("/api/printers/", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
       if (!data.userId) return res.sendStatus(401);
 
       const authResult = await data.userAuthorization.validateUserAuth(
@@ -89,7 +99,12 @@ async function startApi(app) {
       if (!serial || !name || !model || !ip) return res.sendStatus(400);
 
       const queryInsert = `INSERT INTO printers (v_serial, v_name, v_model, v_ip) VALUES (?, ?, ?, ?)`;
-      const dbRes = await app.executeQuery(app.db, queryInsert, [serial, name, model, ip]);
+      const dbRes = await app.executeQuery(app.db, queryInsert, [
+        serial,
+        name,
+        model,
+        ip,
+      ]);
       if (dbRes[0]) {
         console.log(dbRes[0]);
         return res.sendStatus(500);
@@ -105,7 +120,11 @@ async function startApi(app) {
   // DELETE /api/printers/:serial — supprimer une imprimante (admin seulement)
   app.delete("/api/printers/:serial", async function (req, res) {
     try {
-      const data = await require("../../functions/apiActions").prepareData(app, req, res);
+      const data = await require("../../functions/apiActions").prepareData(
+        app,
+        req,
+        res,
+      );
       if (!data.userId) return res.sendStatus(401);
 
       const authResult = await data.userAuthorization.validateUserAuth(
@@ -116,7 +135,9 @@ async function startApi(app) {
       if (!authResult) return res.sendStatus(403);
 
       const queryDelete = `DELETE FROM printers WHERE v_serial = ?`;
-      const dbRes = await app.executeQuery(app.db, queryDelete, [req.params.serial]);
+      const dbRes = await app.executeQuery(app.db, queryDelete, [
+        req.params.serial,
+      ]);
       if (dbRes[0]) {
         console.log(dbRes[0]);
         return res.sendStatus(500);

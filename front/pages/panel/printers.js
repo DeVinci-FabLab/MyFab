@@ -18,7 +18,9 @@ const STATE_LABELS = {
 };
 
 function stateInfo(state) {
-  return STATE_LABELS[state] || { label: state || "Inconnu", color: "bg-gray-300" };
+  return (
+    STATE_LABELS[state] || { label: state || "Inconnu", color: "bg-gray-300" }
+  );
 }
 
 function formatMinutes(min) {
@@ -37,10 +39,14 @@ function PrinterCard({ printer }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-semibold text-gray-900 dark:text-white text-lg">{name}</p>
+          <p className="font-semibold text-gray-900 dark:text-white text-lg">
+            {name}
+          </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">{model}</p>
         </div>
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-xs font-medium ${state.color}`}>
+        <span
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-xs font-medium ${state.color}`}
+        >
           <span className="w-2 h-2 rounded-full bg-white opacity-80 inline-block" />
           {state.label}
         </span>
@@ -74,7 +80,9 @@ function PrinterCard({ printer }) {
               <p className="font-semibold text-gray-800 dark:text-white">
                 {status.nozzle_temper ?? "—"}°C
                 {status.nozzle_target_temper > 0 && (
-                  <span className="text-xs text-gray-400 ml-1">/ {status.nozzle_target_temper}°C</span>
+                  <span className="text-xs text-gray-400 ml-1">
+                    / {status.nozzle_target_temper}°C
+                  </span>
                 )}
               </p>
             </div>
@@ -83,7 +91,9 @@ function PrinterCard({ printer }) {
               <p className="font-semibold text-gray-800 dark:text-white">
                 {status.bed_temper ?? "—"}°C
                 {status.bed_target_temper > 0 && (
-                  <span className="text-xs text-gray-400 ml-1">/ {status.bed_target_temper}°C</span>
+                  <span className="text-xs text-gray-400 ml-1">
+                    / {status.bed_target_temper}°C
+                  </span>
                 )}
               </p>
             </div>
@@ -92,28 +102,44 @@ function PrinterCard({ printer }) {
           {/* Couche + signal */}
           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
             {status.total_layer_num > 0 && (
-              <span>Couche {status.layer_num} / {status.total_layer_num}</span>
+              <span>
+                Couche {status.layer_num} / {status.total_layer_num}
+              </span>
             )}
             {status.wifi_signal && <span>WiFi {status.wifi_signal} dBm</span>}
           </div>
 
           <p className="text-xs text-gray-400">
-            Mis à jour : {status.updatedAt ? new Date(status.updatedAt).toLocaleTimeString("fr-FR") : "—"}
+            Mis à jour :{" "}
+            {status.updatedAt
+              ? new Date(status.updatedAt).toLocaleTimeString("fr-FR")
+              : "—"}
           </p>
         </>
       ) : (
-        <p className="text-sm text-gray-400 italic">Aucune donnée reçue de l&apos;agent</p>
+        <p className="text-sm text-gray-400 italic">
+          Aucune donnée reçue de l&apos;agent
+        </p>
       )}
 
       {currentTicket && (
         <div className="border-t border-gray-100 dark:border-gray-700 pt-3 mt-1">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Ticket en cours</p>
-          <a href={`/panel/${currentTicket.id}`} className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            Ticket en cours
+          </p>
+          <a
+            href={`/panel/${currentTicket.id}`}
+            className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+          >
             <span>#{currentTicket.id}</span>
-            <span className="text-gray-500 dark:text-gray-400 font-normal">— {currentTicket.user}</span>
+            <span className="text-gray-500 dark:text-gray-400 font-normal">
+              — {currentTicket.user}
+            </span>
           </a>
           {currentTicket.file && (
-            <p className="text-xs text-gray-400 mt-0.5 truncate">{currentTicket.file}</p>
+            <p className="text-xs text-gray-400 mt-0.5 truncate">
+              {currentTicket.file}
+            </p>
           )}
         </div>
       )}
