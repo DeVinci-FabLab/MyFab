@@ -101,7 +101,7 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
       href: "/panel/classement",
       icon: TrophyIcon,
       current: pn === "/panel/classement",
-      show: true,
+      show: authorizations.myFabAgent == 1,
     },
     {
       name: "Pannel d'administration",

@@ -398,6 +398,13 @@ export async function getServerSideProps({ req }) {
     };
   }
 
+  if (authorizations.status === 200 && !authorizations.data.myFabAgent) {
+    return {
+      redirect: { permanent: false, destination: "/404" },
+      props: {},
+    };
+  }
+
   if (!authorizations.data.acceptedRule) {
     const url = req.url;
     const encodedUrl = encodeURIComponent(url);

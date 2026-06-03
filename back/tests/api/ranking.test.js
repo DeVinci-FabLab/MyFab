@@ -6,9 +6,18 @@ describe("GET /api/ranking", () => {
     expect(res.code).toBe(401);
   });
 
+  test("403 sans permission myFabAgent", async () => {
+    const res = await rankingApi.getRanking({
+      userId: 1,
+      userAuthorization: { validateUserAuth: async () => false },
+    });
+    expect(res.code).toBe(403);
+  });
+
   test("200 + agrège logs + messages, marque isMe, garde les agents sans activité à 0", async () => {
     const data = {
       userId: 1,
+      userAuthorization: { validateUserAuth: async () => true },
       app: {
         db: {},
         executeQuery: async (db, query) => {

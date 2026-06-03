@@ -15,7 +15,7 @@ const isYear = (col) =>
  * @swagger
  * /ranking/:
  *   get:
- *     summary: Classement des agents par score d'actions pondérées (par mois / année / total).
+ *     summary: Classement des agents par score d'actions pondérées (par mois / année / total). L'utilisateur doit être 'myFabAgent'.
  *     tags: [GlobalData]
  *     parameters:
  *     - name: dvflCookie
@@ -27,6 +27,8 @@ const isYear = (col) =>
  *         description: "Liste des agents avec leurs scores + poids appliqués"
  *       401:
  *        description: "The user is unauthenticated"
+ *       403:
+ *        description: "The user is not allowed"
  *       500:
  *        description: "Internal error with the request"
  */
@@ -36,6 +38,14 @@ async function getRanking(data) {
   const userIdAgent = data.userId;
   if (!userIdAgent) {
     return { type: "code", code: 401 };
+  }
+  const authResult = await data.userAuthorization.validateUserAuth(
+    data.app,
+    userIdAgent,
+    "myFabAgent",
+  );
+  if (!authResult) {
+    return { type: "code", code: 403 };
   }
   const run = (q, p = []) => data.app.executeQuery(data.app.db, q, p);
 
