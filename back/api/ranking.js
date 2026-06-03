@@ -164,10 +164,13 @@ async function getRanking(data) {
     byId[r.id].avgDelayHours = Number(r.avgDelayHours) || 0;
   }
 
+  // On ne garde que les agents ayant fait au moins une action (≥ 1 ticket touché).
+  const agentsList = Object.values(byId).filter((a) => a.actions > 0);
+
   return {
     type: "json",
     code: 200,
-    json: { weights: WEIGHTS, agents: Object.values(byId) },
+    json: { weights: WEIGHTS, agents: agentsList },
   };
 }
 
