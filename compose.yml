@@ -107,6 +107,11 @@ services:
       BASE_PATH: ${BASE_PATH:-}
       IS_TEST_MODE: ${IS_TEST_MODE:-false}
       DARK_MODE_IN_TEST_MODE: ${DARK_MODE_IN_TEST_MODE:-false}
+    volumes:
+      # Icônes de rang (assets sous licence) servies depuis l'hôte — hors image
+      # Docker et hors dépôt. Dossier optionnel : si absent/vide, l'app retombe
+      # sur des badges générés (aucune erreur).
+      - ${VOLUMES_PATH}/myfab-tickets/front/ranks/:/app/public/ranks/:ro
     networks:
       - pangolin
     expose:
