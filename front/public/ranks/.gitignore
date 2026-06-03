@@ -1,0 +1,6 @@
+# Les icônes de rang (assets sous licence) ne sont PAS versionnées :
+# le dépôt est public, on ne redistribue pas ces images.
+# À déposer manuellement / au déploiement, côté serveur.
+*.png
+!.gitignore
+!README.md

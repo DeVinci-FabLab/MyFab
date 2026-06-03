@@ -19,6 +19,95 @@ const PERIODS = [
   { key: "total", label: "Tout le temps", field: "pointsTotal" },
 ];
 
+// Badges "façon classé" — art ORIGINAL (dégradés aux couleurs des tiers),
+// pas les icônes de Riot. Du meilleur (#1) au moins bon, un sous-tier par rang.
+const TIERS = [
+  { n: "Radiant", c1: "#fff7cf", c2: "#e7b53a", l: "#caa12f" },
+  { n: "Immortal 3", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
+  { n: "Immortal 2", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
+  { n: "Immortal 1", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
+  { n: "Ascendant 3", c1: "#4fd690", c2: "#1c7048", l: "#2fae6e" },
+  { n: "Ascendant 2", c1: "#4fd690", c2: "#1c7048", l: "#2fae6e" },
+  { n: "Ascendant 1", c1: "#4fd690", c2: "#1c7048", l: "#2fae6e" },
+  { n: "Diamond 3", c1: "#e0b6ff", c2: "#8b5cf6", l: "#a880e8" },
+  { n: "Diamond 2", c1: "#e0b6ff", c2: "#8b5cf6", l: "#a880e8" },
+  { n: "Diamond 1", c1: "#e0b6ff", c2: "#8b5cf6", l: "#a880e8" },
+  { n: "Platinum 3", c1: "#7fe7ee", c2: "#2a8f9e", l: "#3fb6c2" },
+  { n: "Platinum 2", c1: "#7fe7ee", c2: "#2a8f9e", l: "#3fb6c2" },
+  { n: "Platinum 1", c1: "#7fe7ee", c2: "#2a8f9e", l: "#3fb6c2" },
+  { n: "Gold 3", c1: "#f5d985", c2: "#b8862f", l: "#cda43e" },
+  { n: "Gold 2", c1: "#f5d985", c2: "#b8862f", l: "#cda43e" },
+  { n: "Gold 1", c1: "#f5d985", c2: "#b8862f", l: "#cda43e" },
+  { n: "Silver 3", c1: "#dfe6ec", c2: "#8a949d", l: "#9aa4ad" },
+  { n: "Silver 2", c1: "#dfe6ec", c2: "#8a949d", l: "#9aa4ad" },
+  { n: "Silver 1", c1: "#dfe6ec", c2: "#8a949d", l: "#9aa4ad" },
+  { n: "Bronze 3", c1: "#d09a63", c2: "#7a4f2a", l: "#a9783f" },
+  { n: "Bronze 2", c1: "#d09a63", c2: "#7a4f2a", l: "#a9783f" },
+  { n: "Bronze 1", c1: "#d09a63", c2: "#7a4f2a", l: "#a9783f" },
+  { n: "Iron 3", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
+  { n: "Iron 2", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
+  { n: "Iron 1", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
+];
+
+function tierForRank(index, total) {
+  // Au-delà de 22 agents : les 3 derniers passent en Iron, et tout le bas
+  // (au-dessus de ces 3) est plafonné à Bronze (au lieu de descendre en Iron un à un).
+  if (total > 22) {
+    if (index >= total - 3) {
+      const ironByPosition = ["Iron 3", "Iron 2", "Iron 1"];
+      const name = ironByPosition[index - (total - 3)] || "Iron 1";
+      return TIERS.find((t) => t.n === name);
+    }
+    return TIERS[Math.min(index, 21)]; // 21 = Bronze 1
+  }
+  return TIERS[Math.min(index, TIERS.length - 1)];
+}
+
+function RankBadge({ index, total, size = 22, showLabel = true }) {
+  const t = tierForRank(index, total);
+  // Slug du sous-tier (radiant, immortal-3, ascendant-1, iron-1…) pour l'image.
+  const slug = t.n.toLowerCase().replace(/\s+/g, "-");
+  const imgSrc = (process.env.BASE_PATH || "") + "/ranks/" + slug + ".png";
+  // true = on tente l'image ; sur erreur (fichier absent) → repli sur le losange.
+  const [imgOk, setImgOk] = useState(true);
+  return (
+    <span className="inline-flex items-center gap-1.5" title={t.n}>
+      {imgOk ? (
+        <img
+          src={imgSrc}
+          alt={t.n}
+          width={size}
+          height={size}
+          onError={() => setImgOk(false)}
+          className="flex-shrink-0 object-contain"
+          style={{ width: size, height: size }}
+        />
+      ) : (
+        <span
+          className="inline-block flex-shrink-0"
+          style={{
+            width: size,
+            height: size,
+            background: `linear-gradient(135deg, ${t.c1}, ${t.c2})`,
+            transform: "rotate(45deg)",
+            borderRadius: 4,
+            border: "1px solid rgba(0,0,0,.25)",
+            boxShadow: `0 0 6px ${t.l}55`,
+          }}
+        />
+      )}
+      {showLabel ? (
+        <span
+          className="font-mono text-[10px] uppercase tracking-wider whitespace-nowrap"
+          style={{ color: t.l }}
+        >
+          {t.n}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
 function Card({ children, className = "" }) {
   return (
     <div
@@ -143,6 +232,10 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
             {me.role}
           </p>
         </div>
+      </div>
+
+      <div className="mt-3 flex justify-center">
+        <RankBadge index={meIndex} total={ranked.length} size={26} />
       </div>
 
       {/* Rang + points */}
@@ -343,6 +436,13 @@ export default function Classement({ authorizations }) {
                           <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 truncate">
                             {a.role}
                           </p>
+                          <div className="mt-0.5">
+                            <RankBadge
+                              index={i}
+                              total={ranked.length}
+                              size={15}
+                            />
+                          </div>
                         </div>
                         <div className="flex-1 h-2.5 rounded bg-gray-100 dark:bg-night-800 overflow-hidden min-w-[40px]">
                           <div
@@ -375,6 +475,14 @@ export default function Classement({ authorizations }) {
               </div>
             </div>
           )}
+
+          <p className="mt-10 text-center text-[10px] leading-relaxed text-gray-400 dark:text-gray-500">
+            Les icônes de rang affichées sont la propriété de Riot Games, Inc.
+            VALORANT™ et les emblèmes de rang associés sont des marques ou
+            marques déposées de Riot Games, Inc. Ils sont utilisés ici à titre
+            illustratif. MyFab n'est ni affilié à, ni approuvé ou sponsorisé par
+            Riot Games.
+          </p>
         </div>
       </LayoutPanel>
     </div>
@@ -394,6 +502,13 @@ export async function getServerSideProps({ req }) {
         permanent: false,
         destination: "/auth/?from=" + encodedUrl,
       },
+      props: {},
+    };
+  }
+
+  if (authorizations.status === 200 && !authorizations.data.myFabAgent) {
+    return {
+      redirect: { permanent: false, destination: "/404" },
       props: {},
     };
   }
