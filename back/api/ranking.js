@@ -49,23 +49,30 @@ async function getRanking(data) {
   }
   const run = (q, p = []) => data.app.executeQuery(data.app.db, q, p);
 
-  // 1) Agents = utilisateurs ayant un rôle "myFabAgent" (hors système/root).
+  // 1) Agents = utilisateurs ayant un rôle "myFabAgent" (hors système/root)
+  //    OU ayant déjà eu de l'activité (anciens agents qui ont perdu le rôle).
   //    Rôle d'affichage = le plus élevé (i_id de rôle le plus petit : Admin < Modo < Agent).
+  //    Un ancien agent (plus de rôle myFabAgent) a role = NULL -> "Ancien agent".
   const agentsRes = await run(`
     SELECT u.i_id AS id,
         CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS name,
         r.v_name AS role, r.v_color AS roleColor
       FROM users AS u
-      INNER JOIN (
+      LEFT JOIN (
         SELECT rc.i_idUser, MIN(gr.i_id) AS mainRole
           FROM rolescorrelation AS rc
           INNER JOIN gd_roles AS gr ON rc.i_idRole = gr.i_id
           WHERE gr.b_myFabAgent = 1
           GROUP BY rc.i_idUser
       ) AS am ON am.i_idUser = u.i_id
-      INNER JOIN gd_roles AS r ON r.i_id = am.mainRole
+      LEFT JOIN gd_roles AS r ON r.i_id = am.mainRole
       WHERE u.v_email NOT IN ('system@system.com', 'root@root.com')
-        AND u.b_deleted = 0;`);
+        AND u.b_deleted = 0
+        AND (
+          am.i_idUser IS NOT NULL
+          OR u.i_id IN (SELECT DISTINCT i_idUser FROM log_ticketschange)
+          OR u.i_id IN (SELECT DISTINCT i_idUser FROM ticketmessages)
+        );`);
   /* c8 ignore start */
   if (agentsRes[0]) {
     console.log(agentsRes[0]);
@@ -133,8 +140,10 @@ async function getRanking(data) {
     byId[a.id] = {
       id: a.id,
       name: a.name,
-      role: a.role,
-      roleColor: a.roleColor,
+      // Ancien agent (plus de rôle myFabAgent) : libellé + couleur neutres.
+      role: a.role || "Ancien agent",
+      roleColor: a.roleColor || "9ca3af",
+      former: !a.role,
       pointsMonth: 0,
       pointsYear: 0,
       pointsTotal: 0,

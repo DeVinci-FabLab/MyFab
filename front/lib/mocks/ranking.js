@@ -20,6 +20,9 @@ export function mock(path, jwt, options) {
         { id: 9, name: "Hugo M.", role: "Agent MyFab", roleColor: "e0dd22", pointsMonth: 21, pointsYear: 99, pointsTotal: 162, closures: 40, actions: 120, avgDelayHours: 31, isMe: false }, // prettier-ignore
         { id: 11, name: "Chloé V.", role: "Agent MyFab", roleColor: "e0dd22", pointsMonth: 15, pointsYear: 24, pointsTotal: 24, closures: 6, actions: 18, avgDelayHours: 40, isMe: false }, // prettier-ignore
         { id: 10, name: "Nathan G.", role: "Agent MyFab", roleColor: "e0dd22", pointsMonth: 9, pointsYear: 45, pointsTotal: 66, closures: 16, actions: 48, avgDelayHours: 35, isMe: false }, // prettier-ignore
+        // Ancien agent : plus de rôle myFabAgent mais activité conservée.
+        // pointsMonth/Year = 0 -> n'apparaît que dans "Tout le temps".
+        { id: 12, name: "Antoine F.", role: "Ancien agent", roleColor: "9ca3af", former: true, pointsMonth: 0, pointsYear: 0, pointsTotal: 140, closures: 34, actions: 102, avgDelayHours: 24, isMe: false }, // prettier-ignore
       ],
     },
   };
