@@ -1,3 +1,5 @@
+import { isBirthday } from "../lib/birthday";
+
 function entierAleatoire(max) {
   return Math.floor(Math.random() * max);
 }
@@ -17,7 +19,15 @@ function LogoDvfl({ user = null }) {
   const logo = chooseLogo(isEdu);
 
   return (
-    <a href={logo.link} target="_blank">
+    <a href={logo.link} target="_blank" className="relative inline-block">
+      {isBirthday() ? (
+        <span
+          className="absolute -top-3 left-1 text-lg rotate-[-18deg] select-none pointer-events-none"
+          aria-hidden="true"
+        >
+          🎉
+        </span>
+      ) : null}
       <img
         className={`h-8 w-auto ${logo.className}`}
         src={logo.img}

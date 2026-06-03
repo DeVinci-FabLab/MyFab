@@ -23,6 +23,7 @@ import NotificationBell from "./notificationBell";
 import { logout } from "../lib/function";
 import { getTextForClick } from "../lib/layoutClickText";
 import { fetchAPIAuth } from "../lib/api";
+import { isBirthday, birthdayEmoji } from "../lib/birthday";
 
 import { UserUse } from "../context/provider";
 
@@ -273,9 +274,11 @@ export default function LayoutPanel({ children, authorizations, titleMenu }) {
                       <div
                         className={`inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-night-700 text-gray-700 dark:text-gray-200 ${user.specialFont ? user.specialFont : ""}`}
                       >
-                        {name[0].toString().toUpperCase() +
-                          " " +
-                          surname[0].toString().toUpperCase()}
+                        {isBirthday()
+                          ? birthdayEmoji(name)
+                          : name[0].toString().toUpperCase() +
+                            " " +
+                            surname[0].toString().toUpperCase()}
                       </div>
                       <span className="flex-1 flex flex-col min-w-0">
                         <span

@@ -7,6 +7,7 @@ import Seo from "../../components/seo";
 import { fetchAPIAuth, parseCookies } from "../../lib/api";
 import { getApi } from "../../lib/runtimeEnv";
 import { getCookie } from "cookies-next";
+import { isBirthday, birthdayEmoji } from "../../lib/birthday";
 
 import { UserUse } from "../../context/provider";
 
@@ -29,6 +30,7 @@ function Card({ children, className = "" }) {
 }
 
 function Avatar({ name, color, size = "h-9 w-9", text = "text-sm" }) {
+  const fete = isBirthday();
   const initials = name
     .split(" ")
     .map((w) => w[0])
@@ -38,9 +40,9 @@ function Avatar({ name, color, size = "h-9 w-9", text = "text-sm" }) {
   return (
     <span
       className={`inline-flex ${size} ${text} flex-shrink-0 items-center justify-center rounded-full font-semibold text-white`}
-      style={{ backgroundColor: "#" + color }}
+      style={{ backgroundColor: fete ? "transparent" : "#" + color }}
     >
-      {initials}
+      {fete ? birthdayEmoji(name) : initials}
     </span>
   );
 }
