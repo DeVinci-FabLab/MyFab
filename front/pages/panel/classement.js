@@ -63,7 +63,13 @@ function tierForRank(index, total) {
   return TIERS[Math.min(index, TIERS.length - 1)];
 }
 
-function RankBadge({ index, total, size = 22, showLabel = true }) {
+function RankBadge({
+  index,
+  total,
+  size = 22,
+  showLabel = true,
+  stacked = false,
+}) {
   const t = tierForRank(index, total);
   // Slug du sous-tier (radiant, immortal-3, ascendant-1, iron-1…) pour l'image.
   const slug = t.n.toLowerCase().replace(/\s+/g, "-");
@@ -71,7 +77,14 @@ function RankBadge({ index, total, size = 22, showLabel = true }) {
   // true = on tente l'image ; sur erreur (fichier absent) → repli sur le losange.
   const [imgOk, setImgOk] = useState(true);
   return (
-    <span className="inline-flex items-center gap-1.5" title={t.n}>
+    <span
+      className={
+        stacked
+          ? "inline-flex flex-col items-center gap-1.5"
+          : "inline-flex items-center gap-1.5"
+      }
+      title={t.n}
+    >
       {imgOk ? (
         <img
           src={imgSrc}
@@ -98,7 +111,9 @@ function RankBadge({ index, total, size = 22, showLabel = true }) {
       )}
       {showLabel ? (
         <span
-          className="font-mono text-[10px] uppercase tracking-wider whitespace-nowrap"
+          className={`font-mono uppercase tracking-wider whitespace-nowrap ${
+            stacked ? "text-xs font-semibold" : "text-[10px]"
+          }`}
           style={{ color: t.l }}
         >
           {t.n}
@@ -234,8 +249,10 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
         </div>
       </div>
 
-      <div className="mt-3 flex justify-center">
-        <RankBadge index={meIndex} total={ranked.length} size={26} />
+      <div className="mt-4 flex justify-center">
+        <div className="flex flex-col items-center rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-8 py-4">
+          <RankBadge index={meIndex} total={ranked.length} size={72} stacked />
+        </div>
       </div>
 
       {/* Rang + points */}
