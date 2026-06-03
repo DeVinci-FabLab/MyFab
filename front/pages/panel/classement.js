@@ -327,7 +327,11 @@ export default function Classement({ authorizations }) {
 
   const field = (PERIODS.find((p) => p.key === period) || PERIODS[0]).field;
   const metric = (a) => a[field];
-  const ranked = [...agents].sort((a, b) => metric(b) - metric(a));
+  // On ne montre que les agents avec un score > 0 SUR LA PÉRIODE choisie
+  // (un agent inactif ce mois-ci ne doit pas apparaître à 0).
+  const ranked = [...agents]
+    .filter((a) => metric(a) > 0)
+    .sort((a, b) => metric(b) - metric(a));
   const max = ranked.length ? metric(ranked[0]) || 1 : 1;
   const totalAll = ranked.reduce((s, a) => s + metric(a), 0) || 1;
   const meIndex = ranked.findIndex((a) => a.isMe);

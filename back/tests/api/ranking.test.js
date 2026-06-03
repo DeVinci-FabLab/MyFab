@@ -27,6 +27,7 @@ describe("GET /api/ranking", () => {
               [
                 { id: 1, name: "Admin A.", role: "Administrateur", roleColor: "db1010" }, // prettier-ignore
                 { id: 2, name: "Agent B.", role: "Agent MyFab", roleColor: "e0dd22" }, // prettier-ignore
+                { id: 3, name: "Ancien C.", role: null, roleColor: null }, // ancien agent (plus de rôle) // prettier-ignore
               ],
             ];
           }
@@ -42,7 +43,10 @@ describe("GET /api/ranking", () => {
           // log_ticketschange
           return [
             null,
-            [{ id: 1, pMonth: 10, pYear: 30, pTotal: 50, closures: 8, actions: 25 }], // prettier-ignore
+            [
+              { id: 1, pMonth: 10, pYear: 30, pTotal: 50, closures: 8, actions: 25 }, // prettier-ignore
+              { id: 3, pMonth: 0, pYear: 0, pTotal: 12, closures: 1, actions: 4 }, // prettier-ignore
+            ],
           ];
         },
       },
@@ -61,5 +65,12 @@ describe("GET /api/ranking", () => {
 
     // l'agent sans aucune action est exclu du classement
     expect(res.json.agents.find((a) => a.id === 2)).toBeUndefined();
+
+    // un ancien agent (plus de rôle) garde son activité et est affiché
+    const former = res.json.agents.find((a) => a.id === 3);
+    expect(former).toBeDefined();
+    expect(former.former).toBe(true);
+    expect(former.role).toBe("Ancien agent");
+    expect(former.pointsTotal).toBe(12);
   });
 });
