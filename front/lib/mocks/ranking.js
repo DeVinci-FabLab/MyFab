@@ -19,9 +19,9 @@ export function mock(path, jwt, options) {
         { id: 9, name: "Hugo M.", role: "Agent MyFab", roleColor: "e0dd22", pointsMonth: 14, pointsYear: 99, pointsTotal: 162, closures: 26, ticketsHandled: 70, sharedTickets: 16, avgDelayHours: 31, streak: 1, isMe: false }, // prettier-ignore
         { id: 10, name: "Nathan G.", role: "Agent MyFab", roleColor: "e0dd22", pointsMonth: 9, pointsYear: 45, pointsTotal: 66, closures: 10, ticketsHandled: 32, sharedTickets: 6, avgDelayHours: 35, streak: 1, isMe: false }, // prettier-ignore
         { id: 11, name: "Chloé V.", role: "Agent MyFab", roleColor: "e0dd22", pointsMonth: 6, pointsYear: 24, pointsTotal: 24, closures: 4, ticketsHandled: 11, sharedTickets: 2, avgDelayHours: 40, streak: 1, isMe: false }, // prettier-ignore
-        // Ancien agent : plus de rôle, activité conservée. Points mois/année = 0
-        // -> n'apparaît que dans "Tout le temps".
-        { id: 12, name: "Antoine F.", role: "Ancien agent", roleColor: "9ca3af", former: true, pointsMonth: 0, pointsYear: 0, pointsTotal: 140, closures: 22, ticketsHandled: 64, sharedTickets: 18, avgDelayHours: 24, streak: 0, isMe: false }, // prettier-ignore
+        // Ancien agent : plus de rôle, activité conservée. Actif l'an dernier
+        // mais pas ce mois-ci -> visible dans "Cette année", absent de "Ce mois-ci".
+        { id: 12, name: "Antoine F.", role: "Ancien agent", roleColor: "9ca3af", former: true, pointsMonth: 0, pointsYear: 60, pointsTotal: 140, closures: 22, ticketsHandled: 64, sharedTickets: 18, avgDelayHours: 24, streak: 0, isMe: false }, // prettier-ignore
       ],
     },
   };
