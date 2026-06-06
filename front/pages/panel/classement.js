@@ -18,8 +18,12 @@ const PERIODS = [
   { key: "year", label: "Cette année", field: "pointsYear" },
 ];
 
-// Rangs façon Valorant — un sous-tier par position dans le classement
-// (icônes fournies via /public/ranks ; repli losange CSS si absentes).
+// Rangs façon Valorant — système RR : le rang vient des POINTS ACCUMULÉS
+// (pas de la position). On monte cran par cran (Iron 1 → … → Radiant), avec une
+// "barre de RR" 0→POINTS_PER_DIVISION dans le cran courant. Deux agents peuvent
+// avoir le même rang. Icônes via /public/ranks ; repli losange CSS si absentes.
+//
+// TIERS est rangé du HAUT (Radiant) vers le BAS (Iron 1).
 const TIERS = [
   { n: "Radiant", c1: "#fff7cf", c2: "#e7b53a", l: "#caa12f" },
   { n: "Immortal 3", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
@@ -48,28 +52,24 @@ const TIERS = [
   { n: "Iron 1", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
 ];
 
-function tierForRank(index, total) {
-  // Au-delà de 22 agents : les 3 derniers passent en Iron, et tout le bas
-  // (au-dessus de ces 3) est plafonné à Bronze (au lieu de descendre en Iron un à un).
-  if (total > 22) {
-    if (index >= total - 3) {
-      const ironByPosition = ["Iron 3", "Iron 2", "Iron 1"];
-      const name = ironByPosition[index - (total - 3)] || "Iron 1";
-      return TIERS.find((t) => t.n === name);
-    }
-    return TIERS[Math.min(index, 21)]; // 21 = Bronze 1
-  }
-  return TIERS[Math.min(index, TIERS.length - 1)];
+// Points nécessaires pour franchir un cran (l'équivalent de 100 RR sur Valorant).
+// À ajuster selon le volume réel d'activité du FabLab.
+const POINTS_PER_DIVISION = 10;
+const MAX_DIVISION = TIERS.length - 1; // 24 = Radiant
+
+// Rang Valorant atteint pour un total de points + "RR" dans le cran courant.
+function rankForPoints(points) {
+  const p = Math.max(0, Number(points) || 0);
+  const div = Math.min(MAX_DIVISION, Math.floor(p / POINTS_PER_DIVISION));
+  const tier = TIERS[MAX_DIVISION - div]; // div 0 = Iron 1 (bas), 24 = Radiant
+  const isMax = div >= MAX_DIVISION;
+  const rr = isMax ? POINTS_PER_DIVISION : p - div * POINTS_PER_DIVISION;
+  const next = isMax ? null : TIERS[MAX_DIVISION - (div + 1)];
+  return { tier, rr, rrMax: POINTS_PER_DIVISION, next, isMax, div };
 }
 
-function RankBadge({
-  index,
-  total,
-  size = 22,
-  showLabel = true,
-  stacked = false,
-}) {
-  const t = tierForRank(index, total);
+function RankBadge({ points, size = 22, showLabel = true, stacked = false }) {
+  const { tier: t } = rankForPoints(points);
   // Slug du sous-tier (radiant, immortal-3, ascendant-1, iron-1…) pour l'image.
   const slug = t.n.toLowerCase().replace(/\s+/g, "-");
   const imgSrc = (process.env.BASE_PATH || "") + "/ranks/" + slug + ".png";
@@ -224,6 +224,8 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
   const above = meIndex > 0 ? ranked[meIndex - 1] : null;
   const gap = above ? metric(above) - metric(me) : 0;
   const periodLabel = PERIODS.find((p) => p.key === period).label.toLowerCase();
+  // Rang Valorant (RR) basé sur les points de la période affichée.
+  const myRank = rankForPoints(metric(me));
 
   return (
     <Card className="lg:sticky lg:top-6">
@@ -248,9 +250,36 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
         </div>
       </div>
 
-      <div className="mt-4 flex justify-center">
-        <div className="flex flex-col items-center rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-8 py-4">
-          <RankBadge index={meIndex} total={ranked.length} size={72} stacked />
+      {/* Rang Valorant + barre de RR vers le cran suivant */}
+      <div className="mt-4 flex flex-col items-center rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-6 py-4">
+        <RankBadge points={metric(me)} size={72} stacked />
+        <div className="mt-3 w-full">
+          {myRank.isMax ? (
+            <p
+              className="text-center font-mono text-[11px] uppercase tracking-wider"
+              style={{ color: myRank.tier.l }}
+            >
+              Palier maximum atteint
+            </p>
+          ) : (
+            <>
+              <div className="h-2 rounded bg-gray-200 dark:bg-night-700 overflow-hidden">
+                <div
+                  className="h-full rounded"
+                  style={{
+                    width: `${Math.round((myRank.rr / myRank.rrMax) * 100)}%`,
+                    backgroundColor: myRank.tier.l,
+                  }}
+                />
+              </div>
+              <p className="mt-1 text-center text-[11px] text-gray-500 dark:text-gray-400">
+                <span className="font-mono font-semibold text-gray-700 dark:text-gray-200">
+                  {myRank.rr}/{myRank.rrMax} RR
+                </span>{" "}
+                · {myRank.rrMax - myRank.rr} pts pour {myRank.next.n}
+              </p>
+            </>
+          )}
         </div>
       </div>
 
@@ -463,11 +492,7 @@ export default function Classement({ authorizations }) {
                             {a.role}
                           </p>
                           <div className="mt-0.5">
-                            <RankBadge
-                              index={i}
-                              total={ranked.length}
-                              size={15}
-                            />
+                            <RankBadge points={metric(a)} size={15} />
                           </div>
                         </div>
                         <div className="flex-1 h-2.5 rounded bg-gray-100 dark:bg-night-800 overflow-hidden min-w-[40px]">
