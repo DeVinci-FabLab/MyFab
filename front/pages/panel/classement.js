@@ -13,11 +13,12 @@ import { UserUse } from "../../context/provider";
 
 // Accent du podium : or / argent / bronze (sobre).
 const PODIUM = ["#F39200", "#9ca3af", "#B0764A"];
-// radiantAt = nombre de points pour atteindre Radiant (le sommet) sur la
-// période. C'est LE réglage à ajuster selon le volume réel du FabLab : le mois
-// et l'année n'ont pas la même échelle, donc un seuil par période.
+// Le rang Valorant ne s'applique qu'à la SAISON (l'année) : `radiantAt` = points
+// pour atteindre Radiant sur l'année (à ajuster selon le volume réel du FabLab).
+// Le mois n'a pas de radiantAt -> pas de rang, juste un classement par points
+// (un rang mensuel se "réinitialiserait" chaque mois, ce qui n'a pas de sens).
 const PERIODS = [
-  { key: "month", label: "Ce mois-ci", field: "pointsMonth", radiantAt: 200 },
+  { key: "month", label: "Ce mois-ci", field: "pointsMonth" },
   { key: "year", label: "Cette année", field: "pointsYear", radiantAt: 1300 },
 ];
 
@@ -225,6 +226,7 @@ function ProfileCard({
   metric,
   totalAll,
   radiantAt,
+  showRank,
 }) {
   if (!me) {
     return (
@@ -244,8 +246,8 @@ function ProfileCard({
   const above = meIndex > 0 ? ranked[meIndex - 1] : null;
   const gap = above ? metric(above) - metric(me) : 0;
   const periodLabel = PERIODS.find((p) => p.key === period).label.toLowerCase();
-  // Rang Valorant (RR) basé sur les points de la période affichée.
-  const myRank = rankForPoints(metric(me), radiantAt);
+  // Rang Valorant (RR) — seulement sur l'année (saison), pas au mois.
+  const myRank = showRank ? rankForPoints(metric(me), radiantAt) : null;
 
   return (
     <Card className="lg:sticky lg:top-6">
@@ -270,43 +272,45 @@ function ProfileCard({
         </div>
       </div>
 
-      {/* Rang Valorant + barre de RR vers le cran suivant */}
-      <div className="mt-4 flex flex-col items-center rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-6 py-4">
-        <RankBadge
-          points={metric(me)}
-          radiantAt={radiantAt}
-          size={72}
-          stacked
-        />
-        <div className="mt-3 w-full">
-          {myRank.isMax ? (
-            <p
-              className="text-center font-mono text-[11px] uppercase tracking-wider"
-              style={{ color: myRank.tier.l }}
-            >
-              Rang maximum atteint
-            </p>
-          ) : (
-            <>
-              <div className="h-2 rounded bg-gray-200 dark:bg-night-700 overflow-hidden">
-                <div
-                  className="h-full rounded"
-                  style={{
-                    width: `${myRank.rr}%`,
-                    backgroundColor: myRank.tier.l,
-                  }}
-                />
-              </div>
-              <p className="mt-1 text-center text-[11px] text-gray-500 dark:text-gray-400">
-                <span className="font-mono font-semibold text-gray-700 dark:text-gray-200">
-                  {myRank.rr}/100 RR
-                </span>{" "}
-                · {myRank.toNext} pts pour {myRank.next.n}
+      {/* Rang Valorant + barre de RR — seulement sur l'année (saison) */}
+      {showRank ? (
+        <div className="mt-4 flex flex-col items-center rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-6 py-4">
+          <RankBadge
+            points={metric(me)}
+            radiantAt={radiantAt}
+            size={72}
+            stacked
+          />
+          <div className="mt-3 w-full">
+            {myRank.isMax ? (
+              <p
+                className="text-center font-mono text-[11px] uppercase tracking-wider"
+                style={{ color: myRank.tier.l }}
+              >
+                Rang maximum atteint
               </p>
-            </>
-          )}
+            ) : (
+              <>
+                <div className="h-2 rounded bg-gray-200 dark:bg-night-700 overflow-hidden">
+                  <div
+                    className="h-full rounded"
+                    style={{
+                      width: `${myRank.rr}%`,
+                      backgroundColor: myRank.tier.l,
+                    }}
+                  />
+                </div>
+                <p className="mt-1 text-center text-[11px] text-gray-500 dark:text-gray-400">
+                  <span className="font-mono font-semibold text-gray-700 dark:text-gray-200">
+                    {myRank.rr}/100 RR
+                  </span>{" "}
+                  · {myRank.toNext} pts pour {myRank.next.n}
+                </p>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {/* Rang + points */}
       <div className="mt-4 grid grid-cols-2 gap-3">
@@ -403,6 +407,7 @@ export default function Classement({ authorizations }) {
   const periodCfg = PERIODS.find((p) => p.key === period) || PERIODS[0];
   const field = periodCfg.field;
   const radiantAt = periodCfg.radiantAt;
+  const showRank = radiantAt != null; // rang Valorant seulement sur l'année
   const metric = (a) => a[field];
   // On ne montre que les agents avec un score > 0 SUR LA PÉRIODE choisie
   // (un agent inactif ce mois-ci ne doit pas apparaître à 0).
@@ -518,13 +523,15 @@ export default function Classement({ authorizations }) {
                           <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 truncate">
                             {a.role}
                           </p>
-                          <div className="mt-0.5">
-                            <RankBadge
-                              points={metric(a)}
-                              radiantAt={radiantAt}
-                              size={15}
-                            />
-                          </div>
+                          {showRank ? (
+                            <div className="mt-0.5">
+                              <RankBadge
+                                points={metric(a)}
+                                radiantAt={radiantAt}
+                                size={15}
+                              />
+                            </div>
+                          ) : null}
                         </div>
                         <div className="flex-1 h-2.5 rounded bg-gray-100 dark:bg-night-800 overflow-hidden min-w-[40px]">
                           <div
@@ -554,6 +561,7 @@ export default function Classement({ authorizations }) {
                   metric={metric}
                   totalAll={totalAll}
                   radiantAt={radiantAt}
+                  showRank={showRank}
                 />
               </div>
             </div>
