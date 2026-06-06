@@ -1,21 +1,88 @@
-// Classement des agents par score d'actions pondérées.
-// Poids : fermeture d'un ticket +3 · changement de statut +2 · message/note +1
-// Agrégé depuis log_ticketschange (+ ticketmessages), par mois / année scolaire / total.
+// Classement des agents — v2.
+//
+// Principe : on score par TICKET DISTINCT réellement traité, pas par action
+// brute. Le spam (messages en rafale, ping-pong de statut) ne rapporte donc
+// plus rien au-delà du premier geste sur un ticket.
+//
+// Pour chaque couple (agent, ticket), en EXCLUANT ses propres tickets
+// (agent = demandeur) :
+//   • +2 "ticket traité"  : dès ≥1 action dessus (message agent / statut /
+//                           priorité / note), compté UNE seule fois.
+//   • +3 bonus "fermeture" : à l'agent qui a fait la fermeture finale STABLE
+//                           (dernier upd_status vers un statut fermé non annulé).
+//   => une vraie fermeture vaut 5, une participation 2.
+//
+// Crédit partagé : tous les contributeurs d'un ticket touchent leur +2, seul
+// le finisseur a +3 en plus. Plus de course à la fermeture.
+//
+// Aucune table supplémentaire : tout est dérivé de log_ticketschange,
+// ticketmessages et printstickets. Les badges et la série (streak) sont
+// calculés en mémoire.
 
-const WEIGHTS = { close: 3, status: 2, message: 1 };
+const SCORE = { participation: 2, closeBonus: 3 };
+// Valeur "fermeture" affichée dans la légende (participation + bonus).
+const WEIGHTS = {
+  participation: SCORE.participation,
+  close: SCORE.participation + SCORE.closeBonus,
+};
 
-// Expressions SQL réutilisées (période).
-const isMonth = (col) =>
-  `DATE_FORMAT(${col},'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m')`;
-// Année universitaire : bascule en septembre (même décalage +4 mois que les stats).
-const isYear = (col) =>
-  `YEAR(DATE_ADD(${col},INTERVAL 4 MONTH)) = YEAR(DATE_ADD(NOW(),INTERVAL 4 MONTH))`;
+// Seuils des badges (calculés sur les totaux).
+const BADGES = [
+  { key: "centurion", icon: "🎯", label: "Centurion", desc: "100 tickets traités", test: (a) => a.ticketsHandled >= 100 }, // prettier-ignore
+  { key: "veteran",   icon: "🛡️", label: "Vétéran",   desc: "300 tickets traités", test: (a) => a.ticketsHandled >= 300 }, // prettier-ignore
+  { key: "closer",    icon: "⚡", label: "Closer",    desc: "50 fermetures",       test: (a) => a.closures >= 50 }, // prettier-ignore
+  { key: "team",      icon: "🤝", label: "Esprit d'équipe", desc: "20 tickets partagés", test: (a) => a.sharedTickets >= 20 }, // prettier-ignore
+  { key: "streak",    icon: "🔥", label: "En série",  desc: "7 jours actifs d'affilée", test: (a) => a.streak >= 7 }, // prettier-ignore
+];
+
+// Bucket de période pour une date donnée (mois courant / année universitaire).
+// Année universitaire : même décalage +4 mois que les stats (bascule fin août).
+function periodFlags(date, now) {
+  const d = new Date(date);
+  const sameMonth =
+    d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  const shiftedYear = (x) => {
+    const y = new Date(x);
+    y.setMonth(y.getMonth() + 4);
+    return y.getFullYear();
+  };
+  return { month: sameMonth, year: shiftedYear(d) === shiftedYear(now) };
+}
+
+// Clé jour (YYYY-MM-DD) pour les séries.
+function dayKey(date) {
+  const d = new Date(date);
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+// Plus longue série de jours calendaires consécutifs (terminée au jour le plus
+// récent d'activité de l'agent).
+function currentStreak(dayKeys) {
+  if (!dayKeys.size) return 0;
+  const days = [...dayKeys].sort();
+  let best = 1;
+  let run = 1;
+  for (let i = 1; i < days.length; i++) {
+    const prev = new Date(days[i - 1]);
+    const cur = new Date(days[i]);
+    const diff = Math.round((cur - prev) / 86400000);
+    if (diff === 1) {
+      run += 1;
+      best = Math.max(best, run);
+    } else if (diff > 1) {
+      run = 1;
+    }
+  }
+  return best;
+}
 
 /**
  * @swagger
  * /ranking/:
  *   get:
- *     summary: Classement des agents par score d'actions pondérées (par mois / année / total). L'utilisateur doit être 'myFabAgent'.
+ *     summary: Classement des agents par score d'actions (par ticket traité, anti-triche). L'utilisateur doit être 'myFabAgent'.
  *     tags: [GlobalData]
  *     parameters:
  *     - name: dvflCookie
@@ -24,7 +91,7 @@ const isYear = (col) =>
  *       type: string
  *     responses:
  *       "200":
- *         description: "Liste des agents avec leurs scores + poids appliqués"
+ *         description: "Liste des agents avec scores, badges et séries"
  *       401:
  *        description: "The user is unauthenticated"
  *       403:
@@ -47,12 +114,11 @@ async function getRanking(data) {
   if (!authResult) {
     return { type: "code", code: 403 };
   }
+  const now = data.now ? new Date(data.now) : new Date();
   const run = (q, p = []) => data.app.executeQuery(data.app.db, q, p);
 
   // 1) Agents = utilisateurs ayant un rôle "myFabAgent" (hors système/root)
-  //    OU ayant déjà eu de l'activité (anciens agents qui ont perdu le rôle).
-  //    Rôle d'affichage = le plus élevé (i_id de rôle le plus petit : Admin < Modo < Agent).
-  //    Un ancien agent (plus de rôle myFabAgent) a role = NULL -> "Ancien agent".
+  //    OU ayant de l'activité (anciens agents). role NULL -> "Ancien agent".
   const agentsRes = await run(`
     SELECT u.i_id AS id,
         CONCAT(u.v_firstName, ' ', LEFT(u.v_lastName, 1), '.') AS name,
@@ -80,21 +146,29 @@ async function getRanking(data) {
   }
   /* c8 ignore stop */
 
-  // 2) Points + compteurs depuis log_ticketschange.
-  const w = `(CASE
-                WHEN ltc.v_action = 'upd_status' AND gs.b_isOpen = 0 THEN ${WEIGHTS.close}
-                WHEN ltc.v_action = 'upd_status' THEN ${WEIGHTS.status}
-                ELSE ${WEIGHTS.message} END)`;
+  // 2) Statuts considérés comme "fermeture aboutie" (fermé ET non annulé).
+  const closedRes = await run(
+    `SELECT i_id FROM gd_status WHERE b_isOpen = 0 AND b_isCancel = 0;`,
+  );
+  /* c8 ignore start */
+  if (closedRes[0]) {
+    console.log(closedRes[0]);
+    return { type: "code", code: 500 };
+  }
+  /* c8 ignore stop */
+  const closedStatusIds = new Set(closedRes[1].map((r) => Number(r.i_id)));
+
+  // 3) Toutes les actions de log (statut/priorité/type/note) + méta du ticket.
   const logsRes = await run(`
-    SELECT ltc.i_idUser AS id,
-        SUM(CASE WHEN ${isMonth("ltc.dt_timeStamp")} THEN ${w} ELSE 0 END) AS pMonth,
-        SUM(CASE WHEN ${isYear("ltc.dt_timeStamp")} THEN ${w} ELSE 0 END) AS pYear,
-        SUM(${w}) AS pTotal,
-        SUM(CASE WHEN ltc.v_action = 'upd_status' AND gs.b_isOpen = 0 THEN 1 ELSE 0 END) AS closures,
-        COUNT(*) AS actions
+    SELECT ltc.i_idUser AS agent, ltc.i_idTicket AS ticket,
+        ltc.v_action AS action, ltc.v_newValue AS newValue,
+        ltc.dt_timeStamp AS ts,
+        pt.i_idUser AS requester, pt.i_status AS curStatus,
+        pt.dt_creationdate AS creation
       FROM log_ticketschange AS ltc
-      LEFT JOIN gd_status AS gs ON ltc.v_action = 'upd_status' AND gs.i_id = ltc.v_newValue
-      GROUP BY ltc.i_idUser;`);
+      INNER JOIN printstickets AS pt
+        ON pt.i_id = ltc.i_idTicket AND pt.b_isDeleted = 0
+      ORDER BY ltc.i_idTicket, ltc.dt_timeStamp, ltc.i_id;`);
   /* c8 ignore start */
   if (logsRes[0]) {
     console.log(logsRes[0]);
@@ -102,15 +176,13 @@ async function getRanking(data) {
   }
   /* c8 ignore stop */
 
-  // 3) Points depuis les messages d'agents.
+  // 4) Messages d'agents (auteur ≠ demandeur du ticket).
   const msgRes = await run(`
-    SELECT i_idUser AS id,
-        SUM(CASE WHEN ${isMonth("dt_creationDate")} THEN ${WEIGHTS.message} ELSE 0 END) AS pMonth,
-        SUM(CASE WHEN ${isYear("dt_creationDate")} THEN ${WEIGHTS.message} ELSE 0 END) AS pYear,
-        COUNT(*) * ${WEIGHTS.message} AS pTotal,
-        COUNT(*) AS actions
-      FROM ticketmessages
-      GROUP BY i_idUser;`);
+    SELECT tm.i_idUser AS agent, tm.i_idTicket AS ticket,
+        tm.dt_creationDate AS ts, pt.i_idUser AS requester
+      FROM ticketmessages AS tm
+      INNER JOIN printstickets AS pt
+        ON pt.i_id = tm.i_idTicket AND pt.b_isDeleted = 0;`);
   /* c8 ignore start */
   if (msgRes[0]) {
     console.log(msgRes[0]);
@@ -118,29 +190,14 @@ async function getRanking(data) {
   }
   /* c8 ignore stop */
 
-  // 4) Délai moyen (heures) sur les tickets fermés par l'agent.
-  const delayRes = await run(`
-    SELECT ltc.i_idUser AS id,
-        ROUND(AVG(TIMESTAMPDIFF(HOUR, pt.dt_creationdate, ltc.dt_timeStamp))) AS avgDelayHours
-      FROM log_ticketschange AS ltc
-      INNER JOIN gd_status AS gs ON gs.i_id = ltc.v_newValue
-      INNER JOIN printstickets AS pt ON pt.i_id = ltc.i_idTicket
-      WHERE ltc.v_action = 'upd_status' AND gs.b_isOpen = 0
-      GROUP BY ltc.i_idUser;`);
-  /* c8 ignore start */
-  if (delayRes[0]) {
-    console.log(delayRes[0]);
-    return { type: "code", code: 500 };
-  }
-  /* c8 ignore stop */
+  // ---- Assemblage en mémoire -------------------------------------------------
 
-  // Fusion par agent.
+  // Squelette des agents (seuls ceux-ci pourront marquer des points).
   const byId = {};
   for (const a of agentsRes[1]) {
     byId[a.id] = {
       id: a.id,
       name: a.name,
-      // Ancien agent (plus de rôle myFabAgent) : libellé + couleur neutres.
       role: a.role || "Ancien agent",
       roleColor: a.roleColor || "9ca3af",
       former: !a.role,
@@ -148,33 +205,155 @@ async function getRanking(data) {
       pointsYear: 0,
       pointsTotal: 0,
       closures: 0,
-      actions: 0,
+      ticketsHandled: 0,
+      sharedTickets: 0,
       avgDelayHours: 0,
+      streak: 0,
       isMe: Number(a.id) === Number(userIdAgent),
     };
   }
+
+  // Regroupement par ticket : qui a touché (et quand en dernier), événements
+  // de statut (pour le closer), méta.
+  const tickets = {};
+  const ticketOf = (id, requester, curStatus, creation) => {
+    if (!tickets[id]) {
+      tickets[id] = {
+        requester: requester != null ? Number(requester) : null,
+        curStatus: curStatus != null ? Number(curStatus) : null,
+        creation: creation || null,
+        lastTouch: {}, // agentId -> dernier ts (toute action)
+        statusEvents: [], // {agent, statusId, ts}
+      };
+    }
+    return tickets[id];
+  };
+  // Jours d'activité par agent (pour la série).
+  const activeDays = {};
+  const touch = (agentId, ts) => {
+    if (!byId[agentId]) return false; // pas un agent connu -> ignoré
+    (activeDays[agentId] = activeDays[agentId] || new Set()).add(dayKey(ts));
+    return true;
+  };
+
   for (const r of logsRes[1]) {
-    if (!byId[r.id]) continue;
-    byId[r.id].pointsMonth += Number(r.pMonth) || 0;
-    byId[r.id].pointsYear += Number(r.pYear) || 0;
-    byId[r.id].pointsTotal += Number(r.pTotal) || 0;
-    byId[r.id].closures += Number(r.closures) || 0;
-    byId[r.id].actions += Number(r.actions) || 0;
+    const t = ticketOf(r.ticket, r.requester, r.curStatus, r.creation);
+    if (t.creation == null && r.creation) t.creation = r.creation;
+    if (t.requester == null && r.requester != null)
+      t.requester = Number(r.requester);
+    const agentId = Number(r.agent);
+    if (!touch(agentId, r.ts)) continue;
+    if (agentId === t.requester) continue; // ses propres tickets : exclus
+    t.lastTouch[agentId] = Math.max(
+      t.lastTouch[agentId] || 0,
+      new Date(r.ts).getTime(),
+    );
+    if (r.action === "upd_status") {
+      t.statusEvents.push({
+        agent: agentId,
+        statusId: Number(r.newValue),
+        ts: r.ts,
+      });
+    }
   }
   for (const r of msgRes[1]) {
-    if (!byId[r.id]) continue;
-    byId[r.id].pointsMonth += Number(r.pMonth) || 0;
-    byId[r.id].pointsYear += Number(r.pYear) || 0;
-    byId[r.id].pointsTotal += Number(r.pTotal) || 0;
-    byId[r.id].actions += Number(r.actions) || 0;
-  }
-  for (const r of delayRes[1]) {
-    if (!byId[r.id]) continue;
-    byId[r.id].avgDelayHours = Number(r.avgDelayHours) || 0;
+    const t = ticketOf(r.ticket, r.requester, null, null);
+    const agentId = Number(r.agent);
+    if (!touch(agentId, r.ts)) continue;
+    if (agentId === t.requester) continue;
+    t.lastTouch[agentId] = Math.max(
+      t.lastTouch[agentId] || 0,
+      new Date(r.ts).getTime(),
+    );
   }
 
-  // On ne garde que les agents ayant fait au moins une action (≥ 1 ticket touché).
-  const agentsList = Object.values(byId).filter((a) => a.actions > 0);
+  // Attribution des points par ticket.
+  const add = (agentId, ts, pts) => {
+    const a = byId[agentId];
+    if (!a) return;
+    const f = periodFlags(ts, now);
+    a.pointsTotal += pts;
+    if (f.month) a.pointsMonth += pts;
+    if (f.year) a.pointsYear += pts;
+  };
+
+  for (const id of Object.keys(tickets)) {
+    const t = tickets[id];
+    const contributors = Object.keys(t.lastTouch).map(Number);
+    const isShared = contributors.length >= 2;
+
+    // Participation : +2 par contributeur, daté de sa dernière action.
+    for (const agentId of contributors) {
+      add(agentId, t.lastTouch[agentId], SCORE.participation);
+      const a = byId[agentId];
+      a.ticketsHandled += 1;
+      if (isShared) a.sharedTickets += 1;
+    }
+
+    // Fermeture stable : dernier upd_status vers un statut fermé non annulé,
+    // et le ticket est toujours dans un statut fermé (pas rouvert).
+    if (t.statusEvents.length) {
+      const last = t.statusEvents[t.statusEvents.length - 1];
+      const stillClosed =
+        t.curStatus == null || closedStatusIds.has(t.curStatus);
+      if (
+        closedStatusIds.has(last.statusId) &&
+        stillClosed &&
+        byId[last.agent]
+      ) {
+        add(last.agent, last.ts, SCORE.closeBonus);
+        const a = byId[last.agent];
+        a.closures += 1;
+        if (t.creation) {
+          const h = Math.max(
+            0,
+            (new Date(last.ts) - new Date(t.creation)) / 3600000,
+          );
+          a._delaySum = (a._delaySum || 0) + h;
+          a._delayCount = (a._delayCount || 0) + 1;
+        }
+      }
+    }
+  }
+
+  // Finitions par agent : délai moyen, série, badges.
+  for (const a of Object.values(byId)) {
+    if (a._delayCount)
+      a.avgDelayHours = Math.round(a._delaySum / a._delayCount);
+    delete a._delaySum;
+    delete a._delayCount;
+    a.streak = currentStreak(activeDays[a.id] || new Set());
+  }
+
+  // Champion du mois = meilleur score du mois (calculé avant filtrage).
+  let monthLeaderId = null;
+  let monthLeaderPts = 0;
+  for (const a of Object.values(byId)) {
+    if (a.pointsMonth > monthLeaderPts) {
+      monthLeaderPts = a.pointsMonth;
+      monthLeaderId = a.id;
+    }
+  }
+  for (const a of Object.values(byId)) {
+    const badges = BADGES.filter((b) => b.test(a)).map((b) => ({
+      key: b.key,
+      icon: b.icon,
+      label: b.label,
+      desc: b.desc,
+    }));
+    if (monthLeaderId != null && a.id === monthLeaderId && a.pointsMonth > 0) {
+      badges.unshift({
+        key: "champion",
+        icon: "👑",
+        label: "Champion du mois",
+        desc: "1er ce mois-ci",
+      });
+    }
+    a.badges = badges;
+  }
+
+  // On ne garde que les agents ayant réellement traité ≥ 1 ticket.
+  const agentsList = Object.values(byId).filter((a) => a.ticketsHandled > 0);
 
   return {
     type: "json",

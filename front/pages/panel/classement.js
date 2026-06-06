@@ -206,6 +206,40 @@ function ProfileLine({ label, value }) {
   );
 }
 
+// Liste de badges (icône + libellé au survol). `compact` = icônes seules.
+function BadgeList({ badges, compact = false }) {
+  if (!badges || !badges.length) return null;
+  if (compact) {
+    return (
+      <span className="inline-flex items-center gap-0.5">
+        {badges.map((b) => (
+          <span
+            key={b.key}
+            title={`${b.label} — ${b.desc}`}
+            className="text-sm"
+          >
+            {b.icon}
+          </span>
+        ))}
+      </span>
+    );
+  }
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {badges.map((b) => (
+        <span
+          key={b.key}
+          title={b.desc}
+          className="inline-flex items-center gap-1 rounded-full border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:text-gray-200"
+        >
+          <span>{b.icon}</span>
+          {b.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
   if (!me) {
     return (
@@ -277,11 +311,26 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
         </div>
       </div>
 
+      {/* Badges */}
+      {me.badges && me.badges.length ? (
+        <div className="mt-4">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+            Badges
+          </p>
+          <BadgeList badges={me.badges} />
+        </div>
+      ) : null}
+
       {/* Détails */}
       <div className="mt-3">
         <ProfileLine label="Part de l'équipe" value={`${share}%`} />
+        <ProfileLine label="Tickets traités" value={me.ticketsHandled} />
         <ProfileLine label="Fermetures" value={me.closures} />
-        <ProfileLine label="Actions totales" value={me.actions} />
+        <ProfileLine label="Tickets partagés" value={me.sharedTickets} />
+        <ProfileLine
+          label="Série"
+          value={me.streak > 0 ? `🔥 ${me.streak} j` : "—"}
+        />
         <ProfileLine label="Délai moyen" value={`${me.avgDelayHours} h`} />
       </div>
 
@@ -373,11 +422,12 @@ export default function Classement({ authorizations }) {
               </p>
               {weights ? (
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Score = actions pondérées :{" "}
+                  Score par ticket traité :{" "}
                   <span className="font-medium text-gray-700 dark:text-gray-300">
                     fermeture +{weights.close}
                   </span>{" "}
-                  · statut +{weights.status} · message/note +{weights.message}
+                  · participation +{weights.participation} (hors ses propres
+                  demandes)
                 </p>
               ) : null}
             </div>
@@ -457,11 +507,15 @@ export default function Classement({ authorizations }) {
                           <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 truncate">
                             {a.role}
                           </p>
-                          <div className="mt-0.5">
+                          <div className="mt-0.5 flex items-center gap-1.5">
                             <RankBadge
                               index={i}
                               total={ranked.length}
                               size={15}
+                            />
+                            <BadgeList
+                              badges={(a.badges || []).slice(0, 3)}
+                              compact
                             />
                           </div>
                         </div>
