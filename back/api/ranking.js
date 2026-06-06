@@ -16,8 +16,7 @@
 // le finisseur a +3 en plus. Plus de course à la fermeture.
 //
 // Aucune table supplémentaire : tout est dérivé de log_ticketschange,
-// ticketmessages et printstickets. Les badges et la série (streak) sont
-// calculés en mémoire.
+// ticketmessages et printstickets. La série (streak) est calculée en mémoire.
 
 const SCORE = { participation: 2, closeBonus: 3 };
 // Valeur "fermeture" affichée dans la légende (participation + bonus).
@@ -25,15 +24,6 @@ const WEIGHTS = {
   participation: SCORE.participation,
   close: SCORE.participation + SCORE.closeBonus,
 };
-
-// Seuils des badges (calculés sur les totaux).
-const BADGES = [
-  { key: "centurion", icon: "🎯", label: "Centurion", desc: "100 tickets traités", test: (a) => a.ticketsHandled >= 100 }, // prettier-ignore
-  { key: "veteran",   icon: "🛡️", label: "Vétéran",   desc: "300 tickets traités", test: (a) => a.ticketsHandled >= 300 }, // prettier-ignore
-  { key: "closer",    icon: "⚡", label: "Closer",    desc: "50 fermetures",       test: (a) => a.closures >= 50 }, // prettier-ignore
-  { key: "team",      icon: "🤝", label: "Esprit d'équipe", desc: "20 tickets partagés", test: (a) => a.sharedTickets >= 20 }, // prettier-ignore
-  { key: "streak",    icon: "🔥", label: "En série",  desc: "7 jours actifs d'affilée", test: (a) => a.streak >= 7 }, // prettier-ignore
-];
 
 // Bucket de période pour une date donnée (mois courant / année universitaire).
 // Année universitaire : même décalage +4 mois que les stats (bascule fin août).
@@ -91,7 +81,7 @@ function currentStreak(dayKeys) {
  *       type: string
  *     responses:
  *       "200":
- *         description: "Liste des agents avec scores, badges et séries"
+ *         description: "Liste des agents avec scores et séries"
  *       401:
  *        description: "The user is unauthenticated"
  *       403:
@@ -316,40 +306,13 @@ async function getRanking(data) {
     }
   }
 
-  // Finitions par agent : délai moyen, série, badges.
+  // Finitions par agent : délai moyen, série.
   for (const a of Object.values(byId)) {
     if (a._delayCount)
       a.avgDelayHours = Math.round(a._delaySum / a._delayCount);
     delete a._delaySum;
     delete a._delayCount;
     a.streak = currentStreak(activeDays[a.id] || new Set());
-  }
-
-  // Champion du mois = meilleur score du mois (calculé avant filtrage).
-  let monthLeaderId = null;
-  let monthLeaderPts = 0;
-  for (const a of Object.values(byId)) {
-    if (a.pointsMonth > monthLeaderPts) {
-      monthLeaderPts = a.pointsMonth;
-      monthLeaderId = a.id;
-    }
-  }
-  for (const a of Object.values(byId)) {
-    const badges = BADGES.filter((b) => b.test(a)).map((b) => ({
-      key: b.key,
-      icon: b.icon,
-      label: b.label,
-      desc: b.desc,
-    }));
-    if (monthLeaderId != null && a.id === monthLeaderId && a.pointsMonth > 0) {
-      badges.unshift({
-        key: "champion",
-        icon: "👑",
-        label: "Champion du mois",
-        desc: "1er ce mois-ci",
-      });
-    }
-    a.badges = badges;
   }
 
   // On ne garde que les agents ayant réellement traité ≥ 1 ticket.

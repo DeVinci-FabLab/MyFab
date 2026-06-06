@@ -78,8 +78,6 @@ describe("GET /api/ranking (v2)", () => {
     expect(me.closures).toBe(1); // seulement t100
     expect(me.sharedTickets).toBe(1); // t102
     expect(me.avgDelayHours).toBe(10); // 11:00 - 01:00
-    // champion du mois (meilleur score) -> badge 👑
-    expect(me.badges.some((b) => b.key === "champion")).toBe(true);
 
     const b = res.json.agents.find((a) => a.id === 2);
     expect(b.pointsTotal).toBe(5); // participation 2 + fermeture 3

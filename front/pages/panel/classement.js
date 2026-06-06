@@ -19,63 +19,61 @@ const PERIODS = [
   { key: "total", label: "Tout le temps", field: "pointsTotal" },
 ];
 
-// Badges "façon classé" — art ORIGINAL (dégradés aux couleurs des tiers),
-// pas les icônes de Riot. Du meilleur (#1) au moins bon, un sous-tier par rang.
-const TIERS = [
-  { n: "Radiant", c1: "#fff7cf", c2: "#e7b53a", l: "#caa12f" },
-  { n: "Immortal 3", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
-  { n: "Immortal 2", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
-  { n: "Immortal 1", c1: "#e0566f", c2: "#7c1e30", l: "#d4566c" },
-  { n: "Ascendant 3", c1: "#4fd690", c2: "#1c7048", l: "#2fae6e" },
-  { n: "Ascendant 2", c1: "#4fd690", c2: "#1c7048", l: "#2fae6e" },
-  { n: "Ascendant 1", c1: "#4fd690", c2: "#1c7048", l: "#2fae6e" },
-  { n: "Diamond 3", c1: "#e0b6ff", c2: "#8b5cf6", l: "#a880e8" },
-  { n: "Diamond 2", c1: "#e0b6ff", c2: "#8b5cf6", l: "#a880e8" },
-  { n: "Diamond 1", c1: "#e0b6ff", c2: "#8b5cf6", l: "#a880e8" },
-  { n: "Platinum 3", c1: "#7fe7ee", c2: "#2a8f9e", l: "#3fb6c2" },
-  { n: "Platinum 2", c1: "#7fe7ee", c2: "#2a8f9e", l: "#3fb6c2" },
-  { n: "Platinum 1", c1: "#7fe7ee", c2: "#2a8f9e", l: "#3fb6c2" },
-  { n: "Gold 3", c1: "#f5d985", c2: "#b8862f", l: "#cda43e" },
-  { n: "Gold 2", c1: "#f5d985", c2: "#b8862f", l: "#cda43e" },
-  { n: "Gold 1", c1: "#f5d985", c2: "#b8862f", l: "#cda43e" },
-  { n: "Silver 3", c1: "#dfe6ec", c2: "#8a949d", l: "#9aa4ad" },
-  { n: "Silver 2", c1: "#dfe6ec", c2: "#8a949d", l: "#9aa4ad" },
-  { n: "Silver 1", c1: "#dfe6ec", c2: "#8a949d", l: "#9aa4ad" },
-  { n: "Bronze 3", c1: "#d09a63", c2: "#7a4f2a", l: "#a9783f" },
-  { n: "Bronze 2", c1: "#d09a63", c2: "#7a4f2a", l: "#a9783f" },
-  { n: "Bronze 1", c1: "#d09a63", c2: "#7a4f2a", l: "#a9783f" },
-  { n: "Iron 3", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
-  { n: "Iron 2", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
-  { n: "Iron 1", c1: "#aab2bd", c2: "#4b5563", l: "#7b8696" },
+// Paliers de progression (maison, CSS pur — aucune image sous licence).
+// On monte de niveau en CUMULANT des points sur toute sa carrière
+// (pointsTotal). C'est ABSOLU : pas de "1er = tel rang", chacun peut atteindre
+// le palier max en étant actif. Seuils ajustables ici.
+const LEVELS = [
+  { name: "Apprenti", min: 0, color: "#94a3b8" },
+  { name: "Opérateur", min: 50, color: "#38bdf8" },
+  { name: "Technicien", min: 150, color: "#3b82f6" },
+  { name: "Spécialiste", min: 350, color: "#8b5cf6" },
+  { name: "Expert", min: 700, color: "#E6007E" },
+  { name: "Référent", min: 1200, color: "#F39200" },
+  { name: "Maître", min: 2000, color: "#e7b53a" },
 ];
 
-function tierForRank(index, total) {
-  // Au-delà de 22 agents : les 3 derniers passent en Iron, et tout le bas
-  // (au-dessus de ces 3) est plafonné à Bronze (au lieu de descendre en Iron un à un).
-  if (total > 22) {
-    if (index >= total - 3) {
-      const ironByPosition = ["Iron 3", "Iron 2", "Iron 1"];
-      const name = ironByPosition[index - (total - 3)] || "Iron 1";
-      return TIERS.find((t) => t.n === name);
-    }
-    return TIERS[Math.min(index, 21)]; // 21 = Bronze 1
-  }
-  return TIERS[Math.min(index, TIERS.length - 1)];
+// Niveau atteint pour un total de points + progression vers le palier suivant.
+function levelForPoints(points) {
+  const p = Number(points) || 0;
+  let idx = 0;
+  for (let i = 0; i < LEVELS.length; i++) if (p >= LEVELS[i].min) idx = i;
+  const level = LEVELS[idx];
+  const next = LEVELS[idx + 1] || null;
+  const span = next ? next.min - level.min : 1;
+  const progress = next ? Math.min(1, (p - level.min) / span) : 1;
+  const toNext = next ? Math.max(0, next.min - p) : 0;
+  return {
+    idx,
+    level,
+    next,
+    progress,
+    toNext,
+    num: idx + 1,
+    count: LEVELS.length,
+  };
 }
 
-function RankBadge({
-  index,
-  total,
-  size = 22,
-  showLabel = true,
-  stacked = false,
-}) {
-  const t = tierForRank(index, total);
-  // Slug du sous-tier (radiant, immortal-3, ascendant-1, iron-1…) pour l'image.
-  const slug = t.n.toLowerCase().replace(/\s+/g, "-");
-  const imgSrc = (process.env.BASE_PATH || "") + "/ranks/" + slug + ".png";
-  // true = on tente l'image ; sur erreur (fichier absent) → repli sur le losange.
-  const [imgOk, setImgOk] = useState(true);
+// Médaillon de niveau (numéro du palier) + libellé optionnel. CSS, pas d'image.
+function LevelBadge({ points, size = 22, showLabel = false, stacked = false }) {
+  const { level, num, count } = levelForPoints(points);
+  const medal = (
+    <span
+      className="inline-flex flex-shrink-0 items-center justify-center rounded-full font-mono font-bold text-white"
+      style={{
+        width: size,
+        height: size,
+        fontSize: Math.round(size * 0.42),
+        background: `radial-gradient(circle at 35% 30%, ${level.color}, ${level.color}bb)`,
+        border: `1px solid ${level.color}`,
+        boxShadow: `0 0 0 2px ${level.color}22`,
+      }}
+      title={`${level.name} — niveau ${num}/${count}`}
+    >
+      {num}
+    </span>
+  );
+  if (!showLabel && !stacked) return medal;
   return (
     <span
       className={
@@ -83,42 +81,16 @@ function RankBadge({
           ? "inline-flex flex-col items-center gap-1.5"
           : "inline-flex items-center gap-1.5"
       }
-      title={t.n}
     >
-      {imgOk ? (
-        <img
-          src={imgSrc}
-          alt={t.n}
-          width={size}
-          height={size}
-          onError={() => setImgOk(false)}
-          className="flex-shrink-0 object-contain"
-          style={{ width: size, height: size }}
-        />
-      ) : (
-        <span
-          className="inline-block flex-shrink-0"
-          style={{
-            width: size,
-            height: size,
-            background: `linear-gradient(135deg, ${t.c1}, ${t.c2})`,
-            transform: "rotate(45deg)",
-            borderRadius: 4,
-            border: "1px solid rgba(0,0,0,.25)",
-            boxShadow: `0 0 6px ${t.l}55`,
-          }}
-        />
-      )}
-      {showLabel ? (
-        <span
-          className={`font-mono uppercase tracking-wider whitespace-nowrap ${
-            stacked ? "text-xs font-semibold" : "text-[10px]"
-          }`}
-          style={{ color: t.l }}
-        >
-          {t.n}
-        </span>
-      ) : null}
+      {medal}
+      <span
+        className={`font-mono uppercase tracking-wider whitespace-nowrap ${
+          stacked ? "text-sm font-semibold" : "text-[10px]"
+        }`}
+        style={{ color: level.color }}
+      >
+        {level.name}
+      </span>
     </span>
   );
 }
@@ -206,40 +178,6 @@ function ProfileLine({ label, value }) {
   );
 }
 
-// Liste de badges (icône + libellé au survol). `compact` = icônes seules.
-function BadgeList({ badges, compact = false }) {
-  if (!badges || !badges.length) return null;
-  if (compact) {
-    return (
-      <span className="inline-flex items-center gap-0.5">
-        {badges.map((b) => (
-          <span
-            key={b.key}
-            title={`${b.label} — ${b.desc}`}
-            className="text-sm"
-          >
-            {b.icon}
-          </span>
-        ))}
-      </span>
-    );
-  }
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {badges.map((b) => (
-        <span
-          key={b.key}
-          title={b.desc}
-          className="inline-flex items-center gap-1 rounded-full border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:text-gray-200"
-        >
-          <span>{b.icon}</span>
-          {b.label}
-        </span>
-      ))}
-    </div>
-  );
-}
-
 function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
   if (!me) {
     return (
@@ -259,6 +197,8 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
   const above = meIndex > 0 ? ranked[meIndex - 1] : null;
   const gap = above ? metric(above) - metric(me) : 0;
   const periodLabel = PERIODS.find((p) => p.key === period).label.toLowerCase();
+  // Niveau (palier absolu) basé sur le total carrière, pas sur la période.
+  const lvl = levelForPoints(me.pointsTotal);
 
   return (
     <Card className="lg:sticky lg:top-6">
@@ -283,9 +223,45 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
         </div>
       </div>
 
-      <div className="mt-4 flex justify-center">
-        <div className="flex flex-col items-center rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-8 py-4">
-          <RankBadge index={meIndex} total={ranked.length} size={72} stacked />
+      {/* Niveau + progression vers le palier suivant */}
+      <div className="mt-4 rounded-md border border-gray-200 dark:border-night-800 bg-gray-50 dark:bg-night-800 px-4 py-4">
+        <div className="flex items-center gap-3">
+          <LevelBadge points={me.pointsTotal} size={56} />
+          <div className="min-w-0">
+            <p
+              className="font-semibold leading-tight"
+              style={{ color: lvl.level.color }}
+            >
+              {lvl.level.name}
+            </p>
+            <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              Niveau {lvl.num}/{lvl.count} · {me.pointsTotal} pts
+            </p>
+          </div>
+        </div>
+        <div className="mt-3">
+          <div className="h-2 rounded bg-gray-200 dark:bg-night-700 overflow-hidden">
+            <div
+              className="h-full rounded"
+              style={{
+                width: `${Math.round(lvl.progress * 100)}%`,
+                backgroundColor: lvl.level.color,
+              }}
+            />
+          </div>
+          <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+            {lvl.next ? (
+              <>
+                Plus que{" "}
+                <span className="font-mono font-semibold text-gray-700 dark:text-gray-200">
+                  {lvl.toNext} pts
+                </span>{" "}
+                pour <span className="font-semibold">{lvl.next.name}</span>
+              </>
+            ) : (
+              <>Palier maximum atteint 🎉</>
+            )}
+          </p>
         </div>
       </div>
 
@@ -310,16 +286,6 @@ function ProfileCard({ me, meIndex, ranked, period, metric, totalAll }) {
           <p className="text-[10px] text-gray-400">{periodLabel}</p>
         </div>
       </div>
-
-      {/* Badges */}
-      {me.badges && me.badges.length ? (
-        <div className="mt-4">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
-            Badges
-          </p>
-          <BadgeList badges={me.badges} />
-        </div>
-      ) : null}
 
       {/* Détails */}
       <div className="mt-3">
@@ -507,15 +473,11 @@ export default function Classement({ authorizations }) {
                           <p className="font-mono text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 truncate">
                             {a.role}
                           </p>
-                          <div className="mt-0.5 flex items-center gap-1.5">
-                            <RankBadge
-                              index={i}
-                              total={ranked.length}
-                              size={15}
-                            />
-                            <BadgeList
-                              badges={(a.badges || []).slice(0, 3)}
-                              compact
+                          <div className="mt-0.5">
+                            <LevelBadge
+                              points={a.pointsTotal}
+                              size={16}
+                              showLabel
                             />
                           </div>
                         </div>
@@ -550,14 +512,6 @@ export default function Classement({ authorizations }) {
               </div>
             </div>
           )}
-
-          <p className="mt-10 text-center text-[10px] leading-relaxed text-gray-400 dark:text-gray-500">
-            Les icônes de rang affichées sont la propriété de Riot Games, Inc.
-            VALORANT™ et les emblèmes de rang associés sont des marques ou
-            marques déposées de Riot Games, Inc. Ils sont utilisés ici à titre
-            illustratif. MyFab n'est ni affilié à, ni approuvé ou sponsorisé par
-            Riot Games.
-          </p>
         </div>
       </LayoutPanel>
     </div>
