@@ -16,6 +16,12 @@ import { UserUse } from "../../context/provider";
 
 const percents = (value, total) => Math.round(value / total) * 100;
 
+const materialDisplayNames = {
+  FDM: "FDM (PLA)",
+  SLA: "SLA (Résine)",
+  SLS: "SLS (Poudre)",
+};
+
 export default function NewPanel({ authorizations, projectType, materials }) {
   const jwt = getCookie("jwt");
   const { user, darkMode } = UserUse(jwt);
@@ -365,14 +371,14 @@ export default function NewPanel({ authorizations, projectType, materials }) {
                         {materials.map((item, index) => {
                           return (
                             <option key={`materials-${index}`} value={index}>
-                              {item.name}
+                              {materialDisplayNames[item.name] ?? item.name}
                             </option>
                           );
                         })}
                       </select>
                       <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
                         Si vous souhaitez une impression standard en plastique,
-                        selectionnez FDM. Vidéo exemple du{" "}
+                        selectionnez FDM (PLA). Vidéo exemple du{" "}
                         <a
                           href="https://www.youtube.com/watch?v=m_QhY1aABsE"
                           target="_blank"
